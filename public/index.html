@@ -4,15 +4,26 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>Зубрик — тесты курса</title>
+  <link rel="preload" href="/e/index.json" as="fetch" crossorigin>
   <meta name="theme-color" content="#58cc02">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/app.css">
+  <script>
+    // Сразу ставим выбранный цвет и тему, чтобы не было «вспышки» зелёного при загрузке
+    try {
+      var l = JSON.parse(localStorage.getItem('look') || '{}');
+      var d = document.documentElement;
+      d.dataset.accent = l.accent || 'lime';
+      var dark = l.mode === 'dark' || (l.mode !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+      d.dataset.theme = dark ? 'dark' : 'light';
+    } catch (e) {}
+  </script>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-  <main id="app"><div class="splash"><div class="splash-blob"></div><b>Загрузка…</b></div></main>
+  <main id="app"><div class="splash"><div class="dot"></div><b>Загрузка…</b></div></main>
   <nav id="nav" hidden></nav>
   <div id="layer"></div>
   <script type="module" src="/app.js"></script>

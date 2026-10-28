@@ -11,6 +11,9 @@ const prevDay = (key) => {
 const pct = (c, t) => (t ? Math.round((c / t) * 100) : 0);
 const avg = (xs) => (xs.length ? Math.round(xs.reduce((a, b) => a + b, 0) / xs.length) : null);
 
+export const MASCOT_IDS = ['mimi', 'kapi', 'dino', 'axi'];
+export const ACCENTS = ['lime', 'sakura', 'lavender', 'ocean', 'peach', 'mint'];
+
 export const ACHIEVEMENTS = {
   first: { icon: '🌱', title: 'Первый шаг', desc: 'Пройди первый тест' },
   five: { icon: '🖐️', title: 'Пятёрка', desc: 'Пройди 5 тестов' },
@@ -305,12 +308,12 @@ export function createLogic(store, { adminIds }) {
       .map((uid) => {
         const u = S.users[uid];
         const bests = pubs.map((p) => best(uid, p.id)).filter(Boolean);
-        return { userId: uid, name: name(u), username: u?.username || '', photoUrl: u?.photoUrl || null, xp: groupXp(uid, gid), done: bests.length, avg: avg(bests.map((b) => b.pct)), streak: currentStreak(u) };
+        return { userId: uid, name: name(u), username: u?.username || '', photoUrl: u?.photoUrl || null, prefs: u?.prefs || null, xp: groupXp(uid, gid), done: bests.length, avg: avg(bests.map((b) => b.pct)), streak: currentStreak(u) };
       })
       .sort((a, b) => b.xp - a.xp || (b.avg ?? -1) - (a.avg ?? -1));
     rows.forEach((r, i) => (r.rank = i + 1));
     const teacherId = adminIds[0];
-    const teacher = { userId: teacherId, name: name(S.users[teacherId]) || 'Учитель', teacher: true, photoUrl: S.users[teacherId]?.photoUrl || null };
+    const teacher = { userId: teacherId, name: name(S.users[teacherId]) || 'Учитель', teacher: true, photoUrl: S.users[teacherId]?.photoUrl || null, prefs: S.users[teacherId]?.prefs || null };
     return { group: { id: g.id, name: g.name, emoji: g.emoji }, teacher, rows, tests: pubs.length };
   }
 
@@ -406,13 +409,26 @@ export function createLogic(store, { adminIds }) {
       .slice(0, limit)
       .map((a) => {
         const s = scoreOf(a);
-        return { name: name(S.users[a.userId]), userId: a.userId, title: S.lessons[a.lessonId].title, emoji: S.lessons[a.lessonId].emoji, pct: s.pct, practice: a.practice, at: a.finishedAt, combo: a.maxCombo };
+        return { name: name(S.users[a.userId]), userId: a.userId, prefs: S.users[a.userId]?.prefs || null, title: S.lessons[a.lessonId].title, emoji: S.lessons[a.lessonId].emoji, pct: s.pct, practice: a.practice, at: a.finishedAt, combo: a.maxCombo };
       });
   }
 
   function publicUser(u) {
     if (!u) return null;
-    return { id: u.id, name: name(u), username: u.username || '', photoUrl: u.photoUrl || null, joinedAt: u.joinedAt };
+    return { id: u.id, name: name(u), username: u.username || '', photoUrl: u.photoUrl || null, joinedAt: u.joinedAt, prefs: u.prefs || null };
+  }
+
+  // Внешний вид, который ученик выбирает сам: напарник, цвет, светлая/тёмная тема
+  function setPrefs(uid, p = {}) {
+    const u = S.users[String(uid)];
+    if (!u) throw httpError(404, 'Пользователь не найден');
+    const next = { ...(u.prefs || {}) };
+    if (MASCOT_IDS.includes(p.mascot)) next.mascot = p.mascot;
+    if (ACCENTS.includes(p.accent)) next.accent = p.accent;
+    if (['auto', 'light', 'dark'].includes(p.mode)) next.mode = p.mode;
+    u.prefs = next;
+    store.save();
+    return next;
   }
 
   // Главный экран ученика
@@ -504,7 +520,7 @@ export function createLogic(store, { adminIds }) {
     S, isAdmin, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
     upsertLesson, deleteLesson, publish, unpublish, pubsForGroup, pubStats, startAttempt, answer, retry, finish,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
-    createReminder, listReminders, setReminder, deleteReminder,
+    createReminder, listReminders, setReminder, deleteReminder, setPrefs,
   };
 }
 

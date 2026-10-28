@@ -66,6 +66,7 @@ api.use(auth);
 
 // ───────── ученик ─────────
 api.get('/me', h((req) => logic.home(req.user.id)));
+api.post('/me/prefs', h((req) => logic.setPrefs(req.user.id, req.body || {})));
 api.get('/stats/me', h((req) => logic.userStats(req.user.id)));
 api.get('/leaderboard/:gid', h((req) => {
   if (!req.admin && !logic.userGroups(req.user.id).some((g) => g.id === req.params.gid)) throw httpError(403, 'Не твоя группа');
@@ -129,6 +130,8 @@ const useWebhook = Boolean(tg && PUBLIC_URL.startsWith('https://'));
 const hookPath = '/tg/' + crypto.createHash('sha256').update(BOT_TOKEN).digest('hex').slice(0, 24);
 if (useWebhook) app.post(hookPath, webhookCallback(tg.bot, 'express'));
 
+// 3D-эмодзи не меняются — пусть кэшируются надолго
+for (const dir of ['e', 'ea']) app.use('/' + dir, express.static(path.join(root, 'public', dir), { maxAge: '30d', immutable: true }));
 app.use(express.static(path.join(root, 'public'), { extensions: ['html'], maxAge: '5m' }));
 app.get('*', (_req, res) => res.sendFile(path.join(root, 'public', 'index.html')));
 
