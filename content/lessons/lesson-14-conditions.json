@@ -1,0 +1,138 @@
+{
+  "id": "lesson-14-conditions",
+  "title": "Урок 14. Условия",
+  "emoji": "🔀",
+  "description": "if / else, else if, && и ||, тернарный оператор",
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "if / else",
+      "prompt": "Что пишут в круглых скобках ( ) после if?",
+      "options": ["Условие", "Код, который нужно выполнить", "Имя переменной", "Текст для console.log"],
+      "answer": 0,
+      "explain": "В скобках ( ) — условие. Его результат всегда true или false."
+    },
+    {
+      "type": "truefalse",
+      "topic": "if / else",
+      "prompt": "Код в фигурных скобках { } после if выполняется, только если условие true.",
+      "answer": true,
+      "explain": "Если условие false, этот блок пропускается и срабатывает else (если он есть)."
+    },
+    {
+      "type": "match",
+      "topic": "Синтаксис",
+      "prompt": "Соедини конструкцию и её смысл",
+      "pairs": [
+        ["if", "Если условие верно"],
+        ["else", "Иначе"],
+        ["else if", "Иначе, если"],
+        ["? :", "Короткий if / else"]
+      ]
+    },
+    {
+      "type": "truefalse",
+      "topic": "&& и ||",
+      "prompt": "Выражение true && false даёт true.",
+      "answer": false,
+      "explain": "&& (И) даёт true, только когда оба условия верны. Здесь одно false — значит, результат false."
+    },
+    {
+      "type": "choice",
+      "topic": "if / else",
+      "prompt": "Что выведет консоль?",
+      "code": "let age = 16;\nif (age >= 18) {\n  console.log(\"Билет продан!\");\n} else {\n  console.log(\"Только для 18+\");\n}",
+      "options": ["Билет продан!", "Только для 18+", "Ничего не выведет", "Обе фразы"],
+      "answer": 1,
+      "explain": "16 >= 18 — это false, поэтому срабатывает else."
+    },
+    {
+      "type": "input",
+      "topic": "&& и ||",
+      "prompt": "Что выведет console.log(false || true)?",
+      "placeholder": "true или false",
+      "answer": ["true"],
+      "explain": "|| (ИЛИ) даёт true, если верно хотя бы одно из условий."
+    },
+    {
+      "type": "choice",
+      "topic": "else if",
+      "prompt": "Что выведет консоль?",
+      "code": "let score = 75;\nif (score >= 90) {\n  console.log(\"Отлично!\");\n} else if (score >= 70) {\n  console.log(\"Хорошо\");\n} else {\n  console.log(\"Надо подтянуть\");\n}",
+      "options": ["Отлично!", "Хорошо", "Надо подтянуть", "Хорошо и Надо подтянуть"],
+      "answer": 1,
+      "explain": "75 >= 90 — false, 75 >= 70 — true. JavaScript останавливается на первом верном условии."
+    },
+    {
+      "type": "truefalse",
+      "topic": "else if",
+      "prompt": "В цепочке if / else if JavaScript проверяет все условия, даже после того как нашёл верное.",
+      "answer": false,
+      "explain": "Условия проверяются сверху вниз, и на первом верном проверка останавливается. Остальные уже не проверяются."
+    },
+    {
+      "type": "choice",
+      "topic": "&& и ||",
+      "prompt": "Что выведет консоль?",
+      "code": "let goodWeather = true;\nlet hasTime = false;\nif (goodWeather && hasTime) {\n  console.log(\"Иду гулять!\");\n} else {\n  console.log(\"Сижу дома\");\n}",
+      "options": ["Иду гулять!", "Сижу дома", "true", "Ошибка"],
+      "answer": 1,
+      "explain": "Для && нужны оба условия. hasTime = false, значит всё условие false и срабатывает else."
+    },
+    {
+      "type": "input",
+      "topic": "Тернарный оператор",
+      "prompt": "Что выведет консоль? Напиши слово.",
+      "code": "let age = 20;\nconsole.log(age >= 18 ? \"взрослый\" : \"ребёнок\");",
+      "placeholder": "Ответ",
+      "answer": ["взрослый", "\"взрослый\""],
+      "explain": "20 >= 18 — true, поэтому берётся значение после ?, то есть «взрослый»."
+    },
+    {
+      "type": "order",
+      "topic": "Тернарный оператор",
+      "prompt": "Собери тернарный оператор: если число чётное — «чётное», иначе — «нечётное»",
+      "code": "const result = ...",
+      "tokens": ["number % 2 === 0", "?", "\"чётное\"", ":", "\"нечётное\""],
+      "extra": ["else", "&&"],
+      "explain": "Схема: условие ? если_да : если_нет."
+    },
+    {
+      "type": "match",
+      "topic": "&& и ||",
+      "prompt": "Соедини оператор и когда он даёт true",
+      "pairs": [
+        ["&&", "Когда оба условия верны"],
+        ["||", "Когда верно хотя бы одно"],
+        ["else", "Когда условие false"]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "else if",
+      "prompt": "Условия переставили местами. Что выведет консоль при score = 95?",
+      "code": "let score = 95;\nif (score >= 70) {\n  console.log(\"Хорошо\");\n} else if (score >= 90) {\n  console.log(\"Отлично!\");\n} else {\n  console.log(\"Надо подтянуть\");\n}",
+      "options": ["Отлично!", "Хорошо", "Надо подтянуть", "Хорошо и Отлично!"],
+      "answer": 1,
+      "explain": "95 >= 70 — уже true, и дальше JavaScript не проверяет. Поэтому сначала пишут самое строгое условие (>= 90)."
+    },
+    {
+      "type": "choice",
+      "topic": "Практика",
+      "prompt": "Что выведет консоль?",
+      "code": "const name = \"Aziz\";\nlet age = 14;\nlet hasAccount = false;\nif (age < 12) {\n  console.log(`${name}, тебе пока рано на этот сайт`);\n} else if (age >= 12 && hasAccount) {\n  console.log(`Добро пожаловать, ${name}!`);\n} else {\n  console.log(`${name}, сначала зарегистрируйся`);\n}",
+      "options": ["Aziz, тебе пока рано на этот сайт", "Добро пожаловать, Aziz!", "Aziz, сначала зарегистрируйся", "Ничего"],
+      "answer": 2,
+      "explain": "14 < 12 — false. age >= 12 — true, но hasAccount = false, значит && даёт false. Остаётся else."
+    },
+    {
+      "type": "choice",
+      "topic": "Практика",
+      "prompt": "Что взять с собой? Что выведет консоль?",
+      "code": "let temperature = 8;\nlet isRaining = true;\nlet hasUmbrella = false;\nif (temperature > 15 || hasUmbrella) {\n  console.log(\"Иду налегке\");\n} else if (temperature < 10 && isRaining) {\n  console.log(\"Куртка с капюшоном!\");\n} else {\n  console.log(\"Возьми кофту\");\n}",
+      "options": ["Иду налегке", "Куртка с капюшоном!", "Возьми кофту", "Иду налегке и Куртка с капюшоном!"],
+      "answer": 1,
+      "explain": "8 > 15 — false и hasUmbrella — false, значит || даёт false. Дальше 8 < 10 — true и isRaining — true, значит && даёт true."
+    }
+  ]
+}
