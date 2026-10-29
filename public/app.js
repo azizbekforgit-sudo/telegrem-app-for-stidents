@@ -356,6 +356,11 @@ async function tabHome() {
   let html = topbar() + `<div class="hero">${me(hero.emo, 112)}<div class="grow"><h1>Привет, ${esc(firstName(m.user.name))}!</h1><div class="say">${esc(hero.say)}</div>
     ${todo ? `<button class="btn" data-next>${ic('play')}Начать</button>` : ''}</div></div>`;
 
+  if (m.mistakes > 0) {
+    html += `<button class="card tap mistakes-card" data-mistakes>${me('think', 70, 'still')}<div class="grow"><b>Работа над ошибками</b>
+      <span>${plural(m.mistakes, 'вопрос ждёт', 'вопроса ждут', 'вопросов ждут')} исправления. Ответишь верно — уйдут из списка.</span></div>
+      <span class="btn sm">${ic('refresh', 'sm')}${Math.min(m.mistakes, 10)}</span></button>`;
+  }
   const offs = [0, 48, 76, 48, 0, -48, -76, -48];
   m.groups.forEach((g) => {
     const items = m.path.filter((p) => p.groupId === g.id);
@@ -375,6 +380,8 @@ async function tabHome() {
   if (m.feed.length) html += sectionTitle(E.speech, 'Лента группы') + `<div class="card" style="padding:6px 8px">${m.feed.map(feedItem).join('')}</div>`;
   app.innerHTML = html;
   $$('[data-pub]').forEach((b) => (b.onclick = () => { haptic('medium'); lessonSheet(m.path.find((p) => p.pubId === b.dataset.pub)); }));
+  const mk = $('[data-mistakes]');
+  if (mk) mk.onclick = () => { haptic('medium'); startLesson({ mistakes: true }); };
   const nx = $('[data-next]');
   if (nx) nx.onclick = () => lessonSheet(todo);
 }
@@ -443,6 +450,11 @@ function statsHtml(st, { self }) {
     <div class="card">${lineChart(progress)}<div class="legend"><span><i style="background:var(--accent)"></i>${self ? 'Ты' : 'Ученик'}</span><span><i style="background:var(--faint)"></i>Среднее по группе</span></div></div>
     ${sectionTitle(E.compass, 'Карта тем')}
     <div class="card">${topicsChart(st.topics)}</div>
+    ${sectionTitle(E.repeat, self ? 'Мои ошибки' : 'Ошибки ученика', st.mistakes.count ? `<span class="pill bad">${st.mistakes.count}</span>` : '')}
+    <div class="card">${!st.mistakes.count ? `<p class="muted center small">${self ? 'Ошибок нет — всё исправлено!' : 'Сейчас ошибок нет'}</p>`
+      : `${st.mistakes.topics.length ? `<p class="small muted" style="margin-bottom:8px">Слабые темы:</p><div class="tags" style="margin-bottom:12px">${st.mistakes.topics.map((t) => `<span class="pill bad">${esc(t.topic)} · ${t.n}</span>`).join('')}</div>` : ''}
+        ${self ? `<button class="btn block" data-fix>${ic('refresh')}Исправить ошибки</button>`
+          : `<div class="qlist">${st.mistakes.list.map((q) => `<div><span style="color:var(--bad)">${ic('close-circle', 'sm')}</span><span class="grow">${esc(q.prompt)}<br><span class="faint small">${esc(q.lessonTitle)}${q.wrong > 1 ? ` · ошибся ${plural(q.wrong, 'раз', 'раза', 'раз')}` : ''}</span></span></div>`).join('')}</div>`}`}</div>
     ${sectionTitle(E.swords, self ? 'Ты vs группа' : 'Ученик vs группа')}
     <div class="card">${st.progress.length ? hbars(st.progress.map((p) => ({ label: p.title, labelHtml: `${emo(p.emoji)} ${esc(p.title)}`, value: p.pct, compare: p.groupAvg, color: 'var(--accent)' }))) + `<div class="legend"><span><i style="background:var(--accent)"></i>${self ? 'Твой' : 'Его'} результат</span><span><i style="background:var(--faint)"></i>Группа</span></div>` : '<p class="muted center small">Пока нет решённых тестов</p>'}</div>`;
 }
@@ -450,6 +462,8 @@ function statsHtml(st, { self }) {
 async function tabStats() {
   const st = await api('/stats/me');
   app.innerHTML = topbar() + statsHtml(st, { self: true });
+  const fx = $('[data-fix]');
+  if (fx) fx.onclick = () => startLesson({ mistakes: true });
 }
 
 // Выбор напарника, цвета и темы (первый вход, профиль, настройки учителя)
@@ -586,7 +600,7 @@ async function startLesson(target) {
       <div class="ptop"><button class="pclose" data-close aria-label="Закрыть">${ic('close-circle')}</button><div class="pbar"><i style="width:${(doneCount() / total()) * 100}%"></i></div>
         <span class="combo" data-combo>${comboHtml()}</span></div>
       <div class="pbody">
-        <div class="qkind ${P.phase === 'review' ? 'review' : ''}">${P.phase === 'review' ? `${emo(E.repeat)} Работа над ошибками` : data.preview ? `${ic('eye', 'sm')} Превью учителя ·` : ''} ${KIND[q.type]}${q.topic ? ` <span class="t">· ${esc(q.topic)}</span>` : ''}</div>
+        <div class="qkind ${P.phase === 'review' ? 'review' : ''}">${P.phase === 'review' ? `${emo(E.repeat)} Работа над ошибками` : data.preview ? `${ic('eye', 'sm')} Превью учителя ·` : ''} ${KIND[q.type]}${q.topic ? ` <span class="t">· ${esc(q.topic)}</span>` : ''}${q.from ? ` <span class="t">· ${esc(q.from)}</span>` : ''}</div>
         <div class="qhead">${me('think', 84)}<div class="qprompt">${esc(q.prompt)}</div></div>
         ${q.code ? `<pre class="code">${highlight(q.code)}</pre>` : ''}
         <div data-area></div>
@@ -718,7 +732,8 @@ async function startLesson(target) {
     let r;
     try { r = await api(`/attempts/${data.attemptId}/finish`, {}); } catch (e) { return fail(e); }
     try { tg?.disableClosingConfirmation?.(); } catch { /* */ }
-    const look = r.pct === 100 ? { emo: 'love', icon: E.hundred, title: 'Идеально!' }
+    const look = data.mistakes ? (r.correct === r.total ? { emo: 'love', icon: E.muscle, title: 'Все ошибки исправлены!' } : { emo: r.correct ? 'cheer' : 'sad', icon: E.muscle, title: `Исправлено ${r.correct} из ${r.total}` })
+      : r.pct === 100 ? { emo: 'love', icon: E.hundred, title: 'Идеально!' }
       : r.pct >= 80 ? { emo: 'cheer', icon: E.party, title: 'Урок пройден!' }
         : r.pct >= 50 ? { emo: 'peace', icon: E.clap, title: 'Неплохо!' }
           : { emo: 'sad', icon: E.muscle, title: 'В следующий раз получится' };
@@ -728,6 +743,8 @@ async function startLesson(target) {
     el.innerHTML = `<div class="pbody"><div class="result">
       <div style="position:relative;display:inline-block">${me(look.emo, 150)}<span style="position:absolute;right:-26px;top:4px">${emo(look.icon, { anim: true, cls: 'xl' })}</span></div>
       <h1>${look.title}</h1>
+      ${data.mistakes ? `<p class="muted" style="margin-top:4px">${r.mistakesLeft ? `В копилке ошибок осталось ${plural(r.mistakesLeft, 'вопрос', 'вопроса', 'вопросов')}` : 'Копилка ошибок пуста — красота!'}</p>` : ''}
+      ${!data.mistakes && !data.preview && r.correct < r.total ? `<p class="muted small" style="margin-top:4px">${emo(E.repeat)} Ошибки попали в твою «Работу над ошибками» на главной</p>` : ''}
       <p class="muted">${emo(data.lesson.emoji)} ${esc(data.lesson.title)}${r.practice ? ' · тренировка' : r.preview ? ' · превью' : ''}</p>
       <div style="margin-top:16px">${donut(r.pct, { size: 170, stroke: 20, sub: `${r.correct} из ${r.total}` })}</div>
       <div class="tiles3">
@@ -855,9 +872,11 @@ async function viewGroup(gid) {
   let body = '';
   if (S.groupTab === 'members') {
     const rows = st.leaderboard.rows;
+    const mis = Object.fromEntries(st.heat.map((h) => [h.userId, h.mistakes]));
     body = `<button class="btn block" data-add style="margin-top:14px">${ic('user-plus-rounded')}Добавить учеников</button>
       <div class="card" style="padding:6px 8px;margin-top:14px">${rows.length ? rows.map((r) => `<div class="item" data-student="${r.userId}">${avatar(r)}<div class="grow"><b class="ellipsis" style="display:block">${esc(r.name)}</b>
         <div class="small muted">${r.done}/${st.tests.length} тестов · ср. ${pctText(r.avg)} · ${r.xp} XP</div></div>
+        ${mis[r.userId] ? `<span class="pill bad" title="Ошибок в копилке">${ic('refresh', 'sm')}${mis[r.userId]}</span>` : ''}
         <button class="iconbtn" data-rm="${r.userId}" aria-label="Убрать">${ic('trash-bin-trash', 'sm')}</button></div>`).join('') : '<p class="muted center small" style="padding:14px">В группе пока нет учеников</p>'}</div>`;
   } else if (S.groupTab === 'stats') {
     body = !st.tests.length

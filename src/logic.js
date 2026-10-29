@@ -132,9 +132,43 @@ export function createLogic(store, { adminIds }) {
   // ───────── попытки ─────────
   const scoreOf = (a) => {
     const correct = a.answers.filter((x) => x.correct).length;
-    const total = S.lessons[a.lessonId]?.questions.length || a.answers.length;
+    const total = itemsOf(a).length || a.answers.length;
     return { correct, total, pct: pct(correct, total) };
   };
+  // Вопросы попытки: у обычной — все вопросы урока, у «работы над ошибками» — свой список
+  const itemsOf = (a) => a.items || (S.lessons[a.lessonId]?.questions || []).map((_, i) => ({ lessonId: a.lessonId, index: i }));
+  const qOf = (it) => S.lessons[it?.lessonId]?.questions[it.index];
+
+  // Копилка ошибок: вопросы, на которые последний ответ ученика был неверным.
+  // Считается по истории ответов, поэтому учитывает и старые попытки.
+  function mistakesOf(uid) {
+    uid = String(uid);
+    const visible = new Set(pubsForUser(uid).map((p) => p.lessonId));
+    const last = new Map();
+    const atts = Object.values(S.attempts).filter((a) => a.userId === uid && !a.preview).sort((a, b) => a.startedAt - b.startedAt);
+    for (const a of atts) {
+      const items = itemsOf(a);
+      for (const x of a.answers) {
+        const it = items[x.index];
+        if (!it) continue;
+        const key = it.lessonId + ':' + it.index;
+        const prev = last.get(key);
+        last.set(key, { lessonId: it.lessonId, index: it.index, correct: x.correct, wrong: (prev?.wrong || 0) + (x.correct ? 0 : 1), at: a.startedAt });
+      }
+    }
+    return [...last.values()].filter((m) => !m.correct && visible.has(m.lessonId) && qOf(m)).sort((a, b) => b.at - a.at || b.wrong - a.wrong);
+  }
+  function mistakesInfo(uid) {
+    const list = mistakesOf(uid).map((m) => {
+      const q = qOf(m);
+      const l = S.lessons[m.lessonId];
+      return { prompt: q.prompt, topic: q.topic || l.title, lessonTitle: l.title, emoji: l.emoji, wrong: m.wrong };
+    });
+    const topics = {};
+    for (const m of list) topics[m.topic] = (topics[m.topic] || 0) + 1;
+    return { count: list.length, list, topics: Object.entries(topics).map(([topic, n]) => ({ topic, n })).sort((a, b) => b.n - a.n) };
+  }
+
   const finishedAttempts = (uid, pubId) =>
     Object.values(S.attempts).filter((a) => a.userId === String(uid) && a.pubId === pubId && a.finishedAt && !a.preview);
   function best(uid, pubId) {
@@ -147,8 +181,25 @@ export function createLogic(store, { adminIds }) {
   }
   const firstAttempt = (uid, pubId) => finishedAttempts(uid, pubId).sort((a, b) => a.finishedAt - b.finishedAt)[0] || null;
 
-  function startAttempt(uid, { pubId, lessonId }) {
+  const MISTAKES_PER_SESSION = 10;
+
+  function startAttempt(uid, { pubId, lessonId, mistakes }) {
     uid = String(uid);
+    if (mistakes) {
+      const items = mistakesOf(uid).slice(0, MISTAKES_PER_SESSION).map(({ lessonId: l, index }) => ({ lessonId: l, index }));
+      if (!items.length) throw httpError(400, 'Ошибок нет — ты всё исправил!');
+      const a = { id: store.nextId('a'), kind: 'mistakes', items, pubId: null, lessonId: null, userId: uid, preview: false, practice: false, startedAt: Date.now(), finishedAt: null, answers: [], combo: 0, maxCombo: 0, xp: 0 };
+      S.attempts[a.id] = a;
+      store.save();
+      return {
+        attemptId: a.id,
+        preview: false,
+        practice: false,
+        mistakes: true,
+        lesson: { id: 'mistakes', title: 'Работа над ошибками', emoji: '🔁', description: '' },
+        questions: items.map((it, i) => ({ ...publicQuestion(qOf(it), `${a.id}:${i}`), from: S.lessons[it.lessonId].title })),
+      };
+    }
     let lesson;
     let preview = false;
     if (pubId) {
@@ -190,7 +241,7 @@ export function createLogic(store, { adminIds }) {
   function answer(uid, aid, index, value) {
     const a = getOwnAttempt(uid, aid);
     if (a.finishedAt) throw httpError(400, 'Тест уже завершён');
-    const q = S.lessons[a.lessonId].questions[index];
+    const q = qOf(itemsOf(a)[index]);
     if (!q || index !== a.answers.length) throw httpError(400, 'Неверный номер вопроса');
     const res = checkAnswer(q, toOriginal(q, a, index, value));
     a.combo = res.correct ? a.combo + 1 : 0;
@@ -206,17 +257,17 @@ export function createLogic(store, { adminIds }) {
   // «Работа над ошибками»: перепроверка без записи в статистику
   function retry(uid, aid, index, value) {
     const a = getOwnAttempt(uid, aid);
-    const q = S.lessons[a.lessonId].questions[index];
-    if (!q || a.answers.length < S.lessons[a.lessonId].questions.length) throw httpError(400, 'Сначала ответь на все вопросы');
+    const q = qOf(itemsOf(a)[index]);
+    if (!q || a.answers.length < itemsOf(a).length) throw httpError(400, 'Сначала ответь на все вопросы');
     const res = checkAnswer(q, toOriginal(q, a, index, value));
     return { correct: res.correct, correctText: res.correctText, explain: q.explain || null };
   }
 
   function finish(uid, aid) {
     const a = getOwnAttempt(uid, aid);
-    const lesson = S.lessons[a.lessonId];
+    const items = itemsOf(a);
     if (!a.finishedAt) {
-      if (a.answers.length < lesson.questions.length) throw httpError(400, 'Есть неотвеченные вопросы');
+      if (a.answers.length < items.length) throw httpError(400, 'Есть неотвеченные вопросы');
       a.finishedAt = Date.now();
       if (!a.preview && !a.practice && scoreOf(a).pct === 100) a.xp += 20; // бонус за идеал
       if (!a.preview) touchStreak(S.users[a.userId]);
@@ -225,7 +276,7 @@ export function createLogic(store, { adminIds }) {
     const s = scoreOf(a);
     const topics = {};
     a.answers.forEach((x) => {
-      const t = lesson.questions[x.index].topic || 'Общее';
+      const t = qOf(items[x.index])?.topic || 'Общее';
       topics[t] ||= { topic: t, correct: 0, total: 0 };
       topics[t].total++;
       if (x.correct) topics[t].correct++;
@@ -244,8 +295,9 @@ export function createLogic(store, { adminIds }) {
       preview: a.preview,
       durationSec: Math.round(((a.finishedAt || Date.now()) - a.startedAt) / 1000),
       topics: Object.values(topics).map((t) => ({ ...t, pct: pct(t.correct, t.total) })),
-      questions: a.answers.map((x) => ({ prompt: lesson.questions[x.index].prompt, correct: x.correct })),
+      questions: a.answers.map((x) => ({ prompt: qOf(items[x.index])?.prompt || '', correct: x.correct })),
       group,
+      mistakesLeft: mistakesOf(a.userId).length,
       streak: currentStreak(S.users[a.userId]),
     };
   }
@@ -364,6 +416,7 @@ export function createLogic(store, { adminIds }) {
       maxCombo,
       achievements: Object.entries(ACHIEVEMENTS).map(([id, a]) => ({ id, ...a, got: Boolean(ach[id]) })),
       groups: userGroups(uid).map((g) => ({ id: g.id, name: g.name, emoji: g.emoji })),
+      mistakes: mistakesInfo(uid),
     };
   }
 
@@ -373,7 +426,7 @@ export function createLogic(store, { adminIds }) {
     const pubs = pubsForGroup(gid);
     const ps = pubs.map((p) => pubStats(p.id));
     const lb = leaderboard(gid);
-    const heat = lb.rows.map((r) => ({ userId: r.userId, name: r.name, cells: pubs.map((p) => best(r.userId, p.id)?.pct ?? null), avg: r.avg }));
+    const heat = lb.rows.map((r) => ({ userId: r.userId, name: r.name, cells: pubs.map((p) => best(r.userId, p.id)?.pct ?? null), avg: r.avg, mistakes: mistakesOf(r.userId).length }));
     const hardest = ps
       .flatMap((s) => s.questions.map((q) => ({ ...q, test: s.title })))
       .filter((q) => q.total > 0 && q.pct < 100)
@@ -452,6 +505,7 @@ export function createLogic(store, { adminIds }) {
       streak: currentStreak(u),
       groups: groups.map((g) => ({ id: g.id, name: g.name, emoji: g.emoji })),
       path,
+      mistakes: mistakesOf(uid).length,
       feed: feed(groups.map((g) => g.id)),
     };
   }
