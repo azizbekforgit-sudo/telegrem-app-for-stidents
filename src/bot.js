@@ -4,12 +4,27 @@ import { Bot, InlineKeyboard, GrammyError } from 'grammy';
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const mention = (u, name) => `<a href="tg://user?id=${u}">${esc(name)}</a>`;
 
+// Сообщения ученикам в личку — на их языке (ru / uz / en). В чатах групп бот пишет по-русски.
+const T = {
+  open: { ru: '🎮 Открыть приложение', uz: '🎮 Ilovani ochish', en: '🎮 Open the app' },
+  play: { ru: '🎮 Играть', uz: "🎮 O'ynash", en: '🎮 Play' },
+  openTask: { ru: '🎯 Открыть', uz: '🎯 Ochish', en: '🎯 Open' },
+  inGroup: { ru: (n, g) => `👋 <b>${n}</b>, ты в группе ${g}.\nЗаходи — тебя ждут тесты!`, uz: (n, g) => `👋 <b>${n}</b>, sen ${g} guruhidasan.\nKir — seni testlar kutmoqda!`, en: (n, g) => `👋 <b>${n}</b>, you're in ${g}.\nCome in — tests are waiting!` },
+  hello: { ru: (n) => `👋 Привет, <b>${n}</b>!\n\nТы зарегистрирован. Учитель скоро добавит тебя в группу — тогда здесь появятся тесты. 🚀`, uz: (n) => `👋 Salom, <b>${n}</b>!\n\nSen ro'yxatdan o'tding. Ustoz tez orada seni guruhga qo'shadi — shunda testlar paydo bo'ladi. 🚀`, en: (n) => `👋 Hi, <b>${n}</b>!\n\nYou're registered. Your teacher will add you to a group soon — then tests will appear here. 🚀` },
+  added: { ru: (g) => `🎉 Тебя добавили в группу ${g}! Когда учитель отправит тест — я напишу.`, uz: (g) => `🎉 Seni ${g} guruhiga qo'shishdi! Ustoz test yuborganda yozaman.`, en: (g) => `🎉 You've been added to ${g}! I'll message you when the teacher sends a test.` },
+  newTest: { ru: (t, d, n) => `🆕 <b>Новый тест!</b>\n\n${t}\n${d}🧩 Вопросов: ${n}\n\nЗаходите и играйте! 🎮`, uz: (t, d, n) => `🆕 <b>Yangi test!</b>\n\n${t}\n${d}🧩 Savollar: ${n}\n\nKiring va o'ynang! 🎮`, en: (t, d, n) => `🆕 <b>New test!</b>\n\n${t}\n${d}🧩 Questions: ${n}\n\nCome in and play! 🎮` },
+  personal: { ru: (t, d) => `🎯 <b>Личное задание от учителя!</b>\n\n${t}\n${d}\nЕго сделали специально для тебя — по твоим ошибкам. Заходи! 💪`, uz: (t, d) => `🎯 <b>Ustozdan shaxsiy topshiriq!</b>\n\n${t}\n${d}\nU aynan sen uchun — xatolaring asosida tayyorlandi. Kir! 💪`, en: (t, d) => `🎯 <b>A personal task from your teacher!</b>\n\n${t}\n${d}\nIt was made just for you — based on your mistakes. Come in! 💪` },
+  remindTest: { ru: (t) => `\n\n🧩 Тест: <b>${t}</b>\nТы его ещё не сдал — заходи! ⏳`, uz: (t) => `\n\n🧩 Test: <b>${t}</b>\nSen uni hali topshirmading — kir! ⏳`, en: (t) => `\n\n🧩 Test: <b>${t}</b>\nYou haven't taken it yet — come in! ⏳` },
+};
+
 export function createBot({ token, logic, store, appUrl, adminIds }) {
   const bot = new Bot(token);
   const S = logic.S;
 
   const appLink = () => process.env.APP_LINK || `https://t.me/${bot.botInfo.username}?start=play`;
   // В личке можно открыть Mini App прямо кнопкой; в группах Telegram это запрещает — там ссылка.
+  const langOf = (uid, fallback) => S.users[String(uid)]?.prefs?.lang || (['uz', 'en'].includes(String(fallback || '').slice(0, 2)) ? String(fallback).slice(0, 2) : 'ru');
+  const tt = (key, lang, ...args) => { const v = T[key][lang] || T[key].ru; return typeof v === 'function' ? v(...args) : v; };
   const privateKb = (text = '🎮 Открыть приложение') => (appUrl.startsWith('https://') ? new InlineKeyboard().webApp(text, appUrl) : undefined);
   const groupKb = (text = '🎮 Играть') => new InlineKeyboard().url(text, appLink());
 
@@ -44,11 +59,12 @@ export function createBot({ token, logic, store, appUrl, adminIds }) {
       );
     }
     const groups = logic.userGroups(user.id);
+    const lang = langOf(user.id, ctx.from.language_code);
     await ctx.reply(
       groups.length
-        ? `👋 <b>${esc(logic.name(user))}</b>, ты в группе ${groups.map((g) => `${g.emoji} ${esc(g.name)}`).join(', ')}.\nЗаходи — тебя ждут тесты!`
-        : `👋 Привет, <b>${esc(logic.name(user))}</b>!\n\nТы зарегистрирован. Учитель скоро добавит тебя в группу — тогда здесь появятся тесты. 🚀`,
-      { parse_mode: 'HTML', reply_markup: privateKb() },
+        ? tt('inGroup', lang, esc(logic.name(user)), groups.map((g) => `${g.emoji} ${esc(g.name)}`).join(', '))
+        : tt('hello', lang, esc(logic.name(user))),
+      { parse_mode: 'HTML', reply_markup: privateKb(tt('open', lang)) },
     );
     if (isNew) {
       const kb = Object.keys(S.groups).length ? groupsKeyboard('add', `${user.id}:`) : undefined;
@@ -102,7 +118,7 @@ export function createBot({ token, logic, store, appUrl, adminIds }) {
     logic.addMember(gid, uid);
     await ctx.answerCallbackQuery({ text: 'Добавлен!' });
     await ctx.editMessageText(`✅ ${mention(uid, logic.name(S.users[uid]))} добавлен в группу ${g.emoji} <b>${esc(g.name)}</b>`, { parse_mode: 'HTML' }).catch(() => {});
-    await safeSend(uid, `🎉 Тебя добавили в группу ${g.emoji} <b>${esc(g.name)}</b>! Когда учитель отправит тест — я напишу.`, { reply_markup: privateKb() });
+    await safeSend(uid, tt('added', langOf(uid), `${g.emoji} <b>${esc(g.name)}</b>`), { reply_markup: privateKb(tt('open', langOf(uid))) });
   });
 
   bot.callbackQuery(/^link:(\w+)$/, async (ctx) => {
@@ -137,12 +153,17 @@ export function createBot({ token, logic, store, appUrl, adminIds }) {
     const l = S.lessons[pub.lessonId];
     const text = `🆕 <b>Новый тест!</b>\n\n${l.emoji} <b>${esc(l.title)}</b>\n${l.description ? esc(l.description) + '\n' : ''}🧩 Вопросов: ${l.questions.length}\n\nЗаходите и играйте! 🎮`;
     if (g.chatId) await safeSend(g.chatId, text, { reply_markup: groupKb() });
-    for (const uid of g.memberIds) if (!logic.isAdmin(uid)) await safeSend(uid, text, { reply_markup: privateKb('🎮 Играть') });
+    for (const uid of g.memberIds) {
+      if (logic.isAdmin(uid)) continue;
+      const lang = langOf(uid);
+      await safeSend(uid, tt('newTest', lang, `${l.emoji} <b>${esc(l.title)}</b>`, l.description ? esc(l.description) + '\n' : '', l.questions.length), { reply_markup: privateKb(tt('play', lang)) });
+    }
   }
 
   async function notifyPersonal(pub) {
     const l = S.lessons[pub.lessonId];
-    await safeSend(pub.userId, `🎯 <b>Личное задание от учителя!</b>\n\n${l.emoji} <b>${esc(l.title)}</b>\n${l.description ? esc(l.description) + '\n' : ''}\nЕго сделали специально для тебя — по твоим ошибкам. Заходи! 💪`, { reply_markup: privateKb('🎯 Открыть') });
+    const lang = langOf(pub.userId);
+    await safeSend(pub.userId, tt('personal', lang, `${l.emoji} <b>${esc(l.title)}</b>`, l.description ? esc(l.description) + '\n' : ''), { reply_markup: privateKb(tt('openTask', lang)) });
   }
 
   async function announce(groupId, text) {
@@ -175,7 +196,14 @@ export function createBot({ token, logic, store, appUrl, adminIds }) {
       targets = ps.notDone;
     }
     if (g.chatId) await safeSend(g.chatId, body, { reply_markup: groupKb() });
-    else for (const uid of targets) await safeSend(uid, body, { reply_markup: privateKb('🎮 Играть') });
+    else {
+      // в личку каждому — без списка одногруппников, на его языке
+      const testTitle = r.pubId && S.pubs[r.pubId] ? S.lessons[S.pubs[r.pubId].lessonId]?.title : null;
+      for (const uid of targets) {
+        const lang = langOf(uid);
+        await safeSend(uid, `📣 ${esc(r.text)}${testTitle ? tt('remindTest', lang, esc(testTitle)) : ''}`, { reply_markup: privateKb(tt('play', lang)) });
+      }
+    }
   }
 
   let ticking = false;

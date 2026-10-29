@@ -72,11 +72,12 @@
 - `src/bot.js`: команды `/start`, `/link` (привязать чат Telegram-группы к группе курса), `/stop`, уведомления о тестах, напоминания.
 - `src/store.js`: всё состояние в одном JSON-документе. В продакшене он лежит в Postgres (`DATABASE_URL`), локально в `data/state.json`.
 - `public/`: Mini App без сборки (vanilla JS), графики на SVG.
-  - `mascots.js`: 5 маскотов-напарников (mimi, kapi, dino, axi, boo) × 9 эмоций (happy, cheer, oops, sad, think, wow, love, sleepy, peace), рисуются SVG-кодом.
+  - `mascots.js`: 6 маскотов-напарников (mimi, kapi, dino, axi, boo, ano) × 11 поз (happy, cheer, oops, sad, think, wow, love, sleepy, peace, talk, teach), рисуются SVG-кодом. В позах `talk` и `teach` двигается рот (CSS), а класс `quiet` его останавливает. В `teach` у маскота очки и волшебная палочка.
+  - `i18n.js`: языки интерфейса ru, uz, en. Интерфейс пишется по-русски, переводчик подменяет надписи на лету по словарю `PHRASES` и шаблонам (`PATTERNS`, `TOKENS`, `NOUNS`). **Новую строку интерфейса добавляй в `PHRASES` сразу с переводами.** Контент уроков не переводится. Язык ученика хранится в `prefs.lang`, на нём же бот пишет в личку.
   - `icons.js`: иконки интерфейса Solar (bold-duotone). Новые иконки берутся из `@iconify-json/solar`.
   - `e/`: 3D-эмодзи Fluent (`<код>.webp` + `index.json`), `ea/`: анимированные. Любой эмодзи в `emoji` урока или группы автоматически рисуется в 3D.
-  - Ученик сам выбирает напарника, цвет (lime, sakura, lavender, ocean, peach, mint) и тему (auto, light, dark), всё это хранится в `user.prefs`.
+  - Ученик сам выбирает напарника, цвет (lime, sakura, lavender, ocean, peach, mint), тему (auto, light, dark) и язык (ru, uz, en), всё это хранится в `user.prefs`.
 
 Локальный запуск без Telegram: `npm run dev`, потом открыть `http://localhost:3000/?dev=7183098167` (учитель) или `?dev=111&name=Ученик`.
 
-Переменные окружения: `BOT_TOKEN`, `DATABASE_URL`, `ADMIN_IDS`, `PUBLIC_URL` (на Render берётся `RENDER_EXTERNAL_URL`), `ADMIN_TOKEN` (опционально, Bearer-доступ к `/api/admin/*`), `APP_LINK` (ссылка для кнопки в группах, по умолчанию `https://t.me/<bot>?start=play`).
+Переменные окружения: `BOT_TOKEN`, `TEACHER_NAME` (имя в фразах «Учитель … говорил», сейчас «Азиз»), `DATABASE_URL`, `ADMIN_IDS`, `PUBLIC_URL` (на Render берётся `RENDER_EXTERNAL_URL`), `ADMIN_TOKEN` (опционально, Bearer-доступ к `/api/admin/*`), `APP_LINK` (ссылка для кнопки в группах, по умолчанию `https://t.me/<bot>?start=play`).

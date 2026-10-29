@@ -2,6 +2,15 @@
 // статистика с диаграммами и панель учителя.
 import { ICONS } from './icons.js';
 import { mascot, MASCOTS } from './mascots.js';
+import { LANGS, setLang, tr, detectLang, getLang } from './i18n.js';
+const LOCALE = () => ({ ru: 'ru-RU', en: 'en-US' })[getLang()] || 'ru-RU';
+const UZ_MONTHS = ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentabr', 'oktabr', 'noyabr', 'dekabr'];
+// Дата на языке интерфейса (для узбекского у браузеров нет названий месяцев — делаем сами)
+function fmtDate(ts, year) {
+  const d = new Date(ts);
+  if (getLang() === 'uz') return `${d.getDate()}-${UZ_MONTHS[d.getMonth()]}${year ? `, ${d.getFullYear()}` : ''}`;
+  return d.toLocaleDateString(LOCALE(), year ? { day: 'numeric', month: 'long', year: 'numeric' } : { day: 'numeric', month: 'short' });
+}
 
 const tg = window.Telegram?.WebApp;
 const params = new URLSearchParams(location.search);
@@ -53,7 +62,7 @@ const ACCENTS = [
   ['mint', 'Мята', '#14c8a8', '#d8f7f0'],
 ];
 const ACC = Object.fromEntries(ACCENTS.map(([id, name, c, l]) => [id, { name, c, l }]));
-let LOOK = { accent: 'lime', mode: 'auto', mascot: 'mimi' };
+let LOOK = { accent: 'lime', mode: 'auto', mascot: 'mimi', lang: '' };
 try { LOOK = { ...LOOK, ...JSON.parse(localStorage.getItem('look') || '{}') }; } catch { /* приватный режим */ }
 
 function applyLook(p = {}) {
@@ -63,6 +72,8 @@ function applyLook(p = {}) {
   const sysDark = tg?.colorScheme ? tg.colorScheme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
   const dark = LOOK.mode === 'dark' || (LOOK.mode === 'auto' && sysDark);
   root.dataset.theme = dark ? 'dark' : 'light';
+  if (!LOOK.lang) LOOK.lang = detectLang(tg?.initDataUnsafe?.user?.language_code);
+  setLang(LOOK.lang);
   try { localStorage.setItem('look', JSON.stringify(LOOK)); } catch { /* */ }
   try {
     const bg = getComputedStyle(root).getPropertyValue('--bg').trim();
@@ -75,7 +86,7 @@ let prefsTimer;
 function savePrefs(patch) {
   applyLook(patch);
   clearTimeout(prefsTimer);
-  prefsTimer = setTimeout(() => api('/me/prefs', { accent: LOOK.accent, mode: LOOK.mode, mascot: LOOK.mascot }).catch(() => {}), 400);
+  prefsTimer = setTimeout(() => api('/me/prefs', { accent: LOOK.accent, mode: LOOK.mode, mascot: LOOK.mascot, lang: LOOK.lang }).catch(() => {}), 400);
 }
 const me = (emotion, size, cls = '') => mascot(LOOK.mascot, emotion, size, cls);
 
@@ -177,7 +188,7 @@ function ago(ts) {
   if (s < 60) return 'только что';
   if (s < 3600) return `${Math.floor(s / 60)} мин назад`;
   if (s < 86400) return `${Math.floor(s / 3600)} ч назад`;
-  return new Date(ts).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+  return fmtDate(ts, false);
 }
 const firstName = (n) => String(n || '').split(' ')[0];
 const sectionTitle = (e, title, right = '') => `<div class="section-title"><h2>${emo(e)}${esc(title)}</h2>${right}</div>`;
@@ -207,6 +218,8 @@ const rich = (t) => esc(t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/`([^`
 // Маскот «говорит»: текст печатается по буквам, пока у него двигается рот.
 // Возвращает skip() — допечатать сразу (если ученик нажал «Дальше» раньше).
 function speak(box, text, svg) {
+  text = tr(text);
+  box.dataset.noi18n = '1';
   const plain = String(text).replace(/\*\*|`/g, '');
   let i = 0;
   let timer = null;
@@ -532,7 +545,8 @@ function appearanceHtml() {
   return `<div class="field"><span>Напарник</span><div class="mascot-pick">${Object.entries(MASCOTS).map(([id, m]) => `<button data-mascot="${id}" class="${LOOK.mascot === id ? 'on' : ''}">${mascot(id, LOOK.mascot === id ? 'peace' : 'happy', 84, 'still')}<b>${m.name}</b></button>`).join('')}</div>
       <p class="mascot-about" data-about>${esc(MASCOTS[LOOK.mascot]?.about || '')}</p></div>
     <div class="field" style="margin-top:18px"><span>Цвет приложения</span><div class="swatches">${ACCENTS.map(([id, name, c]) => `<button class="swatch ${LOOK.accent === id ? 'on' : ''}" data-accent="${id}" title="${name}" style="background:${c};color:${c}">${ic('check-circle')}</button>`).join('')}</div></div>
-    <div class="field" style="margin-top:18px"><span>Тема</span><div class="seg">${[['auto', 'monitor', 'Авто'], ['light', 'sun-2', 'Светлая'], ['dark', 'moon', 'Тёмная']].map(([id, icon, t]) => `<button data-mode="${id}" class="${LOOK.mode === id ? 'on' : ''}">${ic(icon, 'sm')}${t}</button>`).join('')}</div></div>`;
+    <div class="field" style="margin-top:18px"><span>Тема</span><div class="seg">${[['auto', 'monitor', 'Авто'], ['light', 'sun-2', 'Светлая'], ['dark', 'moon', 'Тёмная']].map(([id, icon, t]) => `<button data-mode="${id}" class="${LOOK.mode === id ? 'on' : ''}">${ic(icon, 'sm')}${t}</button>`).join('')}</div></div>
+    <div class="field" style="margin-top:18px"><span>Язык</span><div class="seg" data-noi18n>${LANGS.map(([id, t]) => `<button data-lang="${id}" class="${LOOK.lang === id ? 'on' : ''}">${t}</button>`).join('')}</div></div>`;
 }
 function bindAppearance(el, onChange) {
   $$('[data-mascot]', el).forEach((b) => (b.onclick = () => {
@@ -547,10 +561,19 @@ function bindAppearance(el, onChange) {
   }));
   $$('[data-accent]', el).forEach((b) => (b.onclick = () => { haptic('light'); savePrefs({ accent: b.dataset.accent }); $$('[data-accent]', el).forEach((x) => x.classList.toggle('on', x === b)); onChange?.(); }));
   $$('[data-mode]', el).forEach((b) => (b.onclick = () => { haptic('light'); savePrefs({ mode: b.dataset.mode }); $$('[data-mode]', el).forEach((x) => x.classList.toggle('on', x === b)); onChange?.(); }));
+  $$('[data-lang]', el).forEach((b) => (b.onclick = () => {
+    if (LOOK.lang === b.dataset.lang) return;
+    haptic('medium');
+    savePrefs({ lang: b.dataset.lang });
+    // перерисовываем всё на новом языке
+    layer.innerHTML = '';
+    renderNav();
+    route().then(() => appearanceSheet(false)).catch(fail);
+  }));
 }
 function appearanceSheet(first) {
   openSheet(
-    `<div class="center" style="margin-bottom:14px"><h2>${first ? 'Выбери напарника!' : 'Внешний вид'}</h2><p class="muted small" style="margin-top:4px">${first ? 'Он будет болеть за тебя на каждом тесте. Поменять можно в профиле.' : 'Напарник, цвет и тема'}</p></div>
+    `<div class="center" style="margin-bottom:14px"><h2>${first ? 'Выбери напарника!' : 'Внешний вид'}</h2><p class="muted small" style="margin-top:4px">${first ? 'Он будет болеть за тебя на каждом тесте. Поменять можно в профиле.' : 'Напарник, цвет, тема и язык'}</p></div>
      ${appearanceHtml()}<button class="btn block" style="margin-top:22px" data-done>Готово</button>`,
     (el, close) => {
       bindAppearance(el);
@@ -595,7 +618,7 @@ async function tabProfile() {
       <div class="pcard-top">
         <button class="pmascot" data-poke aria-label="Напарник">${me('peace', 104)}</button>
         <div class="grow"><h1 class="ellipsis">${esc(u.name)}</h1>
-          <p class="muted small">${u.username ? '@' + esc(u.username) + ' · ' : ''}с ${new Date(u.joinedAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+          <p class="muted small">${u.username ? '@' + esc(u.username) + ' · ' : ''}<span>В Зубрике с</span> ${fmtDate(u.joinedAt, true)}</p>
           <div class="tags" style="margin-top:8px">${st.groups.map((g) => `<span class="pill accent">${emo(g.emoji)}${esc(g.name)}</span>`).join('') || '<span class="pill">Без группы</span>'}</div></div>
       </div>
       <div class="lvl"><div class="row between"><b>${emo(E.glow)} Уровень ${lv.level}</b><span class="muted small">${lv.cur} / ${lv.need} XP</span></div>
@@ -607,7 +630,7 @@ async function tabProfile() {
       </div>
     </div>
     <div class="menu">
-      ${row('data-open="look"', E.palette, 'Внешний вид', `${esc(MASCOTS[LOOK.mascot]?.name || '')} · ${acc.name}`, `<span class="mrow-prev">${mascot(LOOK.mascot, 'happy', 40, 'still', true)}<i style="background:${acc.c}"></i></span>`)}
+      ${row('data-open="look"', E.palette, 'Внешний вид', `${esc(tr(MASCOTS[LOOK.mascot]?.name || ''))} · ${tr(acc.name)}`, `<span class="mrow-prev">${mascot(LOOK.mascot, 'happy', 40, 'still', true)}<i style="background:${acc.c}"></i></span>`)}
       ${row('data-open="ach"', E.medal, 'Достижения', `${got.length} из ${st.achievements.length}`, `<span class="mrow-badges">${got.slice(-3).map((a) => emo(a.icon)).join('')}</span>`)}
       ${row('data-open="stats"', E.chart, 'Моя статистика', 'Прогресс, карта тем, сравнение с группой', st.overall != null ? pctPill(st.overall) : '')}
       ${row('data-open="league"', E.trophy, 'Лига группы', 'Твоё место среди одногруппников', '')}
@@ -834,8 +857,8 @@ async function startLearn(target) {
   const steps = [];
   if (data.intro) steps.push({ t: 'say', text: data.intro, emo: 'teach' });
   data.sections.forEach((sec, si) => {
-    steps.push({ t: 'say', text: `**Раздел ${si + 1}. ${sec.title}**\n${si === 0 ? 'Начнём!' : 'Идём дальше!'}`, emo: 'talk', section: si });
-    sec.slides.forEach((sl) => steps.push({ t: 'say', text: sl.quote ? `**Учитель ${data.teacher} говорил:**\n«${sl.text}»` : sl.text, code: sl.code, emoji: sl.emoji, emo: sl.quote ? 'peace' : 'teach', section: si }));
+    steps.push({ t: 'say', text: `**${tr('Раздел')} ${si + 1}. ${sec.title}**\n${tr(si === 0 ? 'Начнём!' : 'Идём дальше!')}`, emo: 'talk', section: si });
+    sec.slides.forEach((sl) => steps.push({ t: 'say', text: sl.quote ? `**${tr('Учитель')} ${data.teacher} ${tr('говорил:')}**\n«${sl.text}»` : sl.text, code: sl.code, emoji: sl.emoji, emo: sl.quote ? 'peace' : 'teach', section: si }));
     if (sec.check?.length) {
       steps.push({ t: 'say', text: 'Теперь проверим, чему ты научился за эту секцию!', emo: 'talk', section: si, checkIntro: true });
       sec.check.forEach((q, i) => steps.push({ t: 'q', q, si, i }));
@@ -1238,7 +1261,7 @@ async function tabBot() {
     ${sectionTitle(E.memo, 'Напоминания')}
     <div class="stack">${rems.length ? rems.map((r) => `<div class="card"><div class="row between"><b>${esc(r.groupName)}</b>${r.active ? '<span class="pill good">активно</span>' : '<span class="pill">пауза</span>'}</div>
       <p style="margin:8px 0">${esc(r.text)}</p>
-      <p class="small muted">каждые ${r.intervalMin >= 60 ? r.intervalMin / 60 + ' ч' : r.intervalMin + ' мин'} · отправлено ${r.sent}/${r.maxCount}${r.testTitle ? ` · ${esc(r.testTitle)}` : ''}${r.active ? ` · следующее в ${new Date(r.nextAt).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}` : ''}</p>
+      <p class="small muted">каждые ${r.intervalMin >= 60 ? r.intervalMin / 60 + ' ч' : r.intervalMin + ' мин'} · отправлено ${r.sent}/${r.maxCount}${r.testTitle ? ` · ${esc(r.testTitle)}` : ''}${r.active ? ` · следующее в ${new Date(r.nextAt).toLocaleTimeString(LOCALE(), { hour: '2-digit', minute: '2-digit' })}` : ''}</p>
       <div class="row" style="margin-top:10px"><button class="btn ghost sm grow" data-toggle="${r.id}" data-on="${r.active ? 0 : 1}">${ic(r.active ? 'pause' : 'play', 'sm')}${r.active ? 'Пауза' : 'Возобновить'}</button><button class="iconbtn" data-rdel="${r.id}" aria-label="Удалить">${ic('trash-bin-trash', 'sm')}</button></div></div>`).join('') : '<p class="muted center small">Напоминаний нет</p>'}</div>`;
   bindAdminTop();
   $('[data-report]').onclick = async () => {
@@ -1288,6 +1311,7 @@ async function tabBot() {
     await Promise.all([loadEmoji(), refreshMe()]);
     const p = S.me.user.prefs;
     if (p) applyLook(p);
+    if (!p?.lang) savePrefs({ lang: LOOK.lang });
     S.tab = S.me.isAdmin ? 'dash' : 'home';
     renderNav();
     await route();

@@ -629,6 +629,7 @@ export function createLogic(store, { adminIds }) {
     if (MASCOT_IDS.includes(p.mascot)) next.mascot = p.mascot;
     if (ACCENTS.includes(p.accent)) next.accent = p.accent;
     if (['auto', 'light', 'dark'].includes(p.mode)) next.mode = p.mode;
+    if (['ru', 'uz', 'en'].includes(p.lang)) next.lang = p.lang;
     u.prefs = next;
     store.save();
     return next;
