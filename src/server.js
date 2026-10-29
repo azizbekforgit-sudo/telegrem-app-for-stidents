@@ -23,9 +23,11 @@ console.log(`[store] ${store.backend}`);
 
 // Тесты, которые Claude готовит из конспектов, лежат в content/lessons/*.json — подхватываем при старте.
 const lessonsDir = path.join(root, 'content', 'lessons');
+const newPersonal = []; // личные задания, о которых бот напишет ученикам после запуска
 for (const f of fs.existsSync(lessonsDir) ? fs.readdirSync(lessonsDir).filter((x) => x.endsWith('.json')) : []) {
   try {
-    logic.upsertLesson(JSON.parse(fs.readFileSync(path.join(lessonsDir, f), 'utf8')), { source: 'content' });
+    const l = logic.upsertLesson(JSON.parse(fs.readFileSync(path.join(lessonsDir, f), 'utf8')), { source: 'content' });
+    newPersonal.push(...logic.assignPersonal(l.id));
   } catch (e) {
     console.error(`[lessons] ${f}: ${e.message}`);
   }
@@ -73,6 +75,9 @@ api.get('/leaderboard/:gid', h((req) => {
   return logic.leaderboard(req.params.gid);
 }));
 api.post('/attempts', h((req) => logic.startAttempt(req.user.id, req.body || {})));
+api.post('/learn/start', h((req) => logic.startLearn(req.user.id, req.body || {})));
+api.post('/learn/check', h((req) => logic.checkLearn(req.user.id, req.body || {}, Number(req.body.section), Number(req.body.index), req.body.answer)));
+api.post('/learn/finish', h((req) => logic.finishLearn(req.user.id, req.body || {})));
 api.post('/attempts/:id/answer', h((req) => logic.answer(req.user.id, req.params.id, Number(req.body.index), req.body.answer)));
 api.post('/attempts/:id/retry', h((req) => logic.retry(req.user.id, req.params.id, Number(req.body.index), req.body.answer)));
 api.post('/attempts/:id/finish', h((req) => logic.finish(req.user.id, req.params.id)));
@@ -98,7 +103,11 @@ adm.post('/groups/:gid/members', h((req) => {
 }));
 adm.delete('/groups/:gid/members/:uid', h((req) => (logic.removeMember(req.params.gid, req.params.uid), { ok: true })));
 adm.get('/students/:uid', h((req) => logic.userStats(req.params.uid)));
-adm.post('/lessons', h((req) => logic.upsertLesson(req.body)));
+adm.post('/lessons', h(async (req) => {
+  const l = logic.upsertLesson(req.body);
+  for (const pub of logic.assignPersonal(l.id)) await tg?.notifyPersonal(pub);
+  return l;
+}));
 adm.delete('/lessons/:lid', h((req) => (logic.deleteLesson(req.params.lid), { ok: true })));
 adm.post('/publish', h(async (req) => {
   const { lessonId, groupId, reminder } = req.body || {};
@@ -110,6 +119,7 @@ adm.post('/publish', h(async (req) => {
 adm.delete('/pubs/:pid', h((req) => (logic.unpublish(req.params.pid), { ok: true })));
 adm.get('/pubs/:pid', h((req) => logic.pubStats(req.params.pid)));
 adm.get('/reminders', h(() => logic.listReminders()));
+adm.post('/report', h(() => logic.report()));
 adm.post('/reminders', h((req) => logic.createReminder(req.body || {})));
 adm.patch('/reminders/:rid', h((req) => logic.setReminder(req.params.rid, req.body || {})));
 adm.delete('/reminders/:rid', h((req) => (logic.deleteReminder(req.params.rid), { ok: true })));
@@ -155,6 +165,7 @@ app.listen(PORT, async () => {
       tg.bot.start({ allowed_updates: ['message', 'callback_query', 'my_chat_member'] });
       console.log('[bot] long polling');
     }
+    for (const pub of newPersonal) await tg.notifyPersonal(pub);
   } catch (e) {
     console.error('[bot] не удалось запустить:', e.message);
   }

@@ -93,8 +93,7 @@ export function validateLesson(l) {
   if (!/^[a-z0-9-]+$/.test(l.id || '')) errs.push('id: только латиница, цифры и дефис');
   if (!l.title) errs.push('нет title');
   if (!Array.isArray(l.questions) || !l.questions.length) errs.push('нет questions');
-  (l.questions || []).forEach((q, i) => {
-    const p = `вопрос ${i + 1}`;
+  const checkQ = (q, p) => {
     if (!QUESTION_TYPES.includes(q.type)) errs.push(`${p}: неизвестный type "${q.type}"`);
     if (!q.prompt) errs.push(`${p}: нет prompt`);
     if (q.type === 'choice' && (!Array.isArray(q.options) || q.options[q.answer] === undefined)) errs.push(`${p}: options/answer`);
@@ -102,6 +101,18 @@ export function validateLesson(l) {
     if (q.type === 'input' && !q.answer) errs.push(`${p}: нет answer`);
     if (q.type === 'order' && (!Array.isArray(q.tokens) || q.tokens.length < 2)) errs.push(`${p}: tokens`);
     if (q.type === 'match' && (!Array.isArray(q.pairs) || q.pairs.length < 2)) errs.push(`${p}: pairs`);
-  });
+  };
+  (l.questions || []).forEach((q, i) => checkQ(q, `вопрос ${i + 1}`));
+  if (l.learn) {
+    if (!Array.isArray(l.learn.sections) || !l.learn.sections.length) errs.push('learn.sections пустой');
+    (l.learn.sections || []).forEach((sec, si) => {
+      const p = `обучалка, раздел ${si + 1}`;
+      if (!sec.title) errs.push(`${p}: нет title`);
+      if (!Array.isArray(sec.slides) || !sec.slides.length) errs.push(`${p}: нет slides`);
+      (sec.slides || []).forEach((sl, k) => { if (!sl.text) errs.push(`${p}, слайд ${k + 1}: нет text`); });
+      (sec.check || []).forEach((q, k) => checkQ(q, `${p}, проверка ${k + 1}`));
+    });
+  }
+  if (l.personal && (!Array.isArray(l.personal) || l.personal.some((u) => !/^\d+$/.test(String(u))))) errs.push('personal: список Telegram ID');
   return errs;
 }

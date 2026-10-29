@@ -201,6 +201,27 @@ function highlight(code) {
     return `<span class="ln">${out + esc(line.slice(last)) || ' '}</span>`;
   }).join('');
 }
+// **жирный**, `код`, перенос строки — в тексте обучалки
+const rich = (t) => esc(t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\n/g, '<br>');
+
+// Маскот «говорит»: текст печатается по буквам, пока у него двигается рот.
+// Возвращает skip() — допечатать сразу (если ученик нажал «Дальше» раньше).
+function speak(box, text, svg) {
+  const plain = String(text).replace(/\*\*|`/g, '');
+  let i = 0;
+  let timer = null;
+  const done = () => { clearInterval(timer); timer = null; box.innerHTML = rich(text); svg?.classList.add('quiet'); };
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { done(); return { skip: done, typing: () => false }; }
+  svg?.classList.remove('quiet');
+  box.textContent = '';
+  timer = setInterval(() => {
+    i += 2;
+    box.textContent = plain.slice(0, i);
+    if (i >= plain.length) done();
+  }, 24);
+  return { skip: done, typing: () => timer !== null };
+}
+
 const looksLikeCode = (s) => /[(){};=<>&|`]|\b(let|const|if|else)\b/.test(s);
 
 // ───────── диаграммы (SVG) ─────────
@@ -346,44 +367,63 @@ async function tabHome() {
     $('[data-reload]').onclick = () => tabHome().catch(fail);
     return;
   }
-  const todo = m.path.find((p) => p.best == null);
+  const todo = m.path.find((p) => (p.hasLearn && !p.learnDone) || p.best == null);
   const allDone = m.path.length && !todo;
   const hero = !m.path.length
     ? { emo: 'sleepy', say: 'Пока тихо… Как только учитель отправит тест — я тебя позову!' }
     : allDone
       ? { emo: 'wow', say: 'Все тесты пройдены! Ты просто космос. Можешь улучшить результат в любом уроке.' }
-      : { emo: m.streak >= 2 ? 'cheer' : 'happy', say: m.streak >= 2 ? `Серия ${plural(m.streak, 'день', 'дня', 'дней')}! Не останавливайся — новый тест ждёт.` : `Новый тест «${todo.title}» уже ждёт тебя. Погнали?` };
-  let html = topbar() + `<div class="hero">${me(hero.emo, 112)}<div class="grow"><h1>Привет, ${esc(firstName(m.user.name))}!</h1><div class="say">${esc(hero.say)}</div>
-    ${todo ? `<button class="btn" data-next>${ic('play')}Начать</button>` : ''}</div></div>`;
+      : { emo: 'talk', say: todo.hasLearn && !todo.learnDone ? `Тема «${todo.title}» ждёт! Сначала пройдём обучалку — я всё объясню, а потом проверим тестом.` : m.streak >= 2 ? `Серия ${plural(m.streak, 'день', 'дня', 'дней')}! Не останавливайся — тест «${todo.title}» ждёт.` : `Тест «${todo.title}» уже ждёт тебя. Погнали?` };
+  let html = topbar() + `<div class="hero">${me(hero.emo === 'sleepy' ? 'sleepy' : 'talk', 112, hero.emo === 'sleepy' ? '' : 'quiet')}<div class="grow"><h1>Привет, ${esc(firstName(m.user.name))}!</h1><div class="say" data-say>${esc(hero.say)}</div>
+    ${todo ? `<button class="btn" data-next>${ic('play')}${todo.hasLearn && !todo.learnDone ? 'К обучалке' : 'Начать'}</button>` : ''}</div></div>`;
 
   if (m.mistakes > 0) {
     html += `<button class="card tap mistakes-card" data-mistakes>${me('think', 70, 'still')}<div class="grow"><b>Работа над ошибками</b>
       <span>${plural(m.mistakes, 'вопрос ждёт', 'вопроса ждут', 'вопросов ждут')} исправления. Ответишь верно — уйдут из списка.</span></div>
       <span class="btn sm">${ic('refresh', 'sm')}${Math.min(m.mistakes, 10)}</span></button>`;
   }
-  const offs = [0, 48, 76, 48, 0, -48, -76, -48];
   m.groups.forEach((g) => {
-    const items = m.path.filter((p) => p.groupId === g.id);
+    const items = m.path.filter((p) => p.groupId === g.id && !p.personal);
     if (!items.length) return;
     const done = items.filter((p) => p.best != null).length;
     html += `<div class="unit"><div class="grow"><small>${done} из ${items.length} пройдено</small><h2>${emo(g.emoji)}${esc(g.name)}</h2><div class="bar"><i style="width:${(done / items.length) * 100}%"></i></div></div>${emo(done === items.length ? E.trophy : E.books)}</div><div class="path">`;
-    items.forEach((p, i) => {
-      const cur = todo && p.pubId === todo.pubId;
-      const cls = p.best == null ? (cur ? 'cur' : '') : p.best < 50 ? 'weak' : 'done';
-      const stars = p.stars != null ? `<div class="stars">${[0, 1, 2].map((k) => emo(E.star, { cls: k < p.stars ? '' : 'off' })).join('')}</div>` : '';
-      html += `<div class="pnode ${cur && i > 0 ? 'has-bubble' : ''}" style="transform:translateX(${offs[i % offs.length]}px)">${cur ? '<div class="bubble">СТАРТ</div>' : ''}
-        <button class="node ${cls}" data-pub="${p.pubId}" aria-label="${esc(p.title)}">${emo(p.best === 100 ? E.crown : p.emoji)}</button>${stars}
-        <div class="lbl"><b>${esc(p.title)}</b>${p.best != null ? `<br>${p.best}%` : ''}</div></div>`;
-    });
+    let k = 0;
+    items.forEach((p) => { html += pathNodes(p, k, todo); k += p.hasLearn ? 2 : 1; });
     html += '</div>';
   });
+  const personal = m.path.filter((p) => p.personal);
+  if (personal.length) {
+    html += `<div class="unit personal"><div class="grow"><small>сделано специально для тебя</small><h2>${emo('🎯')}Личные задания</h2></div>${emo('🎁')}</div><div class="path">`;
+    personal.forEach((p, i) => { html += pathNodes(p, i, todo); });
+    html += '</div>';
+  }
   if (m.feed.length) html += sectionTitle(E.speech, 'Лента группы') + `<div class="card" style="padding:6px 8px">${m.feed.map(feedItem).join('')}</div>`;
   app.innerHTML = html;
   $$('[data-pub]').forEach((b) => (b.onclick = () => { haptic('medium'); lessonSheet(m.path.find((p) => p.pubId === b.dataset.pub)); }));
+  $$('[data-learn]').forEach((b) => (b.onclick = () => { haptic('medium'); learnSheet(m.path.find((p) => p.pubId === b.dataset.learn)); }));
+  if (hero.emo !== 'sleepy') speak($('[data-say]'), hero.say, $('.hero .mascot'));
   const mk = $('[data-mistakes]');
   if (mk) mk.onclick = () => { haptic('medium'); startLesson({ mistakes: true }); };
   const nx = $('[data-next]');
-  if (nx) nx.onclick = () => lessonSheet(todo);
+  if (nx) nx.onclick = () => (todo.hasLearn && !todo.learnDone ? learnSheet(todo) : lessonSheet(todo));
+}
+
+// Узлы пути для одной темы: 📖 обучалка (если есть) и тест. Тест закрыт, пока обучалка не пройдена.
+const OFFS = [0, 48, 76, 48, 0, -48, -76, -48];
+function pathNodes(p, k, todo) {
+  let out = '';
+  const isCur = (step) => todo && p.pubId === todo.pubId && step === (p.hasLearn && !p.learnDone ? 'learn' : 'test');
+  const node = (idx, step, inner, cls, attr, label) => `<div class="pnode ${isCur(step) && idx > 0 ? 'has-bubble' : ''}" style="transform:translateX(${OFFS[idx % OFFS.length]}px)">${isCur(step) ? `<div class="bubble">${step === 'learn' ? 'УЧИМСЯ' : 'СТАРТ'}</div>` : ''}
+    <button class="node ${cls} ${isCur(step) ? 'cur' : ''}" ${attr} aria-label="${esc(p.title)}">${inner}</button>${label}</div>`;
+  if (p.hasLearn) {
+    out += node(k, 'learn', emo(p.learnDone ? '✅' : '📖'), p.learnDone ? 'learned' : 'learn', `data-learn="${p.pubId}"`, `<div class="lbl"><b>Обучалка</b><br>${plural(p.learnSections, 'раздел', 'раздела', 'разделов')}</div>`);
+    k++;
+  }
+  const locked = p.hasLearn && !p.learnDone;
+  const cls = locked ? 'locked' : p.best == null ? '' : p.best < 50 ? 'weak' : 'done';
+  const stars = p.stars != null ? `<div class="stars">${[0, 1, 2].map((s) => emo(E.star, { cls: s < p.stars ? '' : 'off' })).join('')}</div>` : '';
+  out += node(k, 'test', locked ? ic('lock-keyhole', 'lg') : emo(p.best === 100 ? E.crown : p.emoji), cls, `data-pub="${p.pubId}"`, `${stars}<div class="lbl"><b>${esc(p.title)}</b>${p.best != null ? `<br>${p.best}%` : locked ? '<br>после обучалки' : ''}</div>`);
+  return out;
 }
 
 function feedItem(f) {
@@ -391,7 +431,28 @@ function feedItem(f) {
     <div class="small muted">${ago(f.at)}${f.combo >= 3 ? ` · комбо ×${f.combo}` : ''}</div></div>${pctPill(f.pct)}</div>`;
 }
 
+function learnSheet(p) {
+  openSheet(
+    `<div class="stack center"><div data-m>${me('teach', 130)}</div><h2>${emo('📖')} Обучалка: ${esc(p.title)}</h2>
+      <div class="say-box" data-say></div>
+      <div class="tags" style="justify-content:center"><span class="pill accent">${plural(p.learnSections, 'раздел', 'раздела', 'разделов')}</span><span class="pill">после каждого — мини-проверка</span></div>
+      <button class="btn block" data-go>${ic('play')}${p.learnDone ? 'Повторить обучалку' : 'Начать обучалку'}</button></div>`,
+    (el, close) => {
+      speak($('[data-say]', el), p.learnDone ? 'Хочешь повторить тему? Отличная идея — повторение мать учения!' : 'Сначала я объясню тему по шагам, как на уроке. После каждого раздела — пара вопросов. А потом откроется тест!', $('[data-m] .mascot', el));
+      $('[data-go]', el).onclick = () => { close(); startLearn({ pubId: p.pubId }); };
+    },
+  );
+}
+
 function lessonSheet(p) {
+  if (p.hasLearn && !p.learnDone) {
+    openSheet(`<div class="stack center"><div data-m>${me('talk', 120)}</div><h2>Тест пока закрыт ${ic('lock-keyhole')}</h2><div class="say-box" data-say></div>
+      <button class="btn block" data-go>${emo('📖')} К обучалке</button></div>`, (el, close) => {
+      speak($('[data-say]', el), 'Сначала пройди обучалку — я всё объясню, и тест покажется лёгким!', $('[data-m] .mascot', el));
+      $('[data-go]', el).onclick = () => { close(); learnSheet(p); };
+    });
+    return;
+  }
   const again = p.best != null;
   openSheet(
     `<div class="stack center">${me(again ? 'peace' : 'wow', 120)}
@@ -568,6 +629,60 @@ async function tabProfile() {
 }
 
 // ═══════════════ ПРОХОЖДЕНИЕ ТЕСТА ═══════════════
+// Поле ответа для любого типа вопроса (используют тест и обучалка)
+function mountAnswer(area, q, P, setReady, onEnter) {
+  if (q.type === 'choice') {
+    area.innerHTML = `<div class="opts">${q.options.map((o, i) => `<button class="opt ${looksLikeCode(o) ? 'mono' : ''}" data-i="${i}"><span class="k">${i + 1}</span><span>${esc(o)}</span></button>`).join('')}</div>`;
+    $$('.opt', area).forEach((b) => (b.onclick = () => { if (P.answered) return; haptic('light'); $$('.opt', area).forEach((x) => x.classList.remove('on')); b.classList.add('on'); P.value = Number(b.dataset.i); setReady(true); }));
+  } else if (q.type === 'truefalse') {
+    area.innerHTML = `<div class="tf"><button class="opt yes" data-v="1">${ic('check-circle')}Верно</button><button class="opt no" data-v="0">${ic('close-circle')}Неверно</button></div>`;
+    $$('.opt', area).forEach((b) => (b.onclick = () => { if (P.answered) return; haptic('light'); $$('.opt', area).forEach((x) => x.classList.remove('on')); b.classList.add('on'); P.value = b.dataset.v === '1'; setReady(true); }));
+  } else if (q.type === 'input') {
+    area.innerHTML = `<input class="input" style="font-size:18px;padding:16px" placeholder="${esc(q.placeholder)}" autocomplete="off" autocapitalize="off" spellcheck="false">`;
+    const inp = $('input', area);
+    inp.oninput = () => { P.value = inp.value; setReady(inp.value.trim().length > 0); };
+    inp.onkeydown = (e) => { if (e.key === 'Enter' && P.ready) { inp.blur(); onEnter?.(); } };
+    setTimeout(() => inp.focus(), 250);
+  } else if (q.type === 'order') {
+    const picked = [];
+    const draw = () => {
+      area.innerHTML = `<div class="answer-line">${picked.map((bi, k) => `<button class="chip-w" data-k="${k}">${esc(q.bank[bi])}</button>`).join('')}</div>
+        <div class="bank">${q.bank.map((t, bi) => `<button class="chip-w ${picked.includes(bi) ? 'ghost' : ''}" data-b="${bi}">${esc(t)}</button>`).join('')}</div>`;
+      $$('[data-b]', area).forEach((b) => (b.onclick = () => { const bi = Number(b.dataset.b); if (P.answered || picked.includes(bi)) return; haptic('light'); picked.push(bi); draw(); }));
+      $$('[data-k]', area).forEach((b) => (b.onclick = () => { if (P.answered) return; picked.splice(Number(b.dataset.k), 1); draw(); }));
+      P.value = picked.map((bi) => q.bank[bi]);
+      setReady(picked.length > 0);
+    };
+    draw();
+  } else if (q.type === 'match') {
+    const pairs = {};
+    let selL = 0;
+    const pc = ['#2fa8ff', '#9b6bff', '#ff8a3d', '#14c8a8', '#ff6fae', '#e8a10f', '#58cc02', '#ff5a6e'];
+    const draw = () => {
+      const rightOwner = Object.fromEntries(Object.entries(pairs).map(([l, r]) => [r, Number(l)]));
+      const style = (k) => (k == null ? '' : `style="border-color:${pc[k % pc.length]};box-shadow:0 4px 0 ${pc[k % pc.length]};color:${pc[k % pc.length]}"`);
+      area.innerHTML = `<div class="match"><div class="col">${q.left.map((t, i) => `<button class="opt ${selL === i ? 'on' : ''}" data-l="${i}" ${style(pairs[i] != null ? i : null)}>${esc(t)}</button>`).join('')}</div>
+        <div class="col">${q.right.map((t, j) => `<button class="opt" data-r="${j}" ${style(rightOwner[j] ?? null)}>${esc(t)}</button>`).join('')}</div></div>`;
+      $$('[data-l]', area).forEach((b) => (b.onclick = () => { if (P.answered) return; const i = Number(b.dataset.l); haptic('light'); if (pairs[i] != null) delete pairs[i]; selL = i; draw(); }));
+      $$('[data-r]', area).forEach((b) => (b.onclick = () => {
+        if (P.answered) return;
+        const j = Number(b.dataset.r);
+        const owner = rightOwner[j];
+        if (owner != null) { delete pairs[owner]; draw(); return; }
+        if (selL == null) return;
+        haptic('light');
+        pairs[selL] = j;
+        selL = q.left.findIndex((_, i) => pairs[i] == null);
+        if (selL < 0) selL = null;
+        draw();
+      }));
+      P.value = Object.fromEntries(Object.entries(pairs).map(([l, r]) => [l, q.right[r]]));
+      setReady(Object.keys(pairs).length === q.left.length);
+    };
+    draw();
+  }
+}
+
 const KIND = { choice: 'Выбери ответ', truefalse: 'Верно или нет?', input: 'Напиши ответ', order: 'Собери ответ', match: 'Найди пары' };
 
 async function startLesson(target) {
@@ -610,65 +725,12 @@ async function startLesson(target) {
     $('[data-close]', el).onclick = close;
     const hint = $('[data-hint]', el);
     if (hint) hint.onclick = () => { hint.parentElement.innerHTML = emo(E.bulb) + ' ' + esc(q.hint); };
-    renderArea(q);
+    mountAnswer($('[data-area]', el), q, P, setReady, () => $('[data-check]', el).click());
     $('[data-check]', el).onclick = () => (P.answered ? next() : check(qi));
   }
 
   const setReady = (v) => { P.ready = v; $('[data-check]', el).disabled = !v; };
 
-  function renderArea(q) {
-    const area = $('[data-area]', el);
-    if (q.type === 'choice') {
-      area.innerHTML = `<div class="opts">${q.options.map((o, i) => `<button class="opt ${looksLikeCode(o) ? 'mono' : ''}" data-i="${i}"><span class="k">${i + 1}</span><span>${esc(o)}</span></button>`).join('')}</div>`;
-      $$('.opt', area).forEach((b) => (b.onclick = () => { if (P.answered) return; haptic('light'); $$('.opt', area).forEach((x) => x.classList.remove('on')); b.classList.add('on'); P.value = Number(b.dataset.i); setReady(true); }));
-    } else if (q.type === 'truefalse') {
-      area.innerHTML = `<div class="tf"><button class="opt yes" data-v="1">${ic('check-circle')}Верно</button><button class="opt no" data-v="0">${ic('close-circle')}Неверно</button></div>`;
-      $$('.opt', area).forEach((b) => (b.onclick = () => { if (P.answered) return; haptic('light'); $$('.opt', area).forEach((x) => x.classList.remove('on')); b.classList.add('on'); P.value = b.dataset.v === '1'; setReady(true); }));
-    } else if (q.type === 'input') {
-      area.innerHTML = `<input class="input" style="font-size:18px;padding:16px" placeholder="${esc(q.placeholder)}" autocomplete="off" autocapitalize="off" spellcheck="false">`;
-      const inp = $('input', area);
-      inp.oninput = () => { P.value = inp.value; setReady(inp.value.trim().length > 0); };
-      inp.onkeydown = (e) => { if (e.key === 'Enter' && P.ready) { inp.blur(); $('[data-check]', el).click(); } };
-      setTimeout(() => inp.focus(), 250);
-    } else if (q.type === 'order') {
-      const picked = [];
-      const draw = () => {
-        area.innerHTML = `<div class="answer-line">${picked.map((bi, k) => `<button class="chip-w" data-k="${k}">${esc(q.bank[bi])}</button>`).join('')}</div>
-          <div class="bank">${q.bank.map((t, bi) => `<button class="chip-w ${picked.includes(bi) ? 'ghost' : ''}" data-b="${bi}">${esc(t)}</button>`).join('')}</div>`;
-        $$('[data-b]', area).forEach((b) => (b.onclick = () => { const bi = Number(b.dataset.b); if (P.answered || picked.includes(bi)) return; haptic('light'); picked.push(bi); draw(); }));
-        $$('[data-k]', area).forEach((b) => (b.onclick = () => { if (P.answered) return; picked.splice(Number(b.dataset.k), 1); draw(); }));
-        P.value = picked.map((bi) => q.bank[bi]);
-        setReady(picked.length > 0);
-      };
-      draw();
-    } else if (q.type === 'match') {
-      const pairs = {};
-      let selL = 0;
-      const pc = ['#2fa8ff', '#9b6bff', '#ff8a3d', '#14c8a8', '#ff6fae', '#e8a10f', '#58cc02', '#ff5a6e'];
-      const draw = () => {
-        const rightOwner = Object.fromEntries(Object.entries(pairs).map(([l, r]) => [r, Number(l)]));
-        const style = (k) => (k == null ? '' : `style="border-color:${pc[k % pc.length]};box-shadow:0 4px 0 ${pc[k % pc.length]};color:${pc[k % pc.length]}"`);
-        area.innerHTML = `<div class="match"><div class="col">${q.left.map((t, i) => `<button class="opt ${selL === i ? 'on' : ''}" data-l="${i}" ${style(pairs[i] != null ? i : null)}>${esc(t)}</button>`).join('')}</div>
-          <div class="col">${q.right.map((t, j) => `<button class="opt" data-r="${j}" ${style(rightOwner[j] ?? null)}>${esc(t)}</button>`).join('')}</div></div>`;
-        $$('[data-l]', area).forEach((b) => (b.onclick = () => { if (P.answered) return; const i = Number(b.dataset.l); haptic('light'); if (pairs[i] != null) delete pairs[i]; selL = i; draw(); }));
-        $$('[data-r]', area).forEach((b) => (b.onclick = () => {
-          if (P.answered) return;
-          const j = Number(b.dataset.r);
-          const owner = rightOwner[j];
-          if (owner != null) { delete pairs[owner]; draw(); return; }
-          if (selL == null) return;
-          haptic('light');
-          pairs[selL] = j;
-          selL = q.left.findIndex((_, i) => pairs[i] == null);
-          if (selL < 0) selL = null;
-          draw();
-        }));
-        P.value = Object.fromEntries(Object.entries(pairs).map(([l, r]) => [l, q.right[r]]));
-        setReady(Object.keys(pairs).length === q.left.length);
-      };
-      draw();
-    }
-  }
 
   async function check(qi) {
     if (!P.ready || P.answered) return;
@@ -760,6 +822,101 @@ async function startLesson(target) {
     </div></div>
     <div class="pfoot"><div class="in"><button class="btn block" data-done>Продолжить</button></div></div>`;
     $('[data-done]', el).onclick = () => { el.remove(); if (S.view) tg?.BackButton?.show(); route().catch(fail); };
+  }
+
+  render();
+}
+
+// ═══════════════ ОБУЧАЛКА ═══════════════
+async function startLearn(target) {
+  let data;
+  try { data = await api('/learn/start', target); } catch (e) { return fail(e); }
+  const steps = [];
+  if (data.intro) steps.push({ t: 'say', text: data.intro, emo: 'teach' });
+  data.sections.forEach((sec, si) => {
+    steps.push({ t: 'say', text: `**Раздел ${si + 1}. ${sec.title}**\n${si === 0 ? 'Начнём!' : 'Идём дальше!'}`, emo: 'talk', section: si });
+    sec.slides.forEach((sl) => steps.push({ t: 'say', text: sl.quote ? `**Учитель ${data.teacher} говорил:**\n«${sl.text}»` : sl.text, code: sl.code, emoji: sl.emoji, emo: sl.quote ? 'peace' : 'teach', section: si }));
+    if (sec.check?.length) {
+      steps.push({ t: 'say', text: 'Теперь проверим, чему ты научился за эту секцию!', emo: 'talk', section: si, checkIntro: true });
+      sec.check.forEach((q, i) => steps.push({ t: 'q', q, si, i }));
+    }
+  });
+  steps.push({ t: 'end' });
+
+  const el = document.createElement('div');
+  el.className = 'player learn';
+  layer.appendChild(el);
+  tg?.BackButton?.hide();
+  let i = 0;
+  let talk = null;
+  let right = 0, asked = 0;
+
+  async function close() {
+    if (await confirmSheet('Выйти из обучалки?', 'Начнёшь заново в следующий раз.', 'Выйти', true)) { el.remove(); if (S.view) tg?.BackButton?.show(); }
+  }
+  const top = () => `<div class="ptop"><button class="pclose" data-close aria-label="Закрыть">${ic('close-circle')}</button><div class="pbar"><i style="width:${(i / (steps.length - 1)) * 100}%"></i></div><span class="pill accent">${emo('📖')}${(steps[i].section ?? steps[i].si ?? 0) + 1}/${data.sections.length}</span></div>`;
+
+  function render() {
+    const st = steps[i];
+    if (st.t === 'q') return renderQ(st);
+    if (st.t === 'end') return renderEnd();
+    el.innerHTML = `${top()}<div class="pbody learn-body">
+        ${st.emoji ? `<div class="center">${emo(st.emoji, { cls: 'big' })}</div>` : ''}
+        <div class="teach-row">${me(st.emo, 120)}<div class="speech" data-say></div></div>
+        ${st.code ? `<pre class="code">${highlight(st.code)}</pre>` : ''}
+      </div>
+      <div class="pfoot"><div class="in"><button class="btn block" data-next>${st.checkIntro ? 'Проверить себя' : 'Дальше'}</button></div></div>`;
+    $('[data-close]', el).onclick = close;
+    talk = speak($('[data-say]', el), st.text, $('.teach-row .mascot', el));
+    $('[data-next]', el).onclick = () => { if (talk.typing()) return talk.skip(); haptic('light'); i++; render(); };
+  }
+
+  function renderQ(st) {
+    const q = st.q;
+    const Q = { value: null, ready: false, answered: false };
+    el.innerHTML = `${top()}<div class="pbody">
+        <div class="qkind">${emo('📖')} Проверка раздела · ${KIND[q.type]}</div>
+        <div class="qhead">${me('think', 84)}<div class="qprompt">${esc(q.prompt)}</div></div>
+        ${q.code ? `<pre class="code">${highlight(q.code)}</pre>` : ''}<div data-area></div></div>
+      <div class="pfoot"><div class="in"><div data-fb></div><button class="btn block" data-check disabled>Проверить</button></div></div>`;
+    $('[data-close]', el).onclick = close;
+    const btn = $('[data-check]', el);
+    const setReady = (v) => { Q.ready = v; btn.disabled = !v; };
+    mountAnswer($('[data-area]', el), q, Q, setReady, () => btn.click());
+    btn.onclick = async () => {
+      if (Q.answered) { i++; return render(); }
+      if (!Q.ready) return;
+      btn.disabled = true;
+      let r;
+      try { r = await api('/learn/check', { ...target, section: st.si, index: st.i, answer: Q.value }); } catch (e) { btn.disabled = false; return fail(e); }
+      Q.answered = true;
+      asked++;
+      if (r.correct) right++;
+      const qm = $('.qhead .mascot', el);
+      if (qm) qm.outerHTML = me(r.correct ? 'cheer' : 'oops', 84);
+      if (r.correct) { sfx.ok(); haptic('success'); } else { sfx.bad(); haptic('error'); $('.pbody', el).classList.add('shake'); }
+      $('.pfoot', el).className = 'pfoot ' + (r.correct ? 'ok' : 'bad');
+      $('[data-fb]', el).innerHTML = `<div class="fb">${me(r.correct ? 'cheer' : 'oops', 76)}<div><h3>${r.correct ? 'Верно!' : 'Не совсем…'}</h3>${r.correct ? '' : `<p>Правильно: <b>${esc(r.correctText)}</b></p>`}${r.explain ? `<p class="expl">${esc(r.explain)}</p>` : ''}</div></div>`;
+      btn.className = 'btn block ' + (r.correct ? 'good' : 'bad');
+      btn.textContent = 'Дальше';
+      btn.disabled = false;
+    };
+  }
+
+  async function renderEnd() {
+    let r = {};
+    try { r = await api('/learn/finish', target); } catch (e) { return fail(e); }
+    sfx.win();
+    setTimeout(confetti, 200);
+    const text = `Обучалка пройдена! ${asked ? `В проверках ${right} из ${asked}. ` : ''}Учитель ${data.teacher} будет доволен. ${target.pubId ? 'Теперь — тест. Ты готов!' : ''}`;
+    el.innerHTML = `<div class="pbody learn-body center"><div class="teach-row col">${me('cheer', 150)}<div class="speech" data-say></div></div>
+        ${r.xp && !r.preview ? `<div style="margin-top:14px"><span class="pill gold">${emo(E.bolt)}+${r.xp} XP</span></div>` : ''}</div>
+      <div class="pfoot"><div class="in stack">${target.pubId ? `<button class="btn block" data-test>${ic('play')}К тесту</button>` : ''}<button class="btn ghost dim block" data-done>${target.pubId ? 'Позже' : 'Готово'}</button></div></div>`;
+    speak($('[data-say]', el), text, $('.teach-row .mascot', el));
+    const finish = () => { el.remove(); if (S.view) tg?.BackButton?.show(); route().catch(fail); };
+    $('[data-done]', el).onclick = finish;
+    const t = $('[data-test]', el);
+    if (t) t.onclick = () => { el.remove(); startLesson({ pubId: target.pubId }); };
   }
 
   render();
@@ -971,6 +1128,7 @@ async function tabTests() {
     <div class="stack" style="margin-top:16px">${o.lessons.map(lessonCardHtml).join('') || emptyState('sleepy', 'Тестов пока нет', 'Жду конспект — пришли его Claude.')}</div>`;
   bindAdminTop();
   $$('[data-preview]').forEach((b) => (b.onclick = () => startLesson({ lessonId: b.dataset.preview })));
+  $$('[data-learnprev]').forEach((b) => (b.onclick = () => startLearn({ lessonId: b.dataset.learnprev })));
   $$('[data-send]').forEach((b) => (b.onclick = () => sendSheet(o.lessons.find((l) => l.id === b.dataset.send))));
   $$('[data-pubinfo]').forEach((b) => (b.onclick = () => pubSheet(b.dataset.pubinfo)));
   $$('[data-dell]').forEach((b) => (b.onclick = async () => {
@@ -983,11 +1141,12 @@ function lessonCardHtml(l) {
   return `<div class="card">
     <div class="row" style="align-items:flex-start;gap:12px"><div style="font-size:40px;line-height:1">${emo(l.emoji, { cls: 'lg' })}</div><div class="grow"><h3>${esc(l.title)}</h3>
       ${l.description ? `<p class="small muted" style="margin-top:2px">${esc(l.description)}</p>` : ''}
-      <div class="tags" style="margin-top:8px"><span class="pill accent">${emo(E.puzzle)}${l.questions}</span>${l.types.map((t) => `<span class="pill">${TYPE_LABEL[t] || t}</span>`).join('')}</div></div>
-      ${l.sentTo.length ? '' : '<span class="pill gold">черновик</span>'}</div>
+      <div class="tags" style="margin-top:8px">${l.hasLearn ? `<span class="pill accent">${emo('📖')}обучалка · ${l.learnSections}</span>` : ''}<span class="pill accent">${emo(E.puzzle)}${l.questions}</span>${l.types.map((t) => `<span class="pill">${TYPE_LABEL[t] || t}</span>`).join('')}</div></div>
+      ${l.sentTo.length || l.personalFor.length ? '' : '<span class="pill gold">черновик</span>'}</div>
     ${l.topics.length ? `<p class="small muted" style="margin-top:10px">Темы: ${l.topics.map(esc).join(' · ')}</p>` : ''}
-    ${l.sentTo.length ? `<div style="margin-top:12px">${l.sentTo.map((s) => `<button class="list-check" data-pubinfo="${s.pubId}">${ic('plain-2', 'sm')}<div class="grow"><b>${esc(s.groupName)}</b><div class="small muted">сдали ${s.done}/${s.size} · ${ago(s.publishedAt)}</div></div>${pctPill(s.avg)}</button>`).join('')}</div>` : ''}
-    <div class="row" style="margin-top:14px"><button class="btn ghost sm" data-preview="${l.id}">${ic('eye', 'sm')}Превью</button><button class="btn sm grow" data-send="${l.id}">${ic('plain-2', 'sm')}Отправить</button>${l.sentTo.length ? '' : `<button class="iconbtn" data-dell="${l.id}" aria-label="Удалить">${ic('trash-bin-trash', 'sm')}</button>`}</div>
+    ${l.sentTo.length ? `<div style="margin-top:12px">${l.sentTo.map((s) => `<button class="list-check" data-pubinfo="${s.pubId}">${ic('plain-2', 'sm')}<div class="grow"><b>${esc(s.groupName)}</b><div class="small muted">${s.learned != null ? `обучалку ${s.learned}/${s.size} · ` : ''}тест ${s.done}/${s.size} · ${ago(s.publishedAt)}</div></div>${pctPill(s.avg)}</button>`).join('')}</div>` : ''}
+    ${l.personalFor.length ? `<div style="margin-top:12px">${l.personalFor.map((s) => `<button class="list-check" data-pubinfo="${s.pubId}">${emo('🎯')}<div class="grow"><b>Лично: ${esc(s.name)}</b><div class="small muted">${l.hasLearn ? (s.learnDone ? 'обучалка ✓ · ' : 'обучалка не пройдена · ') : ''}${s.best != null ? 'тест ' + s.best + '%' : 'тест не сдан'}</div></div>${pctPill(s.best)}</button>`).join('')}</div>` : ''}
+    <div class="row" style="margin-top:14px">${l.hasLearn ? `<button class="btn ghost sm" data-learnprev="${l.id}">${emo('📖')}Обучалка</button>` : ''}<button class="btn ghost sm" data-preview="${l.id}">${ic('eye', 'sm')}Превью</button><button class="btn sm grow" data-send="${l.id}">${ic('plain-2', 'sm')}Отправить</button>${l.sentTo.length ? '' : `<button class="iconbtn" data-dell="${l.id}" aria-label="Удалить">${ic('trash-bin-trash', 'sm')}</button>`}</div>
   </div>`;
 }
 
@@ -1051,6 +1210,9 @@ async function tabBot() {
   const [o, rems] = await Promise.all([loadOverview(), api('/admin/reminders')]);
   const groupOpts = o.groups.map((g) => `<option value="${g.id}">${esc(g.name)}</option>`).join('');
   app.innerHTML = adminTop('Бот') + `
+    ${sectionTitle(E.robot, 'Отчёт для Claude')}
+    <div class="card stack small"><p class="muted">Отправляет Claude результаты всех учеников: оценки, ошибки, что ответили и что было правильно. По ним Claude сделает каждому личную обучалку и тест по его ошибкам.</p>
+      <button class="btn block" data-report>${ic('plain-2')}Отправить отчёт Claude</button></div>
     ${sectionTitle(E.link, 'Подключить чат группы')}
     <div class="card"><ol class="steps small">
       <li>Создай Telegram-группу (или открой существующую) и добавь туда бота.</li>
@@ -1079,6 +1241,13 @@ async function tabBot() {
       <p class="small muted">каждые ${r.intervalMin >= 60 ? r.intervalMin / 60 + ' ч' : r.intervalMin + ' мин'} · отправлено ${r.sent}/${r.maxCount}${r.testTitle ? ` · ${esc(r.testTitle)}` : ''}${r.active ? ` · следующее в ${new Date(r.nextAt).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}` : ''}</p>
       <div class="row" style="margin-top:10px"><button class="btn ghost sm grow" data-toggle="${r.id}" data-on="${r.active ? 0 : 1}">${ic(r.active ? 'pause' : 'play', 'sm')}${r.active ? 'Пауза' : 'Возобновить'}</button><button class="iconbtn" data-rdel="${r.id}" aria-label="Удалить">${ic('trash-bin-trash', 'sm')}</button></div></div>`).join('') : '<p class="muted center small">Напоминаний нет</p>'}</div>`;
   bindAdminTop();
+  $('[data-report]').onclick = async () => {
+    try {
+      const r = await api('/admin/report', {});
+      haptic('success');
+      openSheet(`<div class="stack center">${me('cheer', 110)}<h2>Отчёт отправлен</h2><p class="muted">Учеников в отчёте: ${r.students}. Теперь напиши Claude: <b>«посмотри отчёт и сделай личные задания»</b>.</p></div>`);
+    } catch (e) { fail(e); }
+  };
   const send = $('[data-send]');
   if (send) send.onclick = async () => {
     const text = $('[data-at]').value.trim();

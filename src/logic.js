@@ -1,6 +1,8 @@
 // Вся предметная логика: ученики, группы, тесты, попытки, статистика.
 import { checkAnswer, choicePerm, publicQuestion, validateLesson } from './grading.js';
 
+const log = (tag, obj) => console.log(`[${tag}] ` + JSON.stringify(obj));
+
 const TZ = process.env.TZ_NAME || 'Asia/Tashkent';
 const dayKey = (d = new Date()) => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(d);
 const prevDay = (key) => {
@@ -11,7 +13,7 @@ const prevDay = (key) => {
 const pct = (c, t) => (t ? Math.round((c / t) * 100) : 0);
 const avg = (xs) => (xs.length ? Math.round(xs.reduce((a, b) => a + b, 0) / xs.length) : null);
 
-export const MASCOT_IDS = ['mimi', 'kapi', 'dino', 'axi', 'boo'];
+export const MASCOT_IDS = ['mimi', 'kapi', 'dino', 'axi', 'boo', 'ano'];
 export const ACCENTS = ['lime', 'sakura', 'lavender', 'ocean', 'peach', 'mint'];
 
 export const ACHIEVEMENTS = {
@@ -91,7 +93,13 @@ export function createLogic(store, { adminIds }) {
     if (errs.length) throw httpError(400, 'Урок с ошибками: ' + errs.join('; '));
     const prev = S.lessons[lesson.id];
     const hasAttempts = prev && Object.values(S.attempts).some((a) => a.lessonId === lesson.id && !a.preview);
-    if (prev && hasAttempts && source === 'content') return prev; // уже решали — не меняем вопросы под учениками
+    if (prev && hasAttempts && source === 'content') {
+      // уже решали — вопросы теста не меняем, но обучалку и список «личных» обновить можно
+      prev.learn = lesson.learn || prev.learn || null;
+      prev.personal = lesson.personal || prev.personal || null;
+      store.save();
+      return prev;
+    }
     const topics = [...new Set(lesson.questions.map((q) => q.topic).filter(Boolean))];
     S.lessons[lesson.id] = {
       id: lesson.id,
@@ -100,12 +108,30 @@ export function createLogic(store, { adminIds }) {
       description: lesson.description || '',
       topics,
       questions: lesson.questions,
+      learn: lesson.learn || null,
+      personal: lesson.personal || null,
       createdAt: prev?.createdAt || Date.now(),
       updatedAt: Date.now(),
     };
     store.save();
     return S.lessons[lesson.id];
   }
+  // Личные задания: урок с полем personal: [userId] сразу назначается этим ученикам
+  function assignPersonal(lessonId) {
+    const l = S.lessons[lessonId];
+    const created = [];
+    for (const uid of l?.personal || []) {
+      const id = String(uid);
+      if (Object.values(S.pubs).some((p) => p.lessonId === lessonId && p.userId === id)) continue;
+      if (!S.users[id]) S.users[id] = { id, firstName: '', lastName: '', username: '', joinedAt: Date.now(), streak: 0, lastDay: null };
+      const pub = { id: store.nextId('p'), lessonId, groupId: null, userId: id, publishedAt: Date.now() };
+      S.pubs[pub.id] = pub;
+      created.push(pub);
+    }
+    if (created.length) store.save();
+    return created;
+  }
+
   function deleteLesson(lid) {
     if (Object.values(S.pubs).some((p) => p.lessonId === lid)) throw httpError(400, 'Тест уже отправлен — сначала отзови его у групп');
     delete S.lessons[lid];
@@ -127,7 +153,86 @@ export function createLogic(store, { adminIds }) {
     store.save();
   }
   const pubsForGroup = (gid) => Object.values(S.pubs).filter((p) => p.groupId === gid && S.lessons[p.lessonId]).sort((a, b) => a.publishedAt - b.publishedAt);
-  const pubsForUser = (uid) => userGroups(uid).flatMap((g) => pubsForGroup(g.id)).sort((a, b) => a.publishedAt - b.publishedAt);
+  const personalPubs = (uid) => Object.values(S.pubs).filter((p) => p.userId === String(uid) && S.lessons[p.lessonId]);
+  const pubsForUser = (uid) => [...userGroups(uid).flatMap((g) => pubsForGroup(g.id)), ...personalPubs(uid)].sort((a, b) => a.publishedAt - b.publishedAt);
+  const canSeePub = (uid, pub) => isAdmin(uid) || pub.userId === String(uid) || Boolean(S.groups[pub.groupId]?.memberIds.includes(String(uid)));
+  const teacherName = () => process.env.TEACHER_NAME || S.users[adminIds[0]]?.firstName || 'Учитель';
+
+  // ───────── обучалка ─────────
+  const learnKey = (uid, pubId) => `${uid}:${pubId}`;
+  const learnDone = (uid, pubId) => Boolean(S.learn?.[learnKey(uid, pubId)]?.doneAt);
+  function learnTarget(uid, { pubId, lessonId }) {
+    uid = String(uid);
+    if (pubId) {
+      const pub = S.pubs[pubId];
+      if (!pub || !S.lessons[pub.lessonId]) throw httpError(404, 'Тест не найден');
+      if (!canSeePub(uid, pub)) throw httpError(403, 'Этот урок не для тебя');
+      return { lesson: S.lessons[pub.lessonId], pub, preview: isAdmin(uid), seed: `learn:${uid}:${pubId}` };
+    }
+    if (!isAdmin(uid)) throw httpError(403, 'Нет доступа');
+    const lesson = S.lessons[lessonId];
+    if (!lesson) throw httpError(404, 'Тест не найден');
+    return { lesson, pub: null, preview: true, seed: `learn:${uid}:${lessonId}` };
+  }
+  const fillTeacher = (t) => String(t ?? '').replace(/\{teacher\}/g, teacherName());
+  function startLearn(uid, target) {
+    const { lesson, seed } = learnTarget(uid, target);
+    if (!lesson.learn) throw httpError(404, 'У этого урока нет обучалки');
+    return {
+      lesson: { id: lesson.id, title: lesson.title, emoji: lesson.emoji },
+      teacher: teacherName(),
+      intro: fillTeacher(lesson.learn.intro || ''),
+      sections: lesson.learn.sections.map((sec, si) => ({
+        title: sec.title,
+        slides: sec.slides.map((sl) => ({ ...sl, text: fillTeacher(sl.text) })),
+        check: (sec.check || []).map((q, i) => publicQuestion(q, `${seed}:${si}:${i}`)),
+      })),
+    };
+  }
+  function checkLearn(uid, target, si, i, value) {
+    const { lesson, pub, preview, seed } = learnTarget(uid, target);
+    const q = lesson.learn?.sections[si]?.check?.[i];
+    if (!q) throw httpError(400, 'Нет такого вопроса');
+    const orig = q.type === 'choice' ? choicePerm(q.options.length, `${seed}:${si}:${i}`)[Number(value)] ?? -1 : value;
+    const res = checkAnswer(q, orig);
+    if (pub && !preview) {
+      const key = learnKey(uid, pub.id);
+      S.learn[key] ||= { answers: {}, startedAt: Date.now() };
+      if (!(`${si}:${i}` in S.learn[key].answers)) S.learn[key].answers[`${si}:${i}`] = { correct: res.correct, given: answerText(q, orig) };
+      store.save();
+    }
+    return { correct: res.correct, correctText: res.correctText, explain: q.explain || null };
+  }
+  function finishLearn(uid, target) {
+    const { lesson, pub, preview } = learnTarget(uid, target);
+    if (!pub || preview) return { ok: true, preview: true };
+    const key = learnKey(uid, pub.id);
+    S.learn[key] ||= { answers: {}, startedAt: Date.now() };
+    const L = S.learn[key];
+    const vals = Object.values(L.answers);
+    if (!L.doneAt) {
+      L.doneAt = Date.now();
+      L.xp = 15;
+      touchStreak(S.users[String(uid)]);
+      log('learn', { user: { id: String(uid), name: name(S.users[String(uid)]) }, lesson: lesson.id, title: lesson.title, checks: L.answers });
+    }
+    L.correct = vals.filter((v) => v.correct).length;
+    L.total = vals.length;
+    store.save();
+    return { ok: true, correct: L.correct, total: L.total, xp: L.xp };
+  }
+  const learnXp = (uid, pubIds) => Object.entries(S.learn || {}).filter(([k, v]) => k.startsWith(String(uid) + ':') && v.doneAt && (!pubIds || pubIds.has(k.split(':')[1]))).reduce((sum, [, v]) => sum + (v.xp || 0), 0);
+
+  // Ответ ученика текстом — для отчётов, которые читает Claude
+  function answerText(q, v) {
+    switch (q?.type) {
+      case 'choice': return q.options[v] ?? '—';
+      case 'truefalse': return v ? 'Верно' : 'Неверно';
+      case 'order': return Array.isArray(v) ? v.join(' ') : '—';
+      case 'match': return v && typeof v === 'object' ? q.pairs.map((p, i) => `${p[0]} → ${v[i] ?? '?'}`).join('; ') : '—';
+      default: return String(v ?? '—');
+    }
+  }
 
   // ───────── попытки ─────────
   const scoreOf = (a) => {
@@ -205,10 +310,10 @@ export function createLogic(store, { adminIds }) {
     if (pubId) {
       const pub = S.pubs[pubId];
       if (!pub) throw httpError(404, 'Тест не найден');
-      const g = S.groups[pub.groupId];
-      if (!isAdmin(uid) && !g?.memberIds.includes(uid)) throw httpError(403, 'Этот тест не для твоей группы');
+      if (!canSeePub(uid, pub)) throw httpError(403, 'Этот тест не для твоей группы');
       lesson = S.lessons[pub.lessonId];
       preview = isAdmin(uid);
+      if (!preview && lesson?.learn && !learnDone(uid, pubId)) throw httpError(403, 'Сначала пройди обучалку — тест откроется после неё');
     } else {
       if (!isAdmin(uid)) throw httpError(403, 'Нет доступа');
       lesson = S.lessons[lessonId];
@@ -272,6 +377,7 @@ export function createLogic(store, { adminIds }) {
       if (!a.preview && !a.practice && scoreOf(a).pct === 100) a.xp += 20; // бонус за идеал
       if (!a.preview) touchStreak(S.users[a.userId]);
       store.save();
+      if (!a.preview) logResult(a);
     }
     const s = scoreOf(a);
     const topics = {};
@@ -302,6 +408,44 @@ export function createLogic(store, { adminIds }) {
     };
   }
 
+  function logResult(a) {
+    const items = itemsOf(a);
+    const pub = S.pubs[a.pubId];
+    log('result', {
+      user: { id: a.userId, name: name(S.users[a.userId]) },
+      group: pub?.groupId ? S.groups[pub.groupId]?.name : pub?.userId ? 'личное' : null,
+      lesson: a.kind === 'mistakes' ? 'mistakes' : a.lessonId,
+      kind: a.kind || (a.practice ? 'practice' : 'test'),
+      pct: scoreOf(a).pct,
+      wrong: a.answers.filter((x) => !x.correct).map((x) => {
+        const it = items[x.index];
+        const q = qOf(it);
+        return { lesson: it.lessonId, q: it.index, topic: q?.topic, prompt: q?.prompt, given: answerText(q, toOriginal(q, a, x.index, x.value)), right: q ? checkAnswer(q, null).correctText : null };
+      }),
+    });
+  }
+
+  // Полный отчёт по ученикам в лог сервера — его читает Claude, чтобы готовить личные задания
+  function report() {
+    const out = [];
+    for (const u of students()) {
+      const groups = userGroups(u.id);
+      if (!groups.length && !personalPubs(u.id).length) continue;
+      const tests = pubsForUser(u.id).map((p) => {
+        const b = best(u.id, p.id);
+        return { lesson: p.lessonId, title: S.lessons[p.lessonId].title, best: b ? b.pct : null, learnDone: learnDone(u.id, p.id) };
+      });
+      const row = { user: { id: u.id, name: name(u), username: u.username || null }, groups: groups.map((g) => g.name), xp: totalXp(u.id), tests, mistakes: mistakesOf(u.id).map((m) => {
+        const q = qOf(m);
+        return { lesson: m.lessonId, q: m.index, topic: q.topic, prompt: q.prompt, wrongTimes: m.wrong, right: checkAnswer(q, null).correctText };
+      }) };
+      log('report', row);
+      out.push(row);
+    }
+    log('report-end', { students: out.length, at: new Date().toISOString() });
+    return { students: out.length };
+  }
+
   function touchStreak(u) {
     if (!u) return;
     const today = dayKey();
@@ -316,17 +460,17 @@ export function createLogic(store, { adminIds }) {
   }
 
   // ───────── статистика ─────────
-  const totalXp = (uid) => Object.values(S.attempts).filter((a) => a.userId === String(uid) && a.finishedAt && !a.preview).reduce((s, a) => s + (a.xp || 0), 0);
+  const totalXp = (uid) => Object.values(S.attempts).filter((a) => a.userId === String(uid) && a.finishedAt && !a.preview).reduce((s, a) => s + (a.xp || 0), 0) + learnXp(uid);
   function groupXp(uid, gid) {
     const pubIds = new Set(pubsForGroup(gid).map((p) => p.id));
-    return Object.values(S.attempts).filter((a) => a.userId === String(uid) && a.finishedAt && !a.preview && pubIds.has(a.pubId)).reduce((s, a) => s + (a.xp || 0), 0);
+    return Object.values(S.attempts).filter((a) => a.userId === String(uid) && a.finishedAt && !a.preview && pubIds.has(a.pubId)).reduce((s, a) => s + (a.xp || 0), 0) + learnXp(uid, pubIds);
   }
 
   function pubStats(pubId) {
     const pub = S.pubs[pubId];
     const g = S.groups[pub.groupId];
     const lesson = S.lessons[pub.lessonId];
-    const members = g ? g.memberIds.filter((id) => !isAdmin(id)) : [];
+    const members = pub.userId ? [pub.userId] : g ? g.memberIds.filter((id) => !isAdmin(id)) : [];
     const ranking = [];
     const notDone = [];
     const perQ = lesson.questions.map((q) => ({ prompt: q.prompt, topic: q.topic || null, correct: 0, total: 0 }));
@@ -344,9 +488,11 @@ export function createLogic(store, { adminIds }) {
       title: lesson.title,
       emoji: lesson.emoji,
       groupId: g?.id,
-      groupName: g?.name,
+      groupName: pub.userId ? `Лично: ${name(S.users[pub.userId])}` : g?.name,
+      personal: Boolean(pub.userId),
       publishedAt: pub.publishedAt,
       size: members.length,
+      learned: lesson.learn ? members.filter((uid) => learnDone(uid, pubId)).length : null,
       done: ranking.map((r) => r.userId),
       notDone,
       ranking,
@@ -496,7 +642,7 @@ export function createLogic(store, { adminIds }) {
     const path = pubsForUser(uid).map((p) => {
       const l = S.lessons[p.lessonId];
       const b = best(uid, p.id);
-      return { pubId: p.id, title: l.title, emoji: l.emoji, description: l.description, questions: l.questions.length, topics: l.topics, groupId: p.groupId, groupName: S.groups[p.groupId].name, publishedAt: p.publishedAt, best: b ? b.pct : null, stars: b ? (b.pct === 100 ? 3 : b.pct >= 80 ? 2 : b.pct >= 50 ? 1 : 0) : null };
+      return { pubId: p.id, title: l.title, emoji: l.emoji, description: l.description, questions: l.questions.length, topics: l.topics, groupId: p.groupId, groupName: p.userId ? 'Лично' : S.groups[p.groupId].name, personal: Boolean(p.userId), hasLearn: Boolean(l.learn), learnDone: learnDone(uid, p.id), learnSections: l.learn?.sections.length || 0, publishedAt: p.publishedAt, best: b ? b.pct : null, stars: b ? (b.pct === 100 ? 3 : b.pct >= 80 ? 2 : b.pct >= 50 ? 1 : 0) : null };
     });
     return {
       user: publicUser(u),
@@ -519,8 +665,14 @@ export function createLogic(store, { adminIds }) {
         types: [...new Set(l.questions.map((q) => q.type))],
         sentTo: Object.values(S.pubs).filter((p) => p.lessonId === l.id && S.groups[p.groupId]).map((p) => {
           const s = pubStats(p.id);
-          return { pubId: p.id, groupId: p.groupId, groupName: S.groups[p.groupId].name, done: s.done.length, size: s.size, avg: s.avg, publishedAt: p.publishedAt };
+          return { pubId: p.id, groupId: p.groupId, groupName: S.groups[p.groupId].name, done: s.done.length, size: s.size, avg: s.avg, learned: s.learned, publishedAt: p.publishedAt };
         }),
+        personalFor: Object.values(S.pubs).filter((p) => p.lessonId === l.id && p.userId).map((p) => {
+          const b = best(p.userId, p.id);
+          return { pubId: p.id, userId: p.userId, name: name(S.users[p.userId]), best: b ? b.pct : null, learnDone: learnDone(p.userId, p.id) };
+        }),
+        hasLearn: Boolean(l.learn),
+        learnSections: l.learn?.sections.length || 0,
       }));
     const allStudents = students().map((u) => ({ ...publicUser(u), groups: userGroups(u.id).map((g) => g.id) }));
     const avgs = groups.map((g) => g.avg).filter((x) => x !== null);
@@ -579,6 +731,7 @@ export function createLogic(store, { adminIds }) {
     upsertLesson, deleteLesson, publish, unpublish, pubsForGroup, pubStats, startAttempt, answer, retry, finish,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,
+    startLearn, checkLearn, finishLearn, assignPersonal, report, teacherName,
   };
 }
 

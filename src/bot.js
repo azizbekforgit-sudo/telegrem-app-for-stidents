@@ -140,6 +140,11 @@ export function createBot({ token, logic, store, appUrl, adminIds }) {
     for (const uid of g.memberIds) if (!logic.isAdmin(uid)) await safeSend(uid, text, { reply_markup: privateKb('🎮 Играть') });
   }
 
+  async function notifyPersonal(pub) {
+    const l = S.lessons[pub.lessonId];
+    await safeSend(pub.userId, `🎯 <b>Личное задание от учителя!</b>\n\n${l.emoji} <b>${esc(l.title)}</b>\n${l.description ? esc(l.description) + '\n' : ''}\nЕго сделали специально для тебя — по твоим ошибкам. Заходи! 💪`, { reply_markup: privateKb('🎯 Открыть') });
+  }
+
   async function announce(groupId, text) {
     const g = S.groups[groupId];
     const body = `📣 ${esc(text)}`;
@@ -212,5 +217,5 @@ export function createBot({ token, logic, store, appUrl, adminIds }) {
     console.log(`[bot] @${bot.botInfo.username} готов`);
   }
 
-  return { bot, setup, notifyPublish, announce, tickReminders };
+  return { bot, setup, notifyPublish, notifyPersonal, announce, tickReminders };
 }

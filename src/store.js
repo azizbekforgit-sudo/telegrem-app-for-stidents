@@ -13,6 +13,7 @@ export function emptyState() {
     pubs: {},       // id -> { id, lessonId, groupId, publishedAt }   — тест, отправленный группе
     attempts: {},   // id -> { id, pubId, lessonId, userId, preview, startedAt, finishedAt, answers, combo, maxCombo, xp }
     reminders: {},  // id -> { id, groupId, pubId, text, intervalMin, nextAt, active, sent, maxCount }
+    learn: {},      // `${userId}:${pubId}` -> { answers, startedAt, doneAt, correct, total } — прохождение обучалки
     seq: 1,
   };
 }

@@ -2,9 +2,10 @@
 // Каждый персонаж = тело (своё) + лицо (общая система эмоций) + позы лапок + эффекты.
 //
 // Эмоции: happy (обычное), cheer (правильный ответ), oops (ошибка), sad (грусть), think (думает),
-//         wow (восторг, звёзды в глазах), love (100%), sleepy (скучает), peace (подмигивает с «V»).
+//         wow (восторг, звёзды в глазах), love (100%), sleepy (скучает), peace (подмигивает с «V»),
+//         talk (говорит — рот двигается), teach (учитель: очки + волшебная палочка, тоже говорит).
 
-export const EMOTIONS = ['happy', 'cheer', 'oops', 'sad', 'think', 'wow', 'love', 'sleepy', 'peace'];
+export const EMOTIONS = ['happy', 'cheer', 'oops', 'sad', 'think', 'wow', 'love', 'sleepy', 'peace', 'talk', 'teach'];
 
 export const MASCOTS = {
   mimi: { name: 'Мими', about: 'Котёнок-отличница. Обожает, когда всё на 100%', color: '#ff8fb8' },
@@ -12,6 +13,7 @@ export const MASCOTS = {
   dino: { name: 'Дино', about: 'Динозаврик. Маленький, но рычит на ошибки', color: '#4fcf86' },
   axi: { name: 'Акси', about: 'Аксолотль. Отращивает знания, как жабры', color: '#ff7eb0' },
   boo: { name: 'Бу', about: 'Призрак в капюшоне. Звонит спросить: «Ну что, решил тест?»', color: '#3b3644' },
+  ano: { name: 'Ано', about: 'Хакер в маске. Взламывает любые задачи — честно', color: '#2b2a33' },
 };
 
 let uid = 0;
@@ -39,6 +41,11 @@ function eye(kind, x, y, s, side) {
       k = k * 1.45;
       return `<path d="M${x - 6 * k * d} ${y - 9 * k} C${x + 4 * k * d} ${y - 8 * k} ${x + 11 * k * d} ${y + 2 * k} ${x + 9 * k * d} ${y + 11 * k} C${x + 6 * k * d} ${y + 15 * k} ${x - 4 * k * d} ${y + 8 * k} ${x - 9 * k * d} ${y - 1 * k} C${x - 11 * k * d} ${y - 6 * k} ${x - 9 * k * d} ${y - 9 * k} ${x - 6 * k * d} ${y - 9 * k}Z" fill="${INK}"/>
         <circle cx="${x - 3 * k * d}" cy="${y - 3 * k}" r="${2.6 * k}" fill="#fff" opacity=".9"/>`;
+    }
+    case 'slit': { // хитрые глаза-щёлочки с высокими бровями
+      const d = side;
+      return `<path d="M${x - 10 * k * d} ${y + 1 * k} C${x - 4 * k * d} ${y - 6 * k} ${x + 5 * k * d} ${y - 6 * k} ${x + 10 * k * d} ${y - 2 * k} C${x + 5 * k * d} ${y + 4 * k} ${x - 4 * k * d} ${y + 5 * k} ${x - 10 * k * d} ${y + 1 * k}Z" fill="${INK}"/>
+        <path d="M${x - 12 * k * d} ${y - 9 * k} Q${x - 2 * k * d} ${y - 22 * k} ${x + 12 * k * d} ${y - 14 * k}" stroke="${INK}" stroke-width="${3 * k}" fill="none" stroke-linecap="round"/>`;
     }
     case 'wink':
       return `<path d="M${x - 8 * k} ${y + 1 * k} Q${x} ${y - 6 * k} ${x + 8 * k} ${y + 1 * k}" stroke="${INK}" stroke-width="${4.6 * k}" fill="none" stroke-linecap="round"/>`;
@@ -74,6 +81,8 @@ function mouth(kind, x, y, s, tongue = '#ff8aa8') {
         <g transform="rotate(-18 ${x + 5 * k} ${y + 6 * k})"><path d="M${x - 2 * k} ${y + 4 * k} C${x - 3 * k} ${y + 22 * k} ${x + 12 * k} ${y + 24 * k} ${x + 12 * k} ${y + 6 * k} Z" fill="#c2394f" stroke="#8e2236" stroke-width="${2 * k}" stroke-linejoin="round"/>
         <path d="M${x + 5 * k} ${y + 8 * k} L${x + 5 * k} ${y + 17 * k}" stroke="#8e2236" stroke-width="${1.6 * k}" stroke-linecap="round"/></g>`;
     }
+    case 'grin':
+      return `<path d="M${x - 19 * k} ${y - 5 * k} Q${x} ${y + 13 * k} ${x + 19 * k} ${y - 5 * k}" stroke="${INK}" stroke-width="${3.2 * k}" fill="none" stroke-linecap="round"/>`;
     case 'o':
       return `<ellipse cx="${x}" cy="${y + 2 * k}" rx="${4.4 * k}" ry="${5.4 * k}" fill="#7a2c3e" stroke="${INK}" stroke-width="${2.2 * k}"/>`;
     case 'wavy':
@@ -99,6 +108,8 @@ const FACE = {
   love: { l: 'heart', r: 'heart', m: 'open', arms: 'down', fx: 'hearts' },
   sleepy: { l: 'closed', r: 'closed', m: 'o', arms: 'down', fx: 'zzz' },
   peace: { l: 'squeeze', r: 'squeeze', m: 'big', arms: 'peace' },
+  talk: { l: 'open', r: 'open', m: 'talk', arms: 'down' },
+  teach: { l: 'open', r: 'open', m: 'talk', arms: 'wand', glasses: true },
 };
 
 function fx(kind, b) {
@@ -138,13 +149,24 @@ function face(f, emo, pal) {
   out += `<ellipse cx="${x + ex + 6 * s}" cy="${ey + 13 * s}" rx="${11 * s}" ry="${7 * s}" fill="${pal.blush}" filter="url(#${f.blurId})" opacity=".85"/>`;
   let rightEye = emo === 'peace' ? 'wink' : e.r;
   let leftEye = emo === 'peace' ? 'open' : e.l;
-  if ((emo === 'happy' || emo === 'peace') && f.idleEyes) leftEye = rightEye = f.idleEyes;
+  if ((emo === 'happy' || emo === 'peace' || emo === 'talk') && f.idleEyes) leftEye = rightEye = f.idleEyes;
   out += eye(leftEye, x - ex, ey, s, -1) + eye(rightEye, x + ex, ey, s, 1);
   if (e.brows === 'sad') {
     out += `<path d="M${x - ex - 9 * s} ${ey - 15 * s} L${x - ex + 6 * s} ${ey - 19 * s}" stroke="${INK}" stroke-width="${3.2 * s}" stroke-linecap="round"/>`;
     out += `<path d="M${x + ex + 9 * s} ${ey - 15 * s} L${x + ex - 6 * s} ${ey - 19 * s}" stroke="${INK}" stroke-width="${3.2 * s}" stroke-linecap="round"/>`;
   }
+  if (e.glasses) {
+    const r = 14 * s;
+    out += `<g class="glasses"><circle cx="${x - ex}" cy="${ey}" r="${r}" fill="#bfe6ff" fill-opacity=".25" stroke="#3b2a35" stroke-width="${3.2 * s}"/>
+      <circle cx="${x + ex}" cy="${ey}" r="${r}" fill="#bfe6ff" fill-opacity=".25" stroke="#3b2a35" stroke-width="${3.2 * s}"/>
+      <path d="M${x - ex + r} ${ey - 2 * s} Q${x} ${ey - 8 * s} ${x + ex - r} ${ey - 2 * s}" stroke="#3b2a35" stroke-width="${3 * s}" fill="none"/>
+      <path d="M${x - ex - r * 0.5} ${ey - r * 0.6} L${x - ex - r * 0.1} ${ey - r * 0.9}" stroke="#fff" stroke-width="${2.4 * s}" stroke-linecap="round"/></g>`;
+  }
   let m = e.m;
+  if (m === 'talk') {
+    const closed = f.idleMouth || 'smile';
+    return out + `<g class="mouth-a">${mouth(closed, x, my, s, pal.tongue)}</g><g class="mouth-b">${mouth('open', x, my, s, pal.tongue)}</g>`;
+  }
   if ((emo === 'happy' || (emo === 'peace' && f.idleEyes)) && f.idleMouth) m = f.idleMouth;
   out += mouth(m, x, my, s, pal.tongue);
   return out;
@@ -165,6 +187,14 @@ function arms(pose, a, fill, stroke) {
         `<g transform="rotate(14 ${px} ${py})"><rect x="${px - 9}" y="${py - 22}" width="8" height="22" rx="4" fill="${fill}" stroke="${stroke}" stroke-width="2.6"/>
          <rect x="${px + 1}" y="${py - 24}" width="8" height="24" rx="4" fill="${fill}" stroke="${stroke}" stroke-width="2.6"/>
          <ellipse cx="${px}" cy="${py + 2}" rx="12" ry="10" fill="${fill}" stroke="${stroke}" stroke-width="3"/></g>`;
+    }
+    case 'wand': { // правая лапа поднята и держит волшебную палочку-указку
+      const [px, py] = [R[0] + 8, R[1] - 34];
+      return paw(L[0], L[1], -20) +
+        `<g class="wand"><path d="M${px} ${py} L${px + 22} ${py - 40}" stroke="#7a4a2a" stroke-width="5" stroke-linecap="round"/>
+         <path d="M${px + 16} ${py - 29} L${px + 22} ${py - 40}" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+         <path class="fx-tw" transform="translate(${px + 24} ${py - 46}) scale(1.05)" d="M0 -10 L3 -3 L10 -3 L4.5 2 L6.5 9.5 L0 5.5 L-6.5 9.5 L-4.5 2 L-10 -3 L-3 -3Z" fill="#ffc83d" stroke="#f0a200" stroke-width="1.6" stroke-linejoin="round"/></g>` +
+        paw(px, py + 4, 30);
     }
     case 'left': // вторая лапа занята (держит телефон)
       return paw(L[0], L[1], -20);
@@ -266,7 +296,22 @@ const BODIES = {
   },
 };
 
-const GRAD = { mimi: ['#ffffff', '#f3e6ef'], kapi: ['#e6aa74', '#c07b48'], dino: ['#8ff0b4', '#45c27b'], axi: ['#ffd6e6', '#ff9cc4'], boo: ['#56505f', '#17141c'] };
+BODIES.ano = function ano(id) {
+  const st = '#0d0c11';
+  const hood = `<path d="M100 22 C150 22 174 58 174 104 C174 152 158 182 100 182 C42 182 26 152 26 104 C26 58 50 22 100 22Z" fill="url(#${id}b)" stroke="${st}" stroke-width="3"/>
+    <path d="M100 38 C138 38 156 66 154 104 C152 146 130 170 100 170 C70 170 48 146 46 104 C44 66 62 38 100 38Z" fill="#0f0e14"/>
+    <path d="M88 172 L84 188 M112 172 L116 188" stroke="#d8d6de" stroke-width="3" stroke-linecap="round"/><circle cx="84" cy="189" r="3" fill="#d8d6de"/><circle cx="116" cy="189" r="3" fill="#d8d6de"/>`;
+  const mask = `<defs><radialGradient id="${id}f" cx="40%" cy="28%" r="80%"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e2dfe8"/></radialGradient></defs>
+    <path d="M100 48 C134 48 148 72 146 100 C144 126 132 144 112 152 L100 166 L88 152 C68 144 56 126 54 100 C52 72 66 48 100 48Z" fill="url(#${id}f)" stroke="#cdc8d6" stroke-width="2"/>`;
+  const stache = `<path d="M100 114 C92 110 82 110 76 116 C72 120 66 118 66 112 C70 116 74 112 76 110 C84 104 94 106 100 110 C106 106 116 104 124 110 C126 112 130 116 134 112 C134 118 128 120 124 116 C118 110 108 110 100 114Z" fill="${INK}"/>
+    <path d="M100 136 L100 150" stroke="${INK}" stroke-width="3.4" stroke-linecap="round"/><path d="M96 140 L100 154 L104 140Z" fill="${INK}"/>
+    <path d="M100 86 L100 104" stroke="#c9c3d4" stroke-width="2.2" stroke-linecap="round"/>`;
+  const f = { x: 100, y: 96, ex: 21, ey: 90, my: 124, s: 0.85, blurId: id + 'k', idleEyes: 'slit', idleMouth: 'grin' };
+  const a = { l: [42, 160], r: [158, 160], chin: [84, 154] };
+  return { pal: { blush: '#ff7f9e', tongue: '#ff8aa8' }, back: '', body: hood + shine(64, 52, 16, 7) + mask, nose: stache, f, a, fill: '#2a2933', st, b: { cx: 100, top: 26 } };
+};
+
+const GRAD = { mimi: ['#ffffff', '#f3e6ef'], kapi: ['#e6aa74', '#c07b48'], dino: ['#8ff0b4', '#45c27b'], axi: ['#ffd6e6', '#ff9cc4'], boo: ['#56505f', '#17141c'], ano: ['#4a4952', '#141319'] };
 
 export function mascot(id = 'mimi', emo = 'happy', size = 120, cls = '', crop = false) {
   if (!BODIES[id]) id = 'mimi';
