@@ -11,7 +11,7 @@ const prevDay = (key) => {
 const pct = (c, t) => (t ? Math.round((c / t) * 100) : 0);
 const avg = (xs) => (xs.length ? Math.round(xs.reduce((a, b) => a + b, 0) / xs.length) : null);
 
-export const MASCOT_IDS = ['mimi', 'kapi', 'dino', 'axi'];
+export const MASCOT_IDS = ['mimi', 'kapi', 'dino', 'axi', 'boo'];
 export const ACCENTS = ['lime', 'sakura', 'lavender', 'ocean', 'peach', 'mint'];
 
 export const ACHIEVEMENTS = {

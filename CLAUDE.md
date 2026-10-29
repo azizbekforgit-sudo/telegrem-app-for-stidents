@@ -40,7 +40,7 @@
 - `src/bot.js`: команды `/start`, `/link` (привязать чат Telegram-группы к группе курса), `/stop`, уведомления о тестах, напоминания.
 - `src/store.js`: всё состояние в одном JSON-документе. В продакшене он лежит в Postgres (`DATABASE_URL`), локально в `data/state.json`.
 - `public/`: Mini App без сборки (vanilla JS), графики на SVG.
-  - `mascots.js`: 4 маскота-напарника (mimi, kapi, dino, axi) × 9 эмоций (happy, cheer, oops, sad, think, wow, love, sleepy, peace), рисуются SVG-кодом.
+  - `mascots.js`: 5 маскотов-напарников (mimi, kapi, dino, axi, boo) × 9 эмоций (happy, cheer, oops, sad, think, wow, love, sleepy, peace), рисуются SVG-кодом.
   - `icons.js`: иконки интерфейса Solar (bold-duotone). Новые иконки берутся из `@iconify-json/solar`.
   - `e/`: 3D-эмодзи Fluent (`<код>.webp` + `index.json`), `ea/`: анимированные. Любой эмодзи в `emoji` урока или группы автоматически рисуется в 3D.
   - Ученик сам выбирает напарника, цвет (lime, sakura, lavender, ocean, peach, mint) и тему (auto, light, dark), всё это хранится в `user.prefs`.

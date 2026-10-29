@@ -404,3 +404,37 @@ code { background: var(--card-2); padding: 1px 6px; border-radius: 7px; font-siz
 .emo.xl { width: 64px; height: 64px; }
 .emo.crown { width: 34px; height: 34px; margin-bottom: -6px; }
 .ach .a span { display: block; line-height: 1.3; margin-top: 2px; }
+
+/* ───────── профиль ───────── */
+.mascot-pick { grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
+.mascot-pick button { padding: 6px 4px 10px !important; border-radius: 18px !important; }
+.mascot-pick b { font-size: 14px !important; }
+.mascot-about { margin-top: 10px; background: var(--accent-l); color: var(--accent-d); border-radius: 14px; padding: 10px 12px; font-size: 13px; text-align: center; }
+.pcard { margin-top: 8px; background: var(--card); border: 1.5px solid var(--line); border-radius: 28px; padding: 16px; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+.pcard::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 92px; background: linear-gradient(135deg, var(--accent), var(--accent-d)); opacity: 0.16; }
+.pcard-top { display: flex; gap: 12px; align-items: center; position: relative; }
+.pcard-top h1 { font-size: 23px; }
+.pmascot { flex: none; width: 104px; height: 104px; border-radius: 30px; background: var(--accent-l); display: grid; place-items: center; overflow: visible; }
+.pmascot:active { transform: scale(0.95); }
+.lvl { margin-top: 16px; }
+.lvl b { display: inline-flex; gap: 6px; align-items: center; }
+.lvl-bar { height: 14px; border-radius: 7px; background: var(--track); overflow: hidden; margin-top: 8px; }
+.lvl-bar i { display: block; height: 100%; min-width: 14px; border-radius: 7px; background: linear-gradient(90deg, var(--accent-2), var(--accent)); position: relative; }
+.lvl-bar i::after { content: ''; position: absolute; left: 7px; right: 7px; top: 3px; height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.4); }
+.strip { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 14px; background: var(--card-2); border-radius: 18px; padding: 10px 4px; }
+.strip > div { display: flex; flex-direction: column; align-items: center; gap: 1px; }
+.strip > div + div { border-left: 1.5px solid var(--line); }
+.strip .emo { width: 28px; height: 28px; }
+.strip b { font-size: 18px; font-weight: 900; }
+.strip span { font-size: 11px; color: var(--muted); }
+.menu { margin-top: 14px; background: var(--card); border: 1.5px solid var(--line); border-radius: 24px; box-shadow: var(--shadow); overflow: hidden; }
+.mrow { width: 100%; display: flex; align-items: center; gap: 12px; padding: 14px 14px; text-align: left; }
+.mrow + .mrow { border-top: 1.5px solid var(--line); }
+.mrow:active { background: var(--card-2); }
+.mrow > .emo { width: 34px; height: 34px; }
+.mrow b { display: block; font-size: 16px; }
+.mrow .grow span { display: block; font-size: 12.5px; color: var(--muted); margin-top: 1px; }
+.mrow-prev { position: relative; width: 40px; height: 40px; border-radius: 14px; background: var(--accent-l); display: grid; place-items: center; overflow: hidden; }
+.mrow-prev i { position: absolute; right: 2px; bottom: 2px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--card); }
+.mrow-badges { display: flex; }
+.mrow-badges .emo { width: 26px; height: 26px; margin-left: -6px; }

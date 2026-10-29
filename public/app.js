@@ -452,11 +452,12 @@ async function tabStats() {
   app.innerHTML = topbar() + statsHtml(st, { self: true });
 }
 
-// Выбор напарника, цвета и темы (профиль, первый вход, настройки учителя)
+// Выбор напарника, цвета и темы (первый вход, профиль, настройки учителя)
 function appearanceHtml() {
-  return `<div class="field"><span>Напарник</span><div class="mascot-pick">${Object.entries(MASCOTS).map(([id, m]) => `<button data-mascot="${id}" class="${LOOK.mascot === id ? 'on' : ''}">${mascot(id, LOOK.mascot === id ? 'peace' : 'happy', 96, 'still')}<b>${m.name}</b><span>${m.about}</span></button>`).join('')}</div></div>
-    <div class="field" style="margin-top:16px"><span>Цвет приложения</span><div class="swatches">${ACCENTS.map(([id, name, c]) => `<button class="swatch ${LOOK.accent === id ? 'on' : ''}" data-accent="${id}" title="${name}" style="background:${c};color:${c}">${ic('check-circle')}</button>`).join('')}</div></div>
-    <div class="field" style="margin-top:16px"><span>Тема</span><div class="seg">${[['auto', 'monitor', 'Авто'], ['light', 'sun-2', 'Светлая'], ['dark', 'moon', 'Тёмная']].map(([id, icon, t]) => `<button data-mode="${id}" class="${LOOK.mode === id ? 'on' : ''}">${ic(icon, 'sm')}${t}</button>`).join('')}</div></div>`;
+  return `<div class="field"><span>Напарник</span><div class="mascot-pick">${Object.entries(MASCOTS).map(([id, m]) => `<button data-mascot="${id}" class="${LOOK.mascot === id ? 'on' : ''}">${mascot(id, LOOK.mascot === id ? 'peace' : 'happy', 84, 'still')}<b>${m.name}</b></button>`).join('')}</div>
+      <p class="mascot-about" data-about>${esc(MASCOTS[LOOK.mascot]?.about || '')}</p></div>
+    <div class="field" style="margin-top:18px"><span>Цвет приложения</span><div class="swatches">${ACCENTS.map(([id, name, c]) => `<button class="swatch ${LOOK.accent === id ? 'on' : ''}" data-accent="${id}" title="${name}" style="background:${c};color:${c}">${ic('check-circle')}</button>`).join('')}</div></div>
+    <div class="field" style="margin-top:18px"><span>Тема</span><div class="seg">${[['auto', 'monitor', 'Авто'], ['light', 'sun-2', 'Светлая'], ['dark', 'moon', 'Тёмная']].map(([id, icon, t]) => `<button data-mode="${id}" class="${LOOK.mode === id ? 'on' : ''}">${ic(icon, 'sm')}${t}</button>`).join('')}</div></div>`;
 }
 function bindAppearance(el, onChange) {
   $$('[data-mascot]', el).forEach((b) => (b.onclick = () => {
@@ -464,8 +465,9 @@ function bindAppearance(el, onChange) {
     savePrefs({ mascot: b.dataset.mascot });
     $$('[data-mascot]', el).forEach((x) => {
       x.classList.toggle('on', x === b);
-      x.querySelector('svg').outerHTML = mascot(x.dataset.mascot, x === b ? 'cheer' : 'happy', 96, x === b ? '' : 'still');
+      x.querySelector('svg').outerHTML = mascot(x.dataset.mascot, x === b ? 'cheer' : 'happy', 84, x === b ? '' : 'still');
     });
+    $('[data-about]', el).textContent = MASCOTS[b.dataset.mascot].about;
     onChange?.();
   }));
   $$('[data-accent]', el).forEach((b) => (b.onclick = () => { haptic('light'); savePrefs({ accent: b.dataset.accent }); $$('[data-accent]', el).forEach((x) => x.classList.toggle('on', x === b)); onChange?.(); }));
@@ -474,7 +476,7 @@ function bindAppearance(el, onChange) {
 function appearanceSheet(first) {
   openSheet(
     `<div class="center" style="margin-bottom:14px"><h2>${first ? 'Выбери напарника!' : 'Внешний вид'}</h2><p class="muted small" style="margin-top:4px">${first ? 'Он будет болеть за тебя на каждом тесте. Поменять можно в профиле.' : 'Напарник, цвет и тема'}</p></div>
-     ${appearanceHtml()}<button class="btn block" style="margin-top:20px" data-done>Готово</button>`,
+     ${appearanceHtml()}<button class="btn block" style="margin-top:22px" data-done>Готово</button>`,
     (el, close) => {
       bindAppearance(el);
       $('[data-done]', el).onclick = () => { if (first) savePrefs({}); close(); route().catch(fail); };
@@ -482,29 +484,73 @@ function appearanceSheet(first) {
   );
 }
 
+// Уровень по XP: на каждый следующий нужно на 50 XP больше (100, 150, 200…)
+function levelOf(xp) {
+  let level = 1, need = 100, left = xp;
+  while (left >= need) { left -= need; level++; need += 50; }
+  return { level, cur: left, need };
+}
+
+function achievementsSheet(st) {
+  const got = st.achievements.filter((a) => a.got).length;
+  openSheet(`<div class="center" style="margin-bottom:16px"><h2>Достижения</h2><p class="muted small" style="margin-top:4px">Получено ${got} из ${st.achievements.length}</p></div>
+    <div class="ach">${st.achievements.map((a) => `<div class="a ${a.got ? '' : 'off'}">${emo(a.icon)}<b>${esc(a.title)}</b><span>${esc(a.desc)}</span></div>`).join('')}</div>`);
+}
+function howSheet() {
+  openSheet(`<div class="center" style="margin-bottom:16px">${me('think', 100)}<h2>Как это работает</h2></div>
+    <div class="stack small">
+      <div class="row">${emo(E.bolt)}<p><b>XP</b> — 10 за правильный ответ. 3 подряд — ×2, 5 подряд — ×3. За 100% бонус +20.</p></div>
+      <div class="row">${emo(E.glow)}<p><b>Уровень</b> растёт от XP. Каждый следующий уровень чуть дальше предыдущего.</p></div>
+      <div class="row">${emo(E.fire)}<p><b>Серия</b> — решай хотя бы один тест в день, и огонёк не погаснет.</p></div>
+      <div class="row">${emo(E.star)}<p><b>Звёзды</b> за тест: 50% = 1, 80% = 2, 100% = 3.</p></div>
+      <div class="row">${emo(E.repeat)}<p>Ошибки повторяются в конце теста — «работа над ошибками». Оценку они не портят.</p></div>
+      <div class="row">${emo(E.trophy)}<p><b>Лига</b> — рейтинг твоей группы по XP.</p></div>
+    </div>`);
+}
+
 async function tabProfile() {
   const st = await api('/stats/me');
   const u = st.user;
+  const lv = levelOf(st.xp);
+  const got = st.achievements.filter((a) => a.got);
+  const acc = ACC[LOOK.accent] || ACC.lime;
+  const row = (attr, icon, title, sub, right) => `<button class="mrow" ${attr}>${emo(icon)}<div class="grow"><b>${title}</b>${sub ? `<span>${sub}</span>` : ''}</div>${right}<span class="faint">${ic('alt-arrow-right')}</span></button>`;
   app.innerHTML = topbar() + `
-    <div class="hero" style="flex-direction:column;text-align:center;align-items:center;padding-top:10px">${me('peace', 130)}
-      <div class="grow"><h1 style="margin:0">${esc(u.name)}</h1><p style="opacity:.9">${u.username ? '@' + esc(u.username) + ' · ' : ''}с ${new Date(u.joinedAt).toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' })}</p>
-      <div class="tags" style="justify-content:center;margin-top:10px">${st.groups.map((g) => `<span class="pill" style="background:rgba(255,255,255,.22);color:#fff">${emo(g.emoji)}${esc(g.name)}</span>`).join('')}</div></div></div>
-    ${sectionTitle(E.palette, 'Внешний вид')}
-    <div class="card" data-look>${appearanceHtml()}</div>
-    ${sectionTitle(E.medal, 'Достижения', `<span class="pill accent">${st.achievements.filter((a) => a.got).length} / ${st.achievements.length}</span>`)}
-    <div class="ach">${st.achievements.map((a) => `<div class="a ${a.got ? '' : 'off'}">${emo(a.icon)}<b>${esc(a.title)}</b><span>${esc(a.desc)}</span></div>`).join('')}</div>
-    ${sectionTitle(E.bulb, 'Как это работает')}
-    <div class="card stack small">
-      <div class="row">${emo(E.bolt)}<p><b>XP</b> — 10 за правильный ответ. 3 подряд — ×2, 5 подряд — ×3. За 100% бонус +20.</p></div>
-      <div class="row">${emo(E.fire)}<p><b>Серия</b> — решай хотя бы один тест в день.</p></div>
-      <div class="row">${emo(E.star)}<p><b>Звёзды</b> — 50% = 1, 80% = 2, 100% = 3.</p></div>
-      <div class="row">${emo(E.repeat)}<p>Ошибки повторяются в конце теста — «работа над ошибками».</p></div>
+    <div class="pcard">
+      <div class="pcard-top">
+        <button class="pmascot" data-poke aria-label="Напарник">${me('peace', 104)}</button>
+        <div class="grow"><h1 class="ellipsis">${esc(u.name)}</h1>
+          <p class="muted small">${u.username ? '@' + esc(u.username) + ' · ' : ''}с ${new Date(u.joinedAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+          <div class="tags" style="margin-top:8px">${st.groups.map((g) => `<span class="pill accent">${emo(g.emoji)}${esc(g.name)}</span>`).join('') || '<span class="pill">Без группы</span>'}</div></div>
+      </div>
+      <div class="lvl"><div class="row between"><b>${emo(E.glow)} Уровень ${lv.level}</b><span class="muted small">${lv.cur} / ${lv.need} XP</span></div>
+        <div class="lvl-bar"><i style="width:${(lv.cur / lv.need) * 100}%"></i></div></div>
+      <div class="strip">
+        <div>${emo(E.fire, { anim: st.streak > 0 })}<b>${st.streak}</b><span>серия</span></div>
+        <div>${emo(E.bolt)}<b>${st.xp}</b><span>XP</span></div>
+        <div>${emo(E.check)}<b>${st.done}/${st.total}</b><span>тестов</span></div>
+      </div>
+    </div>
+    <div class="menu">
+      ${row('data-open="look"', E.palette, 'Внешний вид', `${esc(MASCOTS[LOOK.mascot]?.name || '')} · ${acc.name}`, `<span class="mrow-prev">${mascot(LOOK.mascot, 'happy', 40, 'still', true)}<i style="background:${acc.c}"></i></span>`)}
+      ${row('data-open="ach"', E.medal, 'Достижения', `${got.length} из ${st.achievements.length}`, `<span class="mrow-badges">${got.slice(-3).map((a) => emo(a.icon)).join('')}</span>`)}
+      ${row('data-open="stats"', E.chart, 'Моя статистика', 'Прогресс, карта тем, сравнение с группой', st.overall != null ? pctPill(st.overall) : '')}
+      ${row('data-open="league"', E.trophy, 'Лига группы', 'Твоё место среди одногруппников', '')}
+      ${row('data-open="how"', E.bulb, 'Как это работает', 'XP, уровни, серия и звёзды', '')}
     </div>
     <p class="center faint small" style="margin-top:18px">ID: ${esc(u.id)}</p>`;
-  bindAppearance($('[data-look]'), () => {
-    const h = $('.hero .mascot');
-    if (h) h.outerHTML = me('cheer', 130);
-  });
+  const poke = $('[data-poke]');
+  const reactions = ['cheer', 'wow', 'love', 'peace', 'oops'];
+  let k = 0;
+  poke.onclick = () => { haptic('light'); poke.innerHTML = me(reactions[k++ % reactions.length], 104); };
+  $$('[data-open]').forEach((b) => (b.onclick = () => {
+    haptic('light');
+    const what = b.dataset.open;
+    if (what === 'look') appearanceSheet(false);
+    else if (what === 'ach') achievementsSheet(st);
+    else if (what === 'how') howSheet();
+    else go(what);
+  }));
 }
 
 // ═══════════════ ПРОХОЖДЕНИЕ ТЕСТА ═══════════════
