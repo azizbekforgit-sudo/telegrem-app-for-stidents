@@ -1,5 +1,5 @@
 // Вся предметная логика: ученики, группы, тесты, попытки, статистика.
-import { checkAnswer, publicQuestion, validateLesson } from './grading.js';
+import { checkAnswer, choicePerm, publicQuestion, validateLesson } from './grading.js';
 
 const TZ = process.env.TZ_NAME || 'Asia/Tashkent';
 const dayKey = (d = new Date()) => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(d);
@@ -177,6 +177,10 @@ export function createLogic(store, { adminIds }) {
     };
   }
 
+  // Индекс варианта, который видел ученик, → индекс в уроке
+  const toOriginal = (q, a, index, value) =>
+    q.type === 'choice' ? choicePerm(q.options.length, `${a.id}:${index}`)[Number(value)] ?? -1 : value;
+
   function getOwnAttempt(uid, aid) {
     const a = S.attempts[aid];
     if (!a || a.userId !== String(uid)) throw httpError(404, 'Попытка не найдена');
@@ -188,7 +192,7 @@ export function createLogic(store, { adminIds }) {
     if (a.finishedAt) throw httpError(400, 'Тест уже завершён');
     const q = S.lessons[a.lessonId].questions[index];
     if (!q || index !== a.answers.length) throw httpError(400, 'Неверный номер вопроса');
-    const res = checkAnswer(q, value);
+    const res = checkAnswer(q, toOriginal(q, a, index, value));
     a.combo = res.correct ? a.combo + 1 : 0;
     a.maxCombo = Math.max(a.maxCombo, a.combo);
     const mult = a.combo >= 5 ? 3 : a.combo >= 3 ? 2 : 1;
@@ -204,7 +208,7 @@ export function createLogic(store, { adminIds }) {
     const a = getOwnAttempt(uid, aid);
     const q = S.lessons[a.lessonId].questions[index];
     if (!q || a.answers.length < S.lessons[a.lessonId].questions.length) throw httpError(400, 'Сначала ответь на все вопросы');
-    const res = checkAnswer(q, value);
+    const res = checkAnswer(q, toOriginal(q, a, index, value));
     return { correct: res.correct, correctText: res.correctText, explain: q.explain || null };
   }
 

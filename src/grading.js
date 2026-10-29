@@ -36,13 +36,18 @@ function hashSeed(str) {
   return h >>> 0;
 }
 
+// Варианты выбора перемешиваются для каждой попытки: ученик видит options[perm[k]] на месте k
+export function choicePerm(n, seedKey) {
+  return shuffle([...Array(n).keys()], hashSeed('opts:' + seedKey));
+}
+
 // То, что уходит на клиент: без правильных ответов, с перемешанными вариантами.
 export function publicQuestion(q, seedKey) {
   const seed = hashSeed(seedKey);
   const base = { type: q.type, prompt: q.prompt, topic: q.topic || null, hint: q.hint || null, code: q.code || null };
   switch (q.type) {
     case 'choice':
-      return { ...base, options: q.options };
+      return { ...base, options: choicePerm(q.options.length, seedKey).map((i) => q.options[i]) };
     case 'truefalse':
       return base;
     case 'input':
