@@ -1,0 +1,97 @@
+{
+  "title": "Lesson 12. CSS variables and animations",
+  "description": ":root and var(), transition, @keyframes, transform",
+  "learn": {
+    "intro": "Hi! Today is lesson 12: **CSS variables and animations**. We'll learn to change the color of the whole site with one line and bring buttons and cards to life. Let's go!",
+    "sections": [
+      {
+        "title": "Declaring a variable",
+        "slides": [
+          { "emoji": "🎨", "text": "In our project the same purple color is used in **15 places**. If the designer asks for another color, you'd have to edit all 15. CSS variables solve this with **one edit**." },
+          { "text": "A variable is declared at the very top of `style.css`, inside `:root`:", "code": ":root {\n  --main-color: #7c3aed;\n}" },
+          { "text": "`:root` is the whole document (`html`). A variable declared here works **everywhere on the page**." },
+          { "quote": true, "text": "A variable name always starts with two dashes: --main-color." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "CSS variables", "prompt": "A variable from :root only works inside body.", "answer": false, "explain": ":root is the whole document, so the variable works on the whole page." },
+          { "type": "choice", "topic": "CSS variables", "prompt": "Which variable name is correct?", "options": ["--card-bg", "card-bg", "$card-bg", "-card-bg"], "answer": 0, "explain": "A CSS variable name starts with --." }
+        ]
+      },
+      {
+        "title": "Using var()",
+        "slides": [
+          { "emoji": "🔍", "text": "First let's count: in VS Code press **Ctrl+F** and search for `#7c3aed`. See how many places?" },
+          { "text": "Instead of the color we write `var(--main-color)`:", "code": ".btn-cart {\n  background: var(--main-color);\n}" },
+          { "emoji": "✨", "text": "Now we change the color **in one place** — and all buttons change at once:", "code": ":root {\n  --main-color: #e74c3c;\n}" },
+          { "quote": true, "text": "The most common mistakes: forgetting -- or writing var(main-color). If it doesn't work — check the value in DevTools, in the Computed tab." }
+        ],
+        "check": [
+          { "type": "input", "topic": "CSS variables", "prompt": "Fill in: color: ___(--main-color);", "answer": ["var"], "explain": "A variable's value is taken with var()." },
+          { "type": "choice", "topic": "CSS variables", "prompt": "Where is the mistake?", "code": ".btn {\n  background: var(main-color);\n}", "options": ["No -- before the name", "var must be in capital letters", "Square brackets are needed", "No mistake"], "answer": 0, "explain": "Correct: var(--main-color)." }
+        ]
+      },
+      {
+        "title": "transition — a smooth change",
+        "slides": [
+          { "text": "Without smoothness, the color on hover changes **abruptly**, in a jump:", "code": ".btn:hover {\n  background: #6d28d9;\n}" },
+          { "emoji": "🌊", "text": "Add `transition` — and the state change becomes **smooth**:", "code": ".btn {\n  transition: background-color 0.3s ease;\n}" },
+          { "text": "Try changing `0.3s` to `0.1s` and to `1s` — feel the difference yourself." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "transition", "prompt": "What does transition do?", "options": ["Makes a state change smooth", "Starts an endless animation", "Rotates an element", "Declares a variable"], "answer": 0, "explain": "transition stretches the change over time so it isn't abrupt." },
+          { "type": "truefalse", "topic": "transition", "prompt": "transition: background-color 1s ease — the change is slower than with 0.3s.", "answer": true, "explain": "1 second is longer than 0.3 seconds." }
+        ]
+      },
+      {
+        "title": "@keyframes — a simple animation",
+        "slides": [
+          { "emoji": "🫁", "text": "Let's make a button that «breathes»:", "code": "@keyframes breathe {\n  0%   { transform: scale(1); }\n  50%  { transform: scale(1.05); }\n  100% { transform: scale(1); }\n}\n\n.btn-cart {\n  animation: breathe 2s infinite;\n}" },
+          { "text": "`0%`, `50%`, `100%` are the **stages** of the animation. `2s` is the duration, `infinite` means repeat forever." },
+          { "quote": true, "text": "Don't put an endless animation on every button — motion is distracting. Show it, then remove it." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "@keyframes", "prompt": "What does infinite mean in animation: breathe 2s infinite?", "options": ["Repeat forever", "Duration of 2 seconds", "The animation name", "Smoothness"], "answer": 0, "explain": "infinite — the animation repeats endlessly." }
+        ]
+      },
+      {
+        "title": "transform: scale, translate, rotate",
+        "slides": [
+          { "text": "The three main transform functions:", "code": ".card:hover      { transform: scale(1.03); }\n.menu-item:hover { transform: translateX(6px); }\n.logo-icon:hover { transform: rotate(10deg); }" },
+          { "emoji": "🔄", "text": "`scale` — **enlarge**, `translate` — **move**, `rotate` — **turn**." },
+          { "quote": true, "text": "All three change how the element looks, not its place on the page." }
+        ],
+        "check": [
+          { "type": "match", "topic": "transform", "prompt": "Match the function and the action", "pairs": [["scale", "Enlarge"], ["translate", "Move"], ["rotate", "Turn"]] },
+          { "type": "choice", "topic": "transform", "prompt": "What will transform: rotate(10deg) do?", "options": ["Turn it by 10 degrees", "Move it by 10px", "Make it 10 times bigger", "Make it transparent"], "answer": 0, "explain": "rotate means turn, deg means degrees." }
+        ]
+      },
+      {
+        "title": "Practice and homework",
+        "slides": [
+          { "emoji": "🃏", "text": "Task: add a hover animation to all `.card` cards:", "code": ".card {\n  transition: transform 0.3s ease, border-color 0.3s ease;\n}\n\n.card:hover {\n  transform: scale(1.03);\n}" },
+          { "quote": true, "text": "Write transition in the main .card rule, not in :hover. Otherwise there's no smoothness when the mouse leaves." },
+          { "emoji": "🏠", "text": "Homework: move hardcoded values into variables in `:root` — the colors `#7c3aed`, `#14141f`, `#a1a1b5`, `#ffffff` and the 16px, 24px spacing. Use meaningful names: `--main-color`, `--card-bg`, `--gap`." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "transition", "prompt": "Where is the right place to write transition for a card?", "options": [".card { }", ".card:hover { }", ":root { }", "@keyframes { }"], "answer": 0, "explain": "In the main rule — then it's smooth both on hover and when the mouse leaves." }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    { "type": "truefalse", "topic": "CSS variables", "prompt": "A CSS variable name starts with two dashes --.", "answer": true, "explain": "For example: --main-color." },
+    { "type": "choice", "topic": "CSS variables", "prompt": "Where do you declare variables so they work on the whole page?", "options": [":root", "body", ".btn", "@keyframes"], "answer": 0, "explain": ":root is the whole document." },
+    { "type": "input", "topic": "CSS variables", "prompt": "Fill in: background: ___(--main-color);", "answer": ["var"], "explain": "A variable's value is taken with var()." },
+    { "type": "choice", "topic": "CSS variables", "prompt": "What color will the button be?", "code": ":root {\n  --main-color: #e74c3c;\n}\n.btn {\n  background: var(--main-color);\n}", "options": ["#e74c3c", "#7c3aed", "No color", "There will be an error"], "answer": 0, "explain": "var(--main-color) takes the value from :root — #e74c3c." },
+    { "type": "truefalse", "topic": "CSS variables", "prompt": "If you change --main-color in :root, every element with var(--main-color) changes.", "answer": true, "explain": "That's the point of variables: one edit — it changes everywhere." },
+    { "type": "choice", "topic": "CSS variables", "prompt": "Where is the mistake?", "code": ".title {\n  color: var(main-color);\n}", "options": ["No -- before the name", "You can't use var in color", "It must be $main-color", "No mistake"], "answer": 0, "explain": "Correct: var(--main-color)." },
+    { "type": "choice", "topic": "transition", "prompt": "What does transition do?", "options": ["Makes a state change smooth", "Rotates an element", "Declares a variable", "Starts an endless animation"], "answer": 0, "explain": "Without transition the change is abrupt." },
+    { "type": "order", "topic": "transition", "prompt": "Build a smooth background change over 0.3 seconds", "tokens": ["transition:", "background-color", "0.3s", "ease;"], "extra": ["infinite"], "explain": "transition: property time easing;" },
+    { "type": "choice", "topic": "transition", "prompt": "Where do you write transition so it's smooth even when the mouse leaves?", "options": [".card { }", ".card:hover { }", ":root { }", "@keyframes { }"], "answer": 0, "explain": "If it's only in :hover, the card snaps back abruptly when the mouse leaves." },
+    { "type": "match", "topic": "transform", "prompt": "Match the transform and what it does", "pairs": [["scale(1.03)", "Enlarges slightly"], ["translateX(6px)", "Moves to the right"], ["rotate(10deg)", "Turns it"]] },
+    { "type": "truefalse", "topic": "transform", "prompt": "transform changes an element's place, and neighboring elements move.", "answer": false, "explain": "transform only changes how the element looks, not its place." },
+    { "type": "choice", "topic": "@keyframes", "prompt": "What do 0%, 50%, 100% mean in this animation?", "code": "@keyframes breathe {\n  0%   { transform: scale(1); }\n  50%  { transform: scale(1.05); }\n  100% { transform: scale(1); }\n}", "options": ["Stages of the animation", "Transparency", "Size relative to screen width", "Speed"], "answer": 0, "explain": "These are moments of the animation: start, middle, end." },
+    { "type": "input", "topic": "@keyframes", "prompt": "Which word in animation: breathe 2s infinite; makes the animation endless?", "answer": ["infinite"], "explain": "infinite — repeat forever." },
+    { "type": "choice", "topic": "@keyframes", "prompt": "How do you attach the breathe animation to a button for 2 seconds?", "options": ["animation: breathe 2s infinite;", "transition: breathe 2s;", "transform: breathe(2s);", "@keyframes: breathe 2s;"], "answer": 0, "explain": "An animation from @keyframes is attached with the animation property." }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "id": "lesson-12-css-variables",
+  "title": "Урок 12. CSS-переменные и анимации",
+  "emoji": "🎨",
+  "description": ":root и var(), transition, @keyframes, transform",
+  "learn": {
+    "intro": "Привет! Сегодня урок 12: **CSS-переменные и анимации**. Научимся менять цвет всего сайта одной строкой и оживим кнопки и карточки. Поехали!",
+    "sections": [
+      {
+        "title": "Объявляем переменную",
+        "slides": [
+          { "emoji": "🎨", "text": "В нашем проекте один и тот же фиолетовый цвет стоит в **15 местах**. Дизайнер попросит другой цвет — придётся править все 15. CSS-переменные решают это **одной правкой**." },
+          { "text": "Переменную объявляют в самом начале `style.css`, внутри `:root`:", "code": ":root {\n  --main-color: #7c3aed;\n}" },
+          { "text": "`:root` — это весь документ (`html`). Переменная, объявленная здесь, работает **на всей странице**." },
+          { "quote": true, "text": "Имя переменной всегда начинается с двух дефисов: --main-color." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "CSS-переменные", "prompt": "Переменная из :root работает только внутри body.", "answer": false, "explain": ":root — это весь документ, поэтому переменная работает на всей странице." },
+          { "type": "choice", "topic": "CSS-переменные", "prompt": "Какое имя переменной правильное?", "options": ["--card-bg", "card-bg", "$card-bg", "-card-bg"], "answer": 0, "explain": "Имя CSS-переменной начинается с --." }
+        ]
+      },
+      {
+        "title": "Используем var()",
+        "slides": [
+          { "emoji": "🔍", "text": "Сначала посчитаем: в VS Code нажми **Ctrl+F** и найди `#7c3aed`. Видишь, сколько мест?" },
+          { "text": "Вместо цвета пишем `var(--main-color)`:", "code": ".btn-cart {\n  background: var(--main-color);\n}" },
+          { "emoji": "✨", "text": "Теперь меняем цвет **в одном месте** — и все кнопки меняются сразу:", "code": ":root {\n  --main-color: #e74c3c;\n}" },
+          { "quote": true, "text": "Самые частые ошибки: забыть -- или написать var(main-color). Если не работает — проверь значение в DevTools, раздел Computed." }
+        ],
+        "check": [
+          { "type": "input", "topic": "CSS-переменные", "prompt": "Допиши: color: ___(--main-color);", "answer": ["var"], "explain": "Значение переменной берут через var()." },
+          { "type": "choice", "topic": "CSS-переменные", "prompt": "Где ошибка?", "code": ".btn {\n  background: var(main-color);\n}", "options": ["Нет -- перед именем", "var надо писать большими буквами", "Нужны квадратные скобки", "Ошибки нет"], "answer": 0, "explain": "Правильно: var(--main-color)." }
+        ]
+      },
+      {
+        "title": "transition — плавный переход",
+        "slides": [
+          { "text": "Без плавности цвет при наведении меняется **резко**, скачком:", "code": ".btn:hover {\n  background: #6d28d9;\n}" },
+          { "emoji": "🌊", "text": "Добавляем `transition` — и смена состояния идёт **плавно**:", "code": ".btn {\n  transition: background-color 0.3s ease;\n}" },
+          { "text": "Попробуй поменять `0.3s` на `0.1s` и на `1s` — почувствуй разницу сам." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "transition", "prompt": "Что делает transition?", "options": ["Делает смену состояния плавной", "Запускает бесконечную анимацию", "Поворачивает элемент", "Объявляет переменную"], "answer": 0, "explain": "transition растягивает изменение во времени, чтобы оно было не резким." },
+          { "type": "truefalse", "topic": "transition", "prompt": "transition: background-color 1s ease — переход медленнее, чем 0.3s.", "answer": true, "explain": "1 секунда дольше, чем 0.3 секунды." }
+        ]
+      },
+      {
+        "title": "@keyframes — простая анимация",
+        "slides": [
+          { "emoji": "🫁", "text": "Сделаем кнопку, которая «дышит»:", "code": "@keyframes breathe {\n  0%   { transform: scale(1); }\n  50%  { transform: scale(1.05); }\n  100% { transform: scale(1); }\n}\n\n.btn-cart {\n  animation: breathe 2s infinite;\n}" },
+          { "text": "`0%`, `50%`, `100%` — это **этапы** анимации. `2s` — длительность, `infinite` — повторять бесконечно." },
+          { "quote": true, "text": "Не ставьте бесконечную анимацию на все кнопки — движение отвлекает. Показали — и убрали." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "@keyframes", "prompt": "Что значит infinite в animation: breathe 2s infinite?", "options": ["Повторять бесконечно", "Длительность 2 секунды", "Имя анимации", "Плавность"], "answer": 0, "explain": "infinite — анимация повторяется без конца." }
+        ]
+      },
+      {
+        "title": "transform: scale, translate, rotate",
+        "slides": [
+          { "text": "Три главные функции transform:", "code": ".card:hover      { transform: scale(1.03); }\n.menu-item:hover { transform: translateX(6px); }\n.logo-icon:hover { transform: rotate(10deg); }" },
+          { "emoji": "🔄", "text": "`scale` — **увеличить**, `translate` — **сдвинуть**, `rotate` — **повернуть**." },
+          { "quote": true, "text": "Все три меняют то, как элемент выглядит, а не его место на странице." }
+        ],
+        "check": [
+          { "type": "match", "topic": "transform", "prompt": "Соедини функцию и действие", "pairs": [["scale", "Увеличить"], ["translate", "Сдвинуть"], ["rotate", "Повернуть"]] },
+          { "type": "choice", "topic": "transform", "prompt": "Что сделает transform: rotate(10deg)?", "options": ["Повернёт на 10 градусов", "Сдвинет на 10px", "Увеличит в 10 раз", "Сделает прозрачным"], "answer": 0, "explain": "rotate — поворот, deg — градусы." }
+        ]
+      },
+      {
+        "title": "Практика и домашка",
+        "slides": [
+          { "emoji": "🃏", "text": "Задание: добавить всем карточкам `.card` анимацию при наведении:", "code": ".card {\n  transition: transform 0.3s ease, border-color 0.3s ease;\n}\n\n.card:hover {\n  transform: scale(1.03);\n}" },
+          { "quote": true, "text": "transition пишем в основное правило .card, а не в :hover. Иначе, когда мышка уходит, плавности не будет." },
+          { "emoji": "🏠", "text": "Домашка: перенеси «зашитые» значения в переменные в `:root` — цвета `#7c3aed`, `#14141f`, `#a1a1b5`, `#ffffff` и отступы 16px, 24px. Имена делай понятными: `--main-color`, `--card-bg`, `--gap`." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "transition", "prompt": "Куда правильно написать transition для карточки?", "options": [".card { }", ".card:hover { }", ":root { }", "@keyframes { }"], "answer": 0, "explain": "В основное правило — тогда плавно и при наведении, и когда мышка уходит." }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    { "type": "truefalse", "topic": "CSS-переменные", "prompt": "Имя CSS-переменной начинается с двух дефисов --.", "answer": true, "explain": "Например: --main-color." },
+    { "type": "choice", "topic": "CSS-переменные", "prompt": "Где объявляют переменные, чтобы они работали на всей странице?", "options": [":root", "body", ".btn", "@keyframes"], "answer": 0, "explain": ":root — это весь документ." },
+    { "type": "input", "topic": "CSS-переменные", "prompt": "Допиши: background: ___(--main-color);", "answer": ["var"], "explain": "Значение переменной берут через var()." },
+    { "type": "choice", "topic": "CSS-переменные", "prompt": "Какого цвета будет кнопка?", "code": ":root {\n  --main-color: #e74c3c;\n}\n.btn {\n  background: var(--main-color);\n}", "options": ["#e74c3c", "#7c3aed", "Без цвета", "Будет ошибка"], "answer": 0, "explain": "var(--main-color) берёт значение из :root — #e74c3c." },
+    { "type": "truefalse", "topic": "CSS-переменные", "prompt": "Если поменять --main-color в :root, изменятся все элементы, где стоит var(--main-color).", "answer": true, "explain": "В этом и смысл переменных: одна правка — меняется везде." },
+    { "type": "choice", "topic": "CSS-переменные", "prompt": "Где ошибка?", "code": ".title {\n  color: var(main-color);\n}", "options": ["Нет -- перед именем", "Нельзя писать var в color", "Нужно $main-color", "Ошибки нет"], "answer": 0, "explain": "Правильно: var(--main-color)." },
+    { "type": "choice", "topic": "transition", "prompt": "Что делает transition?", "options": ["Делает смену состояния плавной", "Поворачивает элемент", "Объявляет переменную", "Запускает бесконечную анимацию"], "answer": 0, "explain": "Без transition изменение происходит резко." },
+    { "type": "order", "topic": "transition", "prompt": "Собери плавную смену фона за 0.3 секунды", "tokens": ["transition:", "background-color", "0.3s", "ease;"], "extra": ["infinite"], "explain": "transition: свойство время плавность;" },
+    { "type": "choice", "topic": "transition", "prompt": "Куда писать transition, чтобы плавность была и когда мышка уходит?", "options": [".card { }", ".card:hover { }", ":root { }", "@keyframes { }"], "answer": 0, "explain": "Если написать только в :hover, при уходе мышки карточка вернётся резко." },
+    { "type": "match", "topic": "transform", "prompt": "Соедини transform и что он делает", "pairs": [["scale(1.03)", "Немного увеличивает"], ["translateX(6px)", "Сдвигает вправо"], ["rotate(10deg)", "Поворачивает"]] },
+    { "type": "truefalse", "topic": "transform", "prompt": "transform меняет место элемента, и соседние элементы сдвигаются.", "answer": false, "explain": "transform меняет только вид элемента, а не его место." },
+    { "type": "choice", "topic": "@keyframes", "prompt": "Что значат 0%, 50%, 100% в этой анимации?", "code": "@keyframes breathe {\n  0%   { transform: scale(1); }\n  50%  { transform: scale(1.05); }\n  100% { transform: scale(1); }\n}", "options": ["Этапы анимации", "Прозрачность", "Размер от ширины экрана", "Скорость"], "answer": 0, "explain": "Это моменты анимации: начало, середина, конец." },
+    { "type": "input", "topic": "@keyframes", "prompt": "Какое слово в animation: breathe 2s infinite; делает анимацию бесконечной?", "answer": ["infinite"], "explain": "infinite — повторять без конца." },
+    { "type": "choice", "topic": "@keyframes", "prompt": "Как подключить анимацию breathe к кнопке на 2 секунды?", "options": ["animation: breathe 2s infinite;", "transition: breathe 2s;", "transform: breathe(2s);", "@keyframes: breathe 2s;"], "answer": 0, "explain": "Анимацию из @keyframes подключают свойством animation." }
+  ]
+}

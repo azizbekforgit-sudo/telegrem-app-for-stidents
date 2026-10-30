@@ -1,0 +1,97 @@
+{
+  "title": "12-dars. CSS o'zgaruvchilar va animatsiyalar",
+  "description": ":root va var(), transition, @keyframes, transform",
+  "learn": {
+    "intro": "Salom! Bugun 12-dars: **CSS o'zgaruvchilar va animatsiyalar**. Butun sayt rangini bitta qator bilan o'zgartirishni o'rganamiz va tugmalar hamda kartochkalarni jonlantiramiz. Ketdik!",
+    "sections": [
+      {
+        "title": "O'zgaruvchini e'lon qilamiz",
+        "slides": [
+          { "emoji": "🎨", "text": "Loyihamizda bir xil binafsha rang **15 ta joyda** ishlatilgan. Dizayner rangni o'zgartirishni so'rasa, 15 ta joyga kirib o'zgartirishga to'g'ri keladi. CSS o'zgaruvchilar buni **bitta tahrir** bilan hal qiladi." },
+          { "text": "O'zgaruvchi `style.css` faylining eng boshida, `:root` ichida e'lon qilinadi:", "code": ":root {\n  --main-color: #7c3aed;\n}" },
+          { "text": "`:root` — bu butun hujjat (`html`). Shu yerda e'lon qilingan o'zgaruvchi **sahifaning hamma joyida** ishlaydi." },
+          { "quote": true, "text": "O'zgaruvchi nomi doim ikkita defis bilan boshlanadi: --main-color." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "CSS o'zgaruvchilar", "prompt": ":root dagi o'zgaruvchi faqat body ichida ishlaydi.", "answer": false, "explain": ":root — butun hujjat, shuning uchun o'zgaruvchi butun sahifada ishlaydi." },
+          { "type": "choice", "topic": "CSS o'zgaruvchilar", "prompt": "Qaysi o'zgaruvchi nomi to'g'ri?", "options": ["--card-bg", "card-bg", "$card-bg", "-card-bg"], "answer": 0, "explain": "CSS o'zgaruvchi nomi -- bilan boshlanadi." }
+        ]
+      },
+      {
+        "title": "var() bilan ishlatamiz",
+        "slides": [
+          { "emoji": "🔍", "text": "Avval sanab ko'ramiz: VS Code'da **Ctrl+F** bosib `#7c3aed` ni qidir. Qancha joy chiqdi?" },
+          { "text": "Rang o'rniga `var(--main-color)` yozamiz:", "code": ".btn-cart {\n  background: var(--main-color);\n}" },
+          { "emoji": "✨", "text": "Endi rangni **bitta joyda** o'zgartiramiz — barcha tugmalar birdaniga o'zgaradi:", "code": ":root {\n  --main-color: #e74c3c;\n}" },
+          { "quote": true, "text": "Eng ko'p uchraydigan xatolar: -- ni unutish yoki var(main-color) deb yozish. Ishlamasa — DevTools'dagi Computed bo'limida qiymatni tekshiring." }
+        ],
+        "check": [
+          { "type": "input", "topic": "CSS o'zgaruvchilar", "prompt": "Yozib qo'y: color: ___(--main-color);", "answer": ["var"], "explain": "O'zgaruvchi qiymati var() orqali olinadi." },
+          { "type": "choice", "topic": "CSS o'zgaruvchilar", "prompt": "Xato qayerda?", "code": ".btn {\n  background: var(main-color);\n}", "options": ["Nomdan oldin -- yo'q", "var katta harflar bilan yozilishi kerak", "Kvadrat qavslar kerak", "Xato yo'q"], "answer": 0, "explain": "To'g'risi: var(--main-color)." }
+        ]
+      },
+      {
+        "title": "transition — silliq o'tish",
+        "slides": [
+          { "text": "Silliqliksiz hover'da rang **birdan**, sakrab o'zgaradi:", "code": ".btn:hover {\n  background: #6d28d9;\n}" },
+          { "emoji": "🌊", "text": "`transition` qo'shamiz — holat o'zgarishi **silliq** bo'ladi:", "code": ".btn {\n  transition: background-color 0.3s ease;\n}" },
+          { "text": "`0.3s` ni `0.1s` va `1s` ga o'zgartirib ko'r — farqni o'zing his qil." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "transition", "prompt": "transition nima qiladi?", "options": ["Holat o'zgarishini silliq qiladi", "Cheksiz animatsiya ishga tushiradi", "Elementni buradi", "O'zgaruvchi e'lon qiladi"], "answer": 0, "explain": "transition o'zgarishni vaqt bo'yicha cho'zadi, u keskin bo'lmaydi." },
+          { "type": "truefalse", "topic": "transition", "prompt": "transition: background-color 1s ease — o'tish 0.3s dan sekinroq.", "answer": true, "explain": "1 soniya 0.3 soniyadan uzunroq." }
+        ]
+      },
+      {
+        "title": "@keyframes — oddiy animatsiya",
+        "slides": [
+          { "emoji": "🫁", "text": "«Nafas oladigan» tugma qilamiz:", "code": "@keyframes breathe {\n  0%   { transform: scale(1); }\n  50%  { transform: scale(1.05); }\n  100% { transform: scale(1); }\n}\n\n.btn-cart {\n  animation: breathe 2s infinite;\n}" },
+          { "text": "`0%`, `50%`, `100%` — animatsiyaning **bosqichlari**. `2s` — davomiyligi, `infinite` — cheksiz takrorlash." },
+          { "quote": true, "text": "Barcha tugmalarga cheksiz animatsiya qo'ymang — harakat chalg'itadi. Ko'rsatdingiz — o'chirib tashlang." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "@keyframes", "prompt": "animation: breathe 2s infinite dagi infinite nimani bildiradi?", "options": ["Cheksiz takrorlash", "Davomiyligi 2 soniya", "Animatsiya nomi", "Silliqlik"], "answer": 0, "explain": "infinite — animatsiya to'xtovsiz takrorlanadi." }
+        ]
+      },
+      {
+        "title": "transform: scale, translate, rotate",
+        "slides": [
+          { "text": "transform'ning uchta asosiy funksiyasi:", "code": ".card:hover      { transform: scale(1.03); }\n.menu-item:hover { transform: translateX(6px); }\n.logo-icon:hover { transform: rotate(10deg); }" },
+          { "emoji": "🔄", "text": "`scale` — **kattalashtirish**, `translate` — **siljitish**, `rotate` — **burish**." },
+          { "quote": true, "text": "Uchalasi ham elementning ko'rinishini o'zgartiradi, joyini emas." }
+        ],
+        "check": [
+          { "type": "match", "topic": "transform", "prompt": "Funksiya va harakatni moslashtir", "pairs": [["scale", "Kattalashtirish"], ["translate", "Siljitish"], ["rotate", "Burish"]] },
+          { "type": "choice", "topic": "transform", "prompt": "transform: rotate(10deg) nima qiladi?", "options": ["10 gradusga buradi", "10px ga siljitadi", "10 marta kattalashtiradi", "Shaffof qiladi"], "answer": 0, "explain": "rotate — burish, deg — gradus." }
+        ]
+      },
+      {
+        "title": "Amaliyot va uyga vazifa",
+        "slides": [
+          { "emoji": "🃏", "text": "Topshiriq: barcha `.card` kartochkalarga hover animatsiyasini qo'shish:", "code": ".card {\n  transition: transform 0.3s ease, border-color 0.3s ease;\n}\n\n.card:hover {\n  transform: scale(1.03);\n}" },
+          { "quote": true, "text": "transition ni :hover qoidasiga emas, asosiy .card qoidasiga yozing. Aks holda sichqoncha chiqib ketganda silliqlik bo'lmaydi." },
+          { "emoji": "🏠", "text": "Uyga vazifa: qattiq yozilgan qiymatlarni `:root` dagi o'zgaruvchilarga o'tkaz — ranglar `#7c3aed`, `#14141f`, `#a1a1b5`, `#ffffff` va oraliqlar 16px, 24px. Nomlar ma'noli bo'lsin: `--main-color`, `--card-bg`, `--gap`." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "transition", "prompt": "Kartochka uchun transition ni qayerga yozish to'g'ri?", "options": [".card { }", ".card:hover { }", ":root { }", "@keyframes { }"], "answer": 0, "explain": "Asosiy qoidaga — shunda hover'da ham, sichqoncha chiqib ketganda ham silliq bo'ladi." }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    { "type": "truefalse", "topic": "CSS o'zgaruvchilar", "prompt": "CSS o'zgaruvchi nomi ikkita defis -- bilan boshlanadi.", "answer": true, "explain": "Masalan: --main-color." },
+    { "type": "choice", "topic": "CSS o'zgaruvchilar", "prompt": "O'zgaruvchilar butun sahifada ishlashi uchun qayerda e'lon qilinadi?", "options": [":root", "body", ".btn", "@keyframes"], "answer": 0, "explain": ":root — butun hujjat." },
+    { "type": "input", "topic": "CSS o'zgaruvchilar", "prompt": "Yozib qo'y: background: ___(--main-color);", "answer": ["var"], "explain": "O'zgaruvchi qiymati var() orqali olinadi." },
+    { "type": "choice", "topic": "CSS o'zgaruvchilar", "prompt": "Tugma qanday rangda bo'ladi?", "code": ":root {\n  --main-color: #e74c3c;\n}\n.btn {\n  background: var(--main-color);\n}", "options": ["#e74c3c", "#7c3aed", "Rangsiz", "Xato bo'ladi"], "answer": 0, "explain": "var(--main-color) qiymatni :root dan oladi — #e74c3c." },
+    { "type": "truefalse", "topic": "CSS o'zgaruvchilar", "prompt": ":root da --main-color o'zgartirilsa, var(--main-color) yozilgan barcha elementlar o'zgaradi.", "answer": true, "explain": "O'zgaruvchilarning ma'nosi shu: bitta tahrir — hamma joyda o'zgaradi." },
+    { "type": "choice", "topic": "CSS o'zgaruvchilar", "prompt": "Xato qayerda?", "code": ".title {\n  color: var(main-color);\n}", "options": ["Nomdan oldin -- yo'q", "color ichida var yozib bo'lmaydi", "$main-color kerak", "Xato yo'q"], "answer": 0, "explain": "To'g'risi: var(--main-color)." },
+    { "type": "choice", "topic": "transition", "prompt": "transition nima qiladi?", "options": ["Holat o'zgarishini silliq qiladi", "Elementni buradi", "O'zgaruvchi e'lon qiladi", "Cheksiz animatsiya ishga tushiradi"], "answer": 0, "explain": "transition'siz o'zgarish keskin bo'ladi." },
+    { "type": "order", "topic": "transition", "prompt": "Fonning 0.3 soniyada silliq o'zgarishini yig'", "tokens": ["transition:", "background-color", "0.3s", "ease;"], "extra": ["infinite"], "explain": "transition: xususiyat vaqt silliqlik;" },
+    { "type": "choice", "topic": "transition", "prompt": "Sichqoncha chiqib ketganda ham silliqlik bo'lishi uchun transition qayerga yoziladi?", "options": [".card { }", ".card:hover { }", ":root { }", "@keyframes { }"], "answer": 0, "explain": "Faqat :hover ga yozilsa, sichqoncha chiqib ketganda kartochka keskin qaytadi." },
+    { "type": "match", "topic": "transform", "prompt": "transform va u nima qilishini moslashtir", "pairs": [["scale(1.03)", "Biroz kattalashtiradi"], ["translateX(6px)", "O'ngga siljitadi"], ["rotate(10deg)", "Buradi"]] },
+    { "type": "truefalse", "topic": "transform", "prompt": "transform elementning joyini o'zgartiradi va qo'shni elementlar suriladi.", "answer": false, "explain": "transform faqat elementning ko'rinishini o'zgartiradi, joyini emas." },
+    { "type": "choice", "topic": "@keyframes", "prompt": "Bu animatsiyada 0%, 50%, 100% nimani bildiradi?", "code": "@keyframes breathe {\n  0%   { transform: scale(1); }\n  50%  { transform: scale(1.05); }\n  100% { transform: scale(1); }\n}", "options": ["Animatsiya bosqichlari", "Shaffoflik", "Ekran kengligidan o'lcham", "Tezlik"], "answer": 0, "explain": "Bu animatsiya lahzalari: boshi, o'rtasi, oxiri." },
+    { "type": "input", "topic": "@keyframes", "prompt": "animation: breathe 2s infinite; da qaysi so'z animatsiyani cheksiz qiladi?", "answer": ["infinite"], "explain": "infinite — to'xtovsiz takrorlash." },
+    { "type": "choice", "topic": "@keyframes", "prompt": "breathe animatsiyasini tugmaga 2 soniyaga qanday ulash mumkin?", "options": ["animation: breathe 2s infinite;", "transition: breathe 2s;", "transform: breathe(2s);", "@keyframes: breathe 2s;"], "answer": 0, "explain": "@keyframes dagi animatsiya animation xususiyati bilan ulanadi." }
+  ]
+}
