@@ -21,8 +21,20 @@ export function emptyState() {
 }
 
 export async function createStore() {
-  const url = process.env.DATABASE_URL;
-  const backend = url ? await pgBackend(url) : fileBackend();
+  // В DATABASE_URL можно перечислить несколько адресов через пробел — берём первый, к которому удалось подключиться
+  const urls = (process.env.DATABASE_URL || '').split(/\s+/).filter(Boolean);
+  let backend = null;
+  for (const url of urls) {
+    try {
+      backend = await pgBackend(url);
+      console.log(`[store] подключились к ${url.replace(/\/\/[^@]*@/, '//***@')}`);
+      break;
+    } catch (e) {
+      console.error(`[store] не удалось: ${url.replace(/\/\/[^@]*@/, '//***@')} — ${e.code || e.message}`);
+    }
+  }
+  if (urls.length && !backend) throw new Error('Ни одна база из DATABASE_URL недоступна');
+  backend ||= fileBackend();
   const state = Object.assign(emptyState(), (await backend.load()) || {});
 
   let timer = null;
@@ -67,7 +79,7 @@ function fileBackend() {
 
 async function pgBackend(url) {
   const needsSsl = /sslmode=require|render\.com|neon\.tech|supabase/.test(url) || process.env.PGSSL === '1';
-  const pool = new pg.Pool({ connectionString: url, ssl: needsSsl ? { rejectUnauthorized: false } : undefined, max: 3 });
+  const pool = new pg.Pool({ connectionString: url, ssl: needsSsl ? { rejectUnauthorized: false } : undefined, max: 3, connectionTimeoutMillis: 8000 });
   await pool.query('CREATE TABLE IF NOT EXISTS app_state (id int PRIMARY KEY, data jsonb NOT NULL, updated_at timestamptz DEFAULT now())');
   return {
     name: 'postgres',
