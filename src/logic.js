@@ -1,4 +1,5 @@
 // Вся предметная логика: ученики, группы, тесты, попытки, статистика.
+import crypto from 'node:crypto';
 import { checkAnswer, choicePerm, publicQuestion, validateLesson } from './grading.js';
 
 const log = (tag, obj) => console.log(`[${tag}] ` + JSON.stringify(obj));
@@ -13,7 +14,7 @@ const prevDay = (key) => {
 const pct = (c, t) => (t ? Math.round((c / t) * 100) : 0);
 const avg = (xs) => (xs.length ? Math.round(xs.reduce((a, b) => a + b, 0) / xs.length) : null);
 
-export const MASCOT_IDS = ['mimi', 'kapi', 'dino', 'axi', 'boo', 'ano'];
+export const MASCOT_IDS = ['mimi', 'kapi', 'dino', 'axi', 'boo', 'ano', 'zip'];
 export const ACCENTS = ['lime', 'sakura', 'lavender', 'ocean', 'peach', 'mint'];
 
 export const ACHIEVEMENTS = {
@@ -82,6 +83,48 @@ export function createLogic(store, { adminIds }) {
     if (g) g.memberIds = g.memberIds.filter((x) => x !== String(uid));
     store.save();
   }
+  // ───────── вход на сайте по почте и паролю (для тех, у кого нет Telegram) ─────────
+  const sha = (t) => crypto.createHash('sha256').update(String(t)).digest('hex');
+  const hashPw = (pw, salt) => crypto.scryptSync(String(pw), salt, 32).toString('hex');
+  const SESSION_DAYS = 120;
+  function ensureAccount({ email, password, name }) {
+    S.accounts ||= {};
+    const key = String(email || '').trim().toLowerCase();
+    if (!key || !password) return null;
+    let acc = S.accounts[key];
+    if (!acc) {
+      const userId = 'w' + crypto.randomBytes(4).toString('hex');
+      acc = S.accounts[key] = { userId, createdAt: Date.now() };
+      S.users[userId] = { id: userId, firstName: name || key.split('@')[0], lastName: '', username: '', email: key, joinedAt: Date.now(), streak: 0, lastDay: null };
+    }
+    if (!acc.hash || hashPw(password, acc.salt) !== acc.hash) {
+      acc.salt = crypto.randomBytes(16).toString('hex');
+      acc.hash = hashPw(password, acc.salt);
+    }
+    if (name && S.users[acc.userId]) S.users[acc.userId].firstName = name;
+    store.save();
+    return acc;
+  }
+  function login(email, password) {
+    const acc = S.accounts?.[String(email || '').trim().toLowerCase()];
+    const ok = acc && crypto.timingSafeEqual(Buffer.from(hashPw(password, acc.salt), 'hex'), Buffer.from(acc.hash, 'hex'));
+    if (!ok) throw httpError(401, 'Неверная почта или пароль');
+    const token = crypto.randomBytes(24).toString('hex');
+    S.sessions ||= {};
+    S.sessions[sha(token)] = { userId: acc.userId, createdAt: Date.now() };
+    store.save();
+    return { token };
+  }
+  function sessionUser(token) {
+    const s = token && S.sessions?.[sha(token)];
+    if (!s || Date.now() - s.createdAt > SESSION_DAYS * 86400e3) return null;
+    return S.users[s.userId] || null;
+  }
+  function logout(token) {
+    if (token && S.sessions) delete S.sessions[sha(token)];
+    store.save();
+  }
+
   function findUserByUsername(username) {
     const n = String(username).replace(/^@/, '').toLowerCase();
     return Object.values(S.users).find((u) => (u.username || '').toLowerCase() === n);
@@ -618,7 +661,7 @@ export function createLogic(store, { adminIds }) {
 
   function publicUser(u) {
     if (!u) return null;
-    return { id: u.id, name: name(u), username: u.username || '', photoUrl: u.photoUrl || null, joinedAt: u.joinedAt, prefs: u.prefs || null };
+    return { id: u.id, name: name(u), username: u.username || '', photoUrl: u.photoUrl || null, joinedAt: u.joinedAt, prefs: u.prefs || null, email: u.email || null };
   }
 
   // Внешний вид, который ученик выбирает сам: напарник, цвет, светлая/тёмная тема
@@ -733,6 +776,7 @@ export function createLogic(store, { adminIds }) {
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,
     startLearn, checkLearn, finishLearn, assignPersonal, report, teacherName,
+    ensureAccount, login, sessionUser, logout,
   };
 }
 

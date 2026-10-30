@@ -478,3 +478,10 @@ code { background: var(--card-2); padding: 1px 6px; border-radius: 7px; font-siz
 .teach-row.col .speech::before { left: 50%; top: -8px; bottom: auto; transform: translateX(-50%) rotate(135deg); }
 .speech b { color: var(--accent-d); }
 .speech code { font-size: 15px; }
+
+/* ───────── вход на сайте ───────── */
+.login { max-width: 400px; margin: 0 auto; padding: 34px 0 30px; text-align: center; display: flex; flex-direction: column; gap: 14px; }
+.login-mascots { display: flex; justify-content: center; align-items: flex-end; gap: 0; margin-bottom: -6px; }
+.login h1 { font-size: 34px; color: var(--accent-d); }
+.login form { text-align: left; }
+.login-lang { margin-top: 6px; }

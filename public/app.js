@@ -91,12 +91,19 @@ function savePrefs(patch) {
 const me = (emotion, size, cls = '') => mascot(LOOK.mascot, emotion, size, cls);
 
 // ───────── инфраструктура ─────────
+// Вход на сайте (без Telegram): токен сессии хранится в браузере
+const IN_TG = Boolean(tg?.initData);
+let SESSION = '';
+try { SESSION = localStorage.getItem('session') || ''; } catch { /* приватный режим */ }
+
 async function api(path, body, method) {
   const headers = { 'Content-Type': 'application/json' };
   if (tg?.initData) headers['X-Init-Data'] = tg.initData;
   else if (DEV_USER) { headers['X-Dev-User'] = DEV_USER; headers['X-Dev-Name'] = params.get('name') || 'Dev'; }
+  else if (SESSION) headers['X-Session'] = SESSION;
   const res = await fetch('/api' + path, { method: method || (body ? 'POST' : 'GET'), headers, body: body ? JSON.stringify(body) : undefined });
   const data = await res.json().catch(() => ({}));
+  if (res.status === 401 && SESSION && !path.startsWith('/auth/')) { setSession(''); loginScreen(); }
   if (!res.ok) throw new Error(data.error || 'Ошибка сети');
   return data;
 }
@@ -635,6 +642,7 @@ async function tabProfile() {
       ${row('data-open="stats"', E.chart, 'Моя статистика', 'Прогресс, карта тем, сравнение с группой', st.overall != null ? pctPill(st.overall) : '')}
       ${row('data-open="league"', E.trophy, 'Лига группы', 'Твоё место среди одногруппников', '')}
       ${row('data-open="how"', E.bulb, 'Как это работает', 'XP, уровни, серия и звёзды', '')}
+      ${!IN_TG && SESSION ? row('data-open="logout"', '🚪', 'Выйти', esc(u.email || ''), '') : ''}
     </div>
     <p class="center faint small" style="margin-top:18px">ID: ${esc(u.id)}</p>`;
   const poke = $('[data-poke]');
@@ -647,6 +655,11 @@ async function tabProfile() {
     if (what === 'look') appearanceSheet(false);
     else if (what === 'ach') achievementsSheet(st);
     else if (what === 'how') howSheet();
+    else if (what === 'logout') {
+      api('/auth/logout', {}).catch(() => {});
+      setSession('');
+      loginScreen();
+    }
     else go(what);
   }));
 }
@@ -1300,6 +1313,44 @@ async function tabBot() {
   $$('[data-rdel]').forEach((b) => (b.onclick = async () => { try { await del('/admin/reminders/' + b.dataset.rdel); tabBot().catch(fail); } catch (e) { fail(e); } }));
 }
 
+// ───────── вход на сайте ─────────
+function setSession(t) {
+  SESSION = t;
+  try { t ? localStorage.setItem('session', t) : localStorage.removeItem('session'); } catch { /* */ }
+}
+function loginScreen() {
+  nav.hidden = true;
+  layer.innerHTML = '';
+  app.innerHTML = `<div class="login">
+    <div class="login-mascots">${['mimi', 'zip', 'dino'].map((m, i) => mascot(m, i === 1 ? 'peace' : 'happy', i === 1 ? 120 : 88)).join('')}</div>
+    <h1>Зубрик</h1><p class="muted">Учись в стиле игры: обучалки, тесты, лига группы</p>
+    <form class="card stack" data-login>
+      <label class="field"><span>Почта</span><input class="input" name="email" type="text" inputmode="email" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="name@mail" required></label>
+      <label class="field"><span>Пароль</span><input class="input" name="password" type="password" autocomplete="current-password" required></label>
+      <button class="btn block" type="submit">${ic('play')}Войти</button>
+    </form>
+    <p class="small muted center">Есть Telegram? Открой бота <a class="link" href="https://t.me/itduobot">@itduobot</a> — там всё то же самое.</p>
+    <div class="seg login-lang" data-noi18n>${LANGS.map(([id, t]) => `<button data-lang="${id}" class="${LOOK.lang === id ? 'on' : ''}">${t}</button>`).join('')}</div>
+  </div>`;
+  $$('[data-lang]', app).forEach((b) => (b.onclick = () => { applyLook({ lang: b.dataset.lang }); loginScreen(); }));
+  const form = $('[data-login]');
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    const btn = $('button[type=submit]', form);
+    btn.disabled = true;
+    try {
+      const r = await api('/auth/login', { email: form.email.value, password: form.password.value });
+      setSession(r.token);
+      haptic('success');
+      await start();
+    } catch (err) {
+      btn.disabled = false;
+      form.classList.remove('shake'); void form.offsetWidth; form.classList.add('shake');
+      fail(err);
+    }
+  };
+}
+
 // ───────── старт ─────────
 (async function boot() {
   tg?.ready();
@@ -1307,8 +1358,14 @@ async function tabBot() {
   applyLook();
   tg?.onEvent?.('themeChanged', () => applyLook());
   matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', () => applyLook());
+  await loadEmoji();
+  if (!IN_TG && !DEV_USER && !SESSION) return loginScreen();
+  await start();
+})();
+
+async function start() {
   try {
-    await Promise.all([loadEmoji(), refreshMe()]);
+    await refreshMe();
     const p = S.me.user.prefs;
     if (p) applyLook(p);
     if (!p?.lang) savePrefs({ lang: LOOK.lang });
@@ -1317,6 +1374,7 @@ async function tabBot() {
     await route();
     if (!S.me.isAdmin && !p?.mascot) setTimeout(() => appearanceSheet(true), 400);
   } catch (e) {
+    if (!IN_TG && !DEV_USER) return loginScreen();
     app.innerHTML = emptyState('sad', 'Не получилось войти', esc(e.message) + (tg?.initData ? '' : '<br><br>Открой приложение через бота в Telegram.'));
   }
-})();
+}

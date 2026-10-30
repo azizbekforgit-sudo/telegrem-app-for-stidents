@@ -137,8 +137,12 @@ const PHRASES = [
   ['Не получилось войти', "Couldn't sign in", 'Kirib bo\'lmadi'], ['Открой приложение через бота в Telegram.', 'Open the app through the bot in Telegram.', 'Ilovani Telegramdagi bot orqali och.'],
   ['пришли конспект урока Claude — он сделает тест в стиле Duolingo. Тест появится здесь черновиком. Ученики его не видят, пока ты не нажмёшь «Отправить».', "send lesson notes to Claude — it will make a Duolingo-style test. It appears here as a draft. Students won't see it until you tap «Send».", "dars konspektini Claude'ga yubor — u Duolingo uslubida test tayyorlaydi. Test bu yerda qoralama bo'lib chiqadi. «Yuborish»ni bosmaguningcha o'quvchilar uni ko'rmaydi."],
   ['В Зубрике с', 'In Zubrik since', 'Zubrikda:'], ['тест', 'test', 'test'], ['теста', 'tests', 'test'], ['тестов', 'tests', 'test'],
+  ['Учись в стиле игры: обучалки, тесты, лига группы', 'Learn like a game: lessons, tests, group league', "O'yindek o'rgan: darslar, testlar, guruh ligasi"],
+  ['Почта', 'Email', 'Pochta'], ['Пароль', 'Password', 'Parol'], ['Войти', 'Sign in', 'Kirish'], ['Есть Telegram? Открой бота', 'Have Telegram? Open the bot', 'Telegram bormi? Botni och'],
+  ['— там всё то же самое.', '— everything is the same there.', '— u yerda ham hammasi bir xil.'], ['Неверная почта или пароль', 'Wrong email or password', "Pochta yoki parol noto'g'ri"],
+  ['Сессия истекла — войди ещё раз', 'Session expired — sign in again', 'Sessiya tugadi — qaytadan kir'], ['Слишком много попыток — подожди 10 минут', 'Too many attempts — wait 10 minutes', "Juda ko'p urinish — 10 daqiqa kut"],
   ['Учитель', 'Teacher', 'Ustoz'], ['говорил:', 'said:', 'aytgan edi:'], ['Раздел', 'Section', "Bo'lim"],
-  ['Мими', 'Mimi', 'Mimi'], ['Капи', 'Kapi', 'Kapi'], ['Дино', 'Dino', 'Dino'], ['Акси', 'Axi', 'Aksi'], ['Бу', 'Boo', 'Bu'], ['Ано', 'Ano', 'Ano'], ['ты', 'you', 'sen'], ['Лично', 'Personal', 'Shaxsiy'], ['лично', 'personal', 'shaxsiy'],
+  ['Мими', 'Mimi', 'Mimi'], ['Капи', 'Kapi', 'Kapi'], ['Дино', 'Dino', 'Dino'], ['Акси', 'Axi', 'Aksi'], ['Бу', 'Boo', 'Bu'], ['Ано', 'Ano', 'Ano'], ['Зип', 'Zip', 'Zip'], ['Супербыстрый. Решает тесты быстрее молнии', 'Super fast. Solves tests faster than lightning', 'Juda tezkor. Testlarni chaqmoqdan tez yechadi'], ['ты', 'you', 'sen'], ['Лично', 'Personal', 'Shaxsiy'], ['лично', 'personal', 'shaxsiy'],
   ['Получено', 'Earned', 'Olingan'], ['Привязано!', 'Linked!', 'Ulandi!'],
   // достижения (приходят с сервера)
   ['Первый шаг', 'First step', 'Birinchi qadam'], ['Пройди первый тест', 'Pass your first test', 'Birinchi testni topshir'], ['Пятёрка', 'High five', 'Beshlik'],

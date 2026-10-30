@@ -33,6 +33,12 @@ for (const f of fs.existsSync(lessonsDir) ? fs.readdirSync(lessonsDir).filter((x
   }
 }
 
+// Учётные записи для входа на сайте: SEED_ACCOUNTS="почта:пароль:Имя;почта2:пароль2:Имя2"
+for (const row of (process.env.SEED_ACCOUNTS || '').split(';').map((x) => x.trim()).filter(Boolean)) {
+  const [email, password, name] = row.split(':');
+  if (logic.ensureAccount({ email, password, name })) console.log(`[accounts] ${email}`);
+}
+
 const tg = BOT_TOKEN && process.env.NO_BOT !== '1' ? createBot({ token: BOT_TOKEN, logic, store, appUrl: PUBLIC_URL + '/', adminIds: ADMIN_IDS }) : null;
 
 const app = express();
@@ -47,6 +53,15 @@ function auth(req, _res, next) {
   const bearer = (req.get('authorization') || '').replace(/^Bearer\s+/i, '');
   if (!tgUser && ADMIN_TOKEN && bearer && safeEq(bearer, ADMIN_TOKEN)) tgUser = { id: ADMIN_IDS[0] };
   if (!tgUser && ALLOW_DEV_AUTH && req.get('x-dev-user')) tgUser = { id: req.get('x-dev-user'), first_name: req.get('x-dev-name') || 'Dev' };
+  const session = req.get('x-session');
+  if (!tgUser && session) {
+    const u = logic.sessionUser(session);
+    if (!u) return next(httpError(401, 'Сессия истекла — войди ещё раз'));
+    req.user = u;
+    req.session = session;
+    req.admin = logic.isAdmin(u.id);
+    return next();
+  }
   if (!tgUser) return next(httpError(401, 'Открой приложение через Telegram-бота'));
   req.user = logic.upsertUser(tgUser).user;
   req.admin = logic.isAdmin(req.user.id);
@@ -64,7 +79,20 @@ const h = (fn) => async (req, res, next) => {
 };
 
 const api = express.Router();
+
+// Вход на сайте по почте и паролю. Простая защита от перебора: 10 попыток за 10 минут с одного адреса.
+const tries = new Map();
+api.post('/auth/login', h((req) => {
+  const ip = req.get('x-forwarded-for')?.split(',')[0].trim() || req.ip;
+  const t = tries.get(ip) || { n: 0, at: Date.now() };
+  if (Date.now() - t.at > 10 * 60e3) { t.n = 0; t.at = Date.now(); }
+  if (++t.n > 10) throw httpError(429, 'Слишком много попыток — подожди 10 минут');
+  tries.set(ip, t);
+  const { email, password } = req.body || {};
+  return logic.login(email, password);
+}));
 api.use(auth);
+api.post('/auth/logout', h((req) => (logic.logout(req.session), { ok: true })));
 
 // ───────── ученик ─────────
 api.get('/me', h((req) => logic.home(req.user.id)));
@@ -98,7 +126,7 @@ adm.post('/groups/:gid/members', h((req) => {
     if (!u) throw httpError(404, `@${String(username).replace(/^@/, '')} ещё не запускал бота. Попроси его нажать /start, или добавь по Telegram ID.`);
     uid = u.id;
   }
-  if (!/^\d+$/.test(String(uid || ''))) throw httpError(400, 'Нужен Telegram ID (число) или @username');
+  if (!/^\d+$/.test(String(uid || '')) && !logic.S.users[String(uid || '')]) throw httpError(400, 'Нужен Telegram ID (число) или @username');
   return logic.addMember(req.params.gid, uid);
 }));
 adm.delete('/groups/:gid/members/:uid', h((req) => (logic.removeMember(req.params.gid, req.params.uid), { ok: true })));

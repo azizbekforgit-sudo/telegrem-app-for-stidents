@@ -1,0 +1,14 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "echo 'статический сайт — установка не нужна'",
+  "buildCommand": "echo 'статический сайт — сборка не нужна'",
+  "outputDirectory": "public",
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "https://zubrik-bot.onrender.com/api/:path*" }
+  ],
+  "headers": [
+    { "source": "/e/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=2592000, immutable" }] },
+    { "source": "/ea/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=2592000, immutable" }] }
+  ]
+}

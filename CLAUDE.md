@@ -72,11 +72,18 @@
 - `src/bot.js`: команды `/start`, `/link` (привязать чат Telegram-группы к группе курса), `/stop`, уведомления о тестах, напоминания.
 - `src/store.js`: всё состояние в одном JSON-документе. В продакшене он лежит в Postgres (`DATABASE_URL`), локально в `data/state.json`.
 - `public/`: Mini App без сборки (vanilla JS), графики на SVG.
-  - `mascots.js`: 6 маскотов-напарников (mimi, kapi, dino, axi, boo, ano) × 11 поз (happy, cheer, oops, sad, think, wow, love, sleepy, peace, talk, teach), рисуются SVG-кодом. В позах `talk` и `teach` двигается рот (CSS), а класс `quiet` его останавливает. В `teach` у маскота очки и волшебная палочка.
+  - `mascots.js`: 7 маскотов-напарников (mimi, kapi, dino, axi, boo, ano, zip) × 11 поз (happy, cheer, oops, sad, think, wow, love, sleepy, peace, talk, teach), рисуются SVG-кодом. В позах `talk` и `teach` двигается рот (CSS), а класс `quiet` его останавливает. В `teach` у маскота очки и волшебная палочка.
   - `i18n.js`: языки интерфейса ru, uz, en. Интерфейс пишется по-русски, переводчик подменяет надписи на лету по словарю `PHRASES` и шаблонам (`PATTERNS`, `TOKENS`, `NOUNS`). **Новую строку интерфейса добавляй в `PHRASES` сразу с переводами.** Контент уроков не переводится. Язык ученика хранится в `prefs.lang`, на нём же бот пишет в личку.
   - `icons.js`: иконки интерфейса Solar (bold-duotone). Новые иконки берутся из `@iconify-json/solar`.
   - `e/`: 3D-эмодзи Fluent (`<код>.webp` + `index.json`), `ea/`: анимированные. Любой эмодзи в `emoji` урока или группы автоматически рисуется в 3D.
   - Ученик сам выбирает напарника, цвет (lime, sakura, lavender, ocean, peach, mint), тему (auto, light, dark) и язык (ru, uz, en), всё это хранится в `user.prefs`.
+
+## Сайт (без Telegram)
+
+Тот же Mini App открывается в обычном браузере. Если его открыли не из Telegram, показывается экран входа по почте и паролю (`POST /api/auth/login`, дальше заголовок `X-Session`). Учётные записи задаются переменной `SEED_ACCOUNTS="почта:пароль:Имя;…"` на сервере, пароли хранятся только в виде хеша scrypt. Ученики с сайта получают ID вида `w…`, в остальном всё то же: группы, тесты, обучалки, лига.
+
+- Сайт хостится на **Vercel**: `vercel.json` раздаёт `public/` как статику, а `/api/*` пересылает на сервер с ботом (Render). Данные у сайта и бота общие.
+- База: Postgres. Чтобы переехать на **Supabase**, достаточно положить в `DATABASE_URL` строку подключения Supabase (Session pooler, порт 5432). SSL включится сам.
 
 Локальный запуск без Telegram: `npm run dev`, потом открыть `http://localhost:3000/?dev=7183098167` (учитель) или `?dev=111&name=Ученик`.
 

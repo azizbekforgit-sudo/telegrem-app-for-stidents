@@ -14,6 +14,8 @@ export function emptyState() {
     attempts: {},   // id -> { id, pubId, lessonId, userId, preview, startedAt, finishedAt, answers, combo, maxCombo, xp }
     reminders: {},  // id -> { id, groupId, pubId, text, intervalMin, nextAt, active, sent, maxCount }
     learn: {},      // `${userId}:${pubId}` -> { answers, startedAt, doneAt, correct, total } — прохождение обучалки
+    accounts: {},   // email -> { userId, salt, hash } — вход на сайте без Telegram
+    sessions: {},   // sha256(токена) -> { userId, createdAt }
     seq: 1,
   };
 }
@@ -64,7 +66,7 @@ function fileBackend() {
 }
 
 async function pgBackend(url) {
-  const needsSsl = /sslmode=require|render\.com|neon\.tech/.test(url) || process.env.PGSSL === '1';
+  const needsSsl = /sslmode=require|render\.com|neon\.tech|supabase/.test(url) || process.env.PGSSL === '1';
   const pool = new pg.Pool({ connectionString: url, ssl: needsSsl ? { rejectUnauthorized: false } : undefined, max: 3 });
   await pool.query('CREATE TABLE IF NOT EXISTS app_state (id int PRIMARY KEY, data jsonb NOT NULL, updated_at timestamptz DEFAULT now())');
   return {

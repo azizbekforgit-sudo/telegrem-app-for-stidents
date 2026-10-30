@@ -113,6 +113,6 @@ export function validateLesson(l) {
       (sec.check || []).forEach((q, k) => checkQ(q, `${p}, проверка ${k + 1}`));
     });
   }
-  if (l.personal && (!Array.isArray(l.personal) || l.personal.some((u) => !/^\d+$/.test(String(u))))) errs.push('personal: список Telegram ID');
+  if (l.personal && (!Array.isArray(l.personal) || l.personal.some((u) => !/^[\w-]+$/.test(String(u))))) errs.push('personal: список ID учеников');
   return errs;
 }

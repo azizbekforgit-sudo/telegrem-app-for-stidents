@@ -14,6 +14,7 @@ export const MASCOTS = {
   axi: { name: 'Акси', about: 'Аксолотль. Отращивает знания, как жабры', color: '#ff7eb0' },
   boo: { name: 'Бу', about: 'Призрак в капюшоне. Звонит спросить: «Ну что, решил тест?»', color: '#3b3644' },
   ano: { name: 'Ано', about: 'Хакер в маске. Взламывает любые задачи — честно', color: '#2b2a33' },
+  zip: { name: 'Зип', about: 'Супербыстрый. Решает тесты быстрее молнии', color: '#e8322f' },
 };
 
 let uid = 0;
@@ -311,7 +312,24 @@ BODIES.ano = function ano(id) {
   return { pal: { blush: '#ff7f9e', tongue: '#ff8aa8' }, back: '', body: hood + shine(64, 52, 16, 7) + mask, nose: stache, f, a, fill: '#2a2933', st, b: { cx: 100, top: 26 } };
 };
 
-const GRAD = { mimi: ['#ffffff', '#f3e6ef'], kapi: ['#e6aa74', '#c07b48'], dino: ['#8ff0b4', '#45c27b'], axi: ['#ffd6e6', '#ff9cc4'], boo: ['#56505f', '#17141c'], ano: ['#4a4952', '#141319'] };
+BODIES.zip = function zip(id) {
+  const st = '#9e1414';
+  const bolt = (x, y, sc, rot = 0) => `<path transform="translate(${x} ${y}) rotate(${rot}) scale(${sc})" d="M2 -14 L-7 2 L-1 2 L-4 14 L7 -3 L1 -3 L5 -14Z" fill="#ffd23d" stroke="#e8a000" stroke-width="1.6" stroke-linejoin="round"/>`;
+  // линии скорости позади
+  const speed = `<g opacity=".55" stroke="#ffb3a8" stroke-width="5" stroke-linecap="round"><path d="M12 92 L36 92"/><path d="M4 112 L30 112"/><path d="M14 132 L34 132"/></g>`;
+  const body = `<path d="M100 34 C150 34 170 70 170 110 C170 152 144 178 100 178 C56 178 30 152 30 110 C30 70 50 34 100 34Z" fill="url(#${id}b)" stroke="${st}" stroke-width="3"/>`;
+  // открытая нижняя часть лица и «стёкла» маски
+  const face = `<path d="M62 112 C62 142 80 158 100 158 C120 158 138 142 138 112 C126 120 114 122 100 122 C86 122 74 120 62 112Z" fill="#ffd8bd" stroke="#e8a98a" stroke-width="2"/>
+    <ellipse cx="78" cy="96" rx="17" ry="14" fill="#fff" stroke="${st}" stroke-width="2.4"/><ellipse cx="122" cy="96" rx="17" ry="14" fill="#fff" stroke="${st}" stroke-width="2.4"/>
+    <path d="M100 66 L100 80" stroke="#ff8a7a" stroke-width="3" stroke-linecap="round" opacity=".7"/>`;
+  const extras = bolt(100, 26, 1.1) + bolt(160, 88, 0.75, 20) + bolt(40, 88, 0.75, -20) + bolt(100, 168, 0.8);
+  const feet = `<ellipse cx="74" cy="180" rx="16" ry="9" fill="#ffd23d" stroke="#e8a000" stroke-width="3"/><ellipse cx="126" cy="180" rx="16" ry="9" fill="#ffd23d" stroke="#e8a000" stroke-width="3"/>`;
+  const f = { x: 100, y: 100, ex: 22, ey: 96, my: 136, s: 0.9, blurId: id + 'k' };
+  const a = { l: [38, 150], r: [162, 150], chin: [86, 146] };
+  return { pal: { blush: '#ff9c8a', tongue: '#ff8aa8' }, back: speed + feet, body: body + shine(68, 60, 18, 9) + face, top: extras, f, a, fill: '#e8322f', st, b: { cx: 100, top: 28 } };
+};
+
+const GRAD = { mimi: ['#ffffff', '#f3e6ef'], kapi: ['#e6aa74', '#c07b48'], dino: ['#8ff0b4', '#45c27b'], axi: ['#ffd6e6', '#ff9cc4'], boo: ['#56505f', '#17141c'], ano: ['#4a4952', '#141319'], zip: ['#ff6b5e', '#c41e1e'] };
 
 export function mascot(id = 'mimi', emo = 'happy', size = 120, cls = '', crop = false) {
   if (!BODIES[id]) id = 'mimi';
