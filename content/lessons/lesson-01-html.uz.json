@@ -1,0 +1,85 @@
+{
+  "title": "1-dars. Birinchi HTML",
+  "description": "Sayt nimadan iborat, teglar, sahifa skeleti, <p> va style",
+  "learn": {
+    "intro": "Salom! Bugun vebga birinchi qadam qo'yamiz: sayt nimadan iboratligini bilib olamiz va birinchi sahifani yozamiz. Ketdik!",
+    "sections": [
+      {
+        "title": "Sayt — odamga o'xshaydi",
+        "slides": [
+          { "emoji": "🧍", "text": "Tasavvur qil: sayt — bu **odam**. Uning skeleti, kiyimi va miyasi bor." },
+          { "emoji": "🦴", "text": "**HTML** — skelet: sahifaning karkasi undan quriladi. **CSS** — teri va kiyim: ranglar, o'lchamlar, chiroy. **JavaScript** — miya: saytni jonli qiladi." },
+          { "quote": true, "text": "HTML — skelet, CSS — kiyim, JavaScript — saytning miyasi." }
+        ],
+        "check": [
+          { "type": "match", "topic": "Sayt nimadan iborat", "prompt": "Til va «odam» qismini moslashtir", "pairs": [["HTML", "Skelet"], ["CSS", "Kiyim"], ["JavaScript", "Miya"]] },
+          { "type": "truefalse", "topic": "Sayt nimadan iborat", "prompt": "CSS saytning ko'rinishi uchun javob beradi.", "answer": true, "explain": "CSS — saytning «kiyimi»: ranglar, shriftlar, o'lchamlar." }
+        ]
+      },
+      {
+        "title": "Kod va teglar",
+        "slides": [
+          { "emoji": "💬", "text": "Kod — bu **brauzer uchun buyruqlar**. HTML'da buyruqlar burchakli qavslardagi **teglar** bilan yoziladi: `<p>`, `<body>`." },
+          { "emoji": "📄", "text": "Sahifa **.html** kengaytmali faylga saqlanadi. Saytning bosh sahifasi odatda **index.html** deb nomlanadi." },
+          { "quote": true, "text": "Bosh sahifa faylini index.html deb nomlaymiz — brauzer avval uni qidiradi." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Kod va teglar", "prompt": "HTML faylning kengaytmasi qanday?", "options": [".html", ".txt", ".css", ".doc"], "answer": 0, "explain": "HTML sahifalar .html fayllarga saqlanadi." },
+          { "type": "input", "topic": "Kod va teglar", "prompt": "Bosh sahifa fayli odatda qanday nomlanadi?", "answer": ["index.html", "index"], "explain": "Bosh sahifa — index.html." }
+        ]
+      },
+      {
+        "title": "Sahifa skeleti",
+        "slides": [
+          { "emoji": "🏗️", "text": "Har bir sahifaning karkasi bir xil: `html`, ichida `head` va `body`.", "code": "<html>\n  <head>\n    <title>Mening saytim</title>\n  </head>\n  <body>\n    Bu yerda ko'rinadigan narsa\n  </body>\n</html>" },
+          { "emoji": "🙈", "text": "**head** — ko'rinmaydigan qism: xizmat ma'lumotlari. **body** — ko'rinadigan qism: sahifada odam ko'radigan hamma narsa." },
+          { "text": "**title** head ichida yashaydi. Uning matni sahifaning o'zida emas, **brauzer vkladkasida** ko'rinadi." },
+          { "quote": true, "text": "head — ko'rinmaydi, body — ko'rinadi, title — vkladkadagi yozuv." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Sahifa skeleti", "prompt": "Sahifada ko'rinadigan hamma narsa qaysi tegda turadi?", "options": ["<head>", "<body>", "<title>", "<html>"], "answer": 1, "explain": "body — sahifaning ko'rinadigan qismi." },
+          { "type": "truefalse", "topic": "Sahifa skeleti", "prompt": "<title> dagi matn brauzer vkladkasida ko'rinadi.", "answer": true, "explain": "title — vkladkadagi yozuv." }
+        ]
+      },
+      {
+        "title": "<p> tegi",
+        "slides": [
+          { "emoji": "📝", "text": "`<p>` tegi — matn abzatsi. U **juft teg**: ochuvchi va yopuvchi tegi bor.", "code": "<p>Salom, dunyo!</p>" },
+          { "text": "Yopuvchi teg xuddi shunday, faqat nomidan oldin **/** belgisi bor: `</p>`." },
+          { "quote": true, "text": "Tegni ochdingmi — yopishni unutma: <p> … </p>." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Juft teglar", "prompt": "Abzatsni qaysi teg yopadi?", "options": ["<p>", "</p>", "<p/>", "<\\p>"], "answer": 1, "explain": "Yopuvchi teg nomidan oldin / bilan yoziladi: </p>." },
+          { "type": "order", "topic": "Juft teglar", "prompt": "Abzatsni yig'", "tokens": ["<p>", "Salom!", "</p>"], "extra": ["<body>"] }
+        ]
+      },
+      {
+        "title": "style atributi",
+        "slides": [
+          { "emoji": "🎨", "text": "Matnni bo'yash uchun tegga **style** atributi qo'shiladi. Ichiga xususiyat, ikki nuqta va qiymat yoziladi.", "code": "<p style=\"color: blue;\">Ko'k matn</p>" },
+          { "text": "**color** matn rangini o'zgartiradi (red, green, blue…), **font-size** esa o'lchamini (12px, 24px, 40px). Xususiyatlarni **;** bilan birga yozish mumkin.", "code": "<p style=\"color: red; font-size: 24px;\">Katta qizil</p>" },
+          { "quote": true, "text": "Turli rang va o'lchamlarni sinab ko'r — tezroq eslab qolasan. Uyga vazifa: o'zing haqingda 4–5 ta abzats, har birining rangi va o'lchami boshqacha." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "style", "prompt": "Qaysi xususiyat matn o'lchamini o'zgartiradi?", "options": ["color", "font-size", "size", "text"], "answer": 1, "explain": "font-size — shrift o'lchami, masalan 24px." },
+          { "type": "truefalse", "topic": "style", "prompt": "style ichida xususiyat va qiymat orasiga ikki nuqta qo'yiladi: color: red", "answer": true, "explain": "Format: xususiyat: qiymat;" }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    { "type": "truefalse", "topic": "Sayt nimadan iborat", "prompt": "HTML — saytning «skeleti».", "answer": true, "explain": "HTML sahifa karkasini quradi." },
+    { "type": "choice", "topic": "Sayt nimadan iborat", "prompt": "Saytni miya kabi «jonli» qiladigan nima?", "options": ["HTML", "CSS", "JavaScript", "index.html"], "answer": 2, "explain": "JavaScript — saytning miyasi." },
+    { "type": "match", "topic": "Sayt nimadan iborat", "prompt": "Til va uning vazifasini moslashtir", "pairs": [["HTML", "Sahifa karkasi"], ["CSS", "Tashqi ko'rinish"], ["JavaScript", "Xatti-harakat"]] },
+    { "type": "truefalse", "topic": "Kod va teglar", "prompt": "Kod — bu brauzer uchun buyruqlar.", "answer": true, "explain": "Brauzer teglarni o'qib, sahifani ko'rsatadi." },
+    { "type": "choice", "topic": "Kod va teglar", "prompt": "Bosh sahifa uchun qaysi fayl nomi to'g'ri?", "options": ["index.html", "main.txt", "page.css", "home.doc"], "answer": 0, "explain": "Bosh sahifa — index.html." },
+    { "type": "choice", "topic": "Sahifa skeleti", "prompt": "Sahifaning qaysi qismi odamga KO'RINMAYDI?", "options": ["body", "head", "p", "Butun matn"], "answer": 1, "explain": "head — ko'rinmaydigan xizmat qismi." },
+    { "type": "input", "topic": "Sahifa skeleti", "prompt": "Brauzer vkladkasidagi yozuvni qaysi teg belgilaydi? (qavslarsiz)", "answer": ["title", "<title>"], "explain": "title — vkladkadagi yozuv." },
+    { "type": "order", "topic": "Sahifa skeleti", "prompt": "Sahifa skeletini yig'", "tokens": ["<html>", "<head>", "</head>", "<body>", "</body>", "</html>"], "extra": ["<p>"] },
+    { "type": "truefalse", "topic": "Juft teglar", "prompt": "<p> tegini yopish shart emas.", "answer": false, "explain": "<p> — juft teg: <p> … </p>." },
+    { "type": "choice", "topic": "Juft teglar", "prompt": "Xato qayerda?", "code": "<p>Mening ismim Aziz<p>", "options": ["Xato yo'q", "Ikkinchi teg </p> bo'lishi kerak", "<P> deb yozish kerak", "<p> ichiga matn yozib bo'lmaydi"], "answer": 1, "explain": "Yopuvchi teg / bilan yoziladi: </p>." },
+    { "type": "choice", "topic": "style", "prompt": "Matn qanday rangda bo'ladi?", "code": "<p style=\"color: green;\">Salom</p>", "options": ["Ko'k", "Qizil", "Yashil", "Qora"], "answer": 2, "explain": "color: green — yashil." },
+    { "type": "input", "topic": "style", "prompt": "Xususiyatni yoz: <p style=\"____: 40px;\">", "answer": ["font-size"], "explain": "Matn o'lchamini font-size belgilaydi." },
+    { "type": "order", "topic": "style", "prompt": "Ko'k abzatsni yig'", "tokens": ["<p", "style=\"color: blue;\">", "Matn", "</p>"], "extra": ["</body>"] }
+  ]
+}

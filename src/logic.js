@@ -140,6 +140,7 @@ export function createLogic(store, { adminIds }) {
       // уже решали — вопросы теста не меняем, но обучалку и список «личных» обновить можно
       prev.learn = lesson.learn || prev.learn || null;
       prev.personal = lesson.personal || prev.personal || null;
+      prev.tr = lesson.tr || prev.tr || null;
       store.save();
       return prev;
     }
@@ -153,6 +154,7 @@ export function createLogic(store, { adminIds }) {
       questions: lesson.questions,
       learn: lesson.learn || null,
       personal: lesson.personal || null,
+      tr: lesson.tr || null,
       createdAt: prev?.createdAt || Date.now(),
       updatedAt: Date.now(),
     };
@@ -210,10 +212,10 @@ export function createLogic(store, { adminIds }) {
       const pub = S.pubs[pubId];
       if (!pub || !S.lessons[pub.lessonId]) throw httpError(404, 'Тест не найден');
       if (!canSeePub(uid, pub)) throw httpError(403, 'Этот урок не для тебя');
-      return { lesson: S.lessons[pub.lessonId], pub, preview: isAdmin(uid), seed: `learn:${uid}:${pubId}` };
+      return { lesson: loc(S.lessons[pub.lessonId], langOf(uid)), pub, preview: isAdmin(uid), seed: `learn:${uid}:${pubId}` };
     }
     if (!isAdmin(uid)) throw httpError(403, 'Нет доступа');
-    const lesson = S.lessons[lessonId];
+    const lesson = loc(S.lessons[lessonId], langOf(uid));
     if (!lesson) throw httpError(404, 'Тест не найден');
     return { lesson, pub: null, preview: true, seed: `learn:${uid}:${lessonId}` };
   }
@@ -284,8 +286,17 @@ export function createLogic(store, { adminIds }) {
     return { correct, total, pct: pct(correct, total) };
   };
   // Вопросы попытки: у обычной — все вопросы урока, у «работы над ошибками» — свой список
+  // Язык ученика и урок на этом языке (перевод из lesson.tr[lang], иначе оригинал)
+  const langOf = (uid) => S.users[String(uid)]?.prefs?.lang || 'ru';
+  function loc(l, lang) {
+    const t = l && lang && lang !== 'ru' ? l.tr?.[lang] : null;
+    if (!t) return l;
+    const questions = t.questions || l.questions;
+    return { ...l, title: t.title || l.title, description: t.description ?? l.description, questions, learn: t.learn || l.learn, topics: [...new Set(questions.map((q) => q.topic).filter(Boolean))] };
+  }
+
   const itemsOf = (a) => a.items || (S.lessons[a.lessonId]?.questions || []).map((_, i) => ({ lessonId: a.lessonId, index: i }));
-  const qOf = (it) => S.lessons[it?.lessonId]?.questions[it.index];
+  const qOf = (it, lang) => loc(S.lessons[it?.lessonId], lang)?.questions[it.index];
 
   // Копилка ошибок: вопросы, на которые последний ответ ученика был неверным.
   // Считается по истории ответов, поэтому учитывает и старые попытки.
@@ -308,8 +319,8 @@ export function createLogic(store, { adminIds }) {
   }
   function mistakesInfo(uid) {
     const list = mistakesOf(uid).map((m) => {
-      const q = qOf(m);
-      const l = S.lessons[m.lessonId];
+      const q = qOf(m, langOf(uid));
+      const l = loc(S.lessons[m.lessonId], langOf(uid));
       return { prompt: q.prompt, topic: q.topic || l.title, lessonTitle: l.title, emoji: l.emoji, wrong: m.wrong };
     });
     const topics = {};
@@ -336,7 +347,7 @@ export function createLogic(store, { adminIds }) {
     if (mistakes) {
       const items = mistakesOf(uid).slice(0, MISTAKES_PER_SESSION).map(({ lessonId: l, index }) => ({ lessonId: l, index }));
       if (!items.length) throw httpError(400, 'Ошибок нет — ты всё исправил!');
-      const a = { id: store.nextId('a'), kind: 'mistakes', items, pubId: null, lessonId: null, userId: uid, preview: false, practice: false, startedAt: Date.now(), finishedAt: null, answers: [], combo: 0, maxCombo: 0, xp: 0 };
+      const a = { id: store.nextId('a'), kind: 'mistakes', lang: langOf(uid), items, pubId: null, lessonId: null, userId: uid, preview: false, practice: false, startedAt: Date.now(), finishedAt: null, answers: [], combo: 0, maxCombo: 0, xp: 0 };
       S.attempts[a.id] = a;
       store.save();
       return {
@@ -345,7 +356,7 @@ export function createLogic(store, { adminIds }) {
         practice: false,
         mistakes: true,
         lesson: { id: 'mistakes', title: 'Работа над ошибками', emoji: '🔁', description: '' },
-        questions: items.map((it, i) => ({ ...publicQuestion(qOf(it), `${a.id}:${i}`), from: S.lessons[it.lessonId].title })),
+        questions: items.map((it, i) => ({ ...publicQuestion(qOf(it, a.lang), `${a.id}:${i}`), from: loc(S.lessons[it.lessonId], a.lang).title })),
       };
     }
     let lesson;
@@ -354,17 +365,17 @@ export function createLogic(store, { adminIds }) {
       const pub = S.pubs[pubId];
       if (!pub) throw httpError(404, 'Тест не найден');
       if (!canSeePub(uid, pub)) throw httpError(403, 'Этот тест не для твоей группы');
-      lesson = S.lessons[pub.lessonId];
+      lesson = loc(S.lessons[pub.lessonId], langOf(uid));
       preview = isAdmin(uid);
       if (!preview && lesson?.learn && !learnDone(uid, pubId)) throw httpError(403, 'Сначала пройди обучалку — тест откроется после неё');
     } else {
       if (!isAdmin(uid)) throw httpError(403, 'Нет доступа');
-      lesson = S.lessons[lessonId];
+      lesson = loc(S.lessons[lessonId], langOf(uid));
       preview = true;
     }
     if (!lesson) throw httpError(404, 'Тест не найден');
     const practice = !preview && finishedAttempts(uid, pubId).length > 0;
-    const a = { id: store.nextId('a'), pubId: pubId || null, lessonId: lesson.id, userId: uid, preview, practice, startedAt: Date.now(), finishedAt: null, answers: [], combo: 0, maxCombo: 0, xp: 0 };
+    const a = { id: store.nextId('a'), lang: langOf(uid), pubId: pubId || null, lessonId: lesson.id, userId: uid, preview, practice, startedAt: Date.now(), finishedAt: null, answers: [], combo: 0, maxCombo: 0, xp: 0 };
     S.attempts[a.id] = a;
     store.save();
     return {
@@ -389,7 +400,7 @@ export function createLogic(store, { adminIds }) {
   function answer(uid, aid, index, value) {
     const a = getOwnAttempt(uid, aid);
     if (a.finishedAt) throw httpError(400, 'Тест уже завершён');
-    const q = qOf(itemsOf(a)[index]);
+    const q = qOf(itemsOf(a)[index], a.lang);
     if (!q || index !== a.answers.length) throw httpError(400, 'Неверный номер вопроса');
     const res = checkAnswer(q, toOriginal(q, a, index, value));
     a.combo = res.correct ? a.combo + 1 : 0;
@@ -405,7 +416,7 @@ export function createLogic(store, { adminIds }) {
   // «Работа над ошибками»: перепроверка без записи в статистику
   function retry(uid, aid, index, value) {
     const a = getOwnAttempt(uid, aid);
-    const q = qOf(itemsOf(a)[index]);
+    const q = qOf(itemsOf(a)[index], a.lang);
     if (!q || a.answers.length < itemsOf(a).length) throw httpError(400, 'Сначала ответь на все вопросы');
     const res = checkAnswer(q, toOriginal(q, a, index, value));
     return { correct: res.correct, correctText: res.correctText, explain: q.explain || null };
@@ -425,7 +436,7 @@ export function createLogic(store, { adminIds }) {
     const s = scoreOf(a);
     const topics = {};
     a.answers.forEach((x) => {
-      const t = qOf(items[x.index])?.topic || 'Общее';
+      const t = qOf(items[x.index], a.lang)?.topic || 'Общее';
       topics[t] ||= { topic: t, correct: 0, total: 0 };
       topics[t].total++;
       if (x.correct) topics[t].correct++;
@@ -444,7 +455,7 @@ export function createLogic(store, { adminIds }) {
       preview: a.preview,
       durationSec: Math.round(((a.finishedAt || Date.now()) - a.startedAt) / 1000),
       topics: Object.values(topics).map((t) => ({ ...t, pct: pct(t.correct, t.total) })),
-      questions: a.answers.map((x) => ({ prompt: qOf(items[x.index])?.prompt || '', correct: x.correct })),
+      questions: a.answers.map((x) => ({ prompt: qOf(items[x.index], a.lang)?.prompt || '', correct: x.correct })),
       group,
       mistakesLeft: mistakesOf(a.userId).length,
       streak: currentStreak(S.users[a.userId]),
@@ -463,7 +474,8 @@ export function createLogic(store, { adminIds }) {
       wrong: a.answers.filter((x) => !x.correct).map((x) => {
         const it = items[x.index];
         const q = qOf(it);
-        return { lesson: it.lessonId, q: it.index, topic: q?.topic, prompt: q?.prompt, given: answerText(q, toOriginal(q, a, x.index, x.value)), right: q ? checkAnswer(q, null).correctText : null };
+        const ql = qOf(it, a.lang);
+        return { lesson: it.lessonId, q: it.index, topic: q?.topic, prompt: q?.prompt, lang: a.lang || 'ru', given: answerText(ql, toOriginal(ql, a, x.index, x.value)), right: q ? checkAnswer(q, null).correctText : null };
       }),
     });
   }
@@ -571,7 +583,7 @@ export function createLogic(store, { adminIds }) {
     let maxCombo = 0;
     for (const p of pubs) {
       const b = best(uid, p.id);
-      const l = S.lessons[p.lessonId];
+      const l = loc(S.lessons[p.lessonId], langOf(uid));
       const ps = pubStats(p.id);
       if (b) progress.push({ pubId: p.id, title: l.title, emoji: l.emoji, pct: b.pct, groupAvg: ps.avg, at: b.at });
       const a = b && S.attempts[b.attemptId];
@@ -646,7 +658,7 @@ export function createLogic(store, { adminIds }) {
     };
   }
 
-  function feed(gids, limit = 12) {
+  function feed(gids, limit = 12, lang = 'ru') {
     const pubToGroup = {};
     for (const p of Object.values(S.pubs)) if (gids.includes(p.groupId)) pubToGroup[p.id] = p;
     return Object.values(S.attempts)
@@ -655,7 +667,7 @@ export function createLogic(store, { adminIds }) {
       .slice(0, limit)
       .map((a) => {
         const s = scoreOf(a);
-        return { name: name(S.users[a.userId]), userId: a.userId, prefs: S.users[a.userId]?.prefs || null, title: S.lessons[a.lessonId].title, emoji: S.lessons[a.lessonId].emoji, pct: s.pct, practice: a.practice, at: a.finishedAt, combo: a.maxCombo };
+        return { name: name(S.users[a.userId]), userId: a.userId, prefs: S.users[a.userId]?.prefs || null, title: loc(S.lessons[a.lessonId], lang).title, emoji: S.lessons[a.lessonId].emoji, pct: s.pct, practice: a.practice, at: a.finishedAt, combo: a.maxCombo };
       });
   }
 
@@ -684,7 +696,7 @@ export function createLogic(store, { adminIds }) {
     const u = S.users[uid];
     const groups = userGroups(uid);
     const path = pubsForUser(uid).map((p) => {
-      const l = S.lessons[p.lessonId];
+      const l = loc(S.lessons[p.lessonId], langOf(uid));
       const b = best(uid, p.id);
       return { pubId: p.id, title: l.title, emoji: l.emoji, description: l.description, questions: l.questions.length, topics: l.topics, groupId: p.groupId, groupName: p.userId ? 'Лично' : S.groups[p.groupId].name, personal: Boolean(p.userId), hasLearn: Boolean(l.learn), learnDone: learnDone(uid, p.id), learnSections: l.learn?.sections.length || 0, publishedAt: p.publishedAt, best: b ? b.pct : null, stars: b ? (b.pct === 100 ? 3 : b.pct >= 80 ? 2 : b.pct >= 50 ? 1 : 0) : null };
     });
@@ -696,7 +708,7 @@ export function createLogic(store, { adminIds }) {
       groups: groups.map((g) => ({ id: g.id, name: g.name, emoji: g.emoji })),
       path,
       mistakes: mistakesOf(uid).length,
-      feed: feed(groups.map((g) => g.id)),
+      feed: feed(groups.map((g) => g.id), 12, langOf(uid)),
     };
   }
 

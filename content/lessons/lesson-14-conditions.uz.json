@@ -1,0 +1,86 @@
+{
+  "title": "14-dars. Shartlar",
+  "description": "if / else, else if, && va ||, ternar operator",
+  "learn": {
+    "intro": "Salom! Bugun **shartlarni** takrorlaymiz — 14-dars. Men {teacher} ustoz darsdagidek qadamma-qadam tushuntiraman, har bo'limdan keyin esa nimani eslab qolganingni tekshiramiz. Ketdik!",
+    "sections": [
+      {
+        "title": "if / else",
+        "slides": [
+          { "emoji": "🧠", "text": "Odam miyasi doim qaror qabul qiladi: tashqarida sovuq — kurtka kiyaman, yo'q — kiymayman. JavaScript ham xuddi shunday qiladi — **shartlar** yordamida." },
+          { "text": "Sxema shunday. `( )` qavs ichiga shart yoziladi — uning natijasi doim `true` yoki `false`.", "code": "if (shart) {\n  // shart true bo'lsa bajariladi\n} else {\n  // shart false bo'lsa bajariladi\n}" },
+          { "quote": true, "text": "Figurali qavs ichidagi kod faqat shart true bo'lsa bajariladi. else esa «aks holda»: shart false bo'lganda ishlaydi." },
+          { "text": "Misol: 18+ filmga chipta olsa bo'ladimi. Bu yerda `age >= 18` — false, shuning uchun konsolda «Kechirasiz, film faqat 18+ uchun». age ni 20 ga o'zgartir — gap boshqacha bo'ladi.", "code": "let age = 16;\nif (age >= 18) {\n  console.log(\"Chipta sotildi, yoqimli tomosha!\");\n} else {\n  console.log(\"Kechirasiz, film faqat 18+ uchun\");\n}" }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "if / else", "prompt": "else shart true bo'lganda ishlaydi.", "answer": false, "explain": "else — «aks holda». U shart false bo'lganda ishlaydi." },
+          { "type": "choice", "topic": "if / else", "prompt": "age = 20 bo'lsa, konsol nima chiqaradi?", "code": "let age = 20;\nif (age >= 18) {\n  console.log(\"Chipta sotildi!\");\n} else {\n  console.log(\"Faqat 18+ uchun\");\n}", "options": ["Chipta sotildi!", "Faqat 18+ uchun", "Ikkala gap ham", "Hech narsa"], "answer": 0, "explain": "20 >= 18 — true, demak if bloki bajariladi." }
+        ]
+      },
+      {
+        "title": "else if — shartlar zanjiri",
+        "slides": [
+          { "text": "Variantlar ikkitadan ko'p bo'lsa, `else if` qo'shamiz — «aks holda, agar». Masalan, ball bo'yicha baho:", "code": "let score = 75;\nif (score >= 90) {\n  console.log(\"A'lo!\");\n} else if (score >= 70) {\n  console.log(\"Yaxshi\");\n} else {\n  console.log(\"Ko'proq harakat qil\");\n}\n// Yaxshi" },
+          { "emoji": "⬇️", "text": "JavaScript shartlarni **yuqoridan pastga** tekshiradi va **birinchi to'g'ri** shartda to'xtaydi. Qolganlari endi tekshirilmaydi. Oxiridagi `else` esa — «qolgan barcha hollarda»." },
+          { "quote": true, "text": "Tartib muhim: avval eng qattiq shartni yozamiz (>= 90), keyin yumshoqrog'ini (>= 70). Joyini almashtirsang — hatto 95 ball ham «Yaxshi» bo'lib qoladi." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "else if", "prompt": "score = 40 bo'lsa, bu kod nima chiqaradi?", "code": "if (score >= 90) {\n  console.log(\"A'lo!\");\n} else if (score >= 70) {\n  console.log(\"Yaxshi\");\n} else {\n  console.log(\"Ko'proq harakat qil\");\n}", "options": ["Ko'proq harakat qil", "Yaxshi", "A'lo!", "Hech narsa"], "answer": 0, "explain": "40 na >= 90 ga, na >= 70 ga mos keladi — else ishlaydi." },
+          { "type": "truefalse", "topic": "else if", "prompt": "Agar birinchi score >= 70, ikkinchi score >= 90 yozilsa, 95 ballda «A'lo!» chiqadi.", "answer": false, "explain": "95 >= 70 — allaqachon true, JavaScript boshqa tekshirmaydi va «Yaxshi» chiqaradi." }
+        ]
+      },
+      {
+        "title": "&& (VA) va || (YOKI)",
+        "slides": [
+          { "emoji": "🤝", "text": "`&&` — bu **VA**: **ikkala** shart ham to'g'ri bo'lishi kerak. Ob-havo yaxshi **VA** vaqtim bo'lsa, sayrga chiqaman." },
+          { "text": "Ob-havo yaxshi, lekin vaqt yo'q — demak, uyda o'tiraman:", "code": "let goodWeather = true;\nlet hasTime = false;\nif (goodWeather && hasTime) {\n  console.log(\"Sayrga chiqaman!\");\n} else {\n  console.log(\"Uyda o'tiraman\");\n}\n// Uyda o'tiraman" },
+          { "emoji": "🍕", "text": "`||` — bu **YOKI**: **kamida bittasi** to'g'ri bo'lsa yetarli. Och bo'lsam **YOKI** shunchaki xohlasam, pitsa buyuraman.", "code": "let isHungry = false;\nlet wantPizza = true;\nif (isHungry || wantPizza) {\n  console.log(\"Pitsa buyuraman 🍕\");\n}" },
+          { "text": "Bu jadvalni eslab qol — uni to'g'ridan-to'g'ri konsolda tekshirish qulay:", "code": "console.log(true && true);   // true\nconsole.log(true && false);  // false\nconsole.log(true || false);  // true\nconsole.log(false || false); // false" }
+        ],
+        "check": [
+          { "type": "input", "topic": "&& va ||", "prompt": "console.log(true && false) nima chiqaradi?", "placeholder": "true yoki false", "answer": ["false"], "explain": "&& uchun ikkalasi ham true bo'lishi kerak. Bitta false — butun natija false." },
+          { "type": "choice", "topic": "&& va ||", "prompt": "Kod nima chiqaradi?", "code": "let isHungry = false;\nlet wantPizza = true;\nif (isHungry || wantPizza) {\n  console.log(\"Pitsa!\");\n} else {\n  console.log(\"Kerak emas\");\n}", "options": ["Pitsa!", "Kerak emas", "true", "Xato"], "answer": 0, "explain": "|| uchun bitta true yetarli — wantPizza = true." }
+        ]
+      },
+      {
+        "title": "Ternar operator ? :",
+        "slides": [
+          { "emoji": "✂️", "text": "Bu **if / else ning qisqa yozuvi**, bir qatorda: `shart ? ha_bo'lsa : yo'q_bo'lsa`." },
+          { "text": "Juft yoki toq (13-darsdagi `%` ni eslaymiz). Shunday o'qiladi: «son 2 ga qoldiqsiz bo'linadimi? Ha bo'lsa — „juft“, yo'q bo'lsa — „toq“».", "code": "let number = 7;\nconst result = number % 2 === 0 ? \"juft\" : \"toq\";\nconsole.log(result); // toq" },
+          { "quote": true, "text": "Ternar operator — ikki variantli oddiy holatlar uchun. Variantlar ko'p bo'lsa — oddiy if / else if yozamiz." }
+        ],
+        "check": [
+          { "type": "input", "topic": "Ternar operator", "prompt": "Kod nima chiqaradi? So'zni yoz.", "code": "let age = 15;\nconsole.log(age >= 18 ? \"katta\" : \"bola\");", "placeholder": "Javob", "answer": ["bola"], "explain": "15 >= 18 — false, shuning uchun ikki nuqtadan keyingi qiymat olinadi." },
+          { "type": "truefalse", "topic": "Ternar operator", "prompt": "Ternar operatorni variantlar 3 va undan ko'p bo'lganda ishlatish qulay.", "answer": false, "explain": "U ikki variant uchun. Uch va undan ko'p bo'lsa — if / else if." }
+        ]
+      },
+      {
+        "title": "Amaliyot: saytga kirish",
+        "slides": [
+          { "text": "Hammasini birlashtiramiz. Bu yerda `else if` ham, `&&` ham, shablon satr ham bor:", "code": "const name = \"Aziz\";\nlet age = 16;\nlet hasAccount = true;\nif (age < 12) {\n  console.log(`${name}, bu sayt senga hali erta`);\n} else if (age >= 12 && hasAccount) {\n  console.log(`Xush kelibsan, ${name}!`);\n} else {\n  console.log(`${name}, avval ro'yxatdan o't`);\n}\n// Xush kelibsan, Aziz!" },
+          { "emoji": "🏠", "text": "Uyga vazifada esa uchta o'zgaruvchi bo'yicha uydan nima olishni hal qilasan: `temperature`, `isRaining`, `hasUmbrella`. Kamida 3 ta variant va kamida bitta `&&` li shart kerak — masalan, yomg'ir **va** soyabon yo'q." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Amaliyot", "prompt": "age = 10 bo'lsa, saytga kirish kodi nima chiqaradi?", "code": "if (age < 12) {\n  console.log(\"Erta\");\n} else if (age >= 12 && hasAccount) {\n  console.log(\"Xush kelibsan\");\n} else {\n  console.log(\"Ro'yxatdan o't\");\n}", "options": ["Erta", "Xush kelibsan", "Ro'yxatdan o't", "Hech narsa"], "answer": 0, "explain": "10 < 12 — birinchi shartning o'zi to'g'ri, keyingisi tekshirilmaydi." }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    { "type": "choice", "topic": "if / else", "prompt": "if dan keyingi ( ) qavs ichiga nima yoziladi?", "options": ["Shart", "Bajarilishi kerak bo'lgan kod", "O'zgaruvchi nomi", "console.log uchun matn"], "answer": 0, "explain": "( ) qavs ichida — shart. Uning natijasi doim true yoki false." },
+    { "type": "truefalse", "topic": "if / else", "prompt": "if dan keyingi { } qavs ichidagi kod faqat shart true bo'lsa bajariladi.", "answer": true, "explain": "Shart false bo'lsa, bu blok o'tkazib yuboriladi va else ishlaydi (agar u bo'lsa)." },
+    { "type": "match", "topic": "Sintaksis", "prompt": "Konstruksiya va uning ma'nosini moslashtir", "pairs": [["if", "Agar shart to'g'ri bo'lsa"], ["else", "Aks holda"], ["else if", "Aks holda, agar"], ["? :", "Qisqa if / else"]] },
+    { "type": "truefalse", "topic": "&& va ||", "prompt": "true && false ifodasi true beradi.", "answer": false, "explain": "&& (VA) faqat ikkala shart to'g'ri bo'lganda true beradi. Bu yerda bittasi false — demak, natija false." },
+    { "type": "choice", "topic": "if / else", "prompt": "Konsol nima chiqaradi?", "code": "let age = 16;\nif (age >= 18) {\n  console.log(\"Chipta sotildi!\");\n} else {\n  console.log(\"Faqat 18+ uchun\");\n}", "options": ["Chipta sotildi!", "Faqat 18+ uchun", "Hech narsa chiqarmaydi", "Ikkala gap ham"], "answer": 1, "explain": "16 >= 18 — bu false, shuning uchun else ishlaydi." },
+    { "type": "input", "topic": "&& va ||", "prompt": "console.log(false || true) nima chiqaradi?", "placeholder": "true yoki false", "answer": ["true"], "explain": "|| (YOKI) shartlardan kamida bittasi to'g'ri bo'lsa true beradi." },
+    { "type": "choice", "topic": "else if", "prompt": "Konsol nima chiqaradi?", "code": "let score = 75;\nif (score >= 90) {\n  console.log(\"A'lo!\");\n} else if (score >= 70) {\n  console.log(\"Yaxshi\");\n} else {\n  console.log(\"Ko'proq harakat qil\");\n}", "options": ["A'lo!", "Yaxshi", "Ko'proq harakat qil", "Yaxshi va Ko'proq harakat qil"], "answer": 1, "explain": "75 >= 90 — false, 75 >= 70 — true. JavaScript birinchi to'g'ri shartda to'xtaydi." },
+    { "type": "truefalse", "topic": "else if", "prompt": "if / else if zanjirida JavaScript to'g'ri shartni topgandan keyin ham hamma shartlarni tekshiradi.", "answer": false, "explain": "Shartlar yuqoridan pastga tekshiriladi va birinchi to'g'ri shartda tekshiruv to'xtaydi. Qolganlari tekshirilmaydi." },
+    { "type": "choice", "topic": "&& va ||", "prompt": "Konsol nima chiqaradi?", "code": "let goodWeather = true;\nlet hasTime = false;\nif (goodWeather && hasTime) {\n  console.log(\"Sayrga chiqaman!\");\n} else {\n  console.log(\"Uyda o'tiraman\");\n}", "options": ["Sayrga chiqaman!", "Uyda o'tiraman", "true", "Xato"], "answer": 1, "explain": "&& uchun ikkala shart kerak. hasTime = false, demak butun shart false va else ishlaydi." },
+    { "type": "input", "topic": "Ternar operator", "prompt": "Konsol nima chiqaradi? So'zni yoz.", "code": "let age = 20;\nconsole.log(age >= 18 ? \"katta\" : \"bola\");", "placeholder": "Javob", "answer": ["katta", "\"katta\""], "explain": "20 >= 18 — true, shuning uchun ? dan keyingi qiymat, ya'ni «katta» olinadi." },
+    { "type": "order", "topic": "Ternar operator", "prompt": "Ternar operatorni yig': son juft bo'lsa — «juft», aks holda — «toq»", "code": "const result = ...", "tokens": ["number % 2 === 0", "?", "\"juft\"", ":", "\"toq\""], "extra": ["else", "&&"], "explain": "Sxema: shart ? ha_bo'lsa : yo'q_bo'lsa." },
+    { "type": "match", "topic": "&& va ||", "prompt": "Operator va u qachon true berishini moslashtir", "pairs": [["&&", "Ikkala shart to'g'ri bo'lganda"], ["||", "Kamida bittasi to'g'ri bo'lganda"], ["else", "Shart false bo'lganda"]] },
+    { "type": "choice", "topic": "else if", "prompt": "Shartlarning joyi almashtirildi. score = 95 bo'lsa, konsol nima chiqaradi?", "code": "let score = 95;\nif (score >= 70) {\n  console.log(\"Yaxshi\");\n} else if (score >= 90) {\n  console.log(\"A'lo!\");\n} else {\n  console.log(\"Ko'proq harakat qil\");\n}", "options": ["A'lo!", "Yaxshi", "Ko'proq harakat qil", "Yaxshi va A'lo!"], "answer": 1, "explain": "95 >= 70 — allaqachon true va JavaScript boshqa tekshirmaydi. Shuning uchun avval eng qattiq shart (>= 90) yoziladi." },
+    { "type": "choice", "topic": "Amaliyot", "prompt": "Konsol nima chiqaradi?", "code": "const name = \"Aziz\";\nlet age = 14;\nlet hasAccount = false;\nif (age < 12) {\n  console.log(`${name}, bu sayt senga hali erta`);\n} else if (age >= 12 && hasAccount) {\n  console.log(`Xush kelibsan, ${name}!`);\n} else {\n  console.log(`${name}, avval ro'yxatdan o't`);\n}", "options": ["Aziz, bu sayt senga hali erta", "Xush kelibsan, Aziz!", "Aziz, avval ro'yxatdan o't", "Hech narsa"], "answer": 2, "explain": "14 < 12 — false. age >= 12 — true, lekin hasAccount = false, demak && false beradi. else qoladi." },
+    { "type": "choice", "topic": "Amaliyot", "prompt": "O'zing bilan nima olasan? Konsol nima chiqaradi?", "code": "let temperature = 8;\nlet isRaining = true;\nlet hasUmbrella = false;\nif (temperature > 15 || hasUmbrella) {\n  console.log(\"Yengil kiyinaman\");\n} else if (temperature < 10 && isRaining) {\n  console.log(\"Kapyushonli kurtka!\");\n} else {\n  console.log(\"Kofta ol\");\n}", "options": ["Yengil kiyinaman", "Kapyushonli kurtka!", "Kofta ol", "Yengil kiyinaman va Kapyushonli kurtka!"], "answer": 1, "explain": "8 > 15 — false va hasUmbrella — false, demak || false beradi. Keyin 8 < 10 — true va isRaining — true, demak && true beradi." }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "title": "Lesson 14. Conditions",
+  "description": "if / else, else if, && and ||, the ternary operator",
+  "learn": {
+    "intro": "Hi! Today we review **conditions** — lesson 14. I'll explain step by step, just like teacher {teacher} in class, and after each section we'll check what you remember. Let's go!",
+    "sections": [
+      {
+        "title": "if / else",
+        "slides": [
+          { "emoji": "🧠", "text": "The human brain makes decisions all the time: it's cold outside — I'll wear a jacket, it's not — I won't. JavaScript does the same thing with **conditions**." },
+          { "text": "Here's the pattern. Inside the parentheses `( )` we write a condition — its result is always `true` or `false`.", "code": "if (condition) {\n  // runs if the condition is true\n} else {\n  // runs if the condition is false\n}" },
+          { "quote": true, "text": "The code in curly braces runs only if the condition is true. And else means «otherwise»: it runs when the condition is false." },
+          { "text": "Example: can you buy a ticket for an 18+ movie. Here `age >= 18` is false, so the console shows «Sorry, this movie is 18+ only». Change age to 20 — and the message changes.", "code": "let age = 16;\nif (age >= 18) {\n  console.log(\"Ticket sold, enjoy the movie!\");\n} else {\n  console.log(\"Sorry, this movie is 18+ only\");\n}" }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "if / else", "prompt": "else runs when the condition is true.", "answer": false, "explain": "else means «otherwise». It runs when the condition is false." },
+          { "type": "choice", "topic": "if / else", "prompt": "What will the console show if age = 20?", "code": "let age = 20;\nif (age >= 18) {\n  console.log(\"Ticket sold!\");\n} else {\n  console.log(\"18+ only\");\n}", "options": ["Ticket sold!", "18+ only", "Both messages", "Nothing"], "answer": 0, "explain": "20 >= 18 is true, so the if block runs." }
+        ]
+      },
+      {
+        "title": "else if — a chain of conditions",
+        "slides": [
+          { "text": "When there are more than two options, we add `else if` — «otherwise, if». For example, a grade by score:", "code": "let score = 75;\nif (score >= 90) {\n  console.log(\"Excellent!\");\n} else if (score >= 70) {\n  console.log(\"Good\");\n} else {\n  console.log(\"Needs work\");\n}\n// Good" },
+          { "emoji": "⬇️", "text": "JavaScript checks conditions **from top to bottom** and stops at the **first true one**. The rest are not checked. And `else` at the end means «in all other cases»." },
+          { "quote": true, "text": "Order matters: write the strictest condition first (>= 90), then the softer one (>= 70). Swap them — and even 95 points will be «Good»." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "else if", "prompt": "What does this code show when score = 40?", "code": "if (score >= 90) {\n  console.log(\"Excellent!\");\n} else if (score >= 70) {\n  console.log(\"Good\");\n} else {\n  console.log(\"Needs work\");\n}", "options": ["Needs work", "Good", "Excellent!", "Nothing"], "answer": 0, "explain": "40 matches neither >= 90 nor >= 70 — else runs." },
+          { "type": "truefalse", "topic": "else if", "prompt": "If score >= 70 is written first and score >= 90 second, 95 points will show «Excellent!».", "answer": false, "explain": "95 >= 70 is already true, JavaScript stops checking and shows «Good»." }
+        ]
+      },
+      {
+        "title": "&& (AND) and || (OR)",
+        "slides": [
+          { "emoji": "🤝", "text": "`&&` means **AND**: **both** conditions must be true. I'll go for a walk if the weather is good **AND** I have time." },
+          { "text": "The weather is good, but there's no time — so I stay home:", "code": "let goodWeather = true;\nlet hasTime = false;\nif (goodWeather && hasTime) {\n  console.log(\"Going for a walk!\");\n} else {\n  console.log(\"Staying home\");\n}\n// Staying home" },
+          { "emoji": "🍕", "text": "`||` means **OR**: **at least one** true is enough. I'll order pizza if I'm hungry **OR** just want it.", "code": "let isHungry = false;\nlet wantPizza = true;\nif (isHungry || wantPizza) {\n  console.log(\"Ordering pizza 🍕\");\n}" },
+          { "text": "Remember this table — it's easy to check right in the console:", "code": "console.log(true && true);   // true\nconsole.log(true && false);  // false\nconsole.log(true || false);  // true\nconsole.log(false || false); // false" }
+        ],
+        "check": [
+          { "type": "input", "topic": "&& and ||", "prompt": "What does console.log(true && false) show?", "placeholder": "true or false", "answer": ["false"], "explain": "&& needs both to be true. One false — and the whole result is false." },
+          { "type": "choice", "topic": "&& and ||", "prompt": "What will the code show?", "code": "let isHungry = false;\nlet wantPizza = true;\nif (isHungry || wantPizza) {\n  console.log(\"Pizza!\");\n} else {\n  console.log(\"No need\");\n}", "options": ["Pizza!", "No need", "true", "Error"], "answer": 0, "explain": "|| needs just one true — wantPizza = true." }
+        ]
+      },
+      {
+        "title": "The ternary operator ? :",
+        "slides": [
+          { "emoji": "✂️", "text": "It's a **short if / else** in one line: `condition ? if_yes : if_no`." },
+          { "text": "Even or odd (remember `%` from lesson 13). Read it like this: «does the number divide by 2 with no remainder? If yes — “even”, if not — “odd”».", "code": "let number = 7;\nconst result = number % 2 === 0 ? \"even\" : \"odd\";\nconsole.log(result); // odd" },
+          { "quote": true, "text": "The ternary operator is for simple cases with two options. If there are more — write a normal if / else if." }
+        ],
+        "check": [
+          { "type": "input", "topic": "Ternary operator", "prompt": "What will the code show? Write the word.", "code": "let age = 15;\nconsole.log(age >= 18 ? \"adult\" : \"child\");", "placeholder": "Answer", "answer": ["child"], "explain": "15 >= 18 is false, so the value after the colon is taken." },
+          { "type": "truefalse", "topic": "Ternary operator", "prompt": "The ternary operator is handy when there are 3 or more options.", "answer": false, "explain": "It's for two options. For three or more — if / else if." }
+        ]
+      },
+      {
+        "title": "Practice: logging in to a site",
+        "slides": [
+          { "text": "Let's put it all together. Here we have `else if`, `&&` and a template string:", "code": "const name = \"Aziz\";\nlet age = 16;\nlet hasAccount = true;\nif (age < 12) {\n  console.log(`${name}, you're too young for this site`);\n} else if (age >= 12 && hasAccount) {\n  console.log(`Welcome, ${name}!`);\n} else {\n  console.log(`${name}, please sign up first`);\n}\n// Welcome, Aziz!" },
+          { "emoji": "🏠", "text": "In the homework you decide what to take from home using three variables: `temperature`, `isRaining`, `hasUmbrella`. You need at least 3 options and at least one condition with `&&` — for example, rain **and** no umbrella." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Practice", "prompt": "What does the login code show when age = 10?", "code": "if (age < 12) {\n  console.log(\"Too early\");\n} else if (age >= 12 && hasAccount) {\n  console.log(\"Welcome\");\n} else {\n  console.log(\"Sign up\");\n}", "options": ["Too early", "Welcome", "Sign up", "Nothing"], "answer": 0, "explain": "10 < 12 — the very first condition is true, nothing else is checked." }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    { "type": "choice", "topic": "if / else", "prompt": "What goes in the parentheses ( ) after if?", "options": ["A condition", "The code to run", "A variable name", "Text for console.log"], "answer": 0, "explain": "Inside ( ) is the condition. Its result is always true or false." },
+    { "type": "truefalse", "topic": "if / else", "prompt": "The code in curly braces { } after if runs only if the condition is true.", "answer": true, "explain": "If the condition is false, this block is skipped and else runs (if there is one)." },
+    { "type": "match", "topic": "Syntax", "prompt": "Match the construct and its meaning", "pairs": [["if", "If the condition is true"], ["else", "Otherwise"], ["else if", "Otherwise, if"], ["? :", "Short if / else"]] },
+    { "type": "truefalse", "topic": "&& and ||", "prompt": "The expression true && false gives true.", "answer": false, "explain": "&& (AND) gives true only when both conditions are true. Here one is false — so the result is false." },
+    { "type": "choice", "topic": "if / else", "prompt": "What will the console show?", "code": "let age = 16;\nif (age >= 18) {\n  console.log(\"Ticket sold!\");\n} else {\n  console.log(\"18+ only\");\n}", "options": ["Ticket sold!", "18+ only", "Nothing at all", "Both messages"], "answer": 1, "explain": "16 >= 18 is false, so else runs." },
+    { "type": "input", "topic": "&& and ||", "prompt": "What does console.log(false || true) show?", "placeholder": "true or false", "answer": ["true"], "explain": "|| (OR) gives true if at least one of the conditions is true." },
+    { "type": "choice", "topic": "else if", "prompt": "What will the console show?", "code": "let score = 75;\nif (score >= 90) {\n  console.log(\"Excellent!\");\n} else if (score >= 70) {\n  console.log(\"Good\");\n} else {\n  console.log(\"Needs work\");\n}", "options": ["Excellent!", "Good", "Needs work", "Good and Needs work"], "answer": 1, "explain": "75 >= 90 is false, 75 >= 70 is true. JavaScript stops at the first true condition." },
+    { "type": "truefalse", "topic": "else if", "prompt": "In an if / else if chain, JavaScript checks all conditions even after it finds a true one.", "answer": false, "explain": "Conditions are checked from top to bottom, and checking stops at the first true one. The rest are not checked." },
+    { "type": "choice", "topic": "&& and ||", "prompt": "What will the console show?", "code": "let goodWeather = true;\nlet hasTime = false;\nif (goodWeather && hasTime) {\n  console.log(\"Going for a walk!\");\n} else {\n  console.log(\"Staying home\");\n}", "options": ["Going for a walk!", "Staying home", "true", "Error"], "answer": 1, "explain": "&& needs both conditions. hasTime = false, so the whole condition is false and else runs." },
+    { "type": "input", "topic": "Ternary operator", "prompt": "What will the console show? Write the word.", "code": "let age = 20;\nconsole.log(age >= 18 ? \"adult\" : \"child\");", "placeholder": "Answer", "answer": ["adult", "\"adult\""], "explain": "20 >= 18 is true, so the value after ? is taken, that is «adult»." },
+    { "type": "order", "topic": "Ternary operator", "prompt": "Build the ternary operator: if the number is even — «even», otherwise — «odd»", "code": "const result = ...", "tokens": ["number % 2 === 0", "?", "\"even\"", ":", "\"odd\""], "extra": ["else", "&&"], "explain": "Pattern: condition ? if_yes : if_no." },
+    { "type": "match", "topic": "&& and ||", "prompt": "Match the operator and when it gives true", "pairs": [["&&", "When both conditions are true"], ["||", "When at least one is true"], ["else", "When the condition is false"]] },
+    { "type": "choice", "topic": "else if", "prompt": "The conditions were swapped. What will the console show when score = 95?", "code": "let score = 95;\nif (score >= 70) {\n  console.log(\"Good\");\n} else if (score >= 90) {\n  console.log(\"Excellent!\");\n} else {\n  console.log(\"Needs work\");\n}", "options": ["Excellent!", "Good", "Needs work", "Good and Excellent!"], "answer": 1, "explain": "95 >= 70 is already true, and JavaScript checks no further. That's why the strictest condition (>= 90) goes first." },
+    { "type": "choice", "topic": "Practice", "prompt": "What will the console show?", "code": "const name = \"Aziz\";\nlet age = 14;\nlet hasAccount = false;\nif (age < 12) {\n  console.log(`${name}, you're too young for this site`);\n} else if (age >= 12 && hasAccount) {\n  console.log(`Welcome, ${name}!`);\n} else {\n  console.log(`${name}, please sign up first`);\n}", "options": ["Aziz, you're too young for this site", "Welcome, Aziz!", "Aziz, please sign up first", "Nothing"], "answer": 2, "explain": "14 < 12 is false. age >= 12 is true, but hasAccount = false, so && gives false. Only else is left." },
+    { "type": "choice", "topic": "Practice", "prompt": "What to take with you? What will the console show?", "code": "let temperature = 8;\nlet isRaining = true;\nlet hasUmbrella = false;\nif (temperature > 15 || hasUmbrella) {\n  console.log(\"Going light\");\n} else if (temperature < 10 && isRaining) {\n  console.log(\"Hooded jacket!\");\n} else {\n  console.log(\"Take a sweater\");\n}", "options": ["Going light", "Hooded jacket!", "Take a sweater", "Going light and Hooded jacket!"], "answer": 1, "explain": "8 > 15 is false and hasUmbrella is false, so || gives false. Next, 8 < 10 is true and isRaining is true, so && gives true." }
+  ]
+}

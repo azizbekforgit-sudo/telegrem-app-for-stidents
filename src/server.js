@@ -7,6 +7,7 @@ import { webhookCallback } from 'grammy';
 import { createStore } from './store.js';
 import { createLogic, httpError } from './logic.js';
 import { verifyInitData } from './auth.js';
+import { validateTranslation } from './grading.js';
 import { createBot } from './bot.js';
 
 const PORT = Number(process.env.PORT || 3000);
@@ -24,9 +25,21 @@ console.log(`[store] ${store.backend}`);
 // Тесты, которые Claude готовит из конспектов, лежат в content/lessons/*.json — подхватываем при старте.
 const lessonsDir = path.join(root, 'content', 'lessons');
 const newPersonal = []; // личные задания, о которых бот напишет ученикам после запуска
-for (const f of fs.existsSync(lessonsDir) ? fs.readdirSync(lessonsDir).filter((x) => x.endsWith('.json')) : []) {
+// Переводы урока лежат рядом: <id>.uz.json и <id>.en.json (те же поля title, description, questions, learn)
+const lessonFiles = fs.existsSync(lessonsDir) ? fs.readdirSync(lessonsDir).filter((x) => x.endsWith('.json')) : [];
+const TR_RE = /^(.+)\.(uz|en)\.json$/;
+for (const f of lessonFiles.filter((x) => !TR_RE.test(x))) {
   try {
-    const l = logic.upsertLesson(JSON.parse(fs.readFileSync(path.join(lessonsDir, f), 'utf8')), { source: 'content' });
+    const lesson = JSON.parse(fs.readFileSync(path.join(lessonsDir, f), 'utf8'));
+    for (const t of lessonFiles) {
+      const m = TR_RE.exec(t);
+      if (!m || m[1] !== lesson.id) continue;
+      const tr = JSON.parse(fs.readFileSync(path.join(lessonsDir, t), 'utf8'));
+      const errs = validateTranslation(lesson, tr);
+      if (errs.length) { console.error(`[lessons] ${t}: ${errs.join('; ')}`); continue; }
+      (lesson.tr ||= {})[m[2]] = tr;
+    }
+    const l = logic.upsertLesson(lesson, { source: 'content' });
     newPersonal.push(...logic.assignPersonal(l.id));
   } catch (e) {
     console.error(`[lessons] ${f}: ${e.message}`);

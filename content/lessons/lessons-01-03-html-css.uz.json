@@ -1,0 +1,136 @@
+{
+  "title": "1–3-darslar. HTML va CSS asoslari",
+  "description": "HTML tuzilishi, CSS ulash, selektorlar, kaskad va spetsifiklik",
+  "learn": {
+    "intro": "Salom! 1–3-darslarni takrorlaymiz: **HTML va CSS asoslari**. Men {teacher} ustoz darslardagidek hammasini bo'limlarga bo'lib tushuntiraman, har bo'limdan keyin — qisqa tekshiruv. Tayyormisan?",
+    "sections": [
+      {
+        "title": "Sayt — tirik odamga o'xshaydi",
+        "slides": [
+          { "emoji": "🧍", "text": "Odamda skelet, tashqi ko'rinish (teri, kiyim) va miya bor. Saytda ham xuddi shunday **3 qism** — va biz o'rganadigan 3 ta til." },
+          { "text": "**HTML** — skelet: saytning asosiy tuzilishi. HTML'siz sayt umuman yo'q.\n**CSS** — teri va kiyim: rang, shrift, chiroy.\n**JavaScript** — miya: reaksiya va harakat, bosilganda nima bo'lishi." },
+          { "quote": true, "text": "Kod — kompyuter va brauzer tushunadigan buyruqlar yozuvi. Biz oddiy so'zlar bilan emas, qat'iy qoidalar bo'yicha — teglar yordamida yozamiz." }
+        ],
+        "check": [
+          { "type": "match", "topic": "Sayt qismlari", "prompt": "Til va «odam» qismini moslashtir", "pairs": [["HTML", "Skelet"], ["CSS", "Kiyim"], ["JavaScript", "Miya"]] },
+          { "type": "truefalse", "topic": "Sayt qismlari", "prompt": "Saytni umuman HTML'siz — faqat CSS bilan qilsa bo'ladi.", "answer": false, "explain": "HTML — skelet. Usiz sayt yo'q, CSS'ga «kiyintiradigan» narsa qolmaydi." }
+        ]
+      },
+      {
+        "title": "HTML sahifa tuzilishi",
+        "slides": [
+          { "emoji": "📄", "text": "**index.html** faylini yaratamiz. `.html` kengaytmasi — brauzer uchun belgi: «meni veb-sahifa sifatida och». Kod yozding → **Ctrl + S** → brauzerni **F5** bilan yangila." },
+          { "text": "Har qanday sahifaning asosi:", "code": "<html>\n  <head>\n    <title>Mening saytim</title>\n  </head>\n  <body>\n\n  </body>\n</html>" },
+          { "text": "`<html>` — eng tashqi «quti».\n`<head>` — sahifaning «pasporti», u **ko'rinmaydi**.\n`<title>` — vkladka nomi.\n`<body>` — ekranda **ko'rinadigan** hamma narsa." },
+          { "quote": true, "text": "Eslab qoling: head ichidagi narsa ekranda ko'rinmaydi. body ichidagi esa — ko'rinadi." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "HTML tuzilishi", "prompt": "Sahifada ko'rinishi kerak bo'lgan matn qayerga yoziladi?", "options": ["<body> ichiga", "<head> ichiga", "<title> ichiga", "</html> dan keyin"], "answer": 0, "explain": "body ichidagi hamma narsa ekranda ko'rinadi." },
+          { "type": "input", "topic": "HTML tuzilishi", "prompt": "Qaysi teg brauzer vkladkasi nomini o'zgartiradi? Qavslarsiz yoz.", "placeholder": "teg", "answer": ["title", "<title>"], "explain": "title — brauzer vkladkasidagi sarlavha." }
+        ]
+      },
+      {
+        "title": "Teglar va style atributi",
+        "slides": [
+          { "text": "**Teg** — HTML'dagi buyruq. `< >` burchakli qavslarda yoziladi. Deyarli har bir teg **juft**: ochuvchi va yopuvchi, yopuvchida `/` bor.", "code": "<p>Salom, bu mening birinchi sahifam!</p>" },
+          { "emoji": "🏷️", "text": "Ko'p ishlatiladigan teglar: `<h1>`…`<h6>` — sarlavhalar (h1 eng kattasi), `<p>` — matn, `<a>` — havola, `<button>` — tugma, `<img>` — rasm (uning yopuvchi tegi **yo'q**)." },
+          { "text": "Uslubni to'g'ridan-to'g'ri tegda **style** atributi orqali berish mumkin — bu CSS'ning eng kichik, «qo'lda» usuli:", "code": "<p style=\"color: blue; font-size: 24px;\">Salom!</p>" },
+          { "text": "`color` — matn rangi (red, green ni sinab ko'r). `font-size` — matn o'lchami (12px va 40px ni solishtir)." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Teglar va atributlar", "prompt": "Qaysi teg — yopuvchi tegi yo'q rasm?", "options": ["<img>", "<p>", "<a>", "<h1>"], "answer": 0, "explain": "<img> — istisno: uning yopuvchi tegi yo'q." },
+          { "type": "choice", "topic": "Teglar va atributlar", "prompt": "style atributidagi color: red nimani o'zgartiradi?", "options": ["Matn rangini", "Fon rangini", "Matn o'lchamini", "Shriftni"], "answer": 0, "explain": "color — matn rangi. Fon — bu background-color." }
+        ]
+      },
+      {
+        "title": "CSS va <link> tegi",
+        "slides": [
+          { "emoji": "🎨", "text": "**HTML** sahifada **nima** borligini aytadi. **CSS** esa u **qanday ko'rinishini** aytadi: qizil, katta, markazda." },
+          { "emoji": "🚪", "text": "Ikki xonani tasavvur qil. 1-xona — `index.html` (mazmun). 2-xona — `style.css` (bezak). Ular orasidagi **eshik** — `<link>` tegi. Eshiksiz HTML CSS haqida hech narsa bilmaydi." },
+          { "text": "Eshikni `<head>` ichiga qo'yamiz. `rel=\"stylesheet\"` — «bu uslublar fayli», `href=\"style.css\"` — qaysi faylga ulanamiz.", "code": "<head>\n  <meta charset=\"UTF-8\">\n  <title>Mening saytim</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>" },
+          { "quote": true, "text": "CSS ishlamasa — avval tekshiring: fayl saqlanganmi (Ctrl + S), link'da fayl nomi to'g'ri yozilganmi, har bir qator oxirida ; bormi." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "CSS ulash", "prompt": "style.css fayli index.html bilan bir papkada turishi kerak.", "answer": true, "explain": "Shunda href'ga shunchaki style.css deb yozish kifoya." },
+          { "type": "choice", "topic": "CSS ulash", "prompt": "link tegidagi href=\"style.css\" nimani bildiradi?", "options": ["Qaysi faylga ulanamiz", "Bu uslublar fayli ekanini", "Vkladka nomini", "Sahifa rangini"], "answer": 0, "explain": "href — fayl manzili. «Bu uslublar fayli» esa — rel=\"stylesheet\"." }
+        ]
+      },
+      {
+        "title": "CSS qanday yoziladi",
+        "slides": [
+          { "text": "Avval **kimni** bezashimizni, keyin — **qanday** bezashimizni aytamiz:", "code": "p {\n  color: blue;\n}" },
+          { "text": "`p` — **selektor** (kimni), `{ }` — ichida bezak, `color` — **xususiyat** (nimani o'zgartiramiz), `blue` — **qiymat** (qanday qilamiz), `;` — qator oxiri." },
+          { "emoji": "⚠️", "text": "Qoidalar: selektorda teg `< >` **siz** yoziladi. Xususiyat va qiymat orasida — ikki nuqta `:`. Har bir qator oxirida — `;`, aks holda keyingi qator ishlamasligi mumkin." },
+          { "text": "O'lcham xususiyatlari: `width` — kenglik, `height` — balandlik, `px` — piksel, ekrandagi eng kichik nuqta. Maslahat: `background-color` qo'sh, aks holda blok chegaralari ko'rinmaydi.", "code": "p {\n  width: 300px;\n  height: 100px;\n  font-size: 24px;\n  color: green;\n  background-color: yellow;\n}" }
+        ],
+        "check": [
+          { "type": "match", "topic": "CSS sintaksisi", "prompt": "h1 { font-size: 40px; } qoidasida qismlarni moslashtir", "pairs": [["h1", "Selektor"], ["font-size", "Xususiyat"], ["40px", "Qiymat"]] },
+          { "type": "choice", "topic": "CSS sintaksisi", "prompt": "Xato qayerda?", "code": "p {\n  color: red\n  font-size: 20px;\n}", "options": ["red dan keyin ; yo'q", "font-size dan keyin : yo'q", "Selektorni <p> deb yozish kerak", "Xato yo'q"], "answer": 0, "explain": "Har bir qatordan keyin ; kerak. Usiz keyingi qator ishlamasligi mumkin." }
+        ]
+      },
+      {
+        "title": "Nega style kuchliroq",
+        "slides": [
+          { "text": "CSS'da `p` deb yozsang, **hamma** paragraflar birdaniga o'zgaradi. Lekin 5-chisida o'zining `style`i bor:", "code": "<p>Paragraf 4</p>\n<p style=\"color: red;\">Paragraf 5</p>\n<p>Paragraf 6</p>\n\np { color: blue; }" },
+          { "text": "Natija: hamma paragraflar **ko'k**, 5-chisi esa — **qizil**. Brauzer qoidasi: **aniqroq va yaqinroq ko'rsatma kuchliroq**." },
+          { "quote": true, "text": "Ustoz butun sinfga aytdi: «Hamma ko'k ruchka bilan yozsin». Keyin bitta o'quvchiga alohida: «Sen esa qizil bilan yoz». Bu o'quvchi shaxsiy ko'rsatmani bajaradi — u aynan unga aytilgan." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "Kaskad", "prompt": "style atributi sahifadagi hamma paragraflarga ta'sir qiladi.", "answer": false, "explain": "style faqat bitta elementga — o'zi yozilgan elementga ta'sir qiladi." }
+        ]
+      },
+      {
+        "title": "Selektorlar: teg, klass, ID",
+        "slides": [
+          { "emoji": "🎯", "text": "Selektor — **kimni** bezashni aniq ko'rsatish usuli. Xonada 30 kishi bo'lsa, «shapka kiy!» deb baqirsang — kimga aytilgani noma'lum." },
+          { "text": "**Teg bo'yicha** `p { }` — hamma paragraflar. **Klass bo'yicha** `.card { }` — `class=\"card\"` bo'lgan hamma elementlar, hatto ular har xil teglar bo'lsa ham. Klass — «beydjik» kabi.", "code": "<div class=\"card\">div</div>\n<p class=\"card\">paragraf</p>\n\n.card {\n  background: lightyellow;\n  padding: 10px;\n}" },
+          { "quote": true, "text": "ID — pasport kabi, u yagona. Lekin haqiqiy loyihalarda ID uslub uchun ishlatilmaydi: u JavaScript va langar havolalar uchun kerak. CSS uchun doim KLASSLARDAN foydalaning." },
+          { "text": "**Ichma-ichlik**: `.card p` — `.card` **ichida** turgan paragraf. Tashqaridagi paragraf o'zgarmaydi.", "code": ".card p {\n  color: green;\n}" }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Selektorlar", "prompt": "class=\"box\" bo'lgan hamma elementlarni qanday tanlash mumkin?", "options": [".box", "#box", "box", "<box>"], "answer": 0, "explain": "Klass — nuqta orqali." },
+          { "type": "choice", "topic": "Selektorlar", "prompt": "div.card nimani tanlaydi?", "options": ["Faqat card klassli div'ni", "Hamma div'larni", "card bor hamma elementlarni", "card ichidagi div'ni"], "answer": 0, "explain": "Teg + klass birga: faqat card klassi bor div." }
+        ]
+      },
+      {
+        "title": "Kaskad va spetsifiklik",
+        "slides": [
+          { "emoji": "⚡", "text": "Agar ikki qoida bitta element uchun «bahslashsa» — **aniqrog'i** yutadi. Kuch ierarxiyasi: **ID > klass > teg**." },
+          { "text": "Bu yerda matn **qizil** bo'ladi: `.card p` (klass + teg) oddiy `p` dan aniqroq.", "code": "p {\n  color: blue;\n}\n.card p {\n  color: red;\n}" },
+          { "text": "**Tartib qoidasi**: kuch bir xil bo'lsa, faylda **pastroqda** yozilgan qoida yutadi.\n**!important** — «favqulodda tugma»: doim yutadi, lekin undan foydalanish tavsiya etilmaydi." }
+        ],
+        "check": [
+          { "type": "order", "topic": "Kaskad", "prompt": "Eng kuchlisidan eng kuchsiziga qarab joylashtir", "tokens": ["ID", "klass", "teg"], "explain": "ID > klass > teg." },
+          { "type": "choice", "topic": "Kaskad", "prompt": "Bir xil kuchli ikki .title qoidasi: avval color: green, pastda color: orange. Qaysi rang?", "options": ["To'q sariq", "Yashil", "Qora", "Aralashadi"], "answer": 0, "explain": "Kuch bir xil bo'lsa, pastda yozilgan qoida yutadi." }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    { "type": "choice", "topic": "Sayt qismlari", "prompt": "Saytni odamga qiyoslasak, HTML — bu…", "options": ["Skelet", "Teri va kiyim", "Miya", "Ovoz"], "answer": 0, "explain": "HTML — saytning asosiy tuzilishi, uning «qurilishi». HTML'siz sayt umuman yo'q." },
+    { "type": "match", "topic": "Sayt qismlari", "prompt": "Til va uning saytdagi vazifasini moslashtir", "pairs": [["HTML", "Tuzilish (skelet)"], ["CSS", "Tashqi ko'rinish (kiyim)"], ["JavaScript", "Reaksiya va harakat (miya)"]] },
+    { "type": "truefalse", "topic": "HTML tuzilishi", "prompt": "<head> ichida yozilgan hamma narsa ekranda ko'rinadi.", "answer": false, "explain": "head — sahifaning «pasporti», u ko'rinmaydi. body ichidagisi ko'rinadi." },
+    { "type": "choice", "topic": "HTML tuzilishi", "prompt": "Qaysi teg brauzerdagi vkladka nomini belgilaydi?", "options": ["<title>", "<head>", "<body>", "<p>"], "answer": 0, "explain": "title dagi matnni o'zgartirsang — vkladka nomi o'zgaradi." },
+    { "type": "input", "topic": "HTML tuzilishi", "prompt": "HTML faylning kengaytmasi qanday? (masalan, index.???)", "placeholder": "Kengaytma", "answer": [".html", "html"], "explain": ".html kengaytmasi brauzerga aytadi: «meni veb-sahifa sifatida och»." },
+    { "type": "choice", "topic": "Teglar va atributlar", "prompt": "Yopuvchi teg ochuvchidan nimasi bilan farq qiladi?", "options": ["Unda / belgisi bor", "U katta harflar bilan yoziladi", "Unda < > qavslar yo'q", "Unda # belgisi bor"], "answer": 0, "explain": "<p> — ochuvchi, </p> — yopuvchi. / belgisi teg qayerda tugashini ko'rsatadi." },
+    { "type": "truefalse", "topic": "Teglar va atributlar", "prompt": "<img> tegining yopuvchi tegi yo'q.", "answer": true, "explain": "Ko'pchilik teglar juft, lekin <img> (rasm) — istisno." },
+    { "type": "choice", "topic": "Teglar va atributlar", "prompt": "Qaysi sarlavha eng katta?", "options": ["<h1>", "<h3>", "<h6>", "<p>"], "answer": 0, "explain": "Sarlavhalar h1 dan h6 gacha, h1 — eng kattasi." },
+    { "type": "order", "topic": "HTML tuzilishi", "prompt": "Teglarni sahifa tuzilishidagi kabi to'g'ri tartibda joylashtir", "tokens": ["<html>", "<head>", "</head>", "<body>", "</body>", "</html>"], "extra": ["</p>"], "explain": "html — tashqi «quti». Ichida avval head, keyin body. Har bir teg yopiladi." },
+    { "type": "choice", "topic": "Teglar va atributlar", "prompt": "Bu tegdagi font-size: 24px nima qiladi?", "code": "<p style=\"color: blue; font-size: 24px;\">Salom!</p>", "options": ["Matn o'lchamini o'zgartiradi", "Matn rangini o'zgartiradi", "Blok kengligini o'zgartiradi", "Shriftni qalin qiladi"], "answer": 0, "explain": "font-size — harflar o'lchami. Rangni color belgilaydi." },
+    { "type": "input", "topic": "CSS ulash", "prompt": "2-darsda yaratgan uslublar faylimiz qanday nomlanadi?", "placeholder": "fayl nomi", "answer": ["style.css"], "explain": "style.css — «2-xona», sayt bezagi shu yerda." },
+    { "type": "choice", "topic": "CSS ulash", "prompt": "Qaysi teg index.html va style.css orasidagi «eshik»?", "options": ["<link>", "<style>", "<a>", "<title>"], "answer": 0, "explain": "<link> siz HTML CSS haqida hech narsa bilmaydi va uslublar ishlamaydi." },
+    { "type": "truefalse", "topic": "CSS ulash", "prompt": "CSS ulash uchun <link> tegi <head> ichiga yoziladi.", "answer": true, "explain": "<link rel=\"stylesheet\" href=\"style.css\"> head ichiga qo'yiladi." },
+    { "type": "match", "topic": "CSS sintaksisi", "prompt": "p { color: blue; } qoidasida qism va uning nomini moslashtir", "pairs": [["p", "Selektor"], ["color", "Xususiyat"], ["blue", "Qiymat"], [";", "Qator oxiri"]] },
+    { "type": "choice", "topic": "CSS sintaksisi", "prompt": "Qaysi CSS yozuvi to'g'ri?", "options": ["p { color: red; }", "<p> { color: red; }", "p { color = red }", "p ( color: red; )"], "answer": 0, "explain": "Selektorda teg < > siz yoziladi, xususiyat va qiymat orasida — ikki nuqta, oxirida — nuqtali vergul." },
+    { "type": "truefalse", "topic": "CSS sintaksisi", "prompt": "Qator oxirida ; ni unutsang, keyingi CSS qatori ishlamasligi mumkin.", "answer": true, "explain": "Nuqtali vergul har bir qator oxirida majburiy." },
+    { "type": "choice", "topic": "CSS sintaksisi", "prompt": "width va height ni tekshirganda nega background-color qo'shiladi?", "code": "p {\n  width: 300px;\n  height: 100px;\n  background-color: yellow;\n}", "options": ["Blok chegaralarini ko'rish uchun", "Fonsiz width ishlamaydi", "Matn kattaroq bo'lishi uchun", "Brauzer shuni talab qiladi"], "answer": 0, "explain": "Fonsiz blok chegaralari ko'rinmaydi va o'lcham o'zgargani sezilmaydi." },
+    { "type": "choice", "topic": "Selektorlar", "prompt": "CSS'da class=\"card\" bo'lgan elementlarga qanday murojaat qilinadi?", "options": [".card", "#card", "card", "<card>"], "answer": 0, "explain": "Klassga nuqta orqali murojaat qilinadi: .card. # orqali — bu ID." },
+    { "type": "choice", "topic": "Selektorlar", "prompt": "Haqiqiy loyihalarda ID nima uchun ishlatiladi?", "options": ["JavaScript va langar havolalar uchun", "Hamma elementlarni bezash uchun", "Matnga rang berish uchun", "CSS ulash uchun"], "answer": 0, "explain": "ID ning ustuvorligi juda yuqori, uning uslubini qayta yozish qiyin. CSS uchun klasslar ishlatiladi." },
+    { "type": "choice", "topic": "Kaskad", "prompt": "5-paragraf qanday rangda bo'ladi?", "code": "<!-- HTML -->\n<p>Paragraf 4</p>\n<p style=\"color: red;\">Paragraf 5</p>\n<p>Paragraf 6</p>\n\n/* CSS */\np {\n  color: blue;\n}", "options": ["Qizil", "Ko'k", "Qora", "Yarmi ko'k, yarmi qizil"], "answer": 0, "explain": "style to'g'ridan-to'g'ri tegda yozilgan — bu shaxsiy ko'rsatma, u umumiy p { } qoidasidan kuchliroq." },
+    { "type": "order", "topic": "Kaskad", "prompt": "Selektorlarni eng kuchlisidan eng kuchsiziga qarab joylashtir", "tokens": ["#header", ".card", "p"], "explain": "Kuch ierarxiyasi: ID > klass > teg." },
+    { "type": "choice", "topic": "Selektorlar", "prompt": "Qaysi paragraf yashil bo'ladi?", "code": "<!-- HTML -->\n<div class=\"card\">\n  <p>Men kartochka ichidaman</p>\n</div>\n<p>Men tashqaridaman</p>\n\n/* CSS */\n.card p {\n  color: green;\n}", "options": ["Faqat «Men kartochka ichidaman»", "Faqat «Men tashqaridaman»", "Ikkala paragraf ham", "Hech biri"], "answer": 0, "explain": ".card p — bu «.card ichida turgan p». Tashqaridagi paragraf o'zgarmaydi." },
+    { "type": "choice", "topic": "Kaskad", "prompt": "Matn qanday rangda bo'ladi?", "code": "<!-- HTML -->\n<div class=\"card\">\n  <p>Men qanday rangda bo'laman?</p>\n</div>\n\n/* CSS */\np {\n  color: blue;\n}\n.card p {\n  color: red;\n}", "options": ["Qizil", "Ko'k", "Binafsha", "Qora"], "answer": 0, "explain": ".card p (klass + teg) oddiy p dan aniqroq va kuchliroq." },
+    { "type": "choice", "topic": "Kaskad", "prompt": "Selektorlar kuchi bir xil. Sarlavha qanday rangda bo'ladi?", "code": "<!-- HTML -->\n<h2 class=\"title\">Sarlavha</h2>\n\n/* CSS */\n.title {\n  color: green;\n}\n.title {\n  color: orange;\n}", "options": ["To'q sariq", "Yashil", "Qora", "Xato bo'ladi"], "answer": 0, "explain": "Tartib qoidasi: kuch bir xil bo'lsa, pastda (keyinroq) yozilgani yutadi." },
+    { "type": "choice", "topic": "Kaskad", "prompt": "Matn qanday rangda bo'ladi?", "code": "<!-- HTML -->\n<div class=\"card\">\n  <p>Matn</p>\n</div>\n\n/* CSS */\n.card p {\n  color: red;\n}\np {\n  color: blue !important;\n}", "options": ["Ko'k", "Qizil", "Qora", "Xato bo'ladi"], "answer": 0, "explain": "!important — «favqulodda tugma»: kuchsiz selektorda ham yutadi. Lekin undan foydalanish tavsiya etilmaydi." }
+  ]
+}

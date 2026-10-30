@@ -1,0 +1,85 @@
+{
+  "title": "Lesson 1. First HTML",
+  "description": "What a website is made of, tags, page skeleton, <p> and style",
+  "learn": {
+    "intro": "Hi! Today we take our first step into the web: we'll learn what a website is made of and write our first page. Let's go!",
+    "sections": [
+      {
+        "title": "A website is like a person",
+        "slides": [
+          { "emoji": "🧍", "text": "Imagine a website is a **person**. It has a skeleton, clothes and a brain." },
+          { "emoji": "🦴", "text": "**HTML** is the skeleton: the page structure is built from it. **CSS** is skin and clothes: colors, sizes, beauty. **JavaScript** is the brain: it makes the site alive." },
+          { "quote": true, "text": "HTML is the skeleton, CSS is the clothes, JavaScript is the brain of a website." }
+        ],
+        "check": [
+          { "type": "match", "topic": "What a site is made of", "prompt": "Match the language and the part of the «person»", "pairs": [["HTML", "Skeleton"], ["CSS", "Clothes"], ["JavaScript", "Brain"]] },
+          { "type": "truefalse", "topic": "What a site is made of", "prompt": "CSS is responsible for how a website looks.", "answer": true, "explain": "CSS is the site's «clothes»: colors, fonts, sizes." }
+        ]
+      },
+      {
+        "title": "Code and tags",
+        "slides": [
+          { "emoji": "💬", "text": "Code is **commands for the browser**. In HTML, commands are written with **tags** in angle brackets: `<p>`, `<body>`." },
+          { "emoji": "📄", "text": "A page is saved in a file with the **.html** extension. The main page of a site is usually called **index.html**." },
+          { "quote": true, "text": "Name the main page file index.html — the browser looks for it first." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Code and tags", "prompt": "What is the extension of an HTML file?", "options": [".html", ".txt", ".css", ".doc"], "answer": 0, "explain": "HTML pages are saved in .html files." },
+          { "type": "input", "topic": "Code and tags", "prompt": "What is the main page file usually called?", "answer": ["index.html", "index"], "explain": "The main page is index.html." }
+        ]
+      },
+      {
+        "title": "Page skeleton",
+        "slides": [
+          { "emoji": "🏗️", "text": "Every page has the same skeleton: `html`, with `head` and `body` inside.", "code": "<html>\n  <head>\n    <title>My site</title>\n  </head>\n  <body>\n    What you see goes here\n  </body>\n</html>" },
+          { "emoji": "🙈", "text": "**head** is the invisible part: service information. **body** is the visible part: everything a person sees on the page." },
+          { "text": "**title** lives inside head. Its text is shown on the **browser tab**, not on the page itself." },
+          { "quote": true, "text": "head — hidden, body — visible, title — the text on the tab." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Page skeleton", "prompt": "Which tag holds everything visible on the page?", "options": ["<head>", "<body>", "<title>", "<html>"], "answer": 1, "explain": "body is the visible part of the page." },
+          { "type": "truefalse", "topic": "Page skeleton", "prompt": "The text from <title> is shown on the browser tab.", "answer": true, "explain": "title is the text on the tab." }
+        ]
+      },
+      {
+        "title": "The <p> tag",
+        "slides": [
+          { "emoji": "📝", "text": "The `<p>` tag is a paragraph of text. It is a **paired** tag: it has an opening and a closing tag.", "code": "<p>Hello, world!</p>" },
+          { "text": "The closing tag is the same, just with a slash **/** before the name: `</p>`." },
+          { "quote": true, "text": "Opened a tag — don't forget to close it: <p> … </p>." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Paired tags", "prompt": "Which tag closes a paragraph?", "options": ["<p>", "</p>", "<p/>", "<\\p>"], "answer": 1, "explain": "A closing tag has / before the name: </p>." },
+          { "type": "order", "topic": "Paired tags", "prompt": "Build the paragraph", "tokens": ["<p>", "Hello!", "</p>"], "extra": ["<body>"] }
+        ]
+      },
+      {
+        "title": "The style attribute",
+        "slides": [
+          { "emoji": "🎨", "text": "To color text, add the **style** attribute to a tag. Inside, write a property, a colon and a value.", "code": "<p style=\"color: blue;\">Blue text</p>" },
+          { "text": "**color** changes the text color (red, green, blue…), and **font-size** changes the size (12px, 24px, 40px). Properties can go together, separated by **;**", "code": "<p style=\"color: red; font-size: 24px;\">Big red</p>" },
+          { "quote": true, "text": "Try different colors and sizes — you'll remember faster. Homework: 4–5 paragraphs about yourself, each with its own color and size." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "style", "prompt": "Which property changes the text size?", "options": ["color", "font-size", "size", "text"], "answer": 1, "explain": "font-size is the font size, for example 24px." },
+          { "type": "truefalse", "topic": "style", "prompt": "In style, a colon goes between the property and the value: color: red", "answer": true, "explain": "Format: property: value;" }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    { "type": "truefalse", "topic": "What a site is made of", "prompt": "HTML is the «skeleton» of a website.", "answer": true, "explain": "HTML builds the page structure." },
+    { "type": "choice", "topic": "What a site is made of", "prompt": "What makes a website «alive», like a brain?", "options": ["HTML", "CSS", "JavaScript", "index.html"], "answer": 2, "explain": "JavaScript is the brain of a website." },
+    { "type": "match", "topic": "What a site is made of", "prompt": "Match the language and its role", "pairs": [["HTML", "Page structure"], ["CSS", "Appearance"], ["JavaScript", "Behavior"]] },
+    { "type": "truefalse", "topic": "Code and tags", "prompt": "Code is commands for the browser.", "answer": true, "explain": "The browser reads the tags and shows the page." },
+    { "type": "choice", "topic": "Code and tags", "prompt": "Which file name fits the main page?", "options": ["index.html", "main.txt", "page.css", "home.doc"], "answer": 0, "explain": "The main page is index.html." },
+    { "type": "choice", "topic": "Page skeleton", "prompt": "Which part of the page is NOT visible to a person?", "options": ["body", "head", "p", "All the text"], "answer": 1, "explain": "head is the hidden service part." },
+    { "type": "input", "topic": "Page skeleton", "prompt": "Which tag sets the text on the browser tab? (without brackets)", "answer": ["title", "<title>"], "explain": "title is the text on the tab." },
+    { "type": "order", "topic": "Page skeleton", "prompt": "Build the page skeleton", "tokens": ["<html>", "<head>", "</head>", "<body>", "</body>", "</html>"], "extra": ["<p>"] },
+    { "type": "truefalse", "topic": "Paired tags", "prompt": "The <p> tag doesn't need to be closed.", "answer": false, "explain": "<p> is a paired tag: <p> … </p>." },
+    { "type": "choice", "topic": "Paired tags", "prompt": "Where is the mistake?", "code": "<p>My name is Aziz<p>", "options": ["No mistake", "The second tag must be </p>", "You must write <P>", "Text can't go inside <p>"], "answer": 1, "explain": "A closing tag is written with a slash: </p>." },
+    { "type": "choice", "topic": "style", "prompt": "What color will the text be?", "code": "<p style=\"color: green;\">Hello</p>", "options": ["Blue", "Red", "Green", "Black"], "answer": 2, "explain": "color: green — green." },
+    { "type": "input", "topic": "style", "prompt": "Fill in the property: <p style=\"____: 40px;\">", "answer": ["font-size"], "explain": "Text size is set by font-size." },
+    { "type": "order", "topic": "style", "prompt": "Build a blue paragraph", "tokens": ["<p", "style=\"color: blue;\">", "Text", "</p>"], "extra": ["</body>"] }
+  ]
+}

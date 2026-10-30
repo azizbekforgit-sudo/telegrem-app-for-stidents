@@ -86,6 +86,30 @@ export function checkAnswer(q, answer) {
   }
 }
 
+// Перевод урока (<id>.uz.json / <id>.en.json) должен совпадать с оригиналом по структуре:
+// те же вопросы в том же порядке, те же типы, тот же номер правильного варианта.
+export function validateTranslation(base, t) {
+  const errs = [];
+  if (!t || typeof t !== 'object') return ['перевод должен быть объектом'];
+  const same = (a, b, where) => {
+    if (!Array.isArray(b)) return;
+    if (!Array.isArray(a) || a.length !== b.length) { errs.push(`${where}: другое число вопросов`); return; }
+    a.forEach((q, i) => {
+      const o = b[i];
+      if (q.type !== o.type) errs.push(`${where} ${i + 1}: другой type`);
+      if (q.type === 'choice' && (q.options?.length !== o.options?.length || q.answer !== o.answer)) errs.push(`${where} ${i + 1}: options/answer не совпадают`);
+      if (q.type === 'truefalse' && q.answer !== o.answer) errs.push(`${where} ${i + 1}: answer не совпадает`);
+      if (q.type === 'match' && q.pairs?.length !== o.pairs?.length) errs.push(`${where} ${i + 1}: другое число пар`);
+    });
+  };
+  same(base.questions, t.questions, 'вопрос');
+  if (t.learn) {
+    if (!base.learn || t.learn.sections?.length !== base.learn.sections.length) errs.push('обучалка: другое число разделов');
+    else t.learn.sections.forEach((sec, si) => same(base.learn.sections[si].check || [], sec.check || [], `раздел ${si + 1}, проверка`));
+  }
+  return errs;
+}
+
 // Валидация урока (используется при импорте и в scripts/check-lessons.js).
 export function validateLesson(l) {
   const errs = [];

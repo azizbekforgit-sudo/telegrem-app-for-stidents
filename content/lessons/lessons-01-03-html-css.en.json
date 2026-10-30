@@ -1,0 +1,136 @@
+{
+  "title": "Lessons 1–3. HTML and CSS basics",
+  "description": "HTML structure, linking CSS, selectors, cascade and specificity",
+  "learn": {
+    "intro": "Hi! Let's review lessons 1–3: **HTML and CSS basics**. I'll explain everything section by section, like teacher {teacher} in class, and after each section there's a short check. Ready?",
+    "sections": [
+      {
+        "title": "A website is like a living person",
+        "slides": [
+          { "emoji": "🧍", "text": "A person has a skeleton, an appearance (skin, clothes) and a brain. A website also has **3 parts** — and 3 languages we are learning." },
+          { "text": "**HTML** is the skeleton: the main structure of the site. Without HTML there is no site at all.\n**CSS** is skin and clothes: color, font, beauty.\n**JavaScript** is the brain: reactions and movement, what happens on click." },
+          { "quote": true, "text": "Code is a set of commands that a computer and a browser understand. We don't write in ordinary words but by strict rules — using tags." }
+        ],
+        "check": [
+          { "type": "match", "topic": "Parts of a site", "prompt": "Match the language and the part of the «person»", "pairs": [["HTML", "Skeleton"], ["CSS", "Clothes"], ["JavaScript", "Brain"]] },
+          { "type": "truefalse", "topic": "Parts of a site", "prompt": "You can make a website with no HTML at all — just CSS.", "answer": false, "explain": "HTML is the skeleton. Without it there's no site, and CSS has nothing to «dress»." }
+        ]
+      },
+      {
+        "title": "HTML page structure",
+        "slides": [
+          { "emoji": "📄", "text": "We create the file **index.html**. The `.html` extension is a sign for the browser: «open me as a web page». Write code → **Ctrl + S** → refresh the browser with **F5**." },
+          { "text": "The base of any page:", "code": "<html>\n  <head>\n    <title>My site</title>\n  </head>\n  <body>\n\n  </body>\n</html>" },
+          { "text": "`<html>` is the outermost «box».\n`<head>` is the page's «passport», it's **not visible**.\n`<title>` is the tab name.\n`<body>` is everything **visible** on the screen." },
+          { "quote": true, "text": "Remember: what's inside head is not visible on screen. What's inside body is visible." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "HTML structure", "prompt": "Where do you write text that should be visible on the page?", "options": ["Inside <body>", "Inside <head>", "Inside <title>", "After </html>"], "answer": 0, "explain": "Everything inside body is visible on the screen." },
+          { "type": "input", "topic": "HTML structure", "prompt": "Which tag changes the browser tab name? Write it without brackets.", "placeholder": "tag", "answer": ["title", "<title>"], "explain": "title is the heading on the browser tab." }
+        ]
+      },
+      {
+        "title": "Tags and the style attribute",
+        "slides": [
+          { "text": "A **tag** is a command in HTML. It's written in angle brackets `< >`. Almost every tag is **paired**: opening and closing, the closing one has `/`.", "code": "<p>Hi, this is my first page!</p>" },
+          { "emoji": "🏷️", "text": "Common tags: `<h1>`…`<h6>` — headings (h1 is the biggest), `<p>` — text, `<a>` — link, `<button>` — button, `<img>` — image (it has **no** closing tag)." },
+          { "text": "You can add a style right in the tag with the **style** attribute — it's the smallest, «by hand» way of CSS:", "code": "<p style=\"color: blue; font-size: 24px;\">Hi!</p>" },
+          { "text": "`color` is the text color (try red, green). `font-size` is the text size (compare 12px and 40px)." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Tags and attributes", "prompt": "Which tag is an image with no closing tag?", "options": ["<img>", "<p>", "<a>", "<h1>"], "answer": 0, "explain": "<img> is an exception: it has no closing tag." },
+          { "type": "choice", "topic": "Tags and attributes", "prompt": "What does color: red change in the style attribute?", "options": ["Text color", "Background color", "Text size", "Font"], "answer": 0, "explain": "color is the text color. Background is background-color." }
+        ]
+      },
+      {
+        "title": "CSS and the <link> tag",
+        "slides": [
+          { "emoji": "🎨", "text": "**HTML** says **what** is on the page. **CSS** says **how it looks**: red, big, centered." },
+          { "emoji": "🚪", "text": "Imagine two rooms. Room 1 is `index.html` (content). Room 2 is `style.css` (design). And the **door** between them is the `<link>` tag. Without the door, HTML knows nothing about CSS." },
+          { "text": "We put the door inside `<head>`. `rel=\"stylesheet\"` means «this is a stylesheet», `href=\"style.css\"` — which file we connect to.", "code": "<head>\n  <meta charset=\"UTF-8\">\n  <title>My site</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>" },
+          { "quote": true, "text": "If CSS doesn't work — check first: is the file saved (Ctrl + S), is the file name in link spelled correctly, is there a ; at the end of each line." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "Linking CSS", "prompt": "The style.css file should be in the same folder as index.html.", "answer": true, "explain": "Then it's enough to write just style.css in href." },
+          { "type": "choice", "topic": "Linking CSS", "prompt": "What does href=\"style.css\" mean in the link tag?", "options": ["Which file we connect to", "That it's a stylesheet", "The tab name", "The page color"], "answer": 0, "explain": "href is the file address. «This is a stylesheet» is rel=\"stylesheet\"." }
+        ]
+      },
+      {
+        "title": "How CSS is written",
+        "slides": [
+          { "text": "First we say **who** we style, then **how**:", "code": "p {\n  color: blue;\n}" },
+          { "text": "`p` is the **selector** (who), `{ }` holds the styling, `color` is the **property** (what we change), `blue` is the **value** (what we make it), `;` ends the line." },
+          { "emoji": "⚠️", "text": "Rules: in a selector, the tag is written **without** `< >`. Between the property and the value — a colon `:`. At the end of each line — `;`, otherwise the next line may not work." },
+          { "text": "Size properties: `width` — width, `height` — height, `px` — pixel, the smallest dot on the screen. Tip: add `background-color`, otherwise you can't see the block's edges.", "code": "p {\n  width: 300px;\n  height: 100px;\n  font-size: 24px;\n  color: green;\n  background-color: yellow;\n}" }
+        ],
+        "check": [
+          { "type": "match", "topic": "CSS syntax", "prompt": "In the rule h1 { font-size: 40px; } match the parts", "pairs": [["h1", "Selector"], ["font-size", "Property"], ["40px", "Value"]] },
+          { "type": "choice", "topic": "CSS syntax", "prompt": "Where is the mistake?", "code": "p {\n  color: red\n  font-size: 20px;\n}", "options": ["No ; after red", "No : after font-size", "The selector must be <p>", "No mistake"], "answer": 0, "explain": "Every line needs a ; at the end. Without it the next line may not work." }
+        ]
+      },
+      {
+        "title": "Why style is stronger",
+        "slides": [
+          { "text": "If you write `p` in CSS, **all** paragraphs change at once. But the 5th one has its own `style`:", "code": "<p>Paragraph 4</p>\n<p style=\"color: red;\">Paragraph 5</p>\n<p>Paragraph 6</p>\n\np { color: blue; }" },
+          { "text": "Result: all paragraphs are **blue**, and the 5th is **red**. The browser's rule: **a more precise and closer instruction is stronger**." },
+          { "quote": true, "text": "The teacher told the whole class: «Everyone writes with a blue pen». Then told one student separately: «You write with a red one». That student follows the personal instruction — it was said to them specifically." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "Cascade", "prompt": "The style attribute affects all paragraphs on the page.", "answer": false, "explain": "style affects only one element — the one it is written in." }
+        ]
+      },
+      {
+        "title": "Selectors: tag, class, ID",
+        "slides": [
+          { "emoji": "🎯", "text": "A selector is a way to say exactly **who** to style. If there are 30 people in a room, shouting «put on a hat!» — it's unclear who you mean." },
+          { "text": "**By tag** `p { }` — all paragraphs. **By class** `.card { }` — all elements with `class=\"card\"`, even if they are different tags. A class is like a «name badge».", "code": "<div class=\"card\">div</div>\n<p class=\"card\">paragraph</p>\n\n.card {\n  background: lightyellow;\n  padding: 10px;\n}" },
+          { "quote": true, "text": "An ID is like a passport, it's unique. But in real projects IDs are not used for styles: they are for JavaScript and anchor links. For CSS, always use CLASSES." },
+          { "text": "**Nesting**: `.card p` is a paragraph that is **inside** `.card`. A paragraph outside doesn't change.", "code": ".card p {\n  color: green;\n}" }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Selectors", "prompt": "How do you select all elements with class=\"box\"?", "options": [".box", "#box", "box", "<box>"], "answer": 0, "explain": "A class uses a dot." },
+          { "type": "choice", "topic": "Selectors", "prompt": "What does div.card select?", "options": ["Only a div with the class card", "All divs", "All elements with card", "A div inside card"], "answer": 0, "explain": "Tag + class together: only a div that has the class card." }
+        ]
+      },
+      {
+        "title": "Cascade and specificity",
+        "slides": [
+          { "emoji": "⚡", "text": "If two rules «argue» over one element — the **more precise** one wins. Strength hierarchy: **ID > class > tag**." },
+          { "text": "Here the text will be **red**: `.card p` (class + tag) is more precise than just `p`.", "code": "p {\n  color: blue;\n}\n.card p {\n  color: red;\n}" },
+          { "text": "**Order rule**: if the strength is equal, the rule written **lower** in the file wins.\n**!important** is the «emergency button»: it always wins, but using it is not recommended." }
+        ],
+        "check": [
+          { "type": "order", "topic": "Cascade", "prompt": "Arrange from strongest to weakest", "tokens": ["ID", "class", "tag"], "explain": "ID > class > tag." },
+          { "type": "choice", "topic": "Cascade", "prompt": "Two .title rules of equal strength: first color: green, below it color: orange. Which color?", "options": ["Orange", "Green", "Black", "They mix"], "answer": 0, "explain": "With equal strength, the rule written lower wins." }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    { "type": "choice", "topic": "Parts of a site", "prompt": "If we compare a website to a person, HTML is…", "options": ["The skeleton", "Skin and clothes", "The brain", "The voice"], "answer": 0, "explain": "HTML is the main structure of the site, its «building». Without HTML there is no site at all." },
+    { "type": "match", "topic": "Parts of a site", "prompt": "Match the language and its role on the site", "pairs": [["HTML", "Structure (skeleton)"], ["CSS", "Appearance (clothes)"], ["JavaScript", "Reactions and movement (brain)"]] },
+    { "type": "truefalse", "topic": "HTML structure", "prompt": "Everything written inside <head> is visible on the screen.", "answer": false, "explain": "head is the page's «passport», it's not visible. What's inside body is visible." },
+    { "type": "choice", "topic": "HTML structure", "prompt": "Which tag sets the tab name in the browser?", "options": ["<title>", "<head>", "<body>", "<p>"], "answer": 0, "explain": "Change the text in title — and the tab name changes." },
+    { "type": "input", "topic": "HTML structure", "prompt": "What is the extension of an HTML file? (for example, index.???)", "placeholder": "Extension", "answer": [".html", "html"], "explain": "The .html extension tells the browser: «open me as a web page»." },
+    { "type": "choice", "topic": "Tags and attributes", "prompt": "How is a closing tag different from an opening one?", "options": ["It has a / sign", "It's written in capital letters", "It has no < > brackets", "It has a # sign"], "answer": 0, "explain": "<p> is opening, </p> is closing. The / sign shows where the tag ends." },
+    { "type": "truefalse", "topic": "Tags and attributes", "prompt": "The <img> tag has no closing tag.", "answer": true, "explain": "Most tags are paired, but <img> (image) is an exception." },
+    { "type": "choice", "topic": "Tags and attributes", "prompt": "Which heading is the biggest?", "options": ["<h1>", "<h3>", "<h6>", "<p>"], "answer": 0, "explain": "Headings go from h1 to h6, h1 is the biggest." },
+    { "type": "order", "topic": "HTML structure", "prompt": "Put the tags in the right order, as in the page structure", "tokens": ["<html>", "<head>", "</head>", "<body>", "</body>", "</html>"], "extra": ["</p>"], "explain": "html is the outer «box». Inside: first head, then body. Every tag is closed." },
+    { "type": "choice", "topic": "Tags and attributes", "prompt": "What will font-size: 24px do in this tag?", "code": "<p style=\"color: blue; font-size: 24px;\">Hi!</p>", "options": ["Change the text size", "Change the text color", "Change the block width", "Make the font bold"], "answer": 0, "explain": "font-size is the letter size. Color is set by color." },
+    { "type": "input", "topic": "Linking CSS", "prompt": "What is the name of the stylesheet file we created in lesson 2?", "placeholder": "file name", "answer": ["style.css"], "explain": "style.css is «room 2», where the site's design lives." },
+    { "type": "choice", "topic": "Linking CSS", "prompt": "Which tag is the «door» between index.html and style.css?", "options": ["<link>", "<style>", "<a>", "<title>"], "answer": 0, "explain": "Without <link>, HTML knows nothing about CSS and styles don't work." },
+    { "type": "truefalse", "topic": "Linking CSS", "prompt": "The <link> tag for connecting CSS is written inside <head>.", "answer": true, "explain": "<link rel=\"stylesheet\" href=\"style.css\"> goes in head." },
+    { "type": "match", "topic": "CSS syntax", "prompt": "In the rule p { color: blue; } match the part and its name", "pairs": [["p", "Selector"], ["color", "Property"], ["blue", "Value"], [";", "End of line"]] },
+    { "type": "choice", "topic": "CSS syntax", "prompt": "Which CSS is correct?", "options": ["p { color: red; }", "<p> { color: red; }", "p { color = red }", "p ( color: red; )"], "answer": 0, "explain": "In a selector the tag has no < >, a colon goes between property and value, and a semicolon at the end." },
+    { "type": "truefalse", "topic": "CSS syntax", "prompt": "If you forget ; at the end of a line, the next CSS line may not work.", "answer": true, "explain": "A semicolon is required at the end of each line." },
+    { "type": "choice", "topic": "CSS syntax", "prompt": "Why add background-color when testing width and height?", "code": "p {\n  width: 300px;\n  height: 100px;\n  background-color: yellow;\n}", "options": ["To see the block's edges", "width doesn't work without a background", "To make the text bigger", "The browser requires it"], "answer": 0, "explain": "Without a background you can't see the block's edges or notice that the size changed." },
+    { "type": "choice", "topic": "Selectors", "prompt": "How do you target elements with class=\"card\" in CSS?", "options": [".card", "#card", "card", "<card>"], "answer": 0, "explain": "A class is targeted with a dot: .card. With # — that's an ID." },
+    { "type": "choice", "topic": "Selectors", "prompt": "What are IDs used for in real projects?", "options": ["For JavaScript and anchor links", "For styling all elements", "To set text color", "For linking CSS"], "answer": 0, "explain": "An ID has too high a priority, its style is hard to override. Classes are used for CSS." },
+    { "type": "choice", "topic": "Cascade", "prompt": "What color will the 5th paragraph be?", "code": "<!-- HTML -->\n<p>Paragraph 4</p>\n<p style=\"color: red;\">Paragraph 5</p>\n<p>Paragraph 6</p>\n\n/* CSS */\np {\n  color: blue;\n}", "options": ["Red", "Blue", "Black", "Half blue, half red"], "answer": 0, "explain": "style is written right in the tag — it's a personal instruction, stronger than the general rule p { }." },
+    { "type": "order", "topic": "Cascade", "prompt": "Arrange the selectors from strongest to weakest", "tokens": ["#header", ".card", "p"], "explain": "Strength hierarchy: ID > class > tag." },
+    { "type": "choice", "topic": "Selectors", "prompt": "Which paragraph will turn green?", "code": "<!-- HTML -->\n<div class=\"card\">\n  <p>I'm inside the card</p>\n</div>\n<p>I'm outside</p>\n\n/* CSS */\n.card p {\n  color: green;\n}", "options": ["Only «I'm inside the card»", "Only «I'm outside»", "Both paragraphs", "Neither"], "answer": 0, "explain": ".card p means «a p that is inside .card». The paragraph outside doesn't change." },
+    { "type": "choice", "topic": "Cascade", "prompt": "What color will the text be?", "code": "<!-- HTML -->\n<div class=\"card\">\n  <p>What color will I be?</p>\n</div>\n\n/* CSS */\np {\n  color: blue;\n}\n.card p {\n  color: red;\n}", "options": ["Red", "Blue", "Purple", "Black"], "answer": 0, "explain": ".card p (class + tag) is more precise and stronger than just p." },
+    { "type": "choice", "topic": "Cascade", "prompt": "The selectors have equal strength. What color will the heading be?", "code": "<!-- HTML -->\n<h2 class=\"title\">Heading</h2>\n\n/* CSS */\n.title {\n  color: green;\n}\n.title {\n  color: orange;\n}", "options": ["Orange", "Green", "Black", "There will be an error"], "answer": 0, "explain": "Order rule: with equal strength, the one written lower (later) wins." },
+    { "type": "choice", "topic": "Cascade", "prompt": "What color will the text be?", "code": "<!-- HTML -->\n<div class=\"card\">\n  <p>Text</p>\n</div>\n\n/* CSS */\n.card p {\n  color: red;\n}\np {\n  color: blue !important;\n}", "options": ["Blue", "Red", "Black", "There will be an error"], "answer": 0, "explain": "!important is the «emergency button»: it wins even on a weak selector. But using it is not recommended." }
+  ]
+}
