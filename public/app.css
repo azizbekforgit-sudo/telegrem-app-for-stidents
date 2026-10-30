@@ -485,3 +485,7 @@ code { background: var(--card-2); padding: 1px 6px; border-radius: 7px; font-siz
 .login h1 { font-size: 34px; color: var(--accent-d); }
 .login form { text-align: left; }
 .login-lang { margin-top: 6px; }
+.brand { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.brand img { filter: drop-shadow(0 6px 10px rgba(70, 163, 2, 0.3)); }
+.brand h1 { color: #46a302; font-size: 36px; }
+:root[data-theme="dark"] .brand h1 { color: #8be33a; }

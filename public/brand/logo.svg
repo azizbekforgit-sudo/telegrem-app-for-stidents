@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Зубрик">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8be33a"/><stop offset="1" stop-color="#46a302"/></linearGradient>
+    <radialGradient id="face" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#eaf7df"/></radialGradient>
+  </defs>
+  <!-- плитка-«сквиркл» с объёмом снизу -->
+  <rect x="16" y="24" width="224" height="216" rx="64" fill="#3d8c02"/>
+  <rect x="16" y="14" width="224" height="216" rx="64" fill="url(#bg)"/>
+  <ellipse cx="86" cy="52" rx="44" ry="16" fill="#fff" opacity=".22" transform="rotate(-14 86 52)"/>
+  <!-- мордочка -->
+  <path d="M128 70 C178 70 198 102 198 138 C198 178 168 202 128 202 C88 202 58 178 58 138 C58 102 78 70 128 70Z" fill="url(#face)"/>
+  <ellipse cx="96" cy="160" rx="13" ry="8" fill="#ff9cc2" opacity=".8"/>
+  <ellipse cx="160" cy="160" rx="13" ry="8" fill="#ff9cc2" opacity=".8"/>
+  <ellipse cx="104" cy="138" rx="10" ry="13" fill="#2f2437"/><ellipse cx="152" cy="138" rx="10" ry="13" fill="#2f2437"/>
+  <circle cx="100" cy="132" r="4" fill="#fff"/><circle cx="148" cy="132" r="4" fill="#fff"/>
+  <path d="M114 166 Q128 180 142 166" stroke="#2f2437" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <!-- выпускная шапочка -->
+  <path d="M70 72 L128 46 L186 72 L128 98Z" fill="#2f2437"/>
+  <path d="M96 84 L96 100 Q128 116 160 100 L160 84 L128 98Z" fill="#43364d"/>
+  <path d="M176 76 L180 112" stroke="#ffc23d" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="180" cy="116" r="8" fill="#ffc23d"/>
+</svg>

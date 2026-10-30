@@ -1323,7 +1323,7 @@ function loginScreen() {
   layer.innerHTML = '';
   app.innerHTML = `<div class="login">
     <div class="login-mascots">${['mimi', 'zip', 'dino'].map((m, i) => mascot(m, i === 1 ? 'peace' : 'happy', i === 1 ? 120 : 88)).join('')}</div>
-    <h1>Зубрик</h1><p class="muted">Учись в стиле игры: обучалки, тесты, лига группы</p>
+    <div class="brand"><img src="/brand/logo.svg" alt="" width="56" height="56"><h1>Зубрик</h1></div><p class="muted">Учись в стиле игры: обучалки, тесты, лига группы</p>
     <form class="card stack" data-login>
       <label class="field"><span>Почта</span><input class="input" name="email" type="text" inputmode="email" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="name@mail" required></label>
       <label class="field"><span>Пароль</span><input class="input" name="password" type="password" autocomplete="current-password" required></label>
