@@ -35,6 +35,11 @@ const PHRASES = [
   ['Правильные ответы подряд дают комбо: ×2 и ×3 XP', 'Correct answers in a row give a combo: ×2 and ×3 XP', "Ketma-ket to'g'ri javoblar kombo beradi: ×2 va ×3 XP"],
   ['Пройти ещё раз', 'Try again', 'Yana topshirish'], ['Лига недоступна', 'League unavailable', 'Liga mavjud emas'],
   ['Сначала учитель добавит тебя в группу.', 'First the teacher will add you to a group.', "Avval ustoz seni guruhga qo'shadi."],
+  ['В группе', 'In my group', 'Guruhda'], ['Общая лига', 'Global league', 'Umumiy liga'], ['Лига группы недоступна', 'Group league unavailable', 'Guruh ligasi mavjud emas'],
+  ['Сначала учитель добавит тебя в группу. А пока загляни в общую лигу!', "Your teacher will add you to a group first. Meanwhile, check out the global league!", "Avval ustoz seni guruhga qo'shadi. Hozircha umumiy ligaga qara!"],
+  ['Твоё место', 'Your place', "Sening o'rning"], ['Пока никто не набрал очков', 'Nobody has points yet', "Hali hech kim ochko to'plamagan"],
+  ['Остальные места пока свободны — реши тест и займи своё!', 'The other places are still free — solve a test and take yours!', "Qolgan o'rinlar hali bo'sh — test yech va o'z o'rningni egalla!"],
+  ['Топ всех учеников по очкам', 'Top of all students by points', "Barcha o'quvchilar ochko bo'yicha"],
   ['Лига группы', 'Group league', 'Guruh ligasi'], ['Учитель · ведёт группу', 'Teacher · leads the group', 'Ustoz · guruh rahbari'],
   ['Пока никто не решал тесты', 'Nobody has taken tests yet', 'Hali hech kim test yechmagan'], ['зона лидеров', 'leaders zone', 'yetakchilar zonasi'],
   ['Реши первый тест — и тут появится твой уровень', 'Take your first test and your level will appear here', "Birinchi testni yech — bu yerda darajang paydo bo'ladi"],
@@ -174,6 +179,7 @@ const NOUNS = [
   [/(\d+) (ученик|ученика|учеников)(?![а-яё])/gi, '$1 student(s)', "$1 ta o'quvchi"],
   [/(\d+) (день|дня|дней)(?![а-яё])/gi, '$1 day(s)', '$1 kun'],
   [/(\d+) (раз|раза)(?![а-яё])/gi, '$1 time(s)', '$1 marta'],
+  [/(\d+) (участник|участника|участников)(?![а-яё])/gi, '$1 player(s)', '$1 ishtirokchi'],
 ];
 // Кусочки внутри смешанных строк (подменяются всегда)
 const TOKENS = [
@@ -192,6 +198,8 @@ const TOKENS = [
   [/\(сдали (\d+)\/(\d+)\)/g, '($1/$2 passed)', '($1/$2 topshirdi)'],
   [/сдали (\d+)\/(\d+)/g, '$1/$2 passed', '$1/$2 topshirdi'],
   [/^Темы: /g, 'Topics: ', 'Mavzular: '],
+  [/^Все ученики курса · /g, 'All students of the course · ', "Kursning barcha o'quvchilari · "],
+  [/^до топ-3 осталось (\d+) XP$/g, '$1 XP to the top 3', 'top-3 gacha $1 XP qoldi'],
   [/^Лично: /g, 'Personal: ', 'Shaxsiy: '],
   [/(\d+)% верно/g, '$1% correct', "$1% to'g'ri"],
   [/^каждые /g, 'every ', 'har '],

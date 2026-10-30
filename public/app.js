@@ -365,6 +365,7 @@ function back() {
 async function route() {
   if (S.view?.type === 'group') return viewGroup(S.view.id);
   if (S.view?.type === 'student') return viewStudent(S.view.id);
+  if (S.view?.type === 'league') return viewLeague();
   const r = { home: tabHome, league: tabLeague, stats: tabStats, profile: tabProfile, dash: tabDash, groups: tabGroups, tests: tabTests, bot: tabBot }[S.tab];
   await r();
 }
@@ -487,12 +488,62 @@ function lessonSheet(p) {
 
 async function tabLeague() {
   const m = S.me || (await refreshMe());
-  if (!m.groups.length) { app.innerHTML = topbar() + emptyState('think', 'Лига недоступна', 'Сначала учитель добавит тебя в группу.'); return; }
-  S.leagueGroup ||= m.groups[0].id;
-  const lb = await api('/leaderboard/' + S.leagueGroup);
-  const switcher = m.groups.length > 1 ? `<div class="seg" style="margin-top:10px">${m.groups.map((g) => `<button data-g="${g.id}" class="${g.id === S.leagueGroup ? 'on' : ''}">${emo(g.emoji)}${esc(g.name)}</button>`).join('')}</div>` : '';
-  app.innerHTML = topbar() + switcher + leagueHtml(lb, m.user.id);
+  S.leagueMode ||= m.groups.length ? 'group' : 'global';
+  const modeSeg = `<div class="seg league-mode">${[['group', 'users-group-rounded', 'В группе'], ['global', 'cup-star', 'Общая лига']].map(([id, icon, t]) => `<button data-mode-l="${id}" class="${S.leagueMode === id ? 'on' : ''}">${ic(icon, 'sm')}${t}</button>`).join('')}</div>`;
+  let body;
+  if (S.leagueMode === 'global') body = globalLeagueHtml(await api('/league/global'), m.user.id);
+  else if (!m.groups.length) body = emptyState('think', 'Лига группы недоступна', 'Сначала учитель добавит тебя в группу. А пока загляни в общую лигу!');
+  else {
+    S.leagueGroup ||= m.groups[0].id;
+    const lb = await api('/leaderboard/' + S.leagueGroup);
+    const switcher = m.groups.length > 1 ? `<div class="seg" style="margin-top:10px">${m.groups.map((g) => `<button data-g="${g.id}" class="${g.id === S.leagueGroup ? 'on' : ''}">${emo(g.emoji)}${esc(g.name)}</button>`).join('')}</div>` : '';
+    body = switcher + leagueHtml(lb, m.user.id);
+  }
+  app.innerHTML = topbar() + modeSeg + body;
+  $$('[data-mode-l]').forEach((b) => (b.onclick = () => { haptic('light'); S.leagueMode = b.dataset.modeL; tabLeague().catch(fail); }));
   $$('[data-g]').forEach((b) => (b.onclick = () => { S.leagueGroup = b.dataset.g; tabLeague().catch(fail); }));
+  bindLeagueStudents();
+}
+function bindLeagueStudents() {
+  if (!S.me?.isAdmin) return;
+  $$('[data-student]').forEach((b) => (b.onclick = () => openView({ type: 'student', id: b.dataset.student, parent: S.view })));
+}
+// Общая лига для учителя (с панели)
+async function viewLeague() {
+  const lb = await api('/league/global');
+  app.innerHTML = `<div class="topbar"><button class="back" data-back>${ic('alt-arrow-left')}Назад</button></div>` + globalLeagueHtml(lb, null);
+  $('[data-back]').onclick = () => back();
+  bindLeagueStudents();
+}
+
+// Общая лига: топ-3 на большом пьедестале, остальные списком. Учитель может открыть любого ученика
+function globalLeagueHtml(lb, meId) {
+  const rows = lb.rows;
+  const admin = S.me?.isAdmin;
+  const tap = (r) => (admin ? `data-student="${esc(r.userId)}"` : '');
+  const champ = (r, place) => {
+    if (!r) return '<div class="champ empty"></div>';
+    return `<div class="champ c${place} ${r.userId === meId ? 'me' : ''} ${admin ? 'tap' : ''}" ${tap(r)}>
+      ${place === 1 ? `<div class="rays"></div>${emo(E.crown, { anim: true, cls: 'crown' })}` : ''}
+      <div class="ring">${avatar(r)}</div>
+      <div class="medal">${emo([E.m1, E.m2, E.m3][place - 1], { anim: true })}</div>
+      <b class="nm ellipsis">${esc(firstName(r.name))}${r.userId === meId ? ' (ты)' : ''}</b>
+      ${r.group ? `<span class="grp ellipsis">${esc(r.group)}</span>` : ''}
+      <span class="xp">${emo(E.bolt)}${r.xp} XP</span>
+      <div class="block">${place}</div></div>`;
+  };
+  const meRow = rows.find((r) => r.userId === meId);
+  return `<div class="center" style="margin-top:14px">${emo(E.trophy, { anim: true, cls: 'big' })}<h1>Общая лига</h1><p class="muted">Все ученики курса · ${plural(lb.total, 'участник', 'участника', 'участников')}</p></div>
+    ${meRow && meRow.rank > 3 ? `<div class="card my-rank"><div class="rk">${meRow.rank}</div>${avatar(meRow)}<div class="grow"><b>Твоё место</b><div class="small muted">до топ-3 осталось ${Math.max(0, rows[2].xp - meRow.xp + 1)} XP</div></div><span class="pill gold">${meRow.xp} XP</span></div>` : ''}
+    ${rows.length ? `<div class="champs">${champ(rows[1], 2)}${champ(rows[0], 1)}${champ(rows[2], 3)}</div>` : ''}
+    <div class="card" style="padding:8px">
+      ${rows.length ? '' : '<p class="muted center" style="padding:16px">Пока никто не набрал очков</p>'}
+      ${rows.slice(3).map((r) => `<div class="item ${r.userId === meId ? 'me' : ''} ${admin ? 'tap' : ''}" ${tap(r)}>
+        <div class="rk">${r.rank}</div>${avatar(r)}
+        <div class="grow"><b class="ellipsis" style="display:block">${esc(r.name)}${r.userId === meId ? ' (ты)' : ''}</b><div class="small muted ellipsis">${r.group ? esc(r.group) + ' · ' : ''}${plural(r.done, 'тест', 'теста', 'тестов')}${r.streak ? ` · ${emo(E.fire)}${r.streak}` : ''}</div></div>
+        <span class="pill gold">${r.xp} XP</span></div>`).join('')}
+      ${rows.length && rows.length <= 3 ? '<p class="muted center small" style="padding:10px">Остальные места пока свободны — реши тест и займи своё!</p>' : ''}
+    </div>`;
 }
 
 function leagueHtml(lb, meId) {
@@ -984,6 +1035,7 @@ async function tabDash() {
       <div class="tile">${emo(E.outbox)}<div><b>${t.sent}</b><span>тестов отправлено</span></div></div>
       <div class="tile">${emo(E.target)}<div><b>${pctText(t.avg)}</b><span>средний балл</span></div></div>
     </div>
+    <button class="card tap row league-banner" data-globalleague style="margin-top:12px;gap:12px;width:100%">${emo(E.trophy, { anim: true, cls: 'lg' })}<div class="grow" style="text-align:left"><b>Общая лига</b><div class="small muted">Топ всех учеников по очкам</div></div><span class="faint">${ic('alt-arrow-right')}</span></button>
     ${o.unassigned.length ? sectionTitle(E.newb, 'Новые ученики', `<span class="pill bad">${o.unassigned.length}</span>`) + `<div class="card" style="padding:6px 8px">${o.unassigned.map((u) => `<div class="item">${avatar(u)}<div class="grow"><b class="ellipsis" style="display:block">${esc(u.name)}</b><div class="small muted">${u.username ? '@' + esc(u.username) + ' · ' : ''}${ago(u.joinedAt)}</div></div><button class="btn sm" data-assign="${u.id}">В группу</button></div>`).join('')}</div>` : ''}
     ${sectionTitle(E.people, 'Группы', `<button class="link" data-newgroup>${ic('add-circle', 'sm')}Создать</button>`)}
     ${o.groups.length ? `<div class="stack">${o.groups.map(groupCardHtml).join('')}</div>` : `<div class="card center stack"><p class="muted">Групп пока нет</p><button class="btn" data-newgroup>${ic('add-circle')}Создать первую группу</button></div>`}
@@ -992,6 +1044,7 @@ async function tabDash() {
   bindGroupCards();
   $$('[data-newgroup]').forEach((b) => (b.onclick = () => groupForm()));
   $$('[data-assign]').forEach((b) => (b.onclick = () => assignSheet(b.dataset.assign)));
+  $('[data-globalleague]').onclick = () => openView({ type: 'league', parent: null });
 }
 
 function groupCardHtml(g) {

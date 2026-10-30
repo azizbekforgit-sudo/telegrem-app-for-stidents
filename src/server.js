@@ -111,6 +111,7 @@ api.post('/auth/logout', h((req) => (logic.logout(req.session), { ok: true })));
 api.get('/me', h((req) => logic.home(req.user.id)));
 api.post('/me/prefs', h((req) => logic.setPrefs(req.user.id, req.body || {})));
 api.get('/stats/me', h((req) => logic.userStats(req.user.id)));
+api.get('/league/global', h(() => logic.globalLeague()));
 api.get('/leaderboard/:gid', h((req) => {
   if (!req.admin && !logic.userGroups(req.user.id).some((g) => g.id === req.params.gid)) throw httpError(403, 'Не твоя группа');
   return logic.leaderboard(req.params.gid);

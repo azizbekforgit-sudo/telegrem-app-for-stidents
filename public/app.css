@@ -489,3 +489,56 @@ code { background: var(--card-2); padding: 1px 6px; border-radius: 7px; font-siz
 .brand img { filter: drop-shadow(0 6px 10px rgba(70, 163, 2, 0.3)); }
 .brand h1 { color: #46a302; font-size: 36px; }
 :root[data-theme="dark"] .brand h1 { color: #8be33a; }
+
+/* ───────── общая лига ───────── */
+.league-mode { margin-top: 10px; }
+.champs { display: grid; grid-template-columns: 1fr 1.15fr 1fr; align-items: end; gap: 8px; margin: 26px 0 14px; }
+.champ { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; text-align: center; padding: 14px 6px 0; border-radius: 24px 24px 14px 14px; overflow: hidden; isolation: isolate; }
+.champ.tap { cursor: pointer; }
+.champ::before { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; opacity: .9; }
+.champ.c1::before { background: linear-gradient(180deg, #fff6cf 0%, #ffe07a 55%, #ffc93d 100%); box-shadow: inset 0 0 0 2px #ffd65c; }
+.champ.c2::before { background: linear-gradient(180deg, #f6f9fb 0%, #dfe7ec 60%, #c4d0d8 100%); box-shadow: inset 0 0 0 2px #cfd9df; }
+.champ.c3::before { background: linear-gradient(180deg, #fff1e6 0%, #f6cba6 60%, #e3a477 100%); box-shadow: inset 0 0 0 2px #efbb91; }
+[data-theme="dark"] .champ::before { opacity: .28; }
+.champ.c1 { padding-top: 34px; box-shadow: 0 10px 30px rgba(255, 190, 40, .45); animation: champ-pop .6s cubic-bezier(.2, 1.4, .4, 1) both; }
+.champ.c2 { animation: champ-pop .6s .1s cubic-bezier(.2, 1.4, .4, 1) both; }
+.champ.c3 { animation: champ-pop .6s .2s cubic-bezier(.2, 1.4, .4, 1) both; }
+.champ.empty { visibility: hidden; }
+.champ .rays { position: absolute; z-index: -1; left: 50%; top: 46px; width: 260px; height: 260px; margin-left: -130px; border-radius: 50%; opacity: .55;
+  background: repeating-conic-gradient(from 0deg, rgba(255,255,255,.95) 0deg 10deg, transparent 10deg 24deg);
+  -webkit-mask: radial-gradient(circle, #000 20%, transparent 68%); mask: radial-gradient(circle, #000 20%, transparent 68%); animation: rays 14s linear infinite; }
+.champ .crown { position: absolute; top: 2px; left: 50%; width: 38px; height: 38px; margin-left: -19px; animation: crown-bob 2.4s ease-in-out infinite; }
+.champ .ring { position: relative; border-radius: 50%; padding: 3px; background: #fff; }
+.champ.c1 .ring { padding: 4px; background: conic-gradient(#ffd65c, #ff9f1c, #fff3b0, #ffd65c); animation: ring-glow 2.2s ease-in-out infinite; }
+.champ.c2 .ring { background: conic-gradient(#e9eef2, #a9b7c0, #e9eef2); }
+.champ.c3 .ring { background: conic-gradient(#f6cba6, #c07c4a, #f6cba6); }
+.champ .ring .ava { width: 54px; height: 54px; display: block; }
+.champ.c1 .ring .ava { width: 74px; height: 74px; }
+.champ .medal { margin-top: -16px; z-index: 1; }
+.champ .medal .emo { width: 30px; height: 30px; filter: drop-shadow(0 2px 2px rgba(0,0,0,.2)); }
+.champ.c1 .medal .emo { width: 36px; height: 36px; }
+.champ .nm { font-size: 14px; max-width: 100%; color: #3c3c3c; }
+.champ.c1 .nm { font-size: 16px; }
+.champ .grp { font-size: 11px; font-weight: 700; color: rgba(60,60,60,.65); max-width: 100%; }
+[data-theme="dark"] .champ .nm { color: var(--text); }
+[data-theme="dark"] .champ .grp { color: var(--muted); }
+.champ .xp { display: inline-flex; align-items: center; gap: 3px; font-weight: 900; font-size: 13px; padding: 4px 10px; border-radius: 999px; background: rgba(255,255,255,.85); color: #8a5a00; box-shadow: 0 2px 0 rgba(0,0,0,.08); }
+.champ .xp .emo { width: 16px; height: 16px; }
+.champ.c1 .xp { font-size: 15px; background: #fff; }
+.champ .block { width: calc(100% + 12px); margin-top: 10px; display: grid; place-items: center; color: #fff; font-weight: 900; font-size: 26px; text-shadow: 0 2px 0 rgba(0,0,0,.15); }
+.champ.c1 .block { height: 66px; font-size: 34px; background: linear-gradient(180deg, #ffc93d, #f5a300); }
+.champ.c2 .block { height: 46px; background: linear-gradient(180deg, #b6c3cb, #94a4ae); }
+.champ.c3 .block { height: 34px; background: linear-gradient(180deg, #dc9a68, #c07c4a); }
+.champ.me .nm { color: var(--accent-d); }
+.champ::after { content: ''; position: absolute; top: 0; left: -60%; width: 40%; height: 100%; z-index: 2; pointer-events: none;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent); transform: skewX(-18deg); animation: shine 4.5s ease-in-out infinite; }
+.champ.c2::after { animation-delay: 1.4s; }
+.champ.c3::after { animation-delay: 2.8s; }
+.my-rank { display: flex; align-items: center; gap: 12px; margin-top: 14px; padding: 10px 12px; background: var(--accent-l); }
+.league-banner { text-align: left; font: inherit; color: inherit; }
+@keyframes champ-pop { from { transform: translateY(30px) scale(.9); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes rays { to { transform: rotate(360deg); } }
+@keyframes crown-bob { 0%, 100% { transform: translateY(0) rotate(-6deg); } 50% { transform: translateY(-4px) rotate(6deg); } }
+@keyframes ring-glow { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 200, 60, .0); } 50% { box-shadow: 0 0 18px 4px rgba(255, 200, 60, .7); } }
+@keyframes shine { 0%, 70% { left: -60%; } 100% { left: 130%; } }
+@media (prefers-reduced-motion: reduce) { .champ, .champ .rays, .champ .crown, .champ .ring, .champ::after { animation: none !important; } }

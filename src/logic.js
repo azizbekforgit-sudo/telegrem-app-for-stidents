@@ -568,6 +568,18 @@ export function createLogic(store, { adminIds }) {
     };
   }
 
+  // Общая лига: все ученики курса, только по XP
+  function globalLeague() {
+    const rows = students()
+      .map((u) => {
+        const bests = pubsForUser(u.id).map((p) => best(u.id, p.id)).filter(Boolean);
+        return { userId: u.id, name: name(u), username: u.username || '', photoUrl: u.photoUrl || null, prefs: u.prefs || null, xp: totalXp(u.id), done: bests.length, avg: avg(bests.map((b) => b.pct)), streak: currentStreak(u), group: userGroups(u.id).map((g) => g.name).join(', ') };
+      })
+      .filter((r) => r.xp > 0 || r.group)
+      .sort((a, b) => b.xp - a.xp || (b.avg ?? -1) - (a.avg ?? -1) || a.name.localeCompare(b.name));
+    rows.forEach((r, i) => (r.rank = i + 1));
+    return { rows, total: rows.length };
+  }
   function leaderboard(gid) {
     const g = S.groups[gid];
     if (!g) throw httpError(404, 'Группа не найдена');
@@ -796,7 +808,7 @@ export function createLogic(store, { adminIds }) {
 
   return {
     S, isAdmin, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
-    upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, startAttempt, answer, retry, finish,
+    upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,
     startLearn, checkLearn, finishLearn, assignPersonal, report, teacherName,
