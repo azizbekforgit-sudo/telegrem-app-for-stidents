@@ -13,6 +13,7 @@ const T = {
   hello: { ru: (n) => `👋 Привет, <b>${n}</b>!\n\nТы зарегистрирован. Учитель скоро добавит тебя в группу — тогда здесь появятся тесты. 🚀`, uz: (n) => `👋 Salom, <b>${n}</b>!\n\nSen ro'yxatdan o'tding. Ustoz tez orada seni guruhga qo'shadi — shunda testlar paydo bo'ladi. 🚀`, en: (n) => `👋 Hi, <b>${n}</b>!\n\nYou're registered. Your teacher will add you to a group soon — then tests will appear here. 🚀` },
   added: { ru: (g) => `🎉 Тебя добавили в группу ${g}! Когда учитель отправит тест — я напишу.`, uz: (g) => `🎉 Seni ${g} guruhiga qo'shishdi! Ustoz test yuborganda yozaman.`, en: (g) => `🎉 You've been added to ${g}! I'll message you when the teacher sends a test.` },
   newTest: { ru: (t, d, n) => `🆕 <b>Новый тест!</b>\n\n${t}\n${d}🧩 Вопросов: ${n}\n\nЗаходите и играйте! 🎮`, uz: (t, d, n) => `🆕 <b>Yangi test!</b>\n\n${t}\n${d}🧩 Savollar: ${n}\n\nKiring va o'ynang! 🎮`, en: (t, d, n) => `🆕 <b>New test!</b>\n\n${t}\n${d}🧩 Questions: ${n}\n\nCome in and play! 🎮` },
+  direct: { ru: (t, d) => `📝 <b>Учитель отправил тебе тест!</b>\n\n${t}\n${d}\nЗаходи и решай 💪`, uz: (t, d) => `📝 <b>Ustoz senga test yubordi!</b>\n\n${t}\n${d}\nKir va yech 💪`, en: (t, d) => `📝 <b>Your teacher sent you a test!</b>\n\n${t}\n${d}\nCome in and solve it 💪` },
   personal: { ru: (t, d) => `🎯 <b>Личное задание от учителя!</b>\n\n${t}\n${d}\nЕго сделали специально для тебя — по твоим ошибкам. Заходи! 💪`, uz: (t, d) => `🎯 <b>Ustozdan shaxsiy topshiriq!</b>\n\n${t}\n${d}\nU aynan sen uchun — xatolaring asosida tayyorlandi. Kir! 💪`, en: (t, d) => `🎯 <b>A personal task from your teacher!</b>\n\n${t}\n${d}\nIt was made just for you — based on your mistakes. Come in! 💪` },
   remindTest: { ru: (t) => `\n\n🧩 Тест: <b>${t}</b>\nТы его ещё не сдал — заходи! ⏳`, uz: (t) => `\n\n🧩 Test: <b>${t}</b>\nSen uni hali topshirmading — kir! ⏳`, en: (t) => `\n\n🧩 Test: <b>${t}</b>\nYou haven't taken it yet — come in! ⏳` },
 };
@@ -163,7 +164,7 @@ export function createBot({ token, logic, store, appUrl, adminIds }) {
   async function notifyPersonal(pub) {
     const l = S.lessons[pub.lessonId];
     const lang = langOf(pub.userId);
-    await safeSend(pub.userId, tt('personal', lang, `${l.emoji} <b>${esc(l.title)}</b>`, l.description ? esc(l.description) + '\n' : ''), { reply_markup: privateKb(tt('openTask', lang)) });
+    await safeSend(pub.userId, tt(l.personal ? 'personal' : 'direct', lang, `${l.emoji} <b>${esc(l.title)}</b>`, l.description ? esc(l.description) + '\n' : ''), { reply_markup: privateKb(tt('openTask', lang)) });
   }
 
   async function announce(groupId, text) {

@@ -157,6 +157,12 @@ adm.post('/publish', h(async (req) => {
   if (reminder?.intervalMin) logic.createReminder({ ...reminder, groupId, pubId: pub.id, nextAt: Date.now() + reminder.intervalMin * 60_000 });
   return { pub, already };
 }));
+adm.post('/send-student', h(async (req) => {
+  const { lessonId, userId, noLearn } = req.body || {};
+  const { pub, already } = logic.sendToStudent(lessonId, userId, noLearn);
+  if (!already) await tg?.notifyPersonal(pub);
+  return { pub, already };
+}));
 adm.delete('/pubs/:pid', h((req) => (logic.unpublish(req.params.pid), { ok: true })));
 adm.get('/pubs/:pid', h((req) => logic.pubStats(req.params.pid)));
 adm.get('/reminders', h(() => logic.listReminders()));

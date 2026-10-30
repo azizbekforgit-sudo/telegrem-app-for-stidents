@@ -192,6 +192,18 @@ export function createLogic(store, { adminIds }) {
     store.save();
     return { pub, already: false };
   }
+  // Отправить тест одному ученику (личная публикация). noLearn: сразу тест, без обучалки
+  function sendToStudent(lessonId, userId, noLearn) {
+    if (!S.lessons[lessonId]) throw httpError(404, 'Тест не найден');
+    const id = String(userId || '');
+    if (!S.users[id] || isAdmin(id)) throw httpError(404, 'Ученик не найден');
+    const exists = Object.values(S.pubs).find((p) => p.lessonId === lessonId && p.userId === id);
+    if (exists) return { pub: exists, already: true };
+    const pub = { id: store.nextId('p'), lessonId, groupId: null, userId: id, noLearn: Boolean(noLearn), publishedAt: Date.now() };
+    S.pubs[pub.id] = pub;
+    store.save();
+    return { pub, already: false };
+  }
   function unpublish(pid) {
     delete S.pubs[pid];
     for (const r of Object.values(S.reminders)) if (r.pubId === pid) delete S.reminders[r.id];
@@ -367,7 +379,7 @@ export function createLogic(store, { adminIds }) {
       if (!canSeePub(uid, pub)) throw httpError(403, 'Этот тест не для твоей группы');
       lesson = loc(S.lessons[pub.lessonId], langOf(uid));
       preview = isAdmin(uid);
-      if (!preview && lesson?.learn && !learnDone(uid, pubId)) throw httpError(403, 'Сначала пройди обучалку — тест откроется после неё');
+      if (!preview && lesson?.learn && !pub.noLearn && !learnDone(uid, pubId)) throw httpError(403, 'Сначала пройди обучалку — тест откроется после неё');
     } else {
       if (!isAdmin(uid)) throw httpError(403, 'Нет доступа');
       lesson = loc(S.lessons[lessonId], langOf(uid));
@@ -547,7 +559,7 @@ export function createLogic(store, { adminIds }) {
       personal: Boolean(pub.userId),
       publishedAt: pub.publishedAt,
       size: members.length,
-      learned: lesson.learn ? members.filter((uid) => learnDone(uid, pubId)).length : null,
+      learned: lesson.learn && !pub.noLearn ? members.filter((uid) => learnDone(uid, pubId)).length : null,
       done: ranking.map((r) => r.userId),
       notDone,
       ranking,
@@ -698,7 +710,7 @@ export function createLogic(store, { adminIds }) {
     const path = pubsForUser(uid).map((p) => {
       const l = loc(S.lessons[p.lessonId], langOf(uid));
       const b = best(uid, p.id);
-      return { pubId: p.id, title: l.title, emoji: l.emoji, description: l.description, questions: l.questions.length, topics: l.topics, groupId: p.groupId, groupName: p.userId ? 'Лично' : S.groups[p.groupId].name, personal: Boolean(p.userId), hasLearn: Boolean(l.learn), learnDone: learnDone(uid, p.id), learnSections: l.learn?.sections.length || 0, publishedAt: p.publishedAt, best: b ? b.pct : null, stars: b ? (b.pct === 100 ? 3 : b.pct >= 80 ? 2 : b.pct >= 50 ? 1 : 0) : null };
+      return { pubId: p.id, title: l.title, emoji: l.emoji, description: l.description, questions: l.questions.length, topics: l.topics, groupId: p.groupId, groupName: p.userId ? 'Лично' : S.groups[p.groupId].name, personal: Boolean(p.userId), hasLearn: Boolean(l.learn) && !p.noLearn, learnDone: learnDone(uid, p.id), learnSections: l.learn?.sections.length || 0, publishedAt: p.publishedAt, best: b ? b.pct : null, stars: b ? (b.pct === 100 ? 3 : b.pct >= 80 ? 2 : b.pct >= 50 ? 1 : 0) : null };
     });
     return {
       user: publicUser(u),
@@ -725,7 +737,7 @@ export function createLogic(store, { adminIds }) {
         }),
         personalFor: Object.values(S.pubs).filter((p) => p.lessonId === l.id && p.userId).map((p) => {
           const b = best(p.userId, p.id);
-          return { pubId: p.id, userId: p.userId, name: name(S.users[p.userId]), best: b ? b.pct : null, learnDone: learnDone(p.userId, p.id) };
+          return { pubId: p.id, userId: p.userId, name: name(S.users[p.userId]), best: b ? b.pct : null, noLearn: Boolean(p.noLearn), learnDone: learnDone(p.userId, p.id) };
         }),
         hasLearn: Boolean(l.learn),
         learnSections: l.learn?.sections.length || 0,
@@ -784,7 +796,7 @@ export function createLogic(store, { adminIds }) {
 
   return {
     S, isAdmin, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
-    upsertLesson, deleteLesson, publish, unpublish, pubsForGroup, pubStats, startAttempt, answer, retry, finish,
+    upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, startAttempt, answer, retry, finish,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,
     startLearn, checkLearn, finishLearn, assignPersonal, report, teacherName,

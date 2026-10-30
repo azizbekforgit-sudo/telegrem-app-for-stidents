@@ -1166,6 +1166,7 @@ async function tabTests() {
   $$('[data-preview]').forEach((b) => (b.onclick = () => startLesson({ lessonId: b.dataset.preview })));
   $$('[data-learnprev]').forEach((b) => (b.onclick = () => startLearn({ lessonId: b.dataset.learnprev })));
   $$('[data-send]').forEach((b) => (b.onclick = () => sendSheet(o.lessons.find((l) => l.id === b.dataset.send))));
+  $$('[data-sendone]').forEach((b) => (b.onclick = () => sendOneSheet(o.lessons.find((l) => l.id === b.dataset.sendone))));
   $$('[data-pubinfo]').forEach((b) => (b.onclick = () => pubSheet(b.dataset.pubinfo)));
   $$('[data-dell]').forEach((b) => (b.onclick = async () => {
     if (!(await confirmSheet('Удалить черновик?', '', 'Удалить', true))) return;
@@ -1181,8 +1182,9 @@ function lessonCardHtml(l) {
       ${l.sentTo.length || l.personalFor.length ? '' : '<span class="pill gold">черновик</span>'}</div>
     ${l.topics.length ? `<p class="small muted" style="margin-top:10px">Темы: ${l.topics.map(esc).join(' · ')}</p>` : ''}
     ${l.sentTo.length ? `<div style="margin-top:12px">${l.sentTo.map((s) => `<button class="list-check" data-pubinfo="${s.pubId}">${ic('plain-2', 'sm')}<div class="grow"><b>${esc(s.groupName)}</b><div class="small muted">${s.learned != null ? `обучалку ${s.learned}/${s.size} · ` : ''}тест ${s.done}/${s.size} · ${ago(s.publishedAt)}</div></div>${pctPill(s.avg)}</button>`).join('')}</div>` : ''}
-    ${l.personalFor.length ? `<div style="margin-top:12px">${l.personalFor.map((s) => `<button class="list-check" data-pubinfo="${s.pubId}">${emo('🎯')}<div class="grow"><b>Лично: ${esc(s.name)}</b><div class="small muted">${l.hasLearn ? (s.learnDone ? 'обучалка ✓ · ' : 'обучалка не пройдена · ') : ''}${s.best != null ? 'тест ' + s.best + '%' : 'тест не сдан'}</div></div>${pctPill(s.best)}</button>`).join('')}</div>` : ''}
-    <div class="row" style="margin-top:14px">${l.hasLearn ? `<button class="btn ghost sm" data-learnprev="${l.id}">${emo('📖')}Обучалка</button>` : ''}<button class="btn ghost sm" data-preview="${l.id}">${ic('eye', 'sm')}Превью</button><button class="btn sm grow" data-send="${l.id}">${ic('plain-2', 'sm')}Отправить</button>${l.sentTo.length ? '' : `<button class="iconbtn" data-dell="${l.id}" aria-label="Удалить">${ic('trash-bin-trash', 'sm')}</button>`}</div>
+    ${l.personalFor.length ? `<div style="margin-top:12px">${l.personalFor.map((s) => `<button class="list-check" data-pubinfo="${s.pubId}">${emo('🎯')}<div class="grow"><b>Лично: ${esc(s.name)}</b><div class="small muted">${l.hasLearn ? (s.noLearn ? 'без обучалки · ' : s.learnDone ? 'обучалка ✓ · ' : 'обучалка не пройдена · ') : ''}${s.best != null ? 'тест ' + s.best + '%' : 'тест не сдан'}</div></div>${pctPill(s.best)}</button>`).join('')}</div>` : ''}
+    <div class="row" style="margin-top:14px">${l.hasLearn ? `<button class="btn ghost sm" data-learnprev="${l.id}">${emo('📖')}Обучалка</button>` : ''}<button class="btn ghost sm" data-preview="${l.id}">${ic('eye', 'sm')}Превью</button></div>
+    <div class="row" style="margin-top:8px"><button class="btn ghost sm grow" data-sendone="${l.id}">${ic('user-rounded', 'sm')}Ученику</button><button class="btn sm grow" data-send="${l.id}">${ic('plain-2', 'sm')}Отправить</button>${l.sentTo.length ? '' : `<button class="iconbtn" data-dell="${l.id}" aria-label="Удалить">${ic('trash-bin-trash', 'sm')}</button>`}</div>
   </div>`;
 }
 
@@ -1212,6 +1214,41 @@ function sendSheet(l) {
         $('[data-go]', el).disabled = true;
         try {
           await api('/admin/publish', { lessonId: l.id, groupId: gid, reminder: interval ? { intervalMin: interval, text: $('[data-remtext] input', el).value } : null });
+          haptic('success');
+          sfx.win();
+          toast('Тест отправлен');
+          close();
+          tabTests().catch(fail);
+        } catch (e) { $('[data-go]', el).disabled = false; fail(e); }
+      };
+    },
+  );
+}
+
+// Отправить тест одному ученику, можно без обучалки
+function sendOneSheet(l) {
+  const o = S.overview;
+  const sent = new Set(l.personalFor.map((s) => s.userId));
+  let uid = null;
+  let noLearn = l.hasLearn;
+  const list = (q) => o.students.filter((u) => !q || u.name.toLowerCase().includes(q) || (u.username || '').toLowerCase().includes(q))
+    .map((u) => `<button class="list-check ${u.id === uid ? 'on' : ''}" data-u="${esc(u.id)}" ${sent.has(u.id) ? 'disabled' : ''}>${avatar(u)}<div class="grow"><b>${esc(u.name)}</b><div class="small muted">${sent.has(u.id) ? 'уже отправлен' : u.username ? '@' + esc(u.username) : u.email ? esc(u.email) : ''}</div></div></button>`).join('') || '<p class="muted center small">Никого не нашли</p>';
+  openSheet(
+    `<div class="stack"><h2>Отправить ученику</h2><p class="muted">${emo(l.emoji)} ${esc(l.title)}</p>
+      ${o.students.length > 6 ? '<input class="input" data-q placeholder="Поиск по имени">' : ''}
+      <div data-list style="max-height:46vh;overflow:auto">${list('')}</div>
+      ${l.hasLearn ? `<div class="field"><span>${emo('📖')} Обучалка</span><div class="choices"><button class="choice ${noLearn ? 'on' : ''}" data-nl="1">Сразу тест</button><button class="choice ${noLearn ? '' : 'on'}" data-nl="0">С обучалкой</button></div></div>` : ''}
+      <button class="btn block" data-go disabled>${ic('plain-2')}Отправить</button></div>`,
+    (el, close) => {
+      const bind = () => $$('[data-u]', el).forEach((b) => (b.onclick = () => { if (b.disabled) return; uid = b.dataset.u; $$('[data-u]', el).forEach((x) => x.classList.toggle('on', x === b)); $('[data-go]', el).disabled = false; }));
+      bind();
+      const q = $('[data-q]', el);
+      if (q) q.oninput = () => { $('[data-list]', el).innerHTML = list(q.value.trim().toLowerCase()); bind(); };
+      $$('[data-nl]', el).forEach((b) => (b.onclick = () => { noLearn = b.dataset.nl === '1'; $$('[data-nl]', el).forEach((x) => x.classList.toggle('on', x === b)); }));
+      $('[data-go]', el).onclick = async () => {
+        $('[data-go]', el).disabled = true;
+        try {
+          await api('/admin/send-student', { lessonId: l.id, userId: uid, noLearn });
           haptic('success');
           sfx.win();
           toast('Тест отправлен');
