@@ -1,0 +1,92 @@
+{
+  "title": "15-dars. Sikllar",
+  "description": "for, cheksiz sikl, while, for...of",
+  "learn": {
+    "intro": "Salom! 15-dars — **sikllar**. Tasavvur qil: zaldagi 100 kishi bilan salomlashish kerak. 100 qator console.log yozasanmi? Yo'q! Sikl amalni o'zi takrorlaydi. Ketdik!",
+    "sections": [
+      {
+        "title": "for sikli",
+        "slides": [
+          { "emoji": "🔁", "text": "**Sikl** — amalni ko'p marta takrorlash usuli." },
+          { "text": "Mana 5 marta salom beradigan sikl:", "code": "for (let i = 0; i < 5; i++) {\n  console.log(\"Salom!\", i);\n}" },
+          { "text": "Qavs ichida `;` bilan ajratilgan uch qism bor:\n`let i = 0` — nimadan boshlaymiz: hisoblagich 0 ga teng.\n`i < 5` — shart to'g'ri ekan, aylanamiz. false bo'ldi — to'xtaymiz.\n`i++` — har aylanadan keyin nima qilamiz: i ni 1 ga oshiramiz." },
+          { "emoji": "🧮", "text": "Qo'lda o'tkazamiz: i = 0, 1, 2, 3, 4 — shart true, chiqaramiz. i = 5 bo'lganda `i < 5` endi **false** — sikl tugadi. Jami 5 aylana, 5 soni esa chiqmaydi." },
+          { "quote": true, "text": "i++ — bu i = i + 1 bilan bir xil." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "for", "prompt": "Birinchi qaysi son chiqadi?", "code": "for (let i = 1; i <= 10; i++) {\n  console.log(i);\n}", "options": ["1", "0", "10", "2"], "answer": 0, "explain": "Hisoblagich let i = 1 dan boshlanadi." },
+          { "type": "truefalse", "topic": "for", "prompt": "for (let i = 0; i < 3; i++) sikli 3 sonini chiqaradi.", "answer": false, "explain": "i = 3 bo'lganda i < 3 sharti false — sikl to'xtaydi. 0, 1, 2 chiqadi." }
+        ]
+      },
+      {
+        "title": "Cheksiz sikl ⚠️",
+        "slides": [
+          { "emoji": "⚠️", "text": "Agar `i++` ni unutsang, hisoblagich hech qachon o'zgarmaydi. `i < 5` sharti doim to'g'ri — sikl **abadiy** aylanadi.", "code": "// ❌ ISHGA TUSHIRMANG — vkladka qotib qoladi\nfor (let i = 0; i < 5; ) {\n  console.log(i); // 0 0 0 0 ... cheksiz\n}" },
+          { "text": "Brauzer nega qotadi: JavaScript kodni navbat bilan bajaradi. Sikl tugamaguncha sahifa boshqa hech narsa qila olmaydi. U esa hech qachon tugamaydi." },
+          { "emoji": "🥵", "text": "Qanday bilish mumkin: sahifa bosishlarga javob bermaydi, noutbuk ventilyatori shovqin qiladi, konsolda bir xil qatorlar cheksiz chiqadi." },
+          { "text": "Qanday to'xtatish: vkladkani yop. Yopilmasa — Chrome'da **Shift + Esc** bos, qotgan vkladkani tanla va «Jarayonni tugatish». Keyin kodni tuzat." },
+          { "quote": true, "text": "Siklni ishga tushirishdan oldin o'zingizdan so'rang: «Shart qachondir false bo'ladimi?»" }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "Cheksiz sikl", "prompt": "i++ ni unutsang ham, sikl 5 aylanadan keyin o'zi tugaydi.", "answer": false, "explain": "i++ siz hisoblagich o'zgarmaydi, shart doim true — sikl cheksiz." },
+          { "type": "choice", "topic": "Cheksiz sikl", "prompt": "Siklni ishga tushirishdan oldin o'zingdan nimani so'raysan?", "options": ["Shart qachondir false bo'ladimi?", "Faylda nechta qator bor?", "CSS ulanganmi?", "Siklda console.log bormi?"], "answer": 0, "explain": "Shart hech qachon false bo'lmasa — sikl cheksiz." }
+        ]
+      },
+      {
+        "title": "while sikli",
+        "slides": [
+          { "text": "`while` — «toki». Shart to'g'ri ekan, aylanadi. Takrorlar soni **oldindan noma'lum** bo'lganda mos keladi.", "code": "while (shart) {\n  // shart true ekan, takrorlaymiz\n}" },
+          { "emoji": "🎲", "text": "6 tushguncha zar tashlaymiz:", "code": "let dice = 0;\nlet tries = 0;\n\nwhile (dice !== 6) {\n  dice = Math.floor(Math.random() * 6) + 1;\n  tries++;\n  console.log(\"Tushdi:\", dice);\n}\n\nconsole.log(`Oltilik ${tries}-urinishda tushdi!`);" },
+          { "text": "Nechta tashlash kerakligi noma'lum: balki 1, balki 15. Shuning uchun bu yerda while. `Math.floor(Math.random() * 6) + 1` ni hozircha «zar tashlash» deb eslab qol." },
+          { "quote": true, "text": "for — necha marta takrorlashni bilamiz («10 marta»). while — bilmaymiz («6 tushguncha»). while ichida albatta nimadir o'zgarishi kerak." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "while", "prompt": "while ni qachon olgan ma'qul?", "options": ["Takrorlar soni noma'lum bo'lganda", "Takrorlar soni aniq bo'lganda", "Massivni aylanib chiqish kerak bo'lganda", "Hech qachon"], "answer": 0, "explain": "while — «shart to'g'ri ekan», takrorlar soni oldindan noma'lum." },
+          { "type": "input", "topic": "while", "prompt": "Qaysi sikl «toki» deb tarjima qilinadi?", "answer": ["while"], "explain": "while — «toki»." }
+        ]
+      },
+      {
+        "title": "for...of sikli",
+        "slides": [
+          { "emoji": "📋", "text": "**Massiv** — bitta o'zgaruvchidagi qiymatlar ro'yxati. `[ ]` kvadrat qavslarda, elementlar vergul bilan yoziladi. Batafsil — keyingi darsda.", "code": "const names = [\"Aziz\", \"Ali\", \"Malika\", \"Dilnoza\"];" },
+          { "text": "`for...of` massivning har bir elementini navbat bilan oladi. Hisoblagich kerak emas:", "code": "for (const name of names) {\n  console.log(`Salom, ${name}!`);\n}\n// Salom, Aziz!\n// Salom, Ali!\n// Salom, Malika!\n// Salom, Dilnoza!" },
+          { "text": "Shunday o'qiladi: «names dagi har bir name uchun — qavs ichidagini bajar». Massivga o'z isming qo'sh — sikl sen bilan ham salomlashadi." },
+          { "quote": true, "text": "for...of elementlar tugaganda o'zi tugaydi. Bu yerda cheksiz sikl bo'lmaydi." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "for...of", "prompt": "for...of uchun i hisoblagichi kerak.", "answer": false, "explain": "for...of elementlarni o'zi navbat bilan oladi, hisoblagich kerak emas." },
+          { "type": "choice", "topic": "for...of", "prompt": "4 ta ismli massiv bo'yicha for...of necha marta bajariladi?", "options": ["4", "3", "5", "Cheksiz"], "answer": 0, "explain": "Har bir element uchun bitta aylana." }
+        ]
+      },
+      {
+        "title": "Amaliyot va uyga vazifa",
+        "slides": [
+          { "emoji": "✖️", "text": "5 ga ko'paytirish jadvali:", "code": "for (let i = 1; i <= 10; i++) {\n  console.log(`5 × ${i} = ${5 * i}`);\n}\n// 5 × 1 = 5\n// ...\n// 5 × 10 = 50" },
+          { "text": "Tez uddaladingmi? `const number = 7;` yarat va uni 5 o'rniga ishlat — istalgan son uchun jadval chiqadi." },
+          { "emoji": "🏠", "text": "Uyga vazifa: 1 dan 50 gacha faqat **juft** sonlarni chiqar (2, 4 … 50 — jami 25 ta). `script.js` da 1 dan 50 gacha for sikli, ichida `if` va `%` bilan tekshiruv. Maslahat: `8 % 2` va `7 % 2` nimaga teng?" },
+          { "quote": true, "text": "Bonus: xuddi shuni if va % siz qiling — faqat siklning uchinchi qismini (i++) o'zgartiring." }
+        ],
+        "check": [
+          { "type": "input", "topic": "Amaliyot", "prompt": "8 % 2 nimaga teng?", "answer": ["0"], "explain": "8 2 ga qoldiqsiz bo'linadi — juft sonlarning qoldig'i 0." }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    { "type": "truefalse", "topic": "for", "prompt": "i++ — bu i = i + 1 bilan bir xil.", "answer": true, "explain": "i++ hisoblagichni 1 ga oshiradi." },
+    { "type": "match", "topic": "for", "prompt": "for sikli qismi va uning ma'nosini moslashtir", "pairs": [["let i = 0", "Nimadan boshlaymiz"], ["i < 5", "To'g'ri ekan — aylanamiz"], ["i++", "Aylanadan keyin nima qilamiz"]] },
+    { "type": "choice", "topic": "for", "prompt": "Bu sikl necha marta bajariladi?", "code": "for (let i = 0; i < 5; i++) {\n  console.log(\"Salom!\");\n}", "options": ["5", "4", "6", "Cheksiz"], "answer": 0, "explain": "i = 0, 1, 2, 3, 4 — beshta aylana." },
+    { "type": "choice", "topic": "for", "prompt": "Konsol oxirgi qaysi sonni chiqaradi?", "code": "for (let i = 0; i < 5; i++) {\n  console.log(i);\n}", "options": ["4", "5", "0", "6"], "answer": 0, "explain": "i = 5 bo'lganda i < 5 — false, 5 endi chiqmaydi." },
+    { "type": "input", "topic": "for", "prompt": "for (let i = 1; i <= 10; i++) nechta son chiqaradi?", "answer": ["10"], "explain": "1 dan 10 gacha (10 ham) — 10 ta son." },
+    { "type": "choice", "topic": "Cheksiz sikl", "prompt": "Bu siklda nima noto'g'ri?", "code": "for (let i = 0; i < 5; ) {\n  console.log(i);\n}", "options": ["i++ yo'q — sikl cheksiz", "i <= 5 deb yozish kerak", "Siklda console.log yozib bo'lmaydi", "Hammasi to'g'ri"], "answer": 0, "explain": "i++ siz hisoblagich doim 0, shart doim true." },
+    { "type": "truefalse", "topic": "Cheksiz sikl", "prompt": "Cheksiz sikl ishlayotganda sahifa bosishlarga javob bermaydi.", "answer": true, "explain": "Sikl tugamaguncha JavaScript boshqa hech narsa qila olmaydi." },
+    { "type": "choice", "topic": "Cheksiz sikl", "prompt": "Chrome'da qotgan vkladkani qanday to'xtatish mumkin?", "options": ["Shift + Esc → «Jarayonni tugatish»", "Ctrl + S", "F5 ni ko'p marta bosish", "Kutish — sikl o'zi tugaydi"], "answer": 0, "explain": "Shift + Esc Chrome vazifalar dispetcherini ochadi." },
+    { "type": "choice", "topic": "while", "prompt": "6 tushguncha zar tashlaymiz. Qaysi sikl mos?", "options": ["while", "0 dan 6 gacha for", "for...of", "Sikl kerak emas"], "answer": 0, "explain": "Nechta tashlash bo'lishini bilmaymiz — demak while." },
+    { "type": "truefalse", "topic": "while", "prompt": "while ichida nimadir o'zgarishi kerak, aks holda sikl cheksiz bo'ladi.", "answer": true, "explain": "Aks holda shart hech qachon false bo'lmaydi." },
+    { "type": "choice", "topic": "for...of", "prompt": "Konsol nima chiqaradi?", "code": "const names = [\"Ali\", \"Malika\"];\nfor (const name of names) {\n  console.log(`Salom, ${name}!`);\n}", "options": ["Salom, Ali! va Salom, Malika!", "Salom, name!", "Faqat Salom, Ali!", "Xato"], "answer": 0, "explain": "for...of massivning har bir elementidan o'tadi." },
+    { "type": "order", "topic": "for...of", "prompt": "names massivini aylanib chiqadigan siklni yig'", "tokens": ["for (", "const name", "of", "names", ")"], "extra": ["in", "i++"], "explain": "for (const name of names) { ... }" },
+    { "type": "choice", "topic": "Amaliyot", "prompt": "3-aylanada nima chiqadi?", "code": "for (let i = 1; i <= 10; i++) {\n  console.log(`5 × ${i} = ${5 * i}`);\n}", "options": ["5 × 3 = 15", "5 × 3 = 8", "5 × 2 = 10", "5 × 4 = 20"], "answer": 0, "explain": "3-aylanada i = 3, 5 * 3 = 15." },
+    { "type": "input", "topic": "Amaliyot", "prompt": "7 % 2 nimaga teng?", "answer": ["1"], "explain": "Toq sonlarni 2 ga bo'lgandagi qoldiq 1." },
+    { "type": "choice", "topic": "Amaliyot", "prompt": "2 dan 50 gacha juft sonlarni if va % siz qanday chiqarish mumkin?", "options": ["for (let i = 2; i <= 50; i += 2)", "for (let i = 1; i <= 50; i++)", "for (let i = 0; i < 50; i--)", "while (true)"], "answer": 0, "explain": "2 dan boshlab 2 tadan qo'shamiz: 2, 4, 6 … 50." }
+  ]
+}

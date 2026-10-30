@@ -1,0 +1,92 @@
+{
+  "title": "Lesson 15. Loops",
+  "description": "for, infinite loop, while, for...of",
+  "learn": {
+    "intro": "Hi! Lesson 15 — **loops**. Imagine you need to greet 100 people in a hall. Write 100 lines of console.log? No way! A loop repeats the action for you. Let's go!",
+    "sections": [
+      {
+        "title": "The for loop",
+        "slides": [
+          { "emoji": "🔁", "text": "A **loop** is a way to repeat an action many times." },
+          { "text": "Here's a loop that says hello 5 times:", "code": "for (let i = 0; i < 5; i++) {\n  console.log(\"Hello!\", i);\n}" },
+          { "text": "Inside the parentheses there are three parts separated by `;`\n`let i = 0` — where we start: the counter is 0.\n`i < 5` — while the condition is true, we keep going. It became false — stop.\n`i++` — what we do after each round: increase i by 1." },
+          { "emoji": "🧮", "text": "Let's run it by hand: i = 0, 1, 2, 3, 4 — the condition is true, we print. When i = 5, `i < 5` is already **false** — the loop ends. 5 rounds in total, and the number 5 is not printed." },
+          { "quote": true, "text": "i++ is the same as i = i + 1." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "for", "prompt": "Which number is printed first?", "code": "for (let i = 1; i <= 10; i++) {\n  console.log(i);\n}", "options": ["1", "0", "10", "2"], "answer": 0, "explain": "The counter starts at let i = 1." },
+          { "type": "truefalse", "topic": "for", "prompt": "The loop for (let i = 0; i < 3; i++) prints the number 3.", "answer": false, "explain": "When i = 3, i < 3 is already false — the loop stops. It prints 0, 1, 2." }
+        ]
+      },
+      {
+        "title": "The infinite loop ⚠️",
+        "slides": [
+          { "emoji": "⚠️", "text": "If you forget `i++`, the counter never changes. The condition `i < 5` is always true — and the loop spins **forever**.", "code": "// ❌ DON'T RUN — the tab will freeze\nfor (let i = 0; i < 5; ) {\n  console.log(i); // 0 0 0 0 ... endlessly\n}" },
+          { "text": "Why the browser freezes: JavaScript runs code one step at a time. Until the loop ends, the page can't do anything else. And it never ends." },
+          { "emoji": "🥵", "text": "How to spot it: the page doesn't respond to clicks, the laptop fan gets loud, the console fills with the same lines endlessly." },
+          { "text": "How to stop it: close the tab. If it won't close — in Chrome press **Shift + Esc**, select the frozen tab and click «End process». Then fix the code." },
+          { "quote": true, "text": "Before running a loop, ask yourself: «Will the condition ever become false?»" }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "Infinite loop", "prompt": "If you forget i++, the loop still ends by itself after 5 rounds.", "answer": false, "explain": "Without i++ the counter doesn't change, the condition is always true — the loop is infinite." },
+          { "type": "choice", "topic": "Infinite loop", "prompt": "What should you ask yourself before running a loop?", "options": ["Will the condition ever become false?", "How many lines are in the file?", "Is CSS linked?", "Is there a console.log in the loop?"], "answer": 0, "explain": "If the condition never becomes false — the loop is infinite." }
+        ]
+      },
+      {
+        "title": "The while loop",
+        "slides": [
+          { "text": "`while` means «as long as». It keeps going while the condition is true. Good when we **don't know in advance** how many repeats there will be.", "code": "while (condition) {\n  // repeat while the condition is true\n}" },
+          { "emoji": "🎲", "text": "Roll a die until we get a 6:", "code": "let dice = 0;\nlet tries = 0;\n\nwhile (dice !== 6) {\n  dice = Math.floor(Math.random() * 6) + 1;\n  tries++;\n  console.log(\"Rolled:\", dice);\n}\n\nconsole.log(`Got a six on try ${tries}!`);" },
+          { "text": "We don't know how many rolls it will take: maybe 1, maybe 15. That's why it's while here. For now just remember `Math.floor(Math.random() * 6) + 1` as «rolling a die»." },
+          { "quote": true, "text": "for — we know how many times to repeat («10 times»). while — we don't («until a 6 comes up»). And something inside while must change." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "while", "prompt": "When is while the better choice?", "options": ["When we don't know how many repeats there will be", "When we know the exact number of repeats", "When we need to go through an array", "Never"], "answer": 0, "explain": "while means «as long as the condition is true», the number of repeats isn't known in advance." },
+          { "type": "input", "topic": "while", "prompt": "Which loop means «as long as»?", "answer": ["while"], "explain": "while — «as long as»." }
+        ]
+      },
+      {
+        "title": "The for...of loop",
+        "slides": [
+          { "emoji": "📋", "text": "An **array** is a list of values in one variable. It's written in square brackets `[ ]`, elements separated by commas. More about it next lesson.", "code": "const names = [\"Aziz\", \"Ali\", \"Malika\", \"Dilnoza\"];" },
+          { "text": "`for...of` takes each element of the array in turn. No counter needed:", "code": "for (const name of names) {\n  console.log(`Hello, ${name}!`);\n}\n// Hello, Aziz!\n// Hello, Ali!\n// Hello, Malika!\n// Hello, Dilnoza!" },
+          { "text": "Read it like this: «for each name of names — do what's in the braces». Add your own name to the array — the loop will greet you too." },
+          { "quote": true, "text": "for...of ends by itself when the elements run out. There's no infinite loop here." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "for...of", "prompt": "for...of needs a counter i.", "answer": false, "explain": "for...of takes the elements in turn by itself, no counter needed." },
+          { "type": "choice", "topic": "for...of", "prompt": "How many times will for...of run over an array of 4 names?", "options": ["4", "3", "5", "Forever"], "answer": 0, "explain": "One round for each element." }
+        ]
+      },
+      {
+        "title": "Practice and homework",
+        "slides": [
+          { "emoji": "✖️", "text": "The 5 times table:", "code": "for (let i = 1; i <= 10; i++) {\n  console.log(`5 × ${i} = ${5 * i}`);\n}\n// 5 × 1 = 5\n// ...\n// 5 × 10 = 50" },
+          { "text": "Done fast? Create `const number = 7;` and use it instead of 5 — you'll get a table for any number." },
+          { "emoji": "🏠", "text": "Homework: print only the **even** numbers from 1 to 50 (2, 4 … 50 — 25 in total). A for loop from 1 to 50 in `script.js`, with a check using `if` and `%` inside. Hint: what are `8 % 2` and `7 % 2`?" },
+          { "quote": true, "text": "Bonus: do the same without if and % — change only the third part of the loop (i++)." }
+        ],
+        "check": [
+          { "type": "input", "topic": "Practice", "prompt": "What is 8 % 2?", "answer": ["0"], "explain": "8 divides by 2 with no remainder — even numbers have remainder 0." }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    { "type": "truefalse", "topic": "for", "prompt": "i++ is the same as i = i + 1.", "answer": true, "explain": "i++ increases the counter by 1." },
+    { "type": "match", "topic": "for", "prompt": "Match the part of the for loop and its meaning", "pairs": [["let i = 0", "Where we start"], ["i < 5", "While true — keep going"], ["i++", "What to do after each round"]] },
+    { "type": "choice", "topic": "for", "prompt": "How many times will this loop run?", "code": "for (let i = 0; i < 5; i++) {\n  console.log(\"Hello!\");\n}", "options": ["5", "4", "6", "Forever"], "answer": 0, "explain": "i = 0, 1, 2, 3, 4 — five rounds." },
+    { "type": "choice", "topic": "for", "prompt": "What is the last number the console prints?", "code": "for (let i = 0; i < 5; i++) {\n  console.log(i);\n}", "options": ["4", "5", "0", "6"], "answer": 0, "explain": "When i = 5, i < 5 is false, so 5 isn't printed." },
+    { "type": "input", "topic": "for", "prompt": "How many numbers does for (let i = 1; i <= 10; i++) print?", "answer": ["10"], "explain": "From 1 to 10 inclusive — 10 numbers." },
+    { "type": "choice", "topic": "Infinite loop", "prompt": "What's wrong with this loop?", "code": "for (let i = 0; i < 5; ) {\n  console.log(i);\n}", "options": ["No i++ — the loop is infinite", "It must be i <= 5", "You can't use console.log in a loop", "Everything is correct"], "answer": 0, "explain": "Without i++ the counter is always 0 and the condition is always true." },
+    { "type": "truefalse", "topic": "Infinite loop", "prompt": "While an infinite loop is running, the page doesn't respond to clicks.", "answer": true, "explain": "Until the loop ends, JavaScript can't do anything else." },
+    { "type": "choice", "topic": "Infinite loop", "prompt": "How do you stop a frozen tab in Chrome?", "options": ["Shift + Esc → «End process»", "Ctrl + S", "Press F5 many times", "Wait — the loop will end by itself"], "answer": 0, "explain": "Shift + Esc opens Chrome's task manager." },
+    { "type": "choice", "topic": "while", "prompt": "We roll a die until we get a 6. Which loop fits?", "options": ["while", "for from 0 to 6", "for...of", "No loop needed"], "answer": 0, "explain": "We don't know how many rolls it will take — so while." },
+    { "type": "truefalse", "topic": "while", "prompt": "Something inside while must change, otherwise the loop is infinite.", "answer": true, "explain": "Otherwise the condition never becomes false." },
+    { "type": "choice", "topic": "for...of", "prompt": "What will the console print?", "code": "const names = [\"Ali\", \"Malika\"];\nfor (const name of names) {\n  console.log(`Hello, ${name}!`);\n}", "options": ["Hello, Ali! and Hello, Malika!", "Hello, name!", "Only Hello, Ali!", "Error"], "answer": 0, "explain": "for...of goes through every element of the array." },
+    { "type": "order", "topic": "for...of", "prompt": "Build a loop that goes through the names array", "tokens": ["for (", "const name", "of", "names", ")"], "extra": ["in", "i++"], "explain": "for (const name of names) { ... }" },
+    { "type": "choice", "topic": "Practice", "prompt": "What is printed on the 3rd round?", "code": "for (let i = 1; i <= 10; i++) {\n  console.log(`5 × ${i} = ${5 * i}`);\n}", "options": ["5 × 3 = 15", "5 × 3 = 8", "5 × 2 = 10", "5 × 4 = 20"], "answer": 0, "explain": "On the 3rd round i = 3, 5 * 3 = 15." },
+    { "type": "input", "topic": "Practice", "prompt": "What is 7 % 2?", "answer": ["1"], "explain": "Odd numbers have remainder 1 when divided by 2." },
+    { "type": "choice", "topic": "Practice", "prompt": "How do you print even numbers from 2 to 50 without if and %?", "options": ["for (let i = 2; i <= 50; i += 2)", "for (let i = 1; i <= 50; i++)", "for (let i = 0; i < 50; i--)", "while (true)"], "answer": 0, "explain": "Start at 2 and add 2 each time: 2, 4, 6 … 50." }
+  ]
+}
