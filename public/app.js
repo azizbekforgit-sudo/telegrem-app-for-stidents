@@ -62,16 +62,29 @@ const ACCENTS = [
   ['mint', 'Мята', '#14c8a8', '#d8f7f0'],
 ];
 const ACC = Object.fromEntries(ACCENTS.map(([id, name, c, l]) => [id, { name, c, l }]));
+// Свой цвет: accent = '#rrggbb'. Остальные оттенки (тёмный, светлый) считаем из него
+const HEX_RE = /^#[0-9a-f]{6}$/i;
+const hexRgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+const rgbHex = (rgb) => '#' + rgb.map((v) => Math.round(Math.max(0, Math.min(255, v))).toString(16).padStart(2, '0')).join('');
+const mixHex = (a, b, t) => { const x = hexRgb(a), y = hexRgb(b); return rgbHex(x.map((v, i) => v + (y[i] - v) * t)); };
+function accOf(accent) {
+  if (HEX_RE.test(accent || '')) return { name: 'Свой цвет', c: accent, l: mixHex(accent, '#ffffff', 0.82) };
+  return ACC[accent] || ACC.lime;
+}
 let LOOK = { accent: 'lime', mode: 'auto', mascot: 'mimi', lang: '' };
 try { LOOK = { ...LOOK, ...JSON.parse(localStorage.getItem('look') || '{}') }; } catch { /* приватный режим */ }
 
 function applyLook(p = {}) {
   LOOK = { ...LOOK, ...Object.fromEntries(Object.entries(p).filter(([, v]) => v)) };
   const root = document.documentElement;
-  root.dataset.accent = ACC[LOOK.accent] ? LOOK.accent : 'lime';
   const sysDark = tg?.colorScheme ? tg.colorScheme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
   const dark = LOOK.mode === 'dark' || (LOOK.mode === 'auto' && sysDark);
   root.dataset.theme = dark ? 'dark' : 'light';
+  const custom = HEX_RE.test(LOOK.accent || '');
+  root.dataset.accent = custom ? 'custom' : ACC[LOOK.accent] ? LOOK.accent : 'lime';
+  for (const [k, v] of Object.entries(custom ? { '--accent': LOOK.accent, '--accent-d': mixHex(LOOK.accent, '#000000', 0.2), '--accent-l': dark ? mixHex(LOOK.accent, '#1f1a27', 0.78) : mixHex(LOOK.accent, '#ffffff', 0.82), '--accent-2': mixHex(LOOK.accent, '#ffffff', 0.45) } : { '--accent': '', '--accent-d': '', '--accent-l': '', '--accent-2': '' })) {
+    if (v) root.style.setProperty(k, v); else root.style.removeProperty(k);
+  }
   if (!LOOK.lang) LOOK.lang = detectLang(tg?.initDataUnsafe?.user?.language_code);
   setLang(LOOK.lang);
   try { localStorage.setItem('look', JSON.stringify(LOOK)); } catch { /* */ }
@@ -179,7 +192,7 @@ const sfx = {
 // ───────── помощники UI ─────────
 function avatar(u, cls = '') {
   const p = u?.prefs;
-  if (p?.mascot && MASCOTS[p.mascot]) return `<div class="ava ${cls}" style="background:${(ACC[p.accent] || ACC.lime).l}">${mascot(p.mascot, 'happy', 100, 'still', true)}</div>`;
+  if (p?.mascot && MASCOTS[p.mascot]) return `<div class="ava ${cls}" style="background:${accOf(p.accent).l}">${mascot(p.mascot, 'happy', 100, 'still', true)}</div>`;
   if (u?.photoUrl) return `<img class="ava ${cls}" src="${esc(u.photoUrl)}" alt="">`;
   const n = (u?.name || '?').replace('@', '');
   let h = 0;
@@ -598,11 +611,55 @@ async function tabStats() {
   if (fx) fx.onclick = () => startLesson({ mistakes: true });
 }
 
+// Палитра «свой цвет»: квадрат насыщенности/яркости + полоска оттенка
+function hsvHex(h, s, v) {
+  const f = (n) => { const k = (n + h / 60) % 6; return v - v * s * Math.max(0, Math.min(k, 4 - k, 1)); };
+  return rgbHex([f(5), f(3), f(1)].map((x) => x * 255));
+}
+function hexHsv(hex) {
+  const [r, g, b] = hexRgb(hex).map((x) => x / 255);
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+  let h = 0;
+  if (d) h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  return [(h * 60 + 360) % 360, mx ? d / mx : 0, mx];
+}
+function colorPicker(start, onPick) {
+  let [h, s, v] = hexHsv(start);
+  openSheet(`<div class="cpick" data-noi18n>
+      <div class="cp-head" data-head>${ic('pallete-2')}<b data-rgb></b></div>
+      <div class="cp-body"><div class="cp-sv" data-sv><i data-svk></i></div><div class="cp-hue" data-hue><i data-huek></i></div></div>
+      <div class="row" style="gap:10px;margin-top:14px"><div class="cp-prev" data-prev></div><button class="btn grow" data-ok>${ic('check-circle')}<span>${tr('Готово')}</span></button></div>
+    </div>`, (el, close) => {
+    const sv = $('[data-sv]', el), hue = $('[data-hue]', el);
+    const draw = () => {
+      const hex = hsvHex(h, s, v);
+      const [r, g, b] = hexRgb(hex);
+      sv.style.background = `linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, ${hsvHex(h, 1, 1)})`;
+      $('[data-svk]', el).style.cssText = `left:${s * 100}%;top:${(1 - v) * 100}%;background:${hex}`;
+      $('[data-huek]', el).style.cssText = `top:${(h / 360) * 100}%;background:${hsvHex(h, 1, 1)}`;
+      const head = $('[data-head]', el);
+      head.style.background = hex;
+      head.style.color = r * 0.299 + g * 0.587 + b * 0.114 > 160 ? '#1b1b1f' : '#fff';
+      $('[data-rgb]', el).textContent = `rgb(${r}, ${g}, ${b})`;
+      $('[data-prev]', el).style.background = hex;
+    };
+    const drag = (box, fn) => {
+      const at = (e) => { const rc = box.getBoundingClientRect(); fn(Math.max(0, Math.min(1, (e.clientX - rc.left) / rc.width)), Math.max(0, Math.min(1, (e.clientY - rc.top) / rc.height))); draw(); };
+      box.addEventListener('pointerdown', (e) => { box.setPointerCapture(e.pointerId); at(e); e.preventDefault(); });
+      box.addEventListener('pointermove', (e) => { if (box.hasPointerCapture(e.pointerId)) at(e); });
+    };
+    drag(sv, (x, y) => { s = x; v = 1 - y; });
+    drag(hue, (x, y) => { h = Math.min(359.9, y * 360); });
+    $('[data-ok]', el).onclick = () => { haptic('success'); onPick(hsvHex(h, s, v)); close(); };
+    draw();
+  });
+}
+
 // Выбор напарника, цвета и темы (первый вход, профиль, настройки учителя)
 function appearanceHtml() {
   return `<div class="field"><span>Напарник</span><div class="mascot-pick">${Object.entries(MASCOTS).map(([id, m]) => `<button data-mascot="${id}" class="${LOOK.mascot === id ? 'on' : ''}">${mascot(id, LOOK.mascot === id ? 'peace' : 'happy', 84, 'still')}<b>${m.name}</b></button>`).join('')}</div>
       <p class="mascot-about" data-about>${esc(MASCOTS[LOOK.mascot]?.about || '')}</p></div>
-    <div class="field" style="margin-top:18px"><span>Цвет приложения</span><div class="swatches">${ACCENTS.map(([id, name, c]) => `<button class="swatch ${LOOK.accent === id ? 'on' : ''}" data-accent="${id}" title="${name}" style="background:${c};color:${c}">${ic('check-circle')}</button>`).join('')}</div></div>
+    <div class="field" style="margin-top:18px"><span>Цвет приложения</span><div class="swatches">${ACCENTS.map(([id, name, c]) => `<button class="swatch ${LOOK.accent === id ? 'on' : ''}" data-accent="${id}" title="${name}" style="background:${c};color:${c}">${ic('check-circle')}</button>`).join('')}<button class="swatch rainbow ${HEX_RE.test(LOOK.accent) ? 'on' : ''}" data-custom title="Свой цвет" style="color:${HEX_RE.test(LOOK.accent) ? LOOK.accent : '#ff4d8d'}"><i style="background:${HEX_RE.test(LOOK.accent) ? LOOK.accent : 'transparent'}"></i></button></div></div>
     <div class="field" style="margin-top:18px"><span>Тема</span><div class="seg">${[['auto', 'monitor', 'Авто'], ['light', 'sun-2', 'Светлая'], ['dark', 'moon', 'Тёмная']].map(([id, icon, t]) => `<button data-mode="${id}" class="${LOOK.mode === id ? 'on' : ''}">${ic(icon, 'sm')}${t}</button>`).join('')}</div></div>
     <div class="field" style="margin-top:18px"><span>Язык</span><div class="seg" data-noi18n>${LANGS.map(([id, t]) => `<button data-lang="${id}" class="${LOOK.lang === id ? 'on' : ''}">${t}</button>`).join('')}</div></div>`;
 }
@@ -617,7 +674,16 @@ function bindAppearance(el, onChange) {
     $('[data-about]', el).textContent = MASCOTS[b.dataset.mascot].about;
     onChange?.();
   }));
-  $$('[data-accent]', el).forEach((b) => (b.onclick = () => { haptic('light'); savePrefs({ accent: b.dataset.accent }); $$('[data-accent]', el).forEach((x) => x.classList.toggle('on', x === b)); onChange?.(); }));
+  const sw = $$('[data-accent], [data-custom]', el);
+  $$('[data-accent]', el).forEach((b) => (b.onclick = () => { haptic('light'); savePrefs({ accent: b.dataset.accent }); sw.forEach((x) => x.classList.toggle('on', x === b)); onChange?.(); }));
+  const cb = $('[data-custom]', el);
+  if (cb) cb.onclick = () => colorPicker(HEX_RE.test(LOOK.accent) ? LOOK.accent : '#ff0000', (hex) => {
+    savePrefs({ accent: hex });
+    sw.forEach((x) => x.classList.toggle('on', x === cb));
+    cb.style.color = hex;
+    $('i', cb).style.background = hex;
+    onChange?.();
+  });
   $$('[data-mode]', el).forEach((b) => (b.onclick = () => { haptic('light'); savePrefs({ mode: b.dataset.mode }); $$('[data-mode]', el).forEach((x) => x.classList.toggle('on', x === b)); onChange?.(); }));
   $$('[data-lang]', el).forEach((b) => (b.onclick = () => {
     if (LOOK.lang === b.dataset.lang) return;
@@ -669,7 +735,7 @@ async function tabProfile() {
   const u = st.user;
   const lv = levelOf(st.xp);
   const got = st.achievements.filter((a) => a.got);
-  const acc = ACC[LOOK.accent] || ACC.lime;
+  const acc = accOf(LOOK.accent);
   const row = (attr, icon, title, sub, right) => `<button class="mrow" ${attr}>${emo(icon)}<div class="grow"><b>${title}</b>${sub ? `<span>${sub}</span>` : ''}</div>${right}<span class="faint">${ic('alt-arrow-right')}</span></button>`;
   app.innerHTML = topbar() + `
     <div class="pcard">

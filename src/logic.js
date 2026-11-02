@@ -706,7 +706,7 @@ export function createLogic(store, { adminIds }) {
     if (!u) throw httpError(404, 'Пользователь не найден');
     const next = { ...(u.prefs || {}) };
     if (MASCOT_IDS.includes(p.mascot)) next.mascot = p.mascot;
-    if (ACCENTS.includes(p.accent)) next.accent = p.accent;
+    if (ACCENTS.includes(p.accent) || /^#[0-9a-f]{6}$/i.test(p.accent || '')) next.accent = p.accent;
     if (['auto', 'light', 'dark'].includes(p.mode)) next.mode = p.mode;
     if (['ru', 'uz', 'en'].includes(p.lang)) next.lang = p.lang;
     u.prefs = next;

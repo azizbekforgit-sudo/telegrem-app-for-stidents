@@ -241,7 +241,7 @@ textarea.input { min-height: 92px; resize: vertical; }
 .mascot-pick button.on { border-color: var(--accent); background: var(--accent-l); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent); }
 .mascot-pick b { font-size: 16px; }
 .mascot-pick span { font-size: 11.5px; color: var(--muted); text-align: center; line-height: 1.25; }
-.swatches { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; justify-items: center; }
+.swatches { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; justify-items: center; }
 .swatch { width: 100%; max-width: 46px; aspect-ratio: 1; border-radius: 50%; position: relative; box-shadow: 0 4px 0 rgba(0,0,0,.12); display: grid; place-items: center; color: #fff; }
 .swatch.on { box-shadow: 0 0 0 3px var(--bg), 0 0 0 6px currentColor; }
 .swatch .ic { opacity: 0; }
@@ -542,3 +542,17 @@ code { background: var(--card-2); padding: 1px 6px; border-radius: 7px; font-siz
 @keyframes ring-glow { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 200, 60, .0); } 50% { box-shadow: 0 0 18px 4px rgba(255, 200, 60, .7); } }
 @keyframes shine { 0%, 70% { left: -60%; } 100% { left: 130%; } }
 @media (prefers-reduced-motion: reduce) { .champ, .champ .rays, .champ .crown, .champ .ring, .champ::after { animation: none !important; } }
+
+/* ───────── свой цвет ───────── */
+.swatch.rainbow { background: conic-gradient(#ff3b3b, #ffb13b, #ffe83b, #4cd964, #2fd3ff, #3b6bff, #b13bff, #ff3bc8, #ff3b3b); }
+.swatch.rainbow i { width: 46%; height: 46%; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.swatch.rainbow:not(.on) i { background: #fff !important; }
+.cp-head { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px; border-radius: 16px; font-size: 22px; font-weight: 800; }
+.cp-head .ic { width: 26px; height: 26px; }
+.cp-body { display: flex; gap: 12px; margin-top: 14px; height: min(56vw, 260px); }
+.cp-sv { position: relative; flex: 1; border-radius: 14px; touch-action: none; cursor: crosshair; }
+.cp-hue { position: relative; width: 34px; border-radius: 12px; touch-action: none; cursor: ns-resize;
+  background: linear-gradient(to bottom, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%); }
+.cp-sv i { position: absolute; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1.5px rgba(0,0,0,.35), 0 2px 6px rgba(0,0,0,.3); pointer-events: none; }
+.cp-hue i { position: absolute; left: -4px; right: -4px; height: 12px; margin-top: -6px; border-radius: 6px; border: 3px solid #fff; box-shadow: 0 0 0 1.5px rgba(0,0,0,.35); pointer-events: none; }
+.cp-prev { width: 52px; height: 52px; border-radius: 16px; flex: none; box-shadow: inset 0 0 0 2px rgba(0,0,0,.08); }

@@ -35,6 +35,7 @@ const PHRASES = [
   ['Правильные ответы подряд дают комбо: ×2 и ×3 XP', 'Correct answers in a row give a combo: ×2 and ×3 XP', "Ketma-ket to'g'ri javoblar kombo beradi: ×2 va ×3 XP"],
   ['Пройти ещё раз', 'Try again', 'Yana topshirish'], ['Лига недоступна', 'League unavailable', 'Liga mavjud emas'],
   ['Сначала учитель добавит тебя в группу.', 'First the teacher will add you to a group.', "Avval ustoz seni guruhga qo'shadi."],
+  ['Свой цвет', 'Custom color', "O'z rangim"],
   ['В группе', 'In my group', 'Guruhda'], ['Общая лига', 'Global league', 'Umumiy liga'], ['Лига группы недоступна', 'Group league unavailable', 'Guruh ligasi mavjud emas'],
   ['Сначала учитель добавит тебя в группу. А пока загляни в общую лигу!', "Your teacher will add you to a group first. Meanwhile, check out the global league!", "Avval ustoz seni guruhga qo'shadi. Hozircha umumiy ligaga qara!"],
   ['Твоё место', 'Your place', "Sening o'rning"], ['Пока никто не набрал очков', 'Nobody has points yet', "Hali hech kim ochko to'plamagan"],

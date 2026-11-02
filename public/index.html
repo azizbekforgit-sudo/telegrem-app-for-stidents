@@ -23,8 +23,9 @@
     try {
       var l = JSON.parse(localStorage.getItem('look') || '{}');
       var d = document.documentElement;
-      d.dataset.accent = l.accent || 'lime';
       var dark = l.mode === 'dark' || (l.mode !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+      if (/^#[0-9a-f]{6}$/i.test(l.accent || '')) { d.dataset.accent = 'custom'; d.style.setProperty('--accent', l.accent); d.style.setProperty('--accent-d', l.accent); }
+      else d.dataset.accent = l.accent || 'lime';
       d.dataset.theme = dark ? 'dark' : 'light';
     } catch (e) {}
   </script>
