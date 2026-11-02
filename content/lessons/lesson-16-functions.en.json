@@ -1,0 +1,99 @@
+{
+  "title": "Lesson 16. Functions",
+  "description": "Declaring and calling, parameters, return, arrow functions",
+  "learn": {
+    "intro": "Hi! Lesson 16 — **functions**. A function is a recipe: you describe it once, and then say «cook it» as many times as you want. Let's go!",
+    "sections": [
+      {
+        "title": "Declaring — writing the recipe",
+        "slides": [
+          { "emoji": "🍳", "text": "You've already used a function: `console.log()` is a function someone wrote for us. Now let's learn to write **our own**." },
+          { "text": "Declaring a function:", "code": "function greet(name) {\n  return \"Hello, \" + name;\n}" },
+          { "text": "`function` — «a recipe is coming».\n`greet` — the function's name, we call it by this.\n`(name)` — a parameter, the ingredient that will be passed in.\n`{ ... }` — the recipe steps.\n`return` — the finished dish the function gives back." },
+          { "quote": true, "text": "If you run only the declaration — nothing appears in the console. We wrote the recipe but haven't cooked anything yet." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "Declaring and calling", "prompt": "The word return is the function's name.", "answer": false, "explain": "The name is greet. return gives the result back." },
+          { "type": "choice", "topic": "Declaring and calling", "prompt": "What is name in function greet(name)?", "options": ["A parameter — an «ingredient»", "The function name", "The function's result", "A function call"], "answer": 0, "explain": "Parameters go in the parentheses of the declaration." }
+        ]
+      },
+      {
+        "title": "Calling — cooking by the recipe",
+        "slides": [
+          { "emoji": "👩‍🍳", "text": "For a function to run, you need to **call** it — write its name and parentheses:", "code": "console.log(greet(\"Anya\")); // Hello, Anya\nconsole.log(greet(\"Aziz\")); // Hello, Aziz" },
+          { "text": "**Declaration** — writing the recipe, once: `function greet(name) { ... }`.\n**Call** — cooking by the recipe, as many times as you want: `greet(\"Anya\")`." },
+          { "quote": true, "text": "The word function and curly braces — it's a declaration. Just a name and parentheses — it's a call." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Declaring and calling", "prompt": "How many times can you call one function?", "options": ["As many as you want", "Only once", "Twice", "Never"], "answer": 0, "explain": "The recipe is written once, and you can cook from it any number of times." },
+          { "type": "choice", "topic": "Declaring and calling", "prompt": "What will the console show?", "code": "function greet(name) {\n  return \"Hello, \" + name;\n}\nconsole.log(greet(\"Ali\"));", "options": ["Hello, Ali", "Hello, name", "Ali", "Nothing"], "answer": 0, "explain": "\"Ali\" is put in place of name." }
+        ]
+      },
+      {
+        "title": "Parameters, arguments and return",
+        "slides": [
+          { "text": "A **parameter** is a blank line in the recipe: «take ___ of meat». It's written in the declaration.\nAn **argument** is what you actually put in: «500 grams of beef». It's written in the call.", "code": "function greet(name) {   // name — PARAMETER\n  return \"Hello, \" + name;\n}\ngreet(\"Anya\");           // \"Anya\" — ARGUMENT" },
+          { "text": "There can be several parameters — separated by commas:", "code": "function introduce(name, age) {\n  return `My name is ${name}, I'm ${age}`;\n}\nconsole.log(introduce(\"Aziz\", 16));\n// My name is Aziz, I'm 16" },
+          { "emoji": "🍽️", "text": "`return` gives back the result. Without it, the function gives nothing:", "code": "function greetNoReturn(name) {\n  \"Hello, \" + name; // no return\n}\nconsole.log(greetNoReturn(\"Anya\")); // undefined" },
+          { "quote": true, "text": "The recipe did something but didn't hand over the dish — that's why it's undefined." }
+        ],
+        "check": [
+          { "type": "match", "topic": "Parameters and return", "prompt": "Match the word and its meaning", "pairs": [["Parameter", "What the function expects (in the declaration)"], ["Argument", "What was passed (in the call)"], ["return", "Give back the result"]] },
+          { "type": "truefalse", "topic": "Parameters and return", "prompt": "A function can have several parameters separated by commas.", "answer": true, "explain": "For example: function introduce(name, age)." }
+        ]
+      },
+      {
+        "title": "Arrow functions",
+        "slides": [
+          { "emoji": "🏹", "text": "This isn't a new topic — it's the same function, just written **shorter**. You'll see it very often in modern code." },
+          { "text": "Three ways to write the same thing:", "code": "// 1. regular\nfunction greet(name) {\n  return \"Hello, \" + name;\n}\n\n// 2. arrow\nconst greet = (name) => {\n  return \"Hello, \" + name;\n};\n\n// 3. arrow, short\nconst greet = name => \"Hello, \" + name;" },
+          { "text": "How to shorten it:\none parameter — you can drop the parentheses around it;\nonly return inside — drop the `{ }` and the word `return`;\ntwo or more parameters — the parentheses stay: `(a, b) => a + b`." },
+          { "quote": true, "text": "If you paste all three versions into the console at once, you'll get the error «has already been declared»: the name greet is taken. Try them one at a time and refresh the page (F5)." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Arrow functions", "prompt": "How can this function be shortened?", "code": "const double = (x) => {\n  return x * 2;\n};", "options": ["const double = x => x * 2;", "const double = x => { x * 2 };", "double => x * 2;", "function x => 2;"], "answer": 0, "explain": "One parameter — no parentheses; only return — no { } and no return." }
+        ]
+      },
+      {
+        "title": "Why we need functions",
+        "slides": [
+          { "emoji": "♻️", "text": "The main idea is **don't repeat code**. Without a function, the same thing is written three times, and changing the text means editing three places. And what if there are 100 people?" },
+          { "text": "With a function, the recipe is written once:", "code": "function welcome(name) {\n  return `Hello, ${name}! Welcome to the lesson.`;\n}\nconsole.log(welcome(\"Aziz\"));\nconsole.log(welcome(\"Ali\"));" },
+          { "text": "A function + the loop from lesson 15 — and you can greet even 100 people:", "code": "const names = [\"Aziz\", \"Ali\", \"Malika\"];\nfor (const name of names) {\n  console.log(welcome(name));\n}" },
+          { "quote": true, "text": "Now the text is in one place: change it in the function — it changes everywhere." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "Why functions", "prompt": "If you change the text inside welcome, it changes in every call.", "answer": true, "explain": "There's one recipe — every call cooks from it." }
+        ]
+      },
+      {
+        "title": "Practice and homework",
+        "slides": [
+          { "emoji": "➕", "text": "A sum function — takes two numbers and returns their sum:", "code": "function sum(a, b) {\n  return a + b;\n}\nconsole.log(sum(2, 3));  // 5\nconsole.log(sum(-5, 5)); // 0\n\n// as an arrow function:\nconst sum = (a, b) => a + b;" },
+          { "quote": true, "text": "Trap: sum(\"2\", 3) returns \"23\", not 5. Text plus a number get glued together — remember lesson 13?" },
+          { "emoji": "🏠", "text": "Homework: a function `isEven(number)` returns `true` for an even number and `false` for an odd one. Code in `script.js`, the result through `return`, call it at least 3 times. Hint: the `%` operator. Bonus — as a one-line arrow function." }
+        ],
+        "check": [
+          { "type": "input", "topic": "Practice", "prompt": "What does sum(10, 20) return?", "answer": ["30"], "explain": "10 + 20 = 30." }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    { "type": "truefalse", "topic": "Declaring and calling", "prompt": "console.log() is a function too.", "answer": true, "explain": "Someone wrote it for us, and we call it." },
+    { "type": "match", "topic": "Declaring and calling", "prompt": "Match the part of a function and its meaning", "pairs": [["function", "«A recipe is coming»"], ["greet", "The function name"], ["(name)", "A parameter"], ["return", "What the function gives back"]] },
+    { "type": "choice", "topic": "Declaring and calling", "prompt": "What appears in the console if you run only this code?", "code": "function greet(name) {\n  return \"Hello, \" + name;\n}", "options": ["Nothing", "Hello, name", "Hello, undefined", "Error"], "answer": 0, "explain": "This is only a declaration — the recipe is written but not called." },
+    { "type": "choice", "topic": "Declaring and calling", "prompt": "Which line is a function call?", "options": ["greet(\"Anya\")", "function greet(name) { }", "return name;", "const name = \"Anya\";"], "answer": 0, "explain": "A call is a name and parentheses, without the word function." },
+    { "type": "choice", "topic": "Parameters and return", "prompt": "In the call greet(\"Anya\"), the string \"Anya\" is…", "options": ["An argument", "A parameter", "The function name", "return"], "answer": 0, "explain": "An argument is what's passed in the call." },
+    { "type": "choice", "topic": "Parameters and return", "prompt": "What will the console show?", "code": "function introduce(name, age) {\n  return `My name is ${name}, I'm ${age}`;\n}\nconsole.log(introduce(\"Ali\", 15));", "options": ["My name is Ali, I'm 15", "My name is name, I'm age", "My name is 15, I'm Ali", "undefined"], "answer": 0, "explain": "Arguments are filled in order: name = \"Ali\", age = 15." },
+    { "type": "input", "topic": "Parameters and return", "prompt": "What will the console show?", "code": "function greetNoReturn(name) {\n  \"Hello, \" + name;\n}\nconsole.log(greetNoReturn(\"Anya\"));", "answer": ["undefined"], "explain": "No return — the function gives nothing back." },
+    { "type": "truefalse", "topic": "Parameters and return", "prompt": "Without return, a function still gives back its result.", "answer": false, "explain": "Without return the result is undefined." },
+    { "type": "choice", "topic": "Arrow functions", "prompt": "Which one is an arrow function?", "options": ["const greet = name => \"Hello, \" + name;", "function greet(name) { }", "greet(\"Anya\")", "return => name"], "answer": 0, "explain": "An arrow function is written with =>." },
+    { "type": "order", "topic": "Arrow functions", "prompt": "Build a short arrow function for a sum", "tokens": ["const sum =", "(a, b)", "=>", "a + b;"], "extra": ["return", "function"], "explain": "const sum = (a, b) => a + b;" },
+    { "type": "truefalse", "topic": "Arrow functions", "prompt": "With two parameters you can drop the parentheses: a, b => a + b", "answer": false, "explain": "Parentheses are dropped only with one parameter. Correct: (a, b) => a + b." },
+    { "type": "choice", "topic": "Why functions", "prompt": "What is the main idea of functions?", "options": ["Don't repeat code", "Make code longer", "Replace all loops", "Draw the page"], "answer": 0, "explain": "Write the recipe once and use it as much as you want." },
+    { "type": "choice", "topic": "Practice", "prompt": "What does sum(\"2\", 3) return?", "code": "function sum(a, b) {\n  return a + b;\n}", "options": ["\"23\"", "5", "\"5\"", "Error"], "answer": 0, "explain": "Text plus a number get glued into a string." },
+    { "type": "input", "topic": "Practice", "prompt": "What does sum(-5, 5) return?", "answer": ["0"], "explain": "-5 + 5 = 0." },
+    { "type": "choice", "topic": "Practice", "prompt": "What should isEven(number) return so it's true for even numbers?", "options": ["number % 2 === 0", "number % 2 === 1", "number / 2", "number === 2"], "answer": 0, "explain": "An even number has remainder 0 when divided by 2." }
+  ]
+}
