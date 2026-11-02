@@ -111,9 +111,24 @@ api.post('/auth/logout', h((req) => (logic.logout(req.session), { ok: true })));
 api.get('/me', h((req) => logic.home(req.user.id)));
 api.post('/me/prefs', h((req) => logic.setPrefs(req.user.id, req.body || {})));
 api.get('/stats/me', h((req) => logic.userStats(req.user.id)));
+// Роль нового пользователя: ученик или родитель
+api.post('/me/role', h(async (req) => {
+  const u = logic.setRole(req.user.id, String(req.body?.role || ''));
+  await tg?.onRoleChosen(u);
+  return logic.home(req.user.id);
+}));
+// Родитель: свои дети, все ученики курса и прогресс любого из них
+const parentOnly = (req) => { if (!logic.isParent(req.user.id)) throw httpError(403, 'Только для родителей'); };
+api.get('/parent/students', h((req) => (parentOnly(req), logic.parentStudents())));
+api.get('/parent/students/:uid', h((req) => {
+  parentOnly(req);
+  if (!logic.parentStudents().some((u) => u.id === req.params.uid)) throw httpError(404, 'Ученик не найден');
+  return logic.userStats(req.params.uid);
+}));
+api.post('/parent/children', h((req) => (parentOnly(req), logic.setChildren(req.user.id, req.body?.ids))));
 api.get('/league/global', h(() => logic.globalLeague()));
 api.get('/leaderboard/:gid', h((req) => {
-  if (!req.admin && !logic.userGroups(req.user.id).some((g) => g.id === req.params.gid)) throw httpError(403, 'Не твоя группа');
+  if (!req.admin && !logic.isParent(req.user.id) && !logic.userGroups(req.user.id).some((g) => g.id === req.params.gid)) throw httpError(403, 'Не твоя группа');
   return logic.leaderboard(req.params.gid);
 }));
 api.post('/attempts', h((req) => logic.startAttempt(req.user.id, req.body || {})));

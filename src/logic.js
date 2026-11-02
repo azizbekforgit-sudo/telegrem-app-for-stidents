@@ -35,7 +35,8 @@ export function createLogic(store, { adminIds }) {
   function upsertUser(tg) {
     const id = String(tg.id);
     const existed = Boolean(S.users[id]);
-    const u = S.users[id] || { id, joinedAt: Date.now(), streak: 0, lastDay: null };
+    // новые пользователи сначала выбирают роль (ученик / родитель); старых это не касается
+    const u = S.users[id] || { id, joinedAt: Date.now(), streak: 0, lastDay: null, needRole: !isAdmin(id) };
     u.firstName = tg.first_name ?? tg.firstName ?? u.firstName ?? '';
     u.lastName = tg.last_name ?? tg.lastName ?? u.lastName ?? '';
     u.username = tg.username ?? u.username ?? '';
@@ -46,7 +47,50 @@ export function createLogic(store, { adminIds }) {
   }
 
   const userGroups = (uid) => Object.values(S.groups).filter((g) => g.memberIds.includes(String(uid)));
-  const students = () => Object.values(S.users).filter((u) => !isAdmin(u.id));
+  const isParent = (id) => S.users[String(id)]?.role === 'parent';
+  const students = () => Object.values(S.users).filter((u) => !isAdmin(u.id) && u.role !== 'parent');
+
+  // ───────── родители ─────────
+  function setRole(uid, role) {
+    const u = S.users[String(uid)];
+    if (!u) throw httpError(404, 'Пользователь не найден');
+    if (!['student', 'parent'].includes(role)) throw httpError(400, 'Неизвестная роль');
+    if (!u.needRole) throw httpError(400, 'Роль уже выбрана');
+    u.role = role;
+    delete u.needRole;
+    if (role === 'parent') u.children = [];
+    store.save();
+    return u;
+  }
+  function setChildren(uid, ids) {
+    const u = S.users[String(uid)];
+    if (!isParent(uid)) throw httpError(403, 'Только для родителей');
+    const ok = new Set(students().map((x) => x.id));
+    u.children = [...new Set((ids || []).map(String))].filter((id) => ok.has(id)).slice(0, 10);
+    store.save();
+    return { children: u.children };
+  }
+  const leagueRank = () => new Map(globalLeague().rows.map((r) => [r.userId, r.rank]));
+  function studentCard(u, ranks) {
+    const bests = pubsForUser(u.id).map((p) => best(u.id, p.id)).filter(Boolean);
+    return { ...publicUser(u), groups: userGroups(u.id).map((g) => ({ id: g.id, name: g.name, emoji: g.emoji })), xp: totalXp(u.id), streak: currentStreak(u), done: bests.length, total: pubsForUser(u.id).length, avg: avg(bests.map((b) => b.pct)), rank: ranks.get(u.id) || null, mistakes: mistakesOf(u.id).length };
+  }
+  function parentHome(uid) {
+    const u = S.users[String(uid)];
+    const ranks = leagueRank();
+    const kids = (u.children || []).map((id) => S.users[id]).filter(Boolean).map((k) => studentCard(k, ranks));
+    const gids = [...new Set(kids.flatMap((k) => k.groups.map((g) => g.id)))];
+    return {
+      user: publicUser(u), isAdmin: false, isParent: true, role: 'parent', xp: 0, streak: 0,
+      children: kids, childIds: kids.map((k) => k.id),
+      groups: gids.map((id) => S.groups[id]).filter(Boolean).map((g) => ({ id: g.id, name: g.name, emoji: g.emoji })),
+      totalStudents: students().length,
+    };
+  }
+  function parentStudents() {
+    const ranks = leagueRank();
+    return students().map((u) => studentCard(u, ranks)).sort((a, b) => (a.rank || 1e9) - (b.rank || 1e9) || a.name.localeCompare(b.name));
+  }
   const unassigned = () => students().filter((u) => userGroups(u.id).length === 0).sort((a, b) => b.joinedAt - a.joinedAt);
 
   function createGroup({ name: gname, emoji }) {
@@ -718,6 +762,8 @@ export function createLogic(store, { adminIds }) {
   function home(uid) {
     uid = String(uid);
     const u = S.users[uid];
+    if (u?.needRole) return { user: publicUser(u), needRole: true, isAdmin: false, groups: [], path: [], xp: 0, streak: 0, mistakes: 0, feed: [] };
+    if (isParent(uid)) return parentHome(uid);
     const groups = userGroups(uid);
     const path = pubsForUser(uid).map((p) => {
       const l = loc(S.lessons[p.lessonId], langOf(uid));
@@ -727,6 +773,7 @@ export function createLogic(store, { adminIds }) {
     return {
       user: publicUser(u),
       isAdmin: isAdmin(uid),
+      role: 'student',
       xp: totalXp(uid),
       streak: currentStreak(u),
       groups: groups.map((g) => ({ id: g.id, name: g.name, emoji: g.emoji })),
@@ -807,7 +854,7 @@ export function createLogic(store, { adminIds }) {
   }
 
   return {
-    S, isAdmin, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
+    S, isAdmin, isParent, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
     upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,

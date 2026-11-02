@@ -15,6 +15,10 @@ const T = {
   newTest: { ru: (t, d, n) => `🆕 <b>Новый тест!</b>\n\n${t}\n${d}🧩 Вопросов: ${n}\n\nЗаходите и играйте! 🎮`, uz: (t, d, n) => `🆕 <b>Yangi test!</b>\n\n${t}\n${d}🧩 Savollar: ${n}\n\nKiring va o'ynang! 🎮`, en: (t, d, n) => `🆕 <b>New test!</b>\n\n${t}\n${d}🧩 Questions: ${n}\n\nCome in and play! 🎮` },
   direct: { ru: (t, d) => `📝 <b>Учитель отправил тебе тест!</b>\n\n${t}\n${d}\nЗаходи и решай 💪`, uz: (t, d) => `📝 <b>Ustoz senga test yubordi!</b>\n\n${t}\n${d}\nKir va yech 💪`, en: (t, d) => `📝 <b>Your teacher sent you a test!</b>\n\n${t}\n${d}\nCome in and solve it 💪` },
   personal: { ru: (t, d) => `🎯 <b>Личное задание от учителя!</b>\n\n${t}\n${d}\nЕго сделали специально для тебя — по твоим ошибкам. Заходи! 💪`, uz: (t, d) => `🎯 <b>Ustozdan shaxsiy topshiriq!</b>\n\n${t}\n${d}\nU aynan sen uchun — xatolaring asosida tayyorlandi. Kir! 💪`, en: (t, d) => `🎯 <b>A personal task from your teacher!</b>\n\n${t}\n${d}\nIt was made just for you — based on your mistakes. Come in! 💪` },
+  askRole: { ru: (n) => `👋 Привет, <b>${n}</b>!\n\nЭто Зубрик — тесты и обучалки курса.\nСкажи, кто ты?`, uz: (n) => `👋 Salom, <b>${n}</b>!\n\nBu Zubrik — kurs testlari va darsliklari.\nAyt-chi, sen kimsan?`, en: (n) => `👋 Hi, <b>${n}</b>!\n\nThis is Zubrik — course tests and lessons.\nTell me, who are you?` },
+  iStudent: { ru: '🎒 Я ученик', uz: "🎒 Men o'quvchiman", en: '🎒 I am a student' },
+  iParent: { ru: '👨‍👩‍👧 Я родитель', uz: '👨‍👩‍👧 Men ota-onaman', en: '👨‍👩‍👧 I am a parent' },
+  parentHello: { ru: (n) => `👨‍👩‍👧 Здравствуйте, <b>${n}</b>!\n\nВ приложении вы увидите прогресс своего ребёнка и всех учеников курса, общую лигу и лигу группы. Откройте приложение и выберите своего ребёнка.`, uz: (n) => `👨‍👩‍👧 Assalomu alaykum, <b>${n}</b>!\n\nIlovada farzandingiz va kursning barcha o'quvchilari natijalarini, umumiy liga va guruh ligasini ko'rasiz. Ilovani oching va farzandingizni tanlang.`, en: (n) => `👨‍👩‍👧 Hello, <b>${n}</b>!\n\nIn the app you'll see your child's progress and that of every student in the course, the global league and the group league. Open the app and choose your child.` },
   remindTest: { ru: (t) => `\n\n🧩 Тест: <b>${t}</b>\nТы его ещё не сдал — заходи! ⏳`, uz: (t) => `\n\n🧩 Test: <b>${t}</b>\nSen uni hali topshirmading — kir! ⏳`, en: (t) => `\n\n🧩 Test: <b>${t}</b>\nYou haven't taken it yet — come in! ⏳` },
 };
 
@@ -59,22 +63,36 @@ export function createBot({ token, logic, store, appUrl, adminIds }) {
         { parse_mode: 'HTML', reply_markup: privateKb('👑 Панель учителя') },
       );
     }
-    const groups = logic.userGroups(user.id);
     const lang = langOf(user.id, ctx.from.language_code);
+    if (user.needRole) {
+      return ctx.reply(tt('askRole', lang, esc(logic.name(user))), { parse_mode: 'HTML', reply_markup: new InlineKeyboard().text(tt('iStudent', lang), 'role:student').row().text(tt('iParent', lang), 'role:parent') });
+    }
+    if (user.role === 'parent') return ctx.reply(tt('parentHello', lang, esc(logic.name(user))), { parse_mode: 'HTML', reply_markup: privateKb(tt('open', lang)) });
+    const groups = logic.userGroups(user.id);
     await ctx.reply(
       groups.length
         ? tt('inGroup', lang, esc(logic.name(user)), groups.map((g) => `${g.emoji} ${esc(g.name)}`).join(', '))
         : tt('hello', lang, esc(logic.name(user))),
       { parse_mode: 'HTML', reply_markup: privateKb(tt('open', lang)) },
     );
-    if (isNew) {
-      const kb = Object.keys(S.groups).length ? groupsKeyboard('add', `${user.id}:`) : undefined;
-      await notifyAdmins(
-        `🆕 Новый ученик: ${mention(user.id, logic.name(user))}${user.username ? ' (@' + esc(user.username) + ')' : ''}\nID: <code>${user.id}</code>\n\n` +
-          (kb ? 'В какую группу добавить?' : 'Групп пока нет — создай группу в приложении.'),
-        { reply_markup: kb },
-      );
-    }
+  });
+
+  // Новый пользователь выбрал роль (в боте или в приложении)
+  async function onRoleChosen(user) {
+    const who = `${mention(user.id, logic.name(user))}${user.username ? ' (@' + esc(user.username) + ')' : ''}\nID: <code>${user.id}</code>`;
+    if (user.role === 'parent') return notifyAdmins(`👨‍👩‍👧 Новый родитель: ${who}`);
+    const kb = Object.keys(S.groups).length ? groupsKeyboard('add', `${user.id}:`) : undefined;
+    return notifyAdmins(`🆕 Новый ученик: ${who}\n\n` + (kb ? 'В какую группу добавить?' : 'Групп пока нет — создай группу в приложении.'), { reply_markup: kb });
+  }
+  bot.callbackQuery(/^role:(student|parent)$/, async (ctx) => {
+    const uid = String(ctx.from.id);
+    const lang = langOf(uid, ctx.from.language_code);
+    let user;
+    try { user = logic.setRole(uid, ctx.match[1]); } catch { return ctx.answerCallbackQuery(); }
+    await ctx.answerCallbackQuery();
+    await ctx.editMessageReplyMarkup().catch(() => {});
+    await ctx.reply(user.role === 'parent' ? tt('parentHello', lang, esc(logic.name(user))) : tt('hello', lang, esc(logic.name(user))), { parse_mode: 'HTML', reply_markup: privateKb(tt('open', lang)) });
+    await onRoleChosen(user);
   });
 
   bot.command('help', (ctx) =>
@@ -246,5 +264,5 @@ export function createBot({ token, logic, store, appUrl, adminIds }) {
     console.log(`[bot] @${bot.botInfo.username} готов`);
   }
 
-  return { bot, setup, notifyPublish, notifyPersonal, announce, tickReminders };
+  return { bot, setup, notifyPublish, notifyPersonal, announce, tickReminders, onRoleChosen };
 }

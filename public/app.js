@@ -347,10 +347,11 @@ function confetti() {
 // ───────── состояние и навигация ─────────
 const S = { me: null, tab: null, view: null, overview: null, leagueGroup: null, groupTab: 'members' };
 const STUDENT_TABS = [['home', 'home-smile', 'Путь'], ['league', 'cup-star', 'Лига'], ['stats', 'chart-2', 'Прогресс'], ['profile', 'user-rounded', 'Профиль']];
+const PARENT_TABS = [['phome', 'home-smile', 'Главная'], ['league', 'cup-star', 'Лига'], ['kids', 'users-group-rounded', 'Ученики'], ['pprofile', 'user-rounded', 'Профиль']];
 const ADMIN_TABS = [['dash', 'widget-5', 'Панель'], ['groups', 'users-group-rounded', 'Группы'], ['tests', 'notebook-bookmark', 'Тесты'], ['bot', 'chat-round-dots', 'Бот']];
 
 function renderNav() {
-  const tabs = S.me.isAdmin ? ADMIN_TABS : STUDENT_TABS;
+  const tabs = S.me.isAdmin ? ADMIN_TABS : S.me.isParent ? PARENT_TABS : STUDENT_TABS;
   nav.hidden = false;
   nav.innerHTML = `<div class="in">${tabs.map(([id, icon, t]) => `<button data-tab="${id}" class="${S.tab === id ? 'on' : ''}">${ic(icon)}${t}</button>`).join('')}</div>`;
   $$('[data-tab]', nav).forEach((b) => (b.onclick = () => { haptic('light'); go(b.dataset.tab); }));
@@ -379,7 +380,7 @@ async function route() {
   if (S.view?.type === 'group') return viewGroup(S.view.id);
   if (S.view?.type === 'student') return viewStudent(S.view.id);
   if (S.view?.type === 'league') return viewLeague();
-  const r = { home: tabHome, league: tabLeague, stats: tabStats, profile: tabProfile, dash: tabDash, groups: tabGroups, tests: tabTests, bot: tabBot }[S.tab];
+  const r = { home: tabHome, league: tabLeague, stats: tabStats, profile: tabProfile, dash: tabDash, groups: tabGroups, tests: tabTests, bot: tabBot, phome: tabParentHome, kids: tabKids, pprofile: tabParentProfile }[S.tab];
   await r();
 }
 async function refreshMe() {
@@ -389,6 +390,7 @@ async function refreshMe() {
 
 function topbar(left = '') {
   const m = S.me;
+  if (m.isParent) return parentTop();
   return `<div class="topbar"><div class="row">${left || (m.groups[0] ? `<span class="pill accent">${emo(m.groups[0].emoji)}${esc(m.groups[0].name)}</span>` : '<span class="pill">Без группы</span>')}</div>
     <div class="row" style="gap:6px"><span class="chip ${m.streak ? '' : 'off'}">${emo(E.fire)}${m.streak}</span><span class="chip">${emo(E.bolt)}${m.xp}</span></div></div>`;
 }
@@ -505,7 +507,7 @@ async function tabLeague() {
   const modeSeg = `<div class="seg league-mode">${[['group', 'users-group-rounded', 'В группе'], ['global', 'cup-star', 'Общая лига']].map(([id, icon, t]) => `<button data-mode-l="${id}" class="${S.leagueMode === id ? 'on' : ''}">${ic(icon, 'sm')}${t}</button>`).join('')}</div>`;
   let body;
   if (S.leagueMode === 'global') body = globalLeagueHtml(await api('/league/global'), m.user.id);
-  else if (!m.groups.length) body = emptyState('think', 'Лига группы недоступна', 'Сначала учитель добавит тебя в группу. А пока загляни в общую лигу!');
+  else if (!m.groups.length) body = m.isParent ? emptyState('think', 'Лига группы недоступна', 'Выберите своего ребёнка на главной — и здесь появится лига его группы.') : emptyState('think', 'Лига группы недоступна', 'Сначала учитель добавит тебя в группу. А пока загляни в общую лигу!');
   else {
     S.leagueGroup ||= m.groups[0].id;
     const lb = await api('/leaderboard/' + S.leagueGroup);
@@ -513,12 +515,14 @@ async function tabLeague() {
     body = switcher + leagueHtml(lb, m.user.id);
   }
   app.innerHTML = topbar() + modeSeg + body;
+  const lk = $('[data-look]');
+  if (lk) lk.onclick = () => appearanceSheet(false);
   $$('[data-mode-l]').forEach((b) => (b.onclick = () => { haptic('light'); S.leagueMode = b.dataset.modeL; tabLeague().catch(fail); }));
   $$('[data-g]').forEach((b) => (b.onclick = () => { S.leagueGroup = b.dataset.g; tabLeague().catch(fail); }));
   bindLeagueStudents();
 }
 function bindLeagueStudents() {
-  if (!S.me?.isAdmin) return;
+  if (!S.me?.isAdmin && !S.me?.isParent) return;
   $$('[data-student]').forEach((b) => (b.onclick = () => openView({ type: 'student', id: b.dataset.student, parent: S.view })));
 }
 // Общая лига для учителя (с панели)
@@ -532,11 +536,12 @@ async function viewLeague() {
 // Общая лига: топ-3 на большом пьедестале, остальные списком. Учитель может открыть любого ученика
 function globalLeagueHtml(lb, meId) {
   const rows = lb.rows;
-  const admin = S.me?.isAdmin;
+  const admin = S.me?.isAdmin || S.me?.isParent;
   const tap = (r) => (admin ? `data-student="${esc(r.userId)}"` : '');
+  const kids = new Set(S.me?.childIds || []);
   const champ = (r, place) => {
     if (!r) return '<div class="champ empty"></div>';
-    return `<div class="champ c${place} ${r.userId === meId ? 'me' : ''} ${admin ? 'tap' : ''}" ${tap(r)}>
+    return `<div class="champ c${place} ${r.userId === meId || kids.has(r.userId) ? 'me' : ''} ${admin ? 'tap' : ''}" ${tap(r)}>
       ${place === 1 ? `<div class="rays"></div>${emo(E.crown, { anim: true, cls: 'crown' })}` : ''}
       <div class="ring">${avatar(r)}</div>
       <div class="medal">${emo([E.m1, E.m2, E.m3][place - 1], { anim: true })}</div>
@@ -551,7 +556,7 @@ function globalLeagueHtml(lb, meId) {
     ${rows.length ? `<div class="champs">${champ(rows[1], 2)}${champ(rows[0], 1)}${champ(rows[2], 3)}</div>` : ''}
     <div class="card" style="padding:8px">
       ${rows.length ? '' : '<p class="muted center" style="padding:16px">Пока никто не набрал очков</p>'}
-      ${rows.slice(3).map((r) => `<div class="item ${r.userId === meId ? 'me' : ''} ${admin ? 'tap' : ''}" ${tap(r)}>
+      ${rows.slice(3).map((r) => `<div class="item ${r.userId === meId || kids.has(r.userId) ? 'me' : ''} ${admin ? 'tap' : ''}" ${tap(r)}>
         <div class="rk">${r.rank}</div>${avatar(r)}
         <div class="grow"><b class="ellipsis" style="display:block">${esc(r.name)}${r.userId === meId ? ' (ты)' : ''}</b><div class="small muted ellipsis">${r.group ? esc(r.group) + ' · ' : ''}${plural(r.done, 'тест', 'теста', 'тестов')}${r.streak ? ` · ${emo(E.fire)}${r.streak}` : ''}</div></div>
         <span class="pill gold">${r.xp} XP</span></div>`).join('')}
@@ -570,7 +575,7 @@ function leagueHtml(lb, meId) {
     <div class="card" style="padding:8px">
       <div class="item teacher">${avatar(lb.teacher)}<div class="grow"><b>${esc(lb.teacher.name)}</b><div class="small" style="color:var(--gold-d)">Учитель · ведёт группу</div></div>${emo(E.cap)}</div>
       ${rows.length ? '' : '<p class="muted center" style="padding:16px">Пока никто не решал тесты</p>'}
-      ${rows.map((r, i) => `${i === 3 ? `<div class="zone">${emo(E.sparkles)} зона лидеров ${emo(E.sparkles)}</div>` : ''}<div class="item ${r.userId === meId ? 'me' : ''}" ${S.me.isAdmin ? `data-student="${r.userId}"` : ''}>
+      ${rows.map((r, i) => `${i === 3 ? `<div class="zone">${emo(E.sparkles)} зона лидеров ${emo(E.sparkles)}</div>` : ''}<div class="item ${r.userId === meId || S.me.childIds?.includes(r.userId) ? 'me' : ''} ${S.me.isParent ? 'tap' : ''}" ${S.me.isAdmin || S.me.isParent ? `data-student="${r.userId}"` : ''}>
         <div class="rk">${r.rank <= 3 ? emo([E.m1, E.m2, E.m3][r.rank - 1]) : r.rank}</div>${avatar(r)}
         <div class="grow"><b class="ellipsis" style="display:block">${esc(r.name)}${r.userId === meId ? ' (ты)' : ''}</b><div class="small muted">${plural(r.done, 'тест', 'теста', 'тестов')} · ср. ${pctText(r.avg)}${r.streak ? ` · ${emo(E.fire)}${r.streak}` : ''}</div></div>
         <span class="pill gold">${r.xp} XP</span></div>`).join('')}
@@ -779,6 +784,135 @@ async function tabProfile() {
     }
     else go(what);
   }));
+}
+
+// ═══════════════ РОДИТЕЛЬ ═══════════════
+// Новый пользователь: ученик или родитель (то же спрашивает бот при /start)
+function roleScreen() {
+  nav.hidden = true;
+  app.innerHTML = `<div class="role-pick"><div class="center">${mascot(LOOK.mascot || 'mimi', 'wow', 120)}<h1>Добро пожаловать в Зубрик!</h1><p class="muted">Скажи, кто ты?</p></div>
+    <button class="card tap role-card" data-role="student">${mascot('dino', 'cheer', 84, 'still')}<div class="grow"><b>Я ученик</b><span>Обучалки, тесты, лига и прогресс</span></div>${ic('alt-arrow-right')}</button>
+    <button class="card tap role-card" data-role="parent">${mascot('kapi', 'love', 84, 'still')}<div class="grow"><b>Я родитель</b><span>Прогресс ребёнка, лиги и успехи всего курса</span></div>${ic('alt-arrow-right')}</button></div>`;
+  $$('[data-role]').forEach((b) => (b.onclick = async () => {
+    haptic('medium');
+    $$('[data-role]').forEach((x) => (x.disabled = true));
+    try { S.me = await api('/me/role', { role: b.dataset.role }); await start(); } catch (e) { $$('[data-role]').forEach((x) => (x.disabled = false)); fail(e); }
+  }));
+}
+
+function parentTop() {
+  return `<div class="topbar"><span class="pill accent">${emo('👨‍👩‍👧')}Родитель</span><button class="iconbtn" data-look aria-label="Внешний вид">${ic('pallete-2')}</button></div>`;
+}
+const PARENT_TIPS = [
+  'Здравствуйте! Я слежу за учёбой и всё вам расскажу.',
+  'Маленький шаг каждый день — и знания растут, как бамбук!',
+  'Похвалите ребёнка за старание — это лучшая мотивация.',
+  'Ошибки — это нормально. Главное, что они исправляются!',
+  'Загляните в общую лигу — там видно, кто сегодня в ударе.',
+  'Регулярность важнее скорости. 15 минут в день творят чудеса.',
+  'Спросите ребёнка, что нового он узнал сегодня — ему будет приятно рассказать.',
+  'Хорошая новость: каждый решённый тест приносит очки в лигу!',
+];
+function parentPhrases(kids) {
+  const out = [...PARENT_TIPS];
+  for (const k of kids) {
+    const n = firstName(k.name);
+    if (k.xp) out.push(`У ${n} уже ${k.xp} XP — отличный результат!`);
+    if (k.rank && k.rank <= 3) out.push(`${n} — в тройке лидеров общей лиги! Место: ${k.rank}.`);
+    else if (k.rank) out.push(`${n} — на ${k.rank}-м месте в общей лиге. Вперёд, к вершине!`);
+    if (k.streak >= 2) out.push(`${n} занимается ${k.streak} дн. подряд — так держать!`);
+    if (!k.done) out.push(`У ${n} пока нет решённых тестов. Самое время начать!`);
+    if (k.mistakes) out.push(`Ошибок у ${n} ждут исправления: ${k.mistakes}. Можно разобрать их вместе!`);
+    if (k.avg != null && k.avg >= 80) out.push(`Средний балл ${n} — ${k.avg}%. Это очень круто!`);
+  }
+  return out;
+}
+const kidCard = (k, mine) => `<button class="card tap kid-card" data-student="${esc(k.id)}">
+    <div class="row" style="gap:12px">${avatar(k)}<div class="grow" style="min-width:0"><b class="ellipsis" style="display:block">${esc(k.name)}${mine ? ` <span class="pill accent sm">${emo('💛')}мой ребёнок</span>` : ''}</b>
+      <div class="small muted ellipsis">${k.groups.map((g) => esc(g.name)).join(', ') || 'без группы'}</div></div>${ic('alt-arrow-right')}</div>
+    <div class="kid-stats"><span>${emo(E.bolt)}<b>${k.xp}</b> XP</span><span>${emo(E.trophy)}<b>${k.rank ? '#' + k.rank : '—'}</b></span><span>${emo(E.target)}<b>${pctText(k.avg)}</b></span><span>${emo(E.check)}<b>${k.done}/${k.total}</b></span>${k.streak ? `<span>${emo(E.fire)}<b>${k.streak}</b></span>` : ''}</div></button>`;
+
+async function tabParentHome() {
+  const m = await refreshMe();
+  const phrases = parentPhrases(m.children);
+  let k = Math.floor(Math.random() * phrases.length);
+  app.innerHTML = parentTop() + `<div class="hero"><button class="pmascot" data-poke aria-label="Напарник">${me('talk', 112, 'quiet')}</button><div class="grow"><h1>Здравствуйте, ${esc(firstName(m.user.name))}!</h1><div class="say" data-say></div></div></div>
+    ${sectionTitle('👨‍👩‍👧', 'Мои дети', `<button class="link" data-kids>${ic('pen-2', 'sm')}${m.children.length ? 'Изменить' : 'Выбрать'}</button>`)}
+    ${m.children.length ? `<div class="stack">${m.children.map((c) => kidCard(c, false)).join('')}</div>`
+      : `<div class="card center stack">${me('think', 90)}<p class="muted">Выберите своего ребёнка — и я буду показывать его успехи прямо здесь.</p><button class="btn" data-kids>${ic('user-plus-rounded')}Выбрать ребёнка</button></div>`}
+    <div class="tiles" style="margin-top:16px">
+      <button class="tile tap" data-go="league">${emo(E.trophy, { anim: true })}<div><b>Лига</b><span>общая и групп</span></div></button>
+      <button class="tile tap" data-go="kids">${emo(E.student)}<div><b>${m.totalStudents}</b><span>учеников курса</span></div></button>
+    </div>`;
+  const say = () => speak($('[data-say]'), phrases[k++ % phrases.length], $('.hero .mascot'));
+  say();
+  $('[data-poke]').onclick = () => { haptic('light'); say(); };
+  $$('[data-kids]').forEach((b) => (b.onclick = () => childrenSheet()));
+  $$('[data-go]').forEach((b) => (b.onclick = () => go(b.dataset.go)));
+  $('[data-look]').onclick = () => appearanceSheet(false);
+  bindLeagueStudents();
+}
+
+async function tabKids() {
+  const [list] = await Promise.all([api('/parent/students'), refreshMe()]);
+  const mine = new Set(S.me.childIds);
+  const render = (q) => list.filter((u) => !q || u.name.toLowerCase().includes(q)).map((u) => kidCard(u, mine.has(u.id))).join('') || '<p class="muted center small">Никого не нашли</p>';
+  app.innerHTML = parentTop() + `<div class="center" style="margin-top:10px">${emo(E.student, { cls: 'big' })}<h1>Ученики курса</h1><p class="muted">${plural(list.length, 'ученик', 'ученика', 'учеников')} · нажмите, чтобы увидеть прогресс</p></div>
+    ${list.length > 5 ? '<input class="input" data-q placeholder="Поиск по имени" style="margin-top:14px">' : ''}
+    <div class="stack" data-list style="margin-top:14px">${render('')}</div>`;
+  const q = $('[data-q]');
+  if (q) q.oninput = () => { $('[data-list]').innerHTML = render(q.value.trim().toLowerCase()); bindLeagueStudents(); };
+  $('[data-look]').onclick = () => appearanceSheet(false);
+  bindLeagueStudents();
+}
+
+async function tabParentProfile() {
+  const m = await refreshMe();
+  const acc = accOf(LOOK.accent);
+  const row = (attr, icon, title, sub, right = '') => `<button class="mrow" ${attr}>${emo(icon)}<div class="grow"><b>${title}</b>${sub ? `<span>${sub}</span>` : ''}</div>${right}<span class="faint">${ic('alt-arrow-right')}</span></button>`;
+  app.innerHTML = parentTop() + `<div class="pcard"><div class="pcard-top"><button class="pmascot" data-poke aria-label="Напарник">${me('peace', 104)}</button>
+      <div class="grow"><h1 class="ellipsis">${esc(m.user.name)}</h1><p class="muted small">${emo('👨‍👩‍👧')} Родитель</p>
+      <div class="tags" style="margin-top:8px">${m.children.map((c) => `<span class="pill accent">${emo('💛')}${esc(firstName(c.name))}</span>`).join('') || '<span class="pill">Ребёнок не выбран</span>'}</div></div></div></div>
+    <div class="menu" style="margin-top:14px">
+      ${row('data-open="look"', E.palette, 'Внешний вид', `${esc(tr(MASCOTS[LOOK.mascot]?.name || ''))} · ${tr(acc.name)}`, `<span class="mrow-prev">${mascot(LOOK.mascot, 'happy', 40, 'still', true)}<i style="background:${acc.c}"></i></span>`)}
+      ${row('data-open="kids"', '👨‍👩‍👧', 'Мои дети', m.children.map((c) => esc(firstName(c.name))).join(', ') || 'Выберите ребёнка')}
+      ${row('data-open="league"', E.trophy, 'Лига', 'Общая лига и лига группы')}
+      ${!IN_TG && SESSION ? row('data-open="logout"', '🚪', 'Выйти') : ''}
+    </div>
+    <p class="center faint small" style="margin-top:18px">ID: ${esc(m.user.id)}</p>`;
+  const poke = $('[data-poke]');
+  const reactions = ['cheer', 'wow', 'love', 'peace', 'happy'];
+  let k = 0;
+  poke.onclick = () => { haptic('light'); poke.innerHTML = me(reactions[k++ % reactions.length], 104); };
+  $('[data-look]').onclick = () => appearanceSheet(false);
+  $$('[data-open]').forEach((b) => (b.onclick = () => {
+    haptic('light');
+    const what = b.dataset.open;
+    if (what === 'look') appearanceSheet(false);
+    else if (what === 'kids') childrenSheet();
+    else if (what === 'logout') { api('/auth/logout', {}).catch(() => {}); setSession(''); loginScreen(); }
+    else go(what);
+  }));
+}
+
+// Выбор своих детей (можно несколько)
+async function childrenSheet() {
+  const list = await api('/parent/students').catch(fail);
+  if (!list) return;
+  const picked = new Set(S.me.childIds || []);
+  const render = (q) => list.filter((u) => !q || u.name.toLowerCase().includes(q)).map((u) => `<button class="list-check ${picked.has(u.id) ? 'on' : ''}" data-c="${esc(u.id)}">${avatar(u)}<div class="grow"><b>${esc(u.name)}</b><div class="small muted">${u.groups.map((g) => esc(g.name)).join(', ') || 'без группы'}</div></div></button>`).join('') || '<p class="muted center small">Никого не нашли</p>';
+  openSheet(`<div class="stack"><h2>Мои дети</h2><p class="muted small">Отметьте своего ребёнка — можно несколько.</p>
+      ${list.length > 6 ? '<input class="input" data-q placeholder="Поиск по имени">' : ''}
+      <div data-list style="max-height:50vh;overflow:auto">${render('')}</div>
+      <button class="btn block" data-save>${ic('check-circle')}Сохранить</button></div>`, (el, close) => {
+    const bind = () => $$('[data-c]', el).forEach((b) => (b.onclick = () => { haptic('light'); const id = b.dataset.c; picked.has(id) ? picked.delete(id) : picked.add(id); b.classList.toggle('on', picked.has(id)); }));
+    bind();
+    const q = $('[data-q]', el);
+    if (q) q.oninput = () => { $('[data-list]', el).innerHTML = render(q.value.trim().toLowerCase()); bind(); };
+    $('[data-save]', el).onclick = async () => {
+      try { await api('/parent/children', { ids: [...picked] }); haptic('success'); toast('Сохранено'); close(); route().catch(fail); } catch (e) { fail(e); }
+    };
+  });
 }
 
 // ═══════════════ ПРОХОЖДЕНИЕ ТЕСТА ═══════════════
@@ -1262,16 +1396,17 @@ function addMembersSheet(g) {
 }
 
 async function viewStudent(uid) {
-  const st = await api('/admin/students/' + uid);
+  const st = await api((S.me.isParent ? '/parent/students/' : '/admin/students/') + uid);
   const u = st.user;
   app.innerHTML = `<div class="topbar"><button class="back" data-back>${ic('alt-arrow-left')}Назад</button><span class="pill">ID ${esc(u?.id || uid)}</span></div>
     <div class="row" style="margin-top:8px;gap:14px">${avatar(u, 'lg')}<div class="grow"><h1>${esc(u?.name || 'Ученик')}</h1>
       <p class="muted small">${u?.username ? '@' + esc(u.username) + ' · ' : ''}${st.groups.map((g) => esc(g.name)).join(', ') || 'без группы'}</p>
       <div class="tags" style="margin-top:6px">${st.achievements.filter((a) => a.got).map((a) => `<span title="${esc(a.title)}">${emo(a.icon)}</span>`).join('')}</div></div></div>
     ${statsHtml(st, { self: false })}
-    <div style="margin-top:16px"><button class="btn ghost block" data-assign="${esc(uid)}">${ic('user-plus-rounded')}Добавить в группу</button></div>`;
+    ${S.me.isParent ? '' : `<div style="margin-top:16px"><button class="btn ghost block" data-assign="${esc(uid)}">${ic('user-plus-rounded')}Добавить в группу</button></div>`}`;
   $('[data-back]').onclick = back;
-  $('[data-assign]').onclick = async () => { if (!S.overview) await loadOverview(); assignSheet(uid); };
+  const asg = $('[data-assign]');
+  if (asg) asg.onclick = async () => { if (!S.overview) await loadOverview(); assignSheet(uid); };
 }
 
 const TYPE_LABEL = { choice: 'выбор', truefalse: 'верно/неверно', input: 'ввод', order: 'порядок', match: 'пары' };
@@ -1525,7 +1660,8 @@ async function start() {
     const p = S.me.user.prefs;
     if (p) applyLook(p);
     if (!p?.lang) savePrefs({ lang: LOOK.lang });
-    S.tab = S.me.isAdmin ? 'dash' : 'home';
+    if (S.me.needRole) return roleScreen();
+    S.tab = S.me.isAdmin ? 'dash' : S.me.isParent ? 'phome' : 'home';
     renderNav();
     await route();
     if (!S.me.isAdmin && !p?.mascot) setTimeout(() => appearanceSheet(true), 400);
