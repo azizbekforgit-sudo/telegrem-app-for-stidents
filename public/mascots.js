@@ -15,11 +15,13 @@ export const MASCOTS = {
   boo: { name: 'Бу', about: 'Призрак в капюшоне. Звонит спросить: «Ну что, решил тест?»', color: '#3b3644' },
   ano: { name: 'Ано', about: 'Хакер в маске. Взламывает любые задачи — честно', color: '#2b2a33' },
   zip: { name: 'Зип', about: 'Супербыстрый. Решает тесты быстрее молнии', color: '#e8322f' },
+  ugo: { name: 'Уголёк', about: 'Чёрный котик. Замечает ошибки даже в темноте', color: '#ff9a1f' },
 };
 
 let uid = 0;
 
-const INK = '#3b2a35';
+const DARK_INK = '#3b2a35';
+let INK = DARK_INK; // меняется на время рисования лица тёмного персонажа (f.ink)
 
 // ───────── лицо ─────────
 function eye(kind, x, y, s, side) {
@@ -50,6 +52,13 @@ function eye(kind, x, y, s, side) {
     }
     case 'wink':
       return `<path d="M${x - 8 * k} ${y + 1 * k} Q${x} ${y - 6 * k} ${x + 8 * k} ${y + 1 * k}" stroke="${INK}" stroke-width="${4.6 * k}" fill="none" stroke-linecap="round"/>`;
+    case 'orb': { // большие круглые глаза с оранжевым ободком (Уголёк)
+      const r = 15.5 * k;
+      const gid = 'o' + ++uid;
+      return `<defs><radialGradient id="${gid}" cx="50%" cy="50%" r="50%"><stop offset=".72" stop-color="#ffd23d"/><stop offset="1" stop-color="#ff7a00"/></radialGradient></defs>
+        <circle cx="${x}" cy="${y}" r="${r + 4 * k}" fill="url(#${gid})"/><circle cx="${x}" cy="${y}" r="${r}" fill="#0b0b0f"/>
+        <circle cx="${x + 6 * k}" cy="${y - 7 * k}" r="${4 * k}" fill="#fff"/><circle cx="${x - 5 * k}" cy="${y + 6 * k}" r="${1.5 * k}" fill="#fff" opacity=".7"/>`;
+    }
     case 'look': // смотрит вверх-вбок
     case 'sad':
     case 'open':
@@ -143,6 +152,10 @@ function fx(kind, b) {
 
 // лицо целиком: глаза, румянец, рот, брови
 function face(f, emo, pal) {
+  INK = f.ink || DARK_INK;
+  try { return faceInner(f, emo, pal); } finally { INK = DARK_INK; }
+}
+function faceInner(f, emo, pal) {
   const e = FACE[emo];
   const { x, y, ex, ey, my, s } = f;
   let out = '';
@@ -151,16 +164,17 @@ function face(f, emo, pal) {
   let rightEye = emo === 'peace' ? 'wink' : e.r;
   let leftEye = emo === 'peace' ? 'open' : e.l;
   if ((emo === 'happy' || emo === 'peace' || emo === 'talk') && f.idleEyes) leftEye = rightEye = f.idleEyes;
+  if (f.openEye) { if (leftEye === 'open' || leftEye === 'look') leftEye = f.openEye; if (rightEye === 'open' || rightEye === 'look') rightEye = f.openEye; }
   out += eye(leftEye, x - ex, ey, s, -1) + eye(rightEye, x + ex, ey, s, 1);
   if (e.brows === 'sad') {
     out += `<path d="M${x - ex - 9 * s} ${ey - 15 * s} L${x - ex + 6 * s} ${ey - 19 * s}" stroke="${INK}" stroke-width="${3.2 * s}" stroke-linecap="round"/>`;
     out += `<path d="M${x + ex + 9 * s} ${ey - 15 * s} L${x + ex - 6 * s} ${ey - 19 * s}" stroke="${INK}" stroke-width="${3.2 * s}" stroke-linecap="round"/>`;
   }
   if (e.glasses) {
-    const r = 14 * s;
-    out += `<g class="glasses"><circle cx="${x - ex}" cy="${ey}" r="${r}" fill="#bfe6ff" fill-opacity=".25" stroke="#3b2a35" stroke-width="${3.2 * s}"/>
-      <circle cx="${x + ex}" cy="${ey}" r="${r}" fill="#bfe6ff" fill-opacity=".25" stroke="#3b2a35" stroke-width="${3.2 * s}"/>
-      <path d="M${x - ex + r} ${ey - 2 * s} Q${x} ${ey - 8 * s} ${x + ex - r} ${ey - 2 * s}" stroke="#3b2a35" stroke-width="${3 * s}" fill="none"/>
+    const r = (f.glassR || 14) * s;
+    out += `<g class="glasses"><circle cx="${x - ex}" cy="${ey}" r="${r}" fill="#bfe6ff" fill-opacity=".25" stroke="${INK}" stroke-width="${3.2 * s}"/>
+      <circle cx="${x + ex}" cy="${ey}" r="${r}" fill="#bfe6ff" fill-opacity=".25" stroke="${INK}" stroke-width="${3.2 * s}"/>
+      <path d="M${x - ex + r} ${ey - 2 * s} Q${x} ${ey - 8 * s} ${x + ex - r} ${ey - 2 * s}" stroke="${INK}" stroke-width="${3 * s}" fill="none"/>
       <path d="M${x - ex - r * 0.5} ${ey - r * 0.6} L${x - ex - r * 0.1} ${ey - r * 0.9}" stroke="#fff" stroke-width="${2.4 * s}" stroke-linecap="round"/></g>`;
   }
   let m = e.m;
@@ -329,7 +343,24 @@ BODIES.zip = function zip(id) {
   return { pal: { blush: '#ff9c8a', tongue: '#ff8aa8' }, back: speed + feet, body: body + shine(68, 60, 18, 9) + face, top: extras, f, a, fill: '#e8322f', st, b: { cx: 100, top: 28 } };
 };
 
-const GRAD = { mimi: ['#ffffff', '#f3e6ef'], kapi: ['#e6aa74', '#c07b48'], dino: ['#8ff0b4', '#45c27b'], axi: ['#ffd6e6', '#ff9cc4'], boo: ['#56505f', '#17141c'], ano: ['#4a4952', '#141319'], zip: ['#ff6b5e', '#c41e1e'] };
+BODIES.ugo = function ugo(id) {
+  const st = '#000000';
+  const fill = `url(#${id}b)`;
+  // хвост завитком слева
+  const tail = `<path d="M52 170 C22 172 10 150 18 128 C24 112 40 108 44 120 C47 130 36 132 34 142 C32 154 44 160 58 156 Z" fill="${fill}" stroke="${st}" stroke-width="3" stroke-linejoin="round"/>`;
+  const ears = `<path d="M50 74 C44 50 46 28 54 22 C64 20 84 40 92 52 Z" fill="${fill}" stroke="${st}" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M150 74 C156 50 154 28 146 22 C136 20 116 40 108 52 Z" fill="${fill}" stroke="${st}" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M57 58 C54 46 55 36 59 33 C65 33 75 43 80 50 Z" fill="#f2876f"/>
+    <path d="M143 58 C146 46 145 36 141 33 C135 33 125 43 120 50 Z" fill="#f2876f"/>`;
+  const body = `<path d="M100 40 C146 40 168 66 168 100 C168 118 162 128 160 138 C166 156 160 180 128 180 L72 180 C40 180 34 156 40 138 C38 128 32 118 32 100 C32 66 54 40 100 40Z" fill="${fill}" stroke="${st}" stroke-width="3"/>`;
+  const nose = `<path d="M95 116 L105 116 L100 122Z" fill="#ff8fa0" stroke="#e86f82" stroke-width="1.2" stroke-linejoin="round"/>`;
+  const feet = `<ellipse cx="78" cy="181" rx="15" ry="8" fill="#1d1c22" stroke="${st}" stroke-width="3"/><ellipse cx="122" cy="181" rx="15" ry="8" fill="#1d1c22" stroke="${st}" stroke-width="3"/>`;
+  const f = { x: 100, y: 96, ex: 31, ey: 92, my: 128, s: 1, glassR: 21, blurId: id + 'k', ink: '#ffa62b', openEye: 'orb', idleMouth: 'cat' };
+  const a = { l: [44, 158], r: [156, 158], chin: [86, 150] };
+  return { pal: { blush: '#ff6f8f', tongue: '#ff6f8f' }, back: tail + ears + feet, body: body + `<ellipse cx="68" cy="60" rx="14" ry="6" transform="rotate(-25 68 60)" fill="#fff" opacity=".22"/>`, nose, f, a, fill: '#1d1c22', st, b: { cx: 100, top: 28 } };
+};
+
+const GRAD = { mimi: ['#ffffff', '#f3e6ef'], kapi: ['#e6aa74', '#c07b48'], dino: ['#8ff0b4', '#45c27b'], axi: ['#ffd6e6', '#ff9cc4'], boo: ['#56505f', '#17141c'], ano: ['#4a4952', '#141319'], zip: ['#ff6b5e', '#c41e1e'], ugo: ['#3a3842', '#0a0a0d'] };
 
 export function mascot(id = 'mimi', emo = 'happy', size = 120, cls = '', crop = false) {
   if (!BODIES[id]) id = 'mimi';
