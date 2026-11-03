@@ -1,0 +1,288 @@
+{
+  "id": "exam-01-16",
+  "kind": "exam",
+  "title": "Итоговый тест: уроки 1–16",
+  "emoji": "🏆",
+  "description": "20 сложных вопросов по HTML, CSS и JavaScript",
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "Каскад и специфичность",
+      "prompt": "Какой цвет будет у текста?",
+      "code": "p { color: blue; }\n.box p { color: red; }\n#main p { color: green; }\n\n<div id=\"main\" class=\"box\"><p>Текст</p></div>",
+      "options": [
+        "blue",
+        "red",
+        "green",
+        "чёрный"
+      ],
+      "answer": 2,
+      "explain": "Id весит больше класса, класс больше тега: #main p побеждает .box p и p."
+    },
+    {
+      "type": "choice",
+      "topic": "Блочная модель",
+      "prompt": "У блока box-sizing по умолчанию (content-box). Какова полная ширина коробки на экране?",
+      "code": ".card {\n  width: 200px;\n  padding: 20px;\n  border: 2px solid black;\n}",
+      "options": [
+        "200px",
+        "240px",
+        "244px",
+        "284px"
+      ],
+      "answer": 2,
+      "explain": "200 + 20 + 20 + 2 + 2 = 244px. При content-box padding и border добавляются к width."
+    },
+    {
+      "type": "choice",
+      "topic": "Блочная модель",
+      "prompt": "Та же карточка, но в CSS есть правило * { box-sizing: border-box; }. Какова полная ширина коробки?",
+      "code": "* { box-sizing: border-box; }\n.card {\n  width: 200px;\n  padding: 20px;\n  border: 2px solid black;\n}",
+      "options": [
+        "244px",
+        "240px",
+        "204px",
+        "200px"
+      ],
+      "answer": 3,
+      "explain": "При border-box width включает padding и border, поэтому полная ширина 200px."
+    },
+    {
+      "type": "choice",
+      "topic": "Блочная модель",
+      "prompt": "Что означает запись margin: 10px 20px 30px;? Какой отступ снизу (bottom)?",
+      "options": [
+        "10px",
+        "20px",
+        "30px",
+        "0px"
+      ],
+      "answer": 2,
+      "explain": "Три значения: верх, лево-право, низ. Bottom = 30px."
+    },
+    {
+      "type": "choice",
+      "topic": "Flexbox",
+      "prompt": "В контейнере три блока. Последнему задано margin-top: auto. Где окажется последний блок?",
+      "code": ".box {\n  display: flex;\n  flex-direction: column;\n  height: 500px;\n}\n.last { margin-top: auto; }",
+      "options": [
+        "В начале, сразу под первым",
+        "По центру",
+        "Прижат к низу контейнера",
+        "Уедет за пределы экрана"
+      ],
+      "answer": 2,
+      "explain": "margin-top: auto забирает всё свободное место над элементом и прижимает его вниз."
+    },
+    {
+      "type": "choice",
+      "topic": "Flexbox",
+      "prompt": "Какая ширина у .a и .b?",
+      "code": ".box { display: flex; width: 300px; } /* без gap */\n.a { flex: 1; }\n.b { flex: 2; }",
+      "options": [
+        "150px и 150px",
+        "200px и 100px",
+        "100px и 200px",
+        "300px и 0px"
+      ],
+      "answer": 2,
+      "explain": "Доли 1 + 2 = 3 части по 100px: .a = 100px, .b = 200px."
+    },
+    {
+      "type": "choice",
+      "topic": "Grid",
+      "prompt": "Какова ширина одной колонки?",
+      "code": ".grid {\n  display: grid;\n  width: 320px;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 10px;\n}",
+      "options": [
+        "100px",
+        "106.67px",
+        "110px",
+        "96px"
+      ],
+      "answer": 0,
+      "explain": "320 − 2 × 10 (gap) = 300; 300 / 3 = 100px."
+    },
+    {
+      "type": "choice",
+      "topic": "Grid",
+      "prompt": "Контейнер шириной 1000px. Какова ширина колонки 1fr?",
+      "code": "grid-template-columns: 260px 1fr;\ngap: 24px;",
+      "options": [
+        "740px",
+        "716px",
+        "724px",
+        "760px"
+      ],
+      "answer": 1,
+      "explain": "1000 − 260 − 24 = 716px."
+    },
+    {
+      "type": "choice",
+      "topic": "Медиазапросы",
+      "prompt": "Ширина окна браузера ровно 600px. Сработает ли это правило?",
+      "code": "@media (max-width: 600px) { ... }",
+      "options": [
+        "Да, max-width включает значение 600px",
+        "Нет, только при ширине меньше 600px",
+        "Да, но только при 599px",
+        "Нет, медиазапрос не работает с px"
+      ],
+      "answer": 0,
+      "explain": "max-width: 600px включает 600px."
+    },
+    {
+      "type": "choice",
+      "topic": "Медиазапросы",
+      "prompt": "Какой padding у .header при ширине окна 400px?",
+      "code": "@media (max-width: 600px) {\n  .header { padding: 12px; }\n}\n.header { padding: 24px; }",
+      "options": [
+        "12px",
+        "24px",
+        "0px",
+        "36px"
+      ],
+      "answer": 1,
+      "explain": "Одинаковая специфичность — побеждает правило, написанное позже. Здесь это .header { padding: 24px }."
+    },
+    {
+      "type": "choice",
+      "topic": "Селекторы и элементы",
+      "prompt": "Что произойдёт с шириной span?",
+      "code": "span { width: 100px; }",
+      "options": [
+        "Станет 100px",
+        "Будет проигнорировано: span строчный (inline)",
+        "Появится ошибка в консоли",
+        "Станет блочным и 100px"
+      ],
+      "answer": 1,
+      "explain": "У строчных элементов width не работает; нужен display: inline-block или block."
+    },
+    {
+      "type": "choice",
+      "topic": "Селекторы и элементы",
+      "prompt": "Список из 6 пунктов. Какие пункты станут красными?",
+      "code": "li:nth-child(odd) { color: red; }",
+      "options": [
+        "2, 4, 6",
+        "1, 2, 3",
+        "3, 4, 5",
+        "1, 3, 5"
+      ],
+      "answer": 3,
+      "explain": "Нумерация с 1: odd — 1, 3, 5."
+    },
+    {
+      "type": "choice",
+      "topic": "JS: типы и сравнения",
+      "prompt": "Что выведется?",
+      "code": "console.log(typeof null);",
+      "options": [
+        "null",
+        "object",
+        "undefined",
+        "boolean"
+      ],
+      "answer": 1,
+      "explain": "Историческая ошибка JavaScript: typeof null возвращает \"object\"."
+    },
+    {
+      "type": "choice",
+      "topic": "JS: типы и сравнения",
+      "prompt": "Что выведется?",
+      "code": "console.log(\"5\" == 5, \"5\" === 5);",
+      "options": [
+        "false true",
+        "true true",
+        "true false",
+        "false false"
+      ],
+      "answer": 2,
+      "explain": "== приводит типы, === сравнивает и значение, и тип."
+    },
+    {
+      "type": "choice",
+      "topic": "JS: типы и сравнения",
+      "prompt": "Что выведется?",
+      "code": "console.log(0.1 + 0.2 === 0.3);",
+      "options": [
+        "true",
+        "false",
+        "undefined",
+        "Ошибка"
+      ],
+      "answer": 1,
+      "explain": "0.1 + 0.2 = 0.30000000000000004, поэтому сравнение даёт false."
+    },
+    {
+      "type": "choice",
+      "topic": "JS: массивы и функции",
+      "prompt": "Что выведется?",
+      "code": "const arr = [1, 2];\narr.push(3);\nconsole.log(arr);",
+      "options": [
+        "[1, 2]",
+        "[1, 2, 3]",
+        "Ошибка, const нельзя менять",
+        "undefined"
+      ],
+      "answer": 1,
+      "explain": "const запрещает переназначение, а содержимое массива можно менять."
+    },
+    {
+      "type": "choice",
+      "topic": "JS: типы и сравнения",
+      "prompt": "Что выведется?",
+      "code": "console.log(-5 % 2);",
+      "options": [
+        "1",
+        "-1",
+        "0",
+        "2"
+      ],
+      "answer": 1,
+      "explain": "Знак остатка совпадает со знаком делимого: −5 = 2 × (−2) + (−1)."
+    },
+    {
+      "type": "choice",
+      "topic": "JS: массивы и функции",
+      "prompt": "Что выведется?",
+      "code": "const f = () => { name: \"Аня\" };\nconsole.log(f());",
+      "options": [
+        "{ name: \"Аня\" }",
+        "Аня",
+        "undefined",
+        "Ошибка"
+      ],
+      "answer": 2,
+      "explain": "Фигурные скобки после => — это блок кода. name становится меткой, функция ничего не возвращает."
+    },
+    {
+      "type": "choice",
+      "topic": "JS: массивы и функции",
+      "prompt": "Что выведется?",
+      "code": "console.log([1, 2, 3].map(x => x * 2).filter(x => x > 2));",
+      "options": [
+        "[2, 4, 6]",
+        "[4, 6]",
+        "[6]",
+        "[1, 2, 3]"
+      ],
+      "answer": 1,
+      "explain": "map даёт [2, 4, 6], filter оставляет [4, 6]."
+    },
+    {
+      "type": "choice",
+      "topic": "JS: массивы и функции",
+      "prompt": "Что выведется?",
+      "code": "console.log([1, 2, 3].find(x => x > 5));",
+      "options": [
+        "[]",
+        "0",
+        "undefined",
+        "null"
+      ],
+      "answer": 2,
+      "explain": "find возвращает undefined, если ничего не нашёл. filter вернул бы []."
+    }
+  ]
+}

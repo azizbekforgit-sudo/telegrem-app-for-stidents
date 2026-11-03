@@ -185,6 +185,7 @@ export function createLogic(store, { adminIds }) {
       prev.learn = lesson.learn || prev.learn || null;
       prev.personal = lesson.personal || prev.personal || null;
       prev.tr = lesson.tr || prev.tr || null;
+      prev.kind = lesson.kind || prev.kind || 'lesson';
       store.save();
       return prev;
     }
@@ -196,6 +197,7 @@ export function createLogic(store, { adminIds }) {
       description: lesson.description || '',
       topics,
       questions: lesson.questions,
+      kind: lesson.kind || 'lesson',
       learn: lesson.learn || null,
       personal: lesson.personal || null,
       tr: lesson.tr || null,
@@ -813,7 +815,7 @@ export function createLogic(store, { adminIds }) {
     const path = pubsForUser(uid).map((p) => {
       const l = loc(S.lessons[p.lessonId], langOf(uid));
       const b = best(uid, p.id);
-      return { pubId: p.id, title: l.title, emoji: l.emoji, description: l.description, questions: l.questions.length, topics: l.topics, groupId: p.groupId, groupName: p.userId ? 'Лично' : S.groups[p.groupId].name, personal: Boolean(p.userId), hasLearn: Boolean(l.learn) && !p.noLearn, learnDone: learnDone(uid, p.id), learnSections: l.learn?.sections.length || 0, publishedAt: p.publishedAt, best: b ? b.pct : null, stars: b ? (b.pct === 100 ? 3 : b.pct >= 80 ? 2 : b.pct >= 50 ? 1 : 0) : null };
+      return { pubId: p.id, title: l.title, emoji: l.emoji, description: l.description, questions: l.questions.length, topics: l.topics, groupId: p.groupId, groupName: p.userId ? 'Лично' : S.groups[p.groupId].name, personal: Boolean(p.userId), exam: l.kind === 'exam', hasLearn: Boolean(l.learn) && !p.noLearn, learnDone: learnDone(uid, p.id), learnSections: l.learn?.sections.length || 0, publishedAt: p.publishedAt, best: b ? b.pct : null, stars: b ? (b.pct === 100 ? 3 : b.pct >= 80 ? 2 : b.pct >= 50 ? 1 : 0) : null };
     });
     return {
       user: publicUser(u),
@@ -844,6 +846,7 @@ export function createLogic(store, { adminIds }) {
           return { pubId: p.id, userId: p.userId, name: name(S.users[p.userId]), best: b ? b.pct : null, noLearn: Boolean(p.noLearn), learnDone: learnDone(p.userId, p.id) };
         }),
         hasLearn: Boolean(l.learn),
+        exam: l.kind === 'exam',
         learnSections: l.learn?.sections.length || 0,
       }));
     const allStudents = students().map((u) => ({ ...publicUser(u), groups: userGroups(u.id).map((g) => g.id) }));

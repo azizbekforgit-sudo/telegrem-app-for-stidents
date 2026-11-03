@@ -570,3 +570,7 @@ code { background: var(--card-2); padding: 1px 6px; border-radius: 7px; font-siz
 .tile.tap { cursor: pointer; font: inherit; color: inherit; text-align: left; }
 .pill.sm { font-size: 11px; padding: 2px 8px; vertical-align: middle; }
 .hero .pmascot { background: none; border: none; padding: 0; cursor: pointer; }
+
+/* итоговый тест (kind: exam) на пути */
+.node.exam:not(.done):not(.weak):not(.locked) { background: radial-gradient(circle at 35% 28%, #d9c4ff, #8a5cf6 60%); box-shadow: 0 8px 0 #6b3fd4, 0 16px 20px -10px #6b3fd4; }
+.node.exam { width: 88px; height: 82px; }

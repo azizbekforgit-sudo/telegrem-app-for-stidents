@@ -36,6 +36,7 @@ const PHRASES = [
   ['Пройти ещё раз', 'Try again', 'Yana topshirish'], ['Лига недоступна', 'League unavailable', 'Liga mavjud emas'],
   ['Сначала учитель добавит тебя в группу.', 'First the teacher will add you to a group.', "Avval ustoz seni guruhga qo'shadi."],
   ['Свой цвет', 'Custom color', "O'z rangim"],
+  ['ИТОГОВЫЙ ТЕСТ', 'FINAL TEST', 'YAKUNIY TEST'], ['📝 тест', '📝 test', '📝 test'], ['тест без обучалки', 'test without a lesson', 'darsliksiz test'],
   ['Главная', 'Home', 'Bosh sahifa'], ['Ученики', 'Students', "O'quvchilar"], ['Родитель', 'Parent', 'Ota-ona'], ['Мои дети', 'My children', 'Farzandlarim'],
   ['Добро пожаловать в Зубрик!', 'Welcome to Zubrik!', 'Zubrikka xush kelibsiz!'], ['Скажи, кто ты?', 'Tell us, who are you?', 'Ayt-chi, sen kimsan?'],
   ['Я ученик', 'I am a student', "Men o'quvchiman"], ['Я родитель', 'I am a parent', 'Men ota-onaman'],

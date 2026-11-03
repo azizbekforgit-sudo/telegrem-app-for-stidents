@@ -449,16 +449,16 @@ const OFFS = [0, 48, 76, 48, 0, -48, -76, -48];
 function pathNodes(p, k, todo) {
   let out = '';
   const isCur = (step) => todo && p.pubId === todo.pubId && step === (p.hasLearn && !p.learnDone ? 'learn' : 'test');
-  const node = (idx, step, inner, cls, attr, label) => `<div class="pnode ${isCur(step) && idx > 0 ? 'has-bubble' : ''}" style="transform:translateX(${OFFS[idx % OFFS.length]}px)">${isCur(step) ? `<div class="bubble">${step === 'learn' ? 'УЧИМСЯ' : 'СТАРТ'}</div>` : ''}
+  const node = (idx, step, inner, cls, attr, label) => `<div class="pnode ${isCur(step) && idx > 0 ? 'has-bubble' : ''}" style="transform:translateX(${OFFS[idx % OFFS.length]}px)">${isCur(step) ? `<div class="bubble">${step === 'learn' ? 'УЧИМСЯ' : p.exam ? 'ИТОГОВЫЙ ТЕСТ' : 'СТАРТ'}</div>` : ''}
     <button class="node ${cls} ${isCur(step) ? 'cur' : ''}" ${attr} aria-label="${esc(p.title)}">${inner}</button>${label}</div>`;
   if (p.hasLearn) {
     out += node(k, 'learn', emo(p.learnDone ? '✅' : '📖'), p.learnDone ? 'learned' : 'learn', `data-learn="${p.pubId}"`, `<div class="lbl"><b>Обучалка</b><br>${plural(p.learnSections, 'раздел', 'раздела', 'разделов')}</div>`);
     k++;
   }
   const locked = p.hasLearn && !p.learnDone;
-  const cls = locked ? 'locked' : p.best == null ? '' : p.best < 50 ? 'weak' : 'done';
+  const cls = (locked ? 'locked' : p.best == null ? '' : p.best < 50 ? 'weak' : 'done') + (p.exam ? ' exam' : '');
   const stars = p.stars != null ? `<div class="stars">${[0, 1, 2].map((s) => emo(E.star, { cls: s < p.stars ? '' : 'off' })).join('')}</div>` : '';
-  out += node(k, 'test', locked ? ic('lock-keyhole', 'lg') : emo(p.best === 100 ? E.crown : p.emoji), cls, `data-pub="${p.pubId}"`, `${stars}<div class="lbl"><b>${esc(p.title)}</b>${p.best != null ? `<br>${p.best}%` : locked ? '<br>после обучалки' : ''}</div>`);
+  out += node(k, 'test', locked ? ic('lock-keyhole', 'lg') : emo(p.best === 100 ? E.crown : p.emoji), cls, `data-pub="${p.pubId}"`, `${stars}<div class="lbl">${p.exam ? '<span class="pill gold sm">📝 тест</span><br>' : ''}<b>${esc(p.title)}</b>${p.best != null ? `<br>${p.best}%` : locked ? '<br>после обучалки' : ''}</div>`);
   return out;
 }
 
@@ -1432,7 +1432,7 @@ function lessonCardHtml(l) {
   return `<div class="card">
     <div class="row" style="align-items:flex-start;gap:12px"><div style="font-size:40px;line-height:1">${emo(l.emoji, { cls: 'lg' })}</div><div class="grow"><h3>${esc(l.title)}</h3>
       ${l.description ? `<p class="small muted" style="margin-top:2px">${esc(l.description)}</p>` : ''}
-      <div class="tags" style="margin-top:8px">${l.hasLearn ? `<span class="pill accent">${emo('📖')}обучалка · ${l.learnSections}</span>` : ''}<span class="pill accent">${emo(E.puzzle)}${l.questions}</span>${l.types.map((t) => `<span class="pill">${TYPE_LABEL[t] || t}</span>`).join('')}</div></div>
+      <div class="tags" style="margin-top:8px">${l.exam ? `<span class="pill gold">${emo('📝')}тест без обучалки</span>` : ''}${l.hasLearn ? `<span class="pill accent">${emo('📖')}обучалка · ${l.learnSections}</span>` : ''}<span class="pill accent">${emo(E.puzzle)}${l.questions}</span>${l.types.map((t) => `<span class="pill">${TYPE_LABEL[t] || t}</span>`).join('')}</div></div>
       ${l.sentTo.length || l.personalFor.length ? '' : '<span class="pill gold">черновик</span>'}</div>
     ${l.topics.length ? `<p class="small muted" style="margin-top:10px">Темы: ${l.topics.map(esc).join(' · ')}</p>` : ''}
     ${l.sentTo.length ? `<div style="margin-top:12px">${l.sentTo.map((s) => `<button class="list-check" data-pubinfo="${s.pubId}">${ic('plain-2', 'sm')}<div class="grow"><b>${esc(s.groupName)}</b><div class="small muted">${s.learned != null ? `обучалку ${s.learned}/${s.size} · ` : ''}тест ${s.done}/${s.size} · ${ago(s.publishedAt)}</div></div>${pctPill(s.avg)}</button>`).join('')}</div>` : ''}
