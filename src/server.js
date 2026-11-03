@@ -220,7 +220,11 @@ if (useWebhook) app.post(hookPath, webhookCallback(tg.bot, 'express'));
 
 // 3D-эмодзи не меняются — пусть кэшируются надолго
 for (const dir of ['e', 'ea']) app.use('/' + dir, express.static(path.join(root, 'public', dir), { maxAge: '30d', immutable: true }));
-app.use(express.static(path.join(root, 'public'), { extensions: ['html'], maxAge: '5m' }));
+// Код приложения не кэшируем: после деплоя Telegram сразу берёт новую версию (браузер сверяет ETag, это быстро)
+app.use(express.static(path.join(root, 'public'), {
+  extensions: ['html'],
+  setHeaders: (res, file) => res.setHeader('Cache-Control', /\.(html|js|css|webmanifest)$/.test(file) ? 'no-cache' : 'public, max-age=300'),
+}));
 app.get('*', (_req, res) => res.sendFile(path.join(root, 'public', 'index.html')));
 
 // eslint-disable-next-line no-unused-vars

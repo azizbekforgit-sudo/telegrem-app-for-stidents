@@ -8,6 +8,7 @@
     { "source": "/api/:path*", "destination": "https://zubrik-bot.onrender.com/api/:path*" }
   ],
   "headers": [
+    { "source": "/(.*)\\.(js|css|html)", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] },
     { "source": "/e/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=2592000, immutable" }] },
     { "source": "/ea/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=2592000, immutable" }] }
   ]
