@@ -46,6 +46,10 @@ for (const f of lessonFiles.filter((x) => !TR_RE.test(x))) {
   }
 }
 
+// Лишние очки за повторное прохождение одного урока (они больше не засчитываются)
+for (const d of logic.duplicateXp()) console.log('[xp-dup] ' + JSON.stringify(d));
+console.log('[xp-dup-end]');
+
 // Учётные записи для входа на сайте: SEED_ACCOUNTS="почта:пароль:Имя;почта2:пароль2:Имя2"
 for (const row of (process.env.SEED_ACCOUNTS || '').split(';').map((x) => x.trim()).filter(Boolean)) {
   const [email, password, name] = row.split(':');

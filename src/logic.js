@@ -313,7 +313,8 @@ export function createLogic(store, { adminIds }) {
     const vals = Object.values(L.answers);
     if (!L.doneAt) {
       L.doneAt = Date.now();
-      L.xp = 15;
+      const learnedBefore = Object.entries(S.learn).some(([k, v]) => k !== key && k.startsWith(String(uid) + ':') && v.doneAt && S.pubs[k.split(':')[1]]?.lessonId === lesson.id);
+      L.xp = learnedBefore ? 0 : 15;
       touchStreak(S.users[String(uid)]);
       log('learn', { user: { id: String(uid), name: name(S.users[String(uid)]) }, lesson: lesson.id, title: lesson.title, checks: L.answers });
     }
@@ -322,7 +323,51 @@ export function createLogic(store, { adminIds }) {
     store.save();
     return { ok: true, correct: L.correct, total: L.total, xp: L.xp };
   }
-  const learnXp = (uid, pubIds) => Object.entries(S.learn || {}).filter(([k, v]) => k.startsWith(String(uid) + ':') && v.doneAt && (!pubIds || pubIds.has(k.split(':')[1]))).reduce((sum, [, v]) => sum + (v.xp || 0), 0);
+  // Очки за урок даются один раз: если урок пришёл ученику дважды (лично и через группу),
+  // повторное прохождение не засчитывается. Сами попытки не удаляются.
+  function countedLearn(uid) {
+    const seen = new Set();
+    return Object.entries(S.learn || {})
+      .filter(([k, v]) => k.startsWith(String(uid) + ':') && v.doneAt)
+      .sort((a, b) => a[1].doneAt - b[1].doneAt)
+      .filter(([k]) => {
+        const lid = S.pubs[k.split(':')[1]]?.lessonId;
+        if (!lid) return true;
+        if (seen.has(lid)) return false;
+        seen.add(lid);
+        return true;
+      });
+  }
+  const learnXp = (uid, pubIds) => countedLearn(uid).filter(([k]) => !pubIds || pubIds.has(k.split(':')[1])).reduce((sum, [, v]) => sum + (v.xp || 0), 0);
+  function countedAttempts(uid) {
+    const seen = new Set();
+    return Object.values(S.attempts)
+      .filter((a) => a.userId === String(uid) && a.finishedAt && !a.preview)
+      .sort((a, b) => a.finishedAt - b.finishedAt)
+      .filter((a) => {
+        if (a.kind === 'mistakes' || !a.lessonId || a.practice) return true;
+        if (seen.has(a.lessonId)) return false;
+        seen.add(a.lessonId);
+        return true;
+      });
+  }
+  // Кто получил лишние очки за повторное прохождение урока (для лога при запуске)
+  function duplicateXp() {
+    const out = [];
+    for (const u of Object.values(S.users)) {
+      const all = Object.values(S.attempts).filter((a) => a.userId === u.id && a.finishedAt && !a.preview);
+      const kept = new Set(countedAttempts(u.id).map((a) => a.id));
+      const extraTests = all.filter((a) => !kept.has(a.id) && a.xp);
+      const allLearn = Object.entries(S.learn || {}).filter(([k, v]) => k.startsWith(u.id + ':') && v.doneAt);
+      const keptLearn = new Set(countedLearn(u.id).map(([k]) => k));
+      const extraLearn = allLearn.filter(([k, v]) => !keptLearn.has(k) && v.xp);
+      const xp = extraTests.reduce((s2, a) => s2 + a.xp, 0) + extraLearn.reduce((s2, [, v]) => s2 + v.xp, 0);
+      if (!xp) continue;
+      const lessons = [...new Set([...extraTests.map((a) => a.lessonId), ...extraLearn.map(([k]) => S.pubs[k.split(':')[1]]?.lessonId)])].filter(Boolean);
+      out.push({ user: { id: u.id, name: name(u) }, extraXp: xp, lessons: lessons.map((id) => S.lessons[id]?.title || id) });
+    }
+    return out;
+  }
 
   // Ответ ученика текстом — для отчётов, которые читает Claude
   function answerText(q, v) {
@@ -430,7 +475,7 @@ export function createLogic(store, { adminIds }) {
       preview = true;
     }
     if (!lesson) throw httpError(404, 'Тест не найден');
-    const practice = !preview && finishedAttempts(uid, pubId).length > 0;
+    const practice = !preview && (finishedAttempts(uid, pubId).length > 0 || Object.values(S.attempts).some((x) => x.userId === uid && x.lessonId === lesson.id && x.finishedAt && !x.preview));
     const a = { id: store.nextId('a'), lang: langOf(uid), pubId: pubId || null, lessonId: lesson.id, userId: uid, preview, practice, startedAt: Date.now(), finishedAt: null, answers: [], combo: 0, maxCombo: 0, xp: 0 };
     S.attempts[a.id] = a;
     store.save();
@@ -571,10 +616,10 @@ export function createLogic(store, { adminIds }) {
   }
 
   // ───────── статистика ─────────
-  const totalXp = (uid) => Object.values(S.attempts).filter((a) => a.userId === String(uid) && a.finishedAt && !a.preview).reduce((s, a) => s + (a.xp || 0), 0) + learnXp(uid);
+  const totalXp = (uid) => countedAttempts(uid).reduce((s, a) => s + (a.xp || 0), 0) + learnXp(uid);
   function groupXp(uid, gid) {
     const pubIds = new Set(pubsForGroup(gid).map((p) => p.id));
-    return Object.values(S.attempts).filter((a) => a.userId === String(uid) && a.finishedAt && !a.preview && pubIds.has(a.pubId)).reduce((s, a) => s + (a.xp || 0), 0) + learnXp(uid, pubIds);
+    return countedAttempts(uid).filter((a) => pubIds.has(a.pubId)).reduce((s, a) => s + (a.xp || 0), 0) + learnXp(uid, pubIds);
   }
 
   function pubStats(pubId) {
@@ -854,7 +899,7 @@ export function createLogic(store, { adminIds }) {
   }
 
   return {
-    S, isAdmin, isParent, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
+    S, isAdmin, isParent, duplicateXp, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
     upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,
