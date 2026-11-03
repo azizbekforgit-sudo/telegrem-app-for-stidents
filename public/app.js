@@ -1403,8 +1403,15 @@ async function viewStudent(uid) {
       <p class="muted small">${u?.username ? '@' + esc(u.username) + ' · ' : ''}${st.groups.map((g) => esc(g.name)).join(', ') || 'без группы'}</p>
       <div class="tags" style="margin-top:6px">${st.achievements.filter((a) => a.got).map((a) => `<span title="${esc(a.title)}">${emo(a.icon)}</span>`).join('')}</div></div></div>
     ${statsHtml(st, { self: false })}
-    ${S.me.isParent ? '' : `<div style="margin-top:16px"><button class="btn ghost block" data-assign="${esc(uid)}">${ic('user-plus-rounded')}Добавить в группу</button></div>`}`;
+    ${S.me.isParent ? '' : `<div class="card stack small" style="margin-top:16px"><b>${emo(E.laptop)} Вход на сайт</b><p class="muted">${st.siteLogin ? `Логин: <code data-noi18n>${esc(st.siteLogin)}</code>` : 'Входа пока нет'}</p>
+      ${String(uid).startsWith('w') ? '' : `<button class="btn ghost block" data-relogin>${ic('lock-keyhole')}${st.siteLogin ? 'Новый пароль' : 'Создать вход'}</button>`}</div>
+      <div style="margin-top:12px"><button class="btn ghost block" data-assign="${esc(uid)}">${ic('user-plus-rounded')}Добавить в группу</button></div>`}`;
   $('[data-back]').onclick = back;
+  const rl = $('[data-relogin]');
+  if (rl) rl.onclick = async () => {
+    if (!(await confirmSheet('Выдать новый пароль?', 'Старый пароль перестанет работать. Бот пришлёт новый ученику в личку.', 'Выдать'))) return;
+    try { loginsSheet([await api(`/admin/students/${uid}/login`, {})]); viewStudent(uid).catch(fail); } catch (e) { fail(e); }
+  };
   const asg = $('[data-assign]');
   if (asg) asg.onclick = async () => { if (!S.overview) await loadOverview(); assignSheet(uid); };
 }
@@ -1533,6 +1540,18 @@ async function pubSheet(pid) {
   );
 }
 
+// Список выданных логинов: показываем учителю один раз (пароли хранятся только в виде хеша)
+function loginsSheet(list) {
+  const text = list.map((l) => `${l.name}: ${l.login} / ${l.password}`).join('\n');
+  openSheet(`<div class="stack"><h2>Входы на сайт</h2>
+      ${list.length ? `<p class="muted small">Создано: ${list.length}. ${list.every((l) => l.sent) ? 'Бот отправил каждому в личку.' : 'Кому бот не смог написать — отмечены, передай им сам.'} Сохрани список: пароли больше нигде не показываются.</p>
+      <div class="qlist" data-noi18n style="max-height:46vh;overflow:auto">${list.map((l) => `<div><span>${l.sent ? '✅' : '⚠️'}</span><span class="grow"><b>${esc(l.name)}</b><br><code>${esc(l.login)}</code> / <code>${esc(l.password)}</code></span></div>`).join('')}</div>
+      <button class="btn block" data-copy>${ic('copy')}Скопировать список</button>` : '<p class="muted">У всех учеников уже есть вход. Новый пароль одному ученику — на его странице.</p>'}</div>`, (el) => {
+    const c = $('[data-copy]', el);
+    if (c) c.onclick = async () => { try { await navigator.clipboard.writeText(text); toast('Скопировано'); } catch { toast('Не удалось скопировать', true); } };
+  });
+}
+
 async function tabBot() {
   const [o, rems] = await Promise.all([loadOverview(), api('/admin/reminders')]);
   const groupOpts = o.groups.map((g) => `<option value="${g.id}">${esc(g.name)}</option>`).join('');
@@ -1540,6 +1559,9 @@ async function tabBot() {
     ${sectionTitle(E.robot, 'Отчёт для Claude')}
     <div class="card stack small"><p class="muted">Отправляет Claude результаты всех учеников: оценки, ошибки, что ответили и что было правильно. По ним Claude сделает каждому личную обучалку и тест по его ошибкам.</p>
       <button class="btn block" data-report>${ic('plain-2')}Отправить отчёт Claude</button></div>
+    ${sectionTitle(E.laptop, 'Входы на сайт')}
+    <div class="card stack small"><p class="muted">Каждому ученику из Telegram — свой логин и пароль для сайта. Это его же аккаунт: те же очки, тесты и лига. Бот пришлёт данные каждому в личку, а тебе покажет список.</p>
+      <button class="btn block" data-logins>${ic('lock-keyhole')}Создать входы ученикам</button></div>
     ${sectionTitle(E.link, 'Подключить чат группы')}
     <div class="card"><ol class="steps small">
       <li>Создай Telegram-группу (или открой существующую) и добавь туда бота.</li>
@@ -1568,6 +1590,10 @@ async function tabBot() {
       <p class="small muted">каждые ${r.intervalMin >= 60 ? r.intervalMin / 60 + ' ч' : r.intervalMin + ' мин'} · отправлено ${r.sent}/${r.maxCount}${r.testTitle ? ` · ${esc(r.testTitle)}` : ''}${r.active ? ` · следующее в ${new Date(r.nextAt).toLocaleTimeString(LOCALE(), { hour: '2-digit', minute: '2-digit' })}` : ''}</p>
       <div class="row" style="margin-top:10px"><button class="btn ghost sm grow" data-toggle="${r.id}" data-on="${r.active ? 0 : 1}">${ic(r.active ? 'pause' : 'play', 'sm')}${r.active ? 'Пауза' : 'Возобновить'}</button><button class="iconbtn" data-rdel="${r.id}" aria-label="Удалить">${ic('trash-bin-trash', 'sm')}</button></div></div>`).join('') : '<p class="muted center small">Напоминаний нет</p>'}</div>`;
   bindAdminTop();
+  $('[data-logins]').onclick = async () => {
+    if (!(await confirmSheet('Создать входы на сайт?', 'Ученики, у которых ещё нет входа, получат от бота логин и пароль в личку.', 'Создать'))) return;
+    try { loginsSheet(await api('/admin/logins', {})); } catch (e) { fail(e); }
+  };
   $('[data-report]').onclick = async () => {
     try {
       const r = await api('/admin/report', {});
@@ -1616,11 +1642,11 @@ function loginScreen() {
     <div class="login-mascots">${['mimi', 'zip', 'dino'].map((m, i) => mascot(m, i === 1 ? 'peace' : 'happy', i === 1 ? 120 : 88)).join('')}</div>
     <div class="brand"><img src="/brand/logo.svg" alt="" width="56" height="56"><h1>Зубрик</h1></div><p class="muted">Учись в стиле игры: обучалки, тесты, лига группы</p>
     <form class="card stack" data-login>
-      <label class="field"><span>Почта</span><input class="input" name="email" type="text" inputmode="email" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="name@mail" required></label>
+      <label class="field"><span>Логин или почта</span><input class="input" name="email" type="text" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="login" required></label>
       <label class="field"><span>Пароль</span><input class="input" name="password" type="password" autocomplete="current-password" required></label>
       <button class="btn block" type="submit">${ic('play')}Войти</button>
     </form>
-    <p class="small muted center">Есть Telegram? Открой бота <a class="link" href="https://t.me/itduobot">@itduobot</a> — там всё то же самое.</p>
+    <p class="small muted center">Есть Telegram? Открой бота <a class="link" href="https://t.me/itduobot">@itduobot</a> — там всё то же самое. Логин и пароль для сайта бот пришлёт по команде /site.</p>
     <div class="seg login-lang" data-noi18n>${LANGS.map(([id, t]) => `<button data-lang="${id}" class="${LOOK.lang === id ? 'on' : ''}">${t}</button>`).join('')}</div>
   </div>`;
   $$('[data-lang]', app).forEach((b) => (b.onclick = () => { applyLook({ lang: b.dataset.lang }); loginScreen(); }));

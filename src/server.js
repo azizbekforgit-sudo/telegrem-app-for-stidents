@@ -163,7 +163,18 @@ adm.post('/groups/:gid/members', h((req) => {
   return logic.addMember(req.params.gid, uid);
 }));
 adm.delete('/groups/:gid/members/:uid', h((req) => (logic.removeMember(req.params.gid, req.params.uid), { ok: true })));
-adm.get('/students/:uid', h((req) => logic.userStats(req.params.uid)));
+adm.get('/students/:uid', h((req) => ({ ...logic.userStats(req.params.uid), siteLogin: logic.accountOf(req.params.uid)?.[0] || null })));
+// Входы на сайт: всем ученикам из Telegram, у кого их нет (бот пришлёт каждому в личку), или новый пароль одному
+adm.post('/logins', h(async () => {
+  const list = logic.issueLoginsAll();
+  for (const l of list) l.sent = Boolean(await tg?.sendLogin(l));
+  return list;
+}));
+adm.post('/students/:uid/login', h(async (req) => {
+  const l = logic.issueLogin(req.params.uid, { reset: true });
+  l.sent = Boolean(await tg?.sendLogin(l));
+  return l;
+}));
 adm.post('/lessons', h(async (req) => {
   const l = logic.upsertLesson(req.body);
   for (const pub of logic.assignPersonal(l.id)) await tg?.notifyPersonal(pub);

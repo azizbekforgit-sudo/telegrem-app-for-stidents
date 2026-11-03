@@ -149,10 +149,39 @@ export function createLogic(store, { adminIds }) {
     store.save();
     return acc;
   }
+  // Вход на сайт для ученика из Telegram: логин и пароль ведут в его же аккаунт (тот же ID)
+  const TRANSLIT = { а: 'a', б: 'b', в: 'v', г: 'g', д: 'd', е: 'e', ё: 'yo', ж: 'j', з: 'z', и: 'i', й: 'y', к: 'k', л: 'l', м: 'm', н: 'n', о: 'o', п: 'p', р: 'r', с: 's', т: 't', у: 'u', ф: 'f', х: 'h', ц: 'ts', ч: 'ch', ш: 'sh', щ: 'sh', ъ: '', ы: 'i', ь: '', э: 'e', ю: 'yu', я: 'ya', ў: 'o', қ: 'q', ғ: 'g', ҳ: 'h' };
+  const accountOf = (uid) => Object.entries(S.accounts || {}).find(([, a]) => a.userId === String(uid));
+  function newLogin(u) {
+    const base = [...String(u.firstName || u.username || '').toLowerCase()].map((ch) => TRANSLIT[ch] ?? ch).join('').replace(/[^a-z0-9]/g, '').slice(0, 12) || 'student';
+    let login = base + String(u.id).slice(-4);
+    for (let i = 2; S.accounts?.[login]; i++) login = base + String(u.id).slice(-4) + i;
+    return login;
+  }
+  const newPassword = () => { const abc = 'abcdefghjkmnpqrstuvwxyz23456789'; return Array.from(crypto.randomBytes(8), (b) => abc[b % abc.length]).join(''); };
+  // reset: выдать новый пароль, даже если вход уже есть
+  function issueLogin(uid, { reset = false } = {}) {
+    const u = S.users[String(uid)];
+    if (!u || isAdmin(u.id)) throw httpError(404, 'Пользователь не найден');
+    S.accounts ||= {};
+    const had = accountOf(u.id);
+    if (had && !reset) return { userId: u.id, name: name(u), login: had[0], password: null };
+    const login = had ? had[0] : newLogin(u);
+    const password = newPassword();
+    const salt = crypto.randomBytes(16).toString('hex');
+    S.accounts[login] = { ...(had?.[1] || { createdAt: Date.now() }), userId: u.id, salt, hash: hashPw(password, salt) };
+    store.save();
+    return { userId: u.id, name: name(u), login, password };
+  }
+  // Входы всем ученикам из Telegram, у которых их ещё нет
+  function issueLoginsAll() {
+    return students().filter((u) => !accountOf(u.id) && !String(u.id).startsWith('w')).map((u) => issueLogin(u.id));
+  }
+
   function login(email, password) {
     const acc = S.accounts?.[String(email || '').trim().toLowerCase()];
     const ok = acc && crypto.timingSafeEqual(Buffer.from(hashPw(password, acc.salt), 'hex'), Buffer.from(acc.hash, 'hex'));
-    if (!ok) throw httpError(401, 'Неверная почта или пароль');
+    if (!ok) throw httpError(401, 'Неверный логин или пароль');
     const token = crypto.randomBytes(24).toString('hex');
     S.sessions ||= {};
     S.sessions[sha(token)] = { userId: acc.userId, createdAt: Date.now() };
@@ -902,7 +931,7 @@ export function createLogic(store, { adminIds }) {
   }
 
   return {
-    S, isAdmin, isParent, duplicateXp, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
+    S, isAdmin, isParent, duplicateXp, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
     upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,
