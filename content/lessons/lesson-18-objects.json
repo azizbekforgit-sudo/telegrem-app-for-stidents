@@ -1,0 +1,97 @@
+{
+  "id": "lesson-18-objects",
+  "title": "Урок 18. Объекты и деструктуризация",
+  "emoji": "🗂️",
+  "description": "Ключ и значение, точка и скобки, массив объектов, деструктуризация",
+  "learn": {
+    "intro": "Привет! Урок 18 — **объекты и деструктуризация**. Научимся хранить данные с подписями, как карточку контакта в телефоне. Поехали!",
+    "sections": [
+      {
+        "title": "Что такое объект",
+        "slides": [
+          { "emoji": "📇", "text": "Массив — это список без подписей, как безымянная очередь: первый, второй, третий. **Объект** — это когда у каждого значения есть имя (**ключ**). Как карточка контакта: имя, номер, фото." },
+          { "text": "Создаём объект:", "code": "const user = { name: \"Аня\", age: 25, city: \"Алматы\" };" },
+          { "text": "Слева — **ключ** (`name`, `age`, `city`). Справа — **значение** (`\"Аня\"`, `25`, `\"Алматы\"`). Между ними — двоеточие `:`, пары разделяются запятой `,`." },
+          { "quote": true, "text": "Объект — это набор пар «ключ: значение»." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "Создание объекта", "prompt": "В массиве каждое значение подписано ключом, как в объекте.", "answer": false, "explain": "Массив — список без подписей. Подписи-ключи есть у объекта." },
+          { "type": "choice", "topic": "Создание объекта", "prompt": "Что ставится между ключом и значением?", "options": [":", "=", ";", "."], "answer": 0, "explain": "Ключ и значение разделяет двоеточие: name: \"Аня\"." }
+        ]
+      },
+      {
+        "title": "Обращение к свойствам",
+        "slides": [
+          { "emoji": "🎯", "text": "Через **точку** — когда ключ написан прямо в коде:", "code": "console.log(user.name); // Аня\nconsole.log(user.age);  // 25" },
+          { "text": "Через **квадратные скобки** — когда имя ключа лежит в переменной:", "code": "const field = \"city\";\nconsole.log(user[field]); // Алматы\n// user.field — так нельзя: JS будет искать ключ «field»" },
+          { "quote": true, "text": "Ключ написан прямо в коде — пишем точку. Ключ хранится в переменной — скобки." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Доступ к свойствам", "prompt": "const key = \"name\"; Как достать это поле из user?", "options": ["user[key]", "user.key", "user(key)", "key.user"], "answer": 0, "explain": "Ключ лежит в переменной — значит, квадратные скобки." }
+        ]
+      },
+      {
+        "title": "Изменение свойства",
+        "slides": [
+          { "emoji": "✏️", "text": "Значение поля можно поменять — просто присвой новое:", "code": "console.log(user.age); // 25\nuser.age = 26;\nconsole.log(user.age); // 26" },
+          { "text": "Так же можно **добавить** новое поле, которого раньше не было:", "code": "user.email = \"anya@mail.uz\";" }
+        ],
+        "check": [
+          { "type": "input", "topic": "Изменение свойств", "prompt": "Было user.age = 25. Что выведет console.log(user.age) после user.age = 30?", "answer": ["30"], "explain": "Новое значение заменяет старое." }
+        ]
+      },
+      {
+        "title": "Массив объектов",
+        "slides": [
+          { "emoji": "🗃️", "text": "Так устроены почти все данные на сайтах и в API — **список карточек**:", "code": "const users = [\n  { name: \"Аня\", age: 25 },\n  { name: \"Игорь\", age: 30 },\n];" },
+          { "text": "Проходим по списку через `forEach`:", "code": "users.forEach((user) => {\n  console.log(user.name);\n});\n// Аня\n// Игорь" },
+          { "quote": true, "text": "forEach берёт по одному объекту, а user.name достаёт нужное поле." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "Массив объектов", "prompt": "forEach по массиву объектов на каждом круге даёт один объект.", "answer": true, "explain": "По одной карточке за круг." }
+        ]
+      },
+      {
+        "title": "Деструктуризация — «распаковка посылки»",
+        "slides": [
+          { "emoji": "📦", "text": "**До:** каждое поле достаём отдельной строкой:", "code": "const name = user.name;\nconst age = user.age;\nconsole.log(name, age); // Аня 25" },
+          { "text": "**После:** достаём поля одной строкой:", "code": "const { name, age } = user;\nconsole.log(name, age); // Аня 25" },
+          { "text": "Имена в фигурных скобках должны **совпадать с ключами**. Поле `city` не указали — оно просто не достанется." },
+          { "text": "Можно распаковывать прямо в параметре функции:", "code": "users.forEach(({ name, age }) => {\n  console.log(name, age);\n});" }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Деструктуризация", "prompt": "Что делает const { name } = user;?", "options": ["Достаёт поле name в переменную", "Удаляет поле name", "Создаёт новый объект", "Меняет значение name"], "answer": 0, "explain": "Деструктуризация — «распаковка»: поле объекта попадает в переменную." },
+          { "type": "truefalse", "topic": "Деструктуризация", "prompt": "Поле, которое не написали в фигурных скобках, не достанется.", "answer": true, "explain": "Достаются только перечисленные ключи." }
+        ]
+      },
+      {
+        "title": "Практика и домашка",
+        "slides": [
+          { "emoji": "🛒", "text": "Выводим только товары в наличии:", "code": "const products = [\n  { name: \"Телефон\", price: 3000000, inStock: true },\n  { name: \"Ноутбук\", price: 8000000, inStock: false },\n];\n\nproducts.forEach((product) => {\n  const { name, price, inStock } = product;\n  if (inStock) {\n    console.log(name, price);\n  }\n});\n// Телефон 3000000" },
+          { "emoji": "🏠", "text": "Домашка: объект «профиль пользователя» минимум с **5 полями** и вложенным объектом `address` (`city`, `street`). Выведи всё через деструктуризацию:", "code": "const { name, address } = profile;\nconst { city, street } = address;\nconsole.log(name, city, street);" },
+          { "quote": true, "text": "Объект — набор пар «ключ: значение». Деструктуризация позволяет быстро достать нужные поля одной строкой." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Практика", "prompt": "Что проверяет if (inStock) в практике?", "options": ["Товар в наличии", "Цена больше нуля", "Есть ли у товара имя", "Ничего"], "answer": 0, "explain": "inStock: true — товар в наличии." }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    { "type": "truefalse", "topic": "Создание объекта", "prompt": "В объекте у каждого значения есть имя — ключ.", "answer": true, "explain": "Как поля в карточке контакта." },
+    { "type": "match", "topic": "Создание объекта", "prompt": "В объекте { name: \"Аня\", age: 25 } соедини часть и её смысл", "pairs": [["name", "Ключ"], ["\"Аня\"", "Значение"], [":", "Между ключом и значением"], [",", "Между парами"]] },
+    { "type": "choice", "topic": "Создание объекта", "prompt": "Какая запись — правильный объект?", "options": ["{ name: \"Аня\", age: 25 }", "{ name = \"Аня\"; age = 25 }", "[ name: \"Аня\" ]", "( name: \"Аня\" )"], "answer": 0, "explain": "Фигурные скобки, двоеточие между ключом и значением, запятая между парами." },
+    { "type": "choice", "topic": "Доступ к свойствам", "prompt": "Что выведет консоль?", "code": "const user = { name: \"Аня\", age: 25, city: \"Алматы\" };\nconsole.log(user.age);", "options": ["25", "Аня", "undefined", "age"], "answer": 0, "explain": "user.age — значение поля age." },
+    { "type": "choice", "topic": "Доступ к свойствам", "prompt": "Что выведет консоль?", "code": "const user = { name: \"Аня\", city: \"Алматы\" };\nconst field = \"city\";\nconsole.log(user[field]);", "options": ["Алматы", "city", "undefined", "field"], "answer": 0, "explain": "В field лежит \"city\", поэтому user[field] — это user.city." },
+    { "type": "truefalse", "topic": "Доступ к свойствам", "prompt": "Если имя ключа лежит в переменной field, можно писать user.field.", "answer": false, "explain": "user.field ищет ключ с именем «field». Нужно user[field]." },
+    { "type": "input", "topic": "Доступ к свойствам", "prompt": "Что выведет консоль?", "code": "const user = { name: \"Аня\", city: \"Алматы\" };\nconst field = \"city\";\nconsole.log(user.field);", "answer": ["undefined"], "explain": "Ключа «field» в объекте нет — получаем undefined." },
+    { "type": "choice", "topic": "Изменение свойств", "prompt": "Что выведет консоль?", "code": "const user = { name: \"Аня\", age: 25 };\nuser.age = 26;\nconsole.log(user.age);", "options": ["26", "25", "undefined", "Ошибка"], "answer": 0, "explain": "Новое значение заменило старое." },
+    { "type": "truefalse", "topic": "Изменение свойств", "prompt": "Строка user.email = \"anya@mail.uz\" добавит в объект новое поле.", "answer": true, "explain": "Если поля не было, оно появится." },
+    { "type": "choice", "topic": "Массив объектов", "prompt": "Что выведет консоль?", "code": "const users = [\n  { name: \"Аня\", age: 25 },\n  { name: \"Игорь\", age: 30 },\n];\nusers.forEach((user) => {\n  console.log(user.name);\n});", "options": ["Аня и Игорь", "25 и 30", "[object Object]", "Ошибка"], "answer": 0, "explain": "forEach берёт каждый объект, user.name — его имя." },
+    { "type": "order", "topic": "Деструктуризация", "prompt": "Собери деструктуризацию: достань name и age из user", "tokens": ["const", "{ name, age }", "=", "user;"], "extra": ["[ ]", "user.name"], "explain": "const { name, age } = user;" },
+    { "type": "choice", "topic": "Деструктуризация", "prompt": "Что выведет консоль?", "code": "const user = { name: \"Аня\", age: 25, city: \"Алматы\" };\nconst { name, city } = user;\nconsole.log(city);", "options": ["Алматы", "undefined", "city", "Аня"], "answer": 0, "explain": "city достали из объекта — в нём \"Алматы\"." },
+    { "type": "truefalse", "topic": "Деструктуризация", "prompt": "Имена в фигурных скобках при деструктуризации должны совпадать с ключами объекта.", "answer": true, "explain": "Иначе JS не найдёт такое поле." },
+    { "type": "choice", "topic": "Практика", "prompt": "Какие товары выведет код?", "code": "const products = [\n  { name: \"Телефон\", inStock: true },\n  { name: \"Ноутбук\", inStock: false },\n  { name: \"Наушники\", inStock: true },\n  { name: \"Часы\", inStock: false },\n];\nproducts.forEach(({ name, inStock }) => {\n  if (inStock) console.log(name);\n});", "options": ["Телефон и Наушники", "Все 4 товара", "Ноутбук и Часы", "Ничего"], "answer": 0, "explain": "Выводятся только товары с inStock: true." },
+    { "type": "choice", "topic": "Практика", "prompt": "Что выведет консоль?", "code": "const profile = {\n  name: \"Аня\",\n  address: { city: \"Алматы\", street: \"Абая 10\" },\n};\nconst { name, address } = profile;\nconst { city, street } = address;\nconsole.log(street);", "options": ["Абая 10", "Алматы", "undefined", "address"], "answer": 0, "explain": "Сначала достали address, потом из него street." }
+  ]
+}

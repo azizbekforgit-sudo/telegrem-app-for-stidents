@@ -1,0 +1,95 @@
+{
+  "title": "18-dars. Obyektlar va destrukturizatsiya",
+  "description": "Kalit va qiymat, nuqta va qavslar, obyektlar massivi, destrukturizatsiya",
+  "learn": {
+    "intro": "Salom! 18-dars — **obyektlar va destrukturizatsiya**. Ma'lumotlarni imzolar bilan saqlashni o'rganamiz, xuddi telefondagi kontakt kartochkasi kabi. Ketdik!",
+    "sections": [
+      {
+        "title": "Obyekt nima",
+        "slides": [
+          { "emoji": "📇", "text": "Massiv — imzosiz ro'yxat, nomsiz navbat kabi: birinchi, ikkinchi, uchinchi. **Obyekt** — har bir qiymatning nomi (**kaliti**) bor. Kontakt kartochkasi kabi: ism, raqam, rasm." },
+          { "text": "Obyekt yaratamiz:", "code": "const user = { name: \"Anya\", age: 25, city: \"Olmaota\" };" },
+          { "text": "Chapda — **kalit** (`name`, `age`, `city`). O'ngda — **qiymat** (`\"Anya\"`, `25`, `\"Olmaota\"`). Ular orasida — ikki nuqta `:`, juftliklar vergul `,` bilan ajratiladi." },
+          { "quote": true, "text": "Obyekt — «kalit: qiymat» juftliklari to'plami." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "Obyekt yaratish", "prompt": "Massivda har bir qiymat obyektdagidek kalit bilan imzolangan.", "answer": false, "explain": "Massiv — imzosiz ro'yxat. Imzo-kalitlar obyektda bo'ladi." },
+          { "type": "choice", "topic": "Obyekt yaratish", "prompt": "Kalit va qiymat orasiga nima qo'yiladi?", "options": [":", "=", ";", "."], "answer": 0, "explain": "Kalit va qiymatni ikki nuqta ajratadi: name: \"Anya\"." }
+        ]
+      },
+      {
+        "title": "Xususiyatlarga murojaat",
+        "slides": [
+          { "emoji": "🎯", "text": "**Nuqta** orqali — kalit to'g'ridan-to'g'ri kodda yozilganda:", "code": "console.log(user.name); // Anya\nconsole.log(user.age);  // 25" },
+          { "text": "**Kvadrat qavslar** orqali — kalit nomi o'zgaruvchida turganda:", "code": "const field = \"city\";\nconsole.log(user[field]); // Olmaota\n// user.field — bunday bo'lmaydi: JS «field» kalitini qidiradi" },
+          { "quote": true, "text": "Kalit to'g'ridan-to'g'ri kodda yozilgan — nuqta qo'yamiz. Kalit o'zgaruvchida saqlanadi — qavslar." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Xususiyatlarga murojaat", "prompt": "const key = \"name\"; Bu maydonni user dan qanday olish mumkin?", "options": ["user[key]", "user.key", "user(key)", "key.user"], "answer": 0, "explain": "Kalit o'zgaruvchida — demak, kvadrat qavslar." }
+        ]
+      },
+      {
+        "title": "Xususiyatni o'zgartirish",
+        "slides": [
+          { "emoji": "✏️", "text": "Maydon qiymatini o'zgartirish mumkin — shunchaki yangisini bering:", "code": "console.log(user.age); // 25\nuser.age = 26;\nconsole.log(user.age); // 26" },
+          { "text": "Xuddi shunday avval bo'lmagan yangi maydonni **qo'shish** mumkin:", "code": "user.email = \"anya@mail.uz\";" }
+        ],
+        "check": [
+          { "type": "input", "topic": "Xususiyatni o'zgartirish", "prompt": "user.age = 25 edi. user.age = 30 dan keyin console.log(user.age) nima chiqaradi?", "answer": ["30"], "explain": "Yangi qiymat eskisini almashtiradi." }
+        ]
+      },
+      {
+        "title": "Obyektlar massivi",
+        "slides": [
+          { "emoji": "🗃️", "text": "Saytlar va API'dagi deyarli barcha ma'lumotlar shunday tuzilgan — **kartochkalar ro'yxati**:", "code": "const users = [\n  { name: \"Anya\", age: 25 },\n  { name: \"Igor\", age: 30 },\n];" },
+          { "text": "Ro'yxatni `forEach` bilan aylanib chiqamiz:", "code": "users.forEach((user) => {\n  console.log(user.name);\n});\n// Anya\n// Igor" },
+          { "quote": true, "text": "forEach bittadan obyekt oladi, user.name esa kerakli maydonni chiqaradi." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "Obyektlar massivi", "prompt": "Obyektlar massivi bo'yicha forEach har aylanada bitta obyekt beradi.", "answer": true, "explain": "Har aylanada bitta kartochka." }
+        ]
+      },
+      {
+        "title": "Destrukturizatsiya — «posilkani ochish»",
+        "slides": [
+          { "emoji": "📦", "text": "**Oldin:** har bir maydonni alohida qatorda olamiz:", "code": "const name = user.name;\nconst age = user.age;\nconsole.log(name, age); // Anya 25" },
+          { "text": "**Keyin:** maydonlarni bitta qatorda olamiz:", "code": "const { name, age } = user;\nconsole.log(name, age); // Anya 25" },
+          { "text": "Figurali qavslardagi nomlar **kalitlar bilan bir xil** bo'lishi kerak. `city` maydoni ko'rsatilmadi — u shunchaki olinmaydi." },
+          { "text": "To'g'ridan-to'g'ri funksiya parametrida ochish mumkin:", "code": "users.forEach(({ name, age }) => {\n  console.log(name, age);\n});" }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Destrukturizatsiya", "prompt": "const { name } = user; nima qiladi?", "options": ["name maydonini o'zgaruvchiga oladi", "name maydonini o'chiradi", "Yangi obyekt yaratadi", "name qiymatini o'zgartiradi"], "answer": 0, "explain": "Destrukturizatsiya — «ochish»: obyekt maydoni o'zgaruvchiga tushadi." },
+          { "type": "truefalse", "topic": "Destrukturizatsiya", "prompt": "Figurali qavslarda yozilmagan maydon olinmaydi.", "answer": true, "explain": "Faqat sanab o'tilgan kalitlar olinadi." }
+        ]
+      },
+      {
+        "title": "Amaliyot va uyga vazifa",
+        "slides": [
+          { "emoji": "🛒", "text": "Faqat mavjud mahsulotlarni chiqaramiz:", "code": "const products = [\n  { name: \"Telefon\", price: 3000000, inStock: true },\n  { name: \"Noutbuk\", price: 8000000, inStock: false },\n];\n\nproducts.forEach((product) => {\n  const { name, price, inStock } = product;\n  if (inStock) {\n    console.log(name, price);\n  }\n});\n// Telefon 3000000" },
+          { "emoji": "🏠", "text": "Uyga vazifa: kamida **5 ta maydonli** «foydalanuvchi profili» obyekti va ichki `address` obyekti (`city`, `street`). Hammasini destrukturizatsiya orqali chiqar:", "code": "const { name, address } = profile;\nconst { city, street } = address;\nconsole.log(name, city, street);" },
+          { "quote": true, "text": "Obyekt — «kalit: qiymat» juftliklari to'plami. Destrukturizatsiya kerakli maydonlarni bitta qatorda tez olish imkonini beradi." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Amaliyot", "prompt": "Amaliyotda if (inStock) nimani tekshiradi?", "options": ["Mahsulot mavjudligini", "Narx noldan kattaligini", "Mahsulot nomi borligini", "Hech narsani"], "answer": 0, "explain": "inStock: true — mahsulot mavjud." }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    { "type": "truefalse", "topic": "Obyekt yaratish", "prompt": "Obyektda har bir qiymatning nomi — kaliti bor.", "answer": true, "explain": "Kontakt kartochkasidagi maydonlar kabi." },
+    { "type": "match", "topic": "Obyekt yaratish", "prompt": "{ name: \"Anya\", age: 25 } obyektida qism va uning ma'nosini moslashtir", "pairs": [["name", "Kalit"], ["\"Anya\"", "Qiymat"], [":", "Kalit va qiymat orasida"], [",", "Juftliklar orasida"]] },
+    { "type": "choice", "topic": "Obyekt yaratish", "prompt": "Qaysi yozuv — to'g'ri obyekt?", "options": ["{ name: \"Anya\", age: 25 }", "{ name = \"Anya\"; age = 25 }", "[ name: \"Anya\" ]", "( name: \"Anya\" )"], "answer": 0, "explain": "Figurali qavslar, kalit va qiymat orasida ikki nuqta, juftliklar orasida vergul." },
+    { "type": "choice", "topic": "Xususiyatlarga murojaat", "prompt": "Konsol nima chiqaradi?", "code": "const user = { name: \"Anya\", age: 25, city: \"Olmaota\" };\nconsole.log(user.age);", "options": ["25", "Anya", "undefined", "age"], "answer": 0, "explain": "user.age — age maydonining qiymati." },
+    { "type": "choice", "topic": "Xususiyatlarga murojaat", "prompt": "Konsol nima chiqaradi?", "code": "const user = { name: \"Anya\", city: \"Olmaota\" };\nconst field = \"city\";\nconsole.log(user[field]);", "options": ["Olmaota", "city", "undefined", "field"], "answer": 0, "explain": "field da \"city\" turibdi, shuning uchun user[field] — bu user.city." },
+    { "type": "truefalse", "topic": "Xususiyatlarga murojaat", "prompt": "Kalit nomi field o'zgaruvchisida bo'lsa, user.field deb yozish mumkin.", "answer": false, "explain": "user.field «field» nomli kalitni qidiradi. user[field] kerak." },
+    { "type": "input", "topic": "Xususiyatlarga murojaat", "prompt": "Konsol nima chiqaradi?", "code": "const user = { name: \"Anya\", city: \"Olmaota\" };\nconst field = \"city\";\nconsole.log(user.field);", "answer": ["undefined"], "explain": "Obyektda «field» kaliti yo'q — undefined chiqadi." },
+    { "type": "choice", "topic": "Xususiyatni o'zgartirish", "prompt": "Konsol nima chiqaradi?", "code": "const user = { name: \"Anya\", age: 25 };\nuser.age = 26;\nconsole.log(user.age);", "options": ["26", "25", "undefined", "Xato"], "answer": 0, "explain": "Yangi qiymat eskisini almashtirdi." },
+    { "type": "truefalse", "topic": "Xususiyatni o'zgartirish", "prompt": "user.email = \"anya@mail.uz\" qatori obyektga yangi maydon qo'shadi.", "answer": true, "explain": "Maydon bo'lmasa, u paydo bo'ladi." },
+    { "type": "choice", "topic": "Obyektlar massivi", "prompt": "Konsol nima chiqaradi?", "code": "const users = [\n  { name: \"Anya\", age: 25 },\n  { name: \"Igor\", age: 30 },\n];\nusers.forEach((user) => {\n  console.log(user.name);\n});", "options": ["Anya va Igor", "25 va 30", "[object Object]", "Xato"], "answer": 0, "explain": "forEach har bir obyektni oladi, user.name — uning ismi." },
+    { "type": "order", "topic": "Destrukturizatsiya", "prompt": "Destrukturizatsiyani yig': user dan name va age ni ol", "tokens": ["const", "{ name, age }", "=", "user;"], "extra": ["[ ]", "user.name"], "explain": "const { name, age } = user;" },
+    { "type": "choice", "topic": "Destrukturizatsiya", "prompt": "Konsol nima chiqaradi?", "code": "const user = { name: \"Anya\", age: 25, city: \"Olmaota\" };\nconst { name, city } = user;\nconsole.log(city);", "options": ["Olmaota", "undefined", "city", "Anya"], "answer": 0, "explain": "city obyektdan olindi — unda \"Olmaota\"." },
+    { "type": "truefalse", "topic": "Destrukturizatsiya", "prompt": "Destrukturizatsiyada figurali qavslardagi nomlar obyekt kalitlari bilan bir xil bo'lishi kerak.", "answer": true, "explain": "Aks holda JS bunday maydonni topmaydi." },
+    { "type": "choice", "topic": "Amaliyot", "prompt": "Kod qaysi mahsulotlarni chiqaradi?", "code": "const products = [\n  { name: \"Telefon\", inStock: true },\n  { name: \"Noutbuk\", inStock: false },\n  { name: \"Quloqchin\", inStock: true },\n  { name: \"Soat\", inStock: false },\n];\nproducts.forEach(({ name, inStock }) => {\n  if (inStock) console.log(name);\n});", "options": ["Telefon va Quloqchin", "Hamma 4 ta mahsulot", "Noutbuk va Soat", "Hech narsa"], "answer": 0, "explain": "Faqat inStock: true bo'lgan mahsulotlar chiqadi." },
+    { "type": "choice", "topic": "Amaliyot", "prompt": "Konsol nima chiqaradi?", "code": "const profile = {\n  name: \"Anya\",\n  address: { city: \"Olmaota\", street: \"Abay 10\" },\n};\nconst { name, address } = profile;\nconst { city, street } = address;\nconsole.log(street);", "options": ["Abay 10", "Olmaota", "undefined", "address"], "answer": 0, "explain": "Avval address ni oldik, keyin undan street ni." }
+  ]
+}
