@@ -1,0 +1,113 @@
+{
+  "title": "17-dars. Massivlar va metodlar",
+  "description": "Indekslar, length, push/pop, forEach, map, filter, find",
+  "learn": {
+    "intro": "Salom! 17-dars — **massivlar va metodlar**. Internet-do'kondagi savat, Instagram lentasi, Telegramdagi chatlar ro'yxati — bularning hammasi massivlar. Ketdik!",
+    "sections": [
+      {
+        "title": "Massiv va indekslar",
+        "slides": [
+          { "emoji": "🧺", "text": "Bitta o'zgaruvchi bitta qiymatni saqlaydi. 100 ta mahsulot ro'yxati kerak bo'lsa-chi? 100 ta o'zgaruvchi yaratmaymiz-ku! Buning uchun **massivlar** bor — kvadrat qavslardagi ro'yxat, elementlar vergul bilan." },
+          { "text": "Har bir elementning raqami — **indeksi** bor:", "code": "const fruits = [\"olma\", \"banan\", \"nok\"];\n//  indeks:       0       1        2\nconsole.log(fruits[0]); // olma\nconsole.log(fruits[1]); // banan" },
+          { "text": "Bunday raqam yo'q bo'lsa — JavaScript urishmaydi, shunchaki hech narsa topmaydi: `fruits[10]` → `undefined`. Elementni almashtirish mumkin: `fruits[0] = \"kivi\";` — `const` butun massivni almashtirishni taqiqlaydi, lekin ichini o'zgartirish mumkin." },
+          { "quote": true, "text": "Indekslash NOLdan boshlanadi. Birinchi element — [1] emas, [0]. Bu yangi boshlovchilarning eng ko'p uchraydigan xatosi." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Indekslar va length", "prompt": "fruits = [\"olma\", \"banan\", \"nok\"] bo'lsa, fruits[1] nima chiqaradi?", "options": ["banan", "olma", "nok", "undefined"], "answer": 0, "explain": "Hisob noldan: [0] — olma, [1] — banan." },
+          { "type": "truefalse", "topic": "Indekslar va length", "prompt": "3 elementli massivda fruits[10] xato beradi.", "answer": false, "explain": "Xato bo'lmaydi — undefined chiqadi." }
+        ]
+      },
+      {
+        "title": ".length — massiv uzunligi",
+        "slides": [
+          { "emoji": "📏", "text": "`.length` — massivda nechta element borligi. **Qavssiz** yoziladi: bu harakat emas, shunchaki son.", "code": "console.log(fruits.length); // 3" },
+          { "quote": true, "text": "Elementlar 3 ta, oxirgisining indeksi esa 2, chunki hisob noldan. Oxirgisi doim fruits[fruits.length - 1]." }
+        ],
+        "check": [
+          { "type": "input", "topic": "Indekslar va length", "prompt": "Massivda 5 ta element. Oxirgisining indeksi qancha?", "answer": ["4"], "explain": "length - 1 = 4." }
+        ]
+      },
+      {
+        "title": ".push() va .pop()",
+        "slides": [
+          { "emoji": "🛒", "text": "`push` — oxiriga itarish, savatga mahsulot solgandek. `pop` — oxirgisini olib tashlash. **Ikkalasi ham massivning o'zini o'zgartiradi.**", "code": "const fruits = [\"olma\", \"banan\", \"nok\"];\nfruits.push(\"kivi\");\n// [\"olma\", \"banan\", \"nok\", \"kivi\"] — length 4\nfruits.pop();\n// [\"olma\", \"banan\", \"nok\"] — length 3" },
+          { "text": "Fishka: `pop()` olib tashlaganini **qaytaradi** ham:", "code": "const last = fruits.pop();\nconsole.log(last); // nok" }
+        ],
+        "check": [
+          { "type": "choice", "topic": "push va pop", "prompt": "Qaysi metod massiv oxiriga element qo'shadi?", "options": ["push", "pop", "length", "find"], "answer": 0, "explain": "push — oxiriga itarish." }
+        ]
+      },
+      {
+        "title": ".forEach() — har biri uchun",
+        "slides": [
+          { "emoji": "🔁", "text": "`forEach` — «har biri uchun». Biz unga funksiya beramiz, u esa uni har bir element uchun navbat bilan chaqiradi. Mana strelkali funksiyalar kerak bo'ldi!", "code": "fruits.forEach((fruit) => {\n  console.log(fruit);\n});\n// olma\n// banan\n// nok" },
+          { "text": "`fruit` — parametr: har aylanada u yerda navbatdagi meva. Nomini istalgancha o'ylab topish mumkin. Bu 15-darsdagi `for...of` bilan bir xil, faqat massiv metodi orqali." },
+          { "text": "Ikkinchi parametr — **indeks**:", "code": "fruits.forEach((fruit, index) => {\n  console.log(index, fruit);\n});\n// 0 olma\n// 1 banan\n// 2 nok" }
+        ],
+        "check": [
+          { "type": "choice", "topic": "forEach va map", "prompt": "forEach((fruit, index) => …) ning ikkinchi parametriga nima tushadi?", "options": ["Element raqami (indeks)", "Massiv uzunligi", "Keyingi element", "Butun massiv"], "answer": 0, "explain": "Ikkinchi parametr — indeks, noldan." }
+        ]
+      },
+      {
+        "title": ".map() — yangi massiv",
+        "slides": [
+          { "emoji": "🏷️", "text": "`map` har bir elementga amal qo'llaydi va natijalarni **YANGI** massivga yig'adi. Eskisi o'zgarmaydi. 10% chegirmali narxlar:", "code": "const prices = [1000, 2500, 500];\nconst salePrices = prices.map((price) => price * 0.9);\n\nconsole.log(prices);     // [1000, 2500, 500]\nconsole.log(salePrices); // [900, 2250, 450]" },
+          { "text": "Farqning isboti: `forEach` hech narsa qaytarmaydi.", "code": "const x = prices.forEach((p) => p * 0.9);\nconsole.log(x); // undefined" },
+          { "quote": true, "text": "forEach — bajaradi. map — bajaradi va yangi massiv qaytaradi." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "forEach va map", "prompt": "prices.map(...) dan keyin eski prices massivi o'zgaradi.", "answer": false, "explain": "map yangi massiv yaratadi, eskisi o'zgarmaydi." }
+        ]
+      },
+      {
+        "title": ".filter() — elak kabi",
+        "slides": [
+          { "emoji": "🥅", "text": "`filter` — elak kabi: faqat sharti **true** bo'lgan elementlarni o'tkazadi. U ham yangi massiv qaytaradi.", "code": "function isEven(number) {\n  return number % 2 === 0;\n}\n\nconst numbers = [1, 2, 3, 4, 5, 6];\nconst evens = numbers.filter((n) => isEven(n));\nconsole.log(evens); // [2, 4, 6]" },
+          { "text": "Uy vazifasidagi `isEven` esingdami? U true yoki false qaytaradi — filter'ga aynan shu kerak. Hatto shunchaki nomi bilan ham bo'ladi: `numbers.filter(isEven)`." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "filter va find", "prompt": "[1, 2, 3, 4].filter((n) => n > 2) nima qaytaradi?", "options": ["[3, 4]", "[1, 2]", "3", "true"], "answer": 0, "explain": "Faqat 2 dan kattalar qoladi." }
+        ]
+      },
+      {
+        "title": ".find() — birinchi mosi",
+        "slides": [
+          { "emoji": "🔎", "text": "`find` shart bo'yicha **birinchi** elementni qidiradi va massivni emas, **o'zini** qaytaradi. Topmasa — `undefined`.", "code": "const products = [\n  { name: \"Telefon\", price: 3000 },\n  { name: \"Quloqchin\", price: 800 },\n];\nconst found = products.find((p) => p.name === \"Quloqchin\");\nconsole.log(found.price); // 800" },
+          { "text": "Xulosa:\n`forEach` — har biri uchun nimadir qiladi, **hech narsa** qaytarmaydi\n`map` — har birini o'zgartiradi, **xuddi shu uzunlikdagi yangi massiv**\n`filter` — moslarini qoldiradi, **yangi massiv** (qisqaroq bo'lishi mumkin)\n`find` — birinchisini qidiradi, **bitta element yoki undefined**" }
+        ],
+        "check": [
+          { "type": "choice", "topic": "filter va find", "prompt": "Hech narsa topmasa find nima qaytaradi?", "options": ["undefined", "[]", "0", "Xato"], "answer": 0, "explain": "find undefined qaytaradi, filter esa [] qaytargan bo'lardi." }
+        ]
+      },
+      {
+        "title": "Amaliyot: savat va uyga vazifa",
+        "slides": [
+          { "emoji": "🧾", "text": "Savat summasini hisoblaymiz. `total` — hamyon, avval bo'sh; har aylanada unga narxni solamiz. `let`, chunki qiymat o'zgaradi.", "code": "const prices = [500, 1200, 300, 2500, 800, 1500];\nlet total = 0;\nfor (const price of prices) {\n  total = total + price;\n}\nconsole.log(`Jami: ${total}`); // Jami: 6800" },
+          { "text": "Faqat 1000 dan qimmatlari — filter orqali:", "code": "const expensive = prices.filter((price) => price > 1000);\nconsole.log(expensive); // [1200, 2500, 1500]" },
+          { "emoji": "🏠", "text": "Uyga vazifa: 5–6 ta sevimli film yoki o'yin massivi, forEach orqali «1. Nomi» formatida chiqar. Maslahat: indeks noldan boshlanadi, kerak esa birdan." },
+          { "quote": true, "text": "Indeks noldan boshlanadi, map va filter esa yangi massiv qaytaradi." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Amaliyot", "prompt": "Uy vazifasida raqamlash «0.» dan chiqdi. Nima unutilgan?", "options": ["index ga 1 qo'shish", "push yozish", "length qo'yish", "forEach ni olib tashlash"], "answer": 0, "explain": "${index + 1} kerak." }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    { "type": "truefalse", "topic": "Indekslar va length", "prompt": "Massivning birinchi elementi — fruits[0].", "answer": true, "explain": "Indekslash noldan boshlanadi." },
+    { "type": "choice", "topic": "Indekslar va length", "prompt": "Konsol nima chiqaradi?", "code": "const fruits = [\"olma\", \"banan\", \"nok\"];\nconsole.log(fruits[2]);", "options": ["nok", "banan", "olma", "undefined"], "answer": 0, "explain": "[0] — olma, [1] — banan, [2] — nok." },
+    { "type": "input", "topic": "Indekslar va length", "prompt": "3 elementli massivda fruits[10] nima chiqaradi?", "answer": ["undefined"], "explain": "Bunday indeks yo'q — undefined." },
+    { "type": "choice", "topic": "Indekslar va length", "prompt": "Istalgan massivning oxirgi elementini qanday olish mumkin?", "options": ["arr[arr.length - 1]", "arr[arr.length]", "arr[last]", "arr.length"], "answer": 0, "explain": "Hisob noldan, shuning uchun oxirgi indeks — length - 1." },
+    { "type": "choice", "topic": "push va pop", "prompt": "console.log(fruits.length) nima chiqaradi?", "code": "const fruits = [\"olma\", \"banan\", \"nok\"];\nfruits.push(\"kivi\");\nconsole.log(fruits.length);", "options": ["4", "3", "5", "kivi"], "answer": 0, "explain": "push element qo'shdi: 3 edi, 4 bo'ldi." },
+    { "type": "choice", "topic": "push va pop", "prompt": "last o'zgaruvchisida nima bo'ladi?", "code": "const fruits = [\"olma\", \"banan\", \"nok\"];\nconst last = fruits.pop();", "options": ["nok", "olma", "undefined", "2"], "answer": 0, "explain": "pop oxirgi elementni olib tashlaydi va uni qaytaradi." },
+    { "type": "match", "topic": "push va pop", "prompt": "Metod va u nima qilishini moslashtir", "pairs": [["push", "Oxiriga qo'shish"], ["pop", "Oxirgisini olib tashlash"], ["length", "Nechta element"]] },
+    { "type": "choice", "topic": "forEach va map", "prompt": "Konsol nima chiqaradi?", "code": "const prices = [1000, 2500, 500];\nconst sale = prices.map((p) => p * 0.9);\nconsole.log(sale);", "options": ["[900, 2250, 450]", "[1000, 2500, 500]", "undefined", "3"], "answer": 0, "explain": "map har bir narxga 10% chegirma qo'lladi." },
+    { "type": "input", "topic": "forEach va map", "prompt": "console.log(x) nima chiqaradi?", "code": "const x = [1, 2, 3].forEach((n) => n * 2);\nconsole.log(x);", "answer": ["undefined"], "explain": "forEach hech narsa qaytarmaydi." },
+    { "type": "choice", "topic": "forEach va map", "prompt": "Bu kod nima chiqaradi?", "code": "[\"a\", \"b\"].forEach((item, index) => {\n  console.log(index, item);\n});", "options": ["0 a va 1 b", "1 a va 2 b", "a 0 va b 1", "Xato"], "answer": 0, "explain": "Ikkinchi parametr — indeks, u noldan boshlanadi." },
+    { "type": "choice", "topic": "filter va find", "prompt": "Konsol nima chiqaradi?", "code": "const numbers = [1, 2, 3, 4, 5, 6];\nconsole.log(numbers.filter((n) => n % 2 === 0));", "options": ["[2, 4, 6]", "[1, 3, 5]", "2", "true"], "answer": 0, "explain": "filter faqat juftlarni qoldirdi." },
+    { "type": "choice", "topic": "filter va find", "prompt": "Konsol nima chiqaradi?", "code": "const products = [\n  { name: \"Telefon\", price: 3000 },\n  { name: \"Quloqchin\", price: 800 },\n];\nconst found = products.find((p) => p.name === \"Quloqchin\");\nconsole.log(found.price);", "options": ["800", "3000", "undefined", "Quloqchin"], "answer": 0, "explain": "find quloqchin obyektini qaytardi, uning price'i 800." },
+    { "type": "match", "topic": "filter va find", "prompt": "Metod va u nima qaytarishini moslashtir", "pairs": [["forEach", "Hech narsa"], ["map", "Xuddi shu uzunlikdagi yangi massiv"], ["filter", "Yangi massiv, qisqaroq bo'lishi mumkin"], ["find", "Bitta element yoki undefined"]] },
+    { "type": "choice", "topic": "Amaliyot", "prompt": "total nimaga teng?", "code": "const prices = [500, 1200, 300];\nlet total = 0;\nfor (const price of prices) {\n  total = total + price;\n}\nconsole.log(total);", "options": ["2000", "500", "300", "0"], "answer": 0, "explain": "500 + 1200 + 300 = 2000." },
+    { "type": "order", "topic": "Amaliyot", "prompt": "Filmni birdan boshlangan raqam bilan chiqarishni yig'", "code": "movies.forEach((movie, index) => {\n  console.log( ... );\n});", "tokens": ["`${index + 1}.", "${movie}`"], "extra": ["${index}.", "push"], "explain": "`${index + 1}. ${movie}` — raqam birdan." }
+  ]
+}

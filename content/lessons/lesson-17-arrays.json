@@ -1,0 +1,115 @@
+{
+  "id": "lesson-17-arrays",
+  "title": "Урок 17. Массивы и методы",
+  "emoji": "🧺",
+  "description": "Индексы, length, push/pop, forEach, map, filter, find",
+  "learn": {
+    "intro": "Привет! Урок 17 — **массивы и методы**. Корзина в магазине, лента в Инстаграме, список чатов в Телеграме — всё это массивы. Поехали!",
+    "sections": [
+      {
+        "title": "Массив и индексы",
+        "slides": [
+          { "emoji": "🧺", "text": "Одна переменная хранит одно значение. А если нужен список из 100 товаров? Не создавать же 100 переменных! Для этого есть **массивы** — список в квадратных скобках, элементы через запятую." },
+          { "text": "У каждого элемента есть номер — **индекс**:", "code": "const fruits = [\"яблоко\", \"банан\", \"груша\"];\n//  индекс:       0         1        2\nconsole.log(fruits[0]); // яблоко\nconsole.log(fruits[1]); // банан" },
+          { "text": "Такого номера нет — JavaScript не ругается, а просто ничего не находит: `fruits[10]` → `undefined`. А элемент можно заменить: `fruits[0] = \"киви\";` — `const` запрещает заменить весь массив, но менять внутри можно." },
+          { "quote": true, "text": "Индексация начинается с НУЛЯ. Первый элемент — [0], а не [1]. Это самая частая ошибка новичков." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Индексы и length", "prompt": "Что выведет fruits[1], если fruits = [\"яблоко\", \"банан\", \"груша\"]?", "options": ["банан", "яблоко", "груша", "undefined"], "answer": 0, "explain": "Счёт с нуля: [0] — яблоко, [1] — банан." },
+          { "type": "truefalse", "topic": "Индексы и length", "prompt": "fruits[10] у массива из 3 элементов выдаст ошибку.", "answer": false, "explain": "Ошибки не будет — получим undefined." }
+        ]
+      },
+      {
+        "title": ".length — длина массива",
+        "slides": [
+          { "emoji": "📏", "text": "`.length` — сколько элементов в массиве. Пишется **без скобок**: это не действие, а просто число.", "code": "console.log(fruits.length); // 3" },
+          { "quote": true, "text": "Элементов 3, а индекс последнего — 2, потому что счёт с нуля. Последний всегда fruits[fruits.length - 1]." }
+        ],
+        "check": [
+          { "type": "input", "topic": "Индексы и length", "prompt": "В массиве 5 элементов. Какой индекс у последнего?", "answer": ["4"], "explain": "length - 1 = 4." }
+        ]
+      },
+      {
+        "title": ".push() и .pop()",
+        "slides": [
+          { "emoji": "🛒", "text": "`push` — толкнуть в конец, как положить товар в корзину. `pop` — вытащить последний. **Оба меняют сам массив.**", "code": "const fruits = [\"яблоко\", \"банан\", \"груша\"];\nfruits.push(\"киви\");\n// [\"яблоко\", \"банан\", \"груша\", \"киви\"] — length 4\nfruits.pop();\n// [\"яблоко\", \"банан\", \"груша\"] — length 3" },
+          { "text": "Фишка: `pop()` ещё и **возвращает** то, что убрал:", "code": "const last = fruits.pop();\nconsole.log(last); // груша" }
+        ],
+        "check": [
+          { "type": "choice", "topic": "push и pop", "prompt": "Какой метод добавляет элемент в конец массива?", "options": ["push", "pop", "length", "find"], "answer": 0, "explain": "push — толкнуть в конец." }
+        ]
+      },
+      {
+        "title": ".forEach() — для каждого",
+        "slides": [
+          { "emoji": "🔁", "text": "`forEach` — «для каждого». Мы отдаём ему функцию, и он вызывает её для каждого элемента по очереди. Вот и пригодились стрелочные функции!", "code": "fruits.forEach((fruit) => {\n  console.log(fruit);\n});\n// яблоко\n// банан\n// груша" },
+          { "text": "`fruit` — параметр: на каждом круге там очередной фрукт. Имя можно придумать любое. Это то же самое, что `for...of` из урока 15, только через метод массива." },
+          { "text": "Второй параметр — **индекс**:", "code": "fruits.forEach((fruit, index) => {\n  console.log(index, fruit);\n});\n// 0 яблоко\n// 1 банан\n// 2 груша" }
+        ],
+        "check": [
+          { "type": "choice", "topic": "forEach и map", "prompt": "Что попадает во второй параметр forEach((fruit, index) => …)?", "options": ["Номер элемента (индекс)", "Длина массива", "Следующий элемент", "Весь массив"], "answer": 0, "explain": "Второй параметр — индекс, с нуля." }
+        ]
+      },
+      {
+        "title": ".map() — новый массив",
+        "slides": [
+          { "emoji": "🏷️", "text": "`map` применяет действие к каждому элементу и собирает результаты в **НОВЫЙ** массив. Старый не меняется. Цены со скидкой 10%:", "code": "const prices = [1000, 2500, 500];\nconst salePrices = prices.map((price) => price * 0.9);\n\nconsole.log(prices);     // [1000, 2500, 500]\nconsole.log(salePrices); // [900, 2250, 450]" },
+          { "text": "Доказательство разницы: `forEach` ничего не отдаёт.", "code": "const x = prices.forEach((p) => p * 0.9);\nconsole.log(x); // undefined" },
+          { "quote": true, "text": "forEach — делает. map — делает и отдаёт новый массив." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "forEach и map", "prompt": "После prices.map(...) старый массив prices меняется.", "answer": false, "explain": "map создаёт новый массив, старый остаётся как был." }
+        ]
+      },
+      {
+        "title": ".filter() — как сито",
+        "slides": [
+          { "emoji": "🥅", "text": "`filter` — как сито: пропускает только элементы, для которых условие **true**. Тоже возвращает новый массив.", "code": "function isEven(number) {\n  return number % 2 === 0;\n}\n\nconst numbers = [1, 2, 3, 4, 5, 6];\nconst evens = numbers.filter((n) => isEven(n));\nconsole.log(evens); // [2, 4, 6]" },
+          { "text": "Помнишь `isEven` из домашки? Она возвращает true или false — именно это и нужно filter. Можно даже просто по имени: `numbers.filter(isEven)`." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "filter и find", "prompt": "Что вернёт [1, 2, 3, 4].filter((n) => n > 2)?", "options": ["[3, 4]", "[1, 2]", "3", "true"], "answer": 0, "explain": "Остаются только элементы больше 2." }
+        ]
+      },
+      {
+        "title": ".find() — первый подходящий",
+        "slides": [
+          { "emoji": "🔎", "text": "`find` ищет **первый** элемент по условию и возвращает **его самого**, а не массив. Не нашёл — `undefined`.", "code": "const products = [\n  { name: \"Телефон\", price: 3000 },\n  { name: \"Наушники\", price: 800 },\n];\nconst found = products.find((p) => p.name === \"Наушники\");\nconsole.log(found.price); // 800" },
+          { "text": "Итог:\n`forEach` — делает что-то для каждого, возвращает **ничего**\n`map` — меняет каждый, **новый массив той же длины**\n`filter` — оставляет подходящие, **новый массив** (может быть короче)\n`find` — ищет первый, **один элемент или undefined**" }
+        ],
+        "check": [
+          { "type": "choice", "topic": "filter и find", "prompt": "Что вернёт find, если ничего не нашёл?", "options": ["undefined", "[]", "0", "Ошибку"], "answer": 0, "explain": "find возвращает undefined, а filter вернул бы []." }
+        ]
+      },
+      {
+        "title": "Практика: корзина и домашка",
+        "slides": [
+          { "emoji": "🧾", "text": "Считаем сумму корзины. `total` — кошелёк, сначала пустой; на каждом круге кладём туда цену. `let`, потому что значение меняется.", "code": "const prices = [500, 1200, 300, 2500, 800, 1500];\nlet total = 0;\nfor (const price of prices) {\n  total = total + price;\n}\nconsole.log(`Итого: ${total}`); // Итого: 6800" },
+          { "text": "Только дороже 1000 — через filter:", "code": "const expensive = prices.filter((price) => price > 1000);\nconsole.log(expensive); // [1200, 2500, 1500]" },
+          { "emoji": "🏠", "text": "Домашка: массив из 5–6 любимых фильмов или игр, вывести через forEach в формате «1. Название». Подсказка: индекс начинается с нуля, а нужно с единицы." },
+          { "quote": true, "text": "Индекс начинается с нуля, а map и filter возвращают новый массив." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Практика", "prompt": "В домашке нумерация вышла с «0.». Что забыли?", "options": ["Прибавить 1 к index", "Написать push", "Поставить length", "Убрать forEach"], "answer": 0, "explain": "Нужно ${index + 1}." }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    { "type": "truefalse", "topic": "Индексы и length", "prompt": "Первый элемент массива — fruits[0].", "answer": true, "explain": "Индексация начинается с нуля." },
+    { "type": "choice", "topic": "Индексы и length", "prompt": "Что выведет консоль?", "code": "const fruits = [\"яблоко\", \"банан\", \"груша\"];\nconsole.log(fruits[2]);", "options": ["груша", "банан", "яблоко", "undefined"], "answer": 0, "explain": "[0] — яблоко, [1] — банан, [2] — груша." },
+    { "type": "input", "topic": "Индексы и length", "prompt": "Что выведет fruits[10] у массива из 3 элементов?", "answer": ["undefined"], "explain": "Такого индекса нет — undefined." },
+    { "type": "choice", "topic": "Индексы и length", "prompt": "Как достать последний элемент любого массива?", "options": ["arr[arr.length - 1]", "arr[arr.length]", "arr[last]", "arr.length"], "answer": 0, "explain": "Счёт с нуля, поэтому последний индекс — length - 1." },
+    { "type": "choice", "topic": "push и pop", "prompt": "Что выведет console.log(fruits.length)?", "code": "const fruits = [\"яблоко\", \"банан\", \"груша\"];\nfruits.push(\"киви\");\nconsole.log(fruits.length);", "options": ["4", "3", "5", "киви"], "answer": 0, "explain": "push добавил элемент: было 3, стало 4." },
+    { "type": "choice", "topic": "push и pop", "prompt": "Что будет в переменной last?", "code": "const fruits = [\"яблоко\", \"банан\", \"груша\"];\nconst last = fruits.pop();", "options": ["груша", "яблоко", "undefined", "2"], "answer": 0, "explain": "pop убирает последний элемент и возвращает его." },
+    { "type": "match", "topic": "push и pop", "prompt": "Соедини метод и что он делает", "pairs": [["push", "Добавить в конец"], ["pop", "Убрать последний"], ["length", "Сколько элементов"]] },
+    { "type": "choice", "topic": "forEach и map", "prompt": "Что выведет консоль?", "code": "const prices = [1000, 2500, 500];\nconst sale = prices.map((p) => p * 0.9);\nconsole.log(sale);", "options": ["[900, 2250, 450]", "[1000, 2500, 500]", "undefined", "3"], "answer": 0, "explain": "map применил скидку 10% к каждой цене." },
+    { "type": "input", "topic": "forEach и map", "prompt": "Что выведет console.log(x)?", "code": "const x = [1, 2, 3].forEach((n) => n * 2);\nconsole.log(x);", "answer": ["undefined"], "explain": "forEach ничего не возвращает." },
+    { "type": "choice", "topic": "forEach и map", "prompt": "Что выведет этот код?", "code": "[\"a\", \"b\"].forEach((item, index) => {\n  console.log(index, item);\n});", "options": ["0 a и 1 b", "1 a и 2 b", "a 0 и b 1", "Ошибка"], "answer": 0, "explain": "Второй параметр — индекс, он начинается с нуля." },
+    { "type": "choice", "topic": "filter и find", "prompt": "Что выведет консоль?", "code": "const numbers = [1, 2, 3, 4, 5, 6];\nconsole.log(numbers.filter((n) => n % 2 === 0));", "options": ["[2, 4, 6]", "[1, 3, 5]", "2", "true"], "answer": 0, "explain": "filter оставил только чётные." },
+    { "type": "choice", "topic": "filter и find", "prompt": "Что выведет консоль?", "code": "const products = [\n  { name: \"Телефон\", price: 3000 },\n  { name: \"Наушники\", price: 800 },\n];\nconst found = products.find((p) => p.name === \"Наушники\");\nconsole.log(found.price);", "options": ["800", "3000", "undefined", "Наушники"], "answer": 0, "explain": "find вернул объект наушников, у него price 800." },
+    { "type": "match", "topic": "filter и find", "prompt": "Соедини метод и что он возвращает", "pairs": [["forEach", "Ничего"], ["map", "Новый массив той же длины"], ["filter", "Новый массив, может быть короче"], ["find", "Один элемент или undefined"]] },
+    { "type": "choice", "topic": "Практика", "prompt": "Чему равен total?", "code": "const prices = [500, 1200, 300];\nlet total = 0;\nfor (const price of prices) {\n  total = total + price;\n}\nconsole.log(total);", "options": ["2000", "500", "300", "0"], "answer": 0, "explain": "500 + 1200 + 300 = 2000." },
+    { "type": "order", "topic": "Практика", "prompt": "Собери вывод фильма с номером с единицы", "code": "movies.forEach((movie, index) => {\n  console.log( ... );\n});", "tokens": ["`${index + 1}.", "${movie}`"], "extra": ["${index}.", "push"], "explain": "`${index + 1}. ${movie}` — номер с единицы." }
+  ]
+}
