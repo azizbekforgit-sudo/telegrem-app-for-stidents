@@ -1,0 +1,95 @@
+{
+  "title": "5-dars. Pozitsiyalash",
+  "description": "static, relative, absolute, fixed va sticky",
+  "learn": {
+    "intro": "Salom! 5-dars — **pozitsiyalash**. Elementni «navbat»dan chiqarib, kerakli joyga qo'yishni o'rganamiz — masalan, qizil SALE belgisini rasm burchagiga. Ketdik!",
+    "sections": [
+      {
+        "title": "Navbat va position: static",
+        "slides": [
+          { "emoji": "🧍‍♂️", "text": "Do'kondagi navbatni tasavvur qil: hamma birin-ketin turadi, hech kim oldinga chiqa olmaydi. Saytdagi elementlar ham standart holatda shunday turadi. Bu **normal flow** — oddiy oqim deyiladi." },
+          { "text": "`position: static` — **standart** holat. Hech narsa yozmasang, elementda aynan static bo'ladi: oddiy navbat, hech narsa siljimaydi. Buni DevTools'da ko'rish mumkin." },
+          { "quote": true, "text": "Agar position ko'rsatilmagan bo'lsa — u static." }
+        ],
+        "check": [
+          { "type": "input", "topic": "static", "prompt": "Hech narsa yozilmasa, elementning position'i qanday bo'ladi?", "answer": ["static"], "explain": "static — standart qiymat." }
+        ]
+      },
+      {
+        "title": "position: relative",
+        "slides": [
+          { "emoji": "↘️", "text": "Qutini 20px pastga va o'ngga siljitamiz:", "code": ".box {\n  position: relative;\n  top: 20px;\n  left: 20px;\n}" },
+          { "text": "Quti siljidi, lekin **navbatdagi o'rnini tark etmadi**. Qo'shnilar o'z joyida qoldi, go'yo u yo'qdek." },
+          { "text": "Taxmin qilib ko'r: `top: -20px` qo'ysak, blok qayerga ketadi? To'g'ri — **yuqoriga**." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "relative", "prompt": "position: relative da qo'shnilar element ortidan suriladi.", "answer": false, "explain": "Element siljiydi, lekin oqimdagi o'rni qoladi — qo'shnilar joyida turadi." },
+          { "type": "choice", "topic": "relative", "prompt": "top: -20px da blok qayerga siljiydi?", "options": ["Yuqoriga", "Pastga", "Chapga", "Hech qayerga"], "answer": 0, "explain": "Manfiy top blokni yuqoriga ko'taradi." }
+        ]
+      },
+      {
+        "title": "position: absolute — eng muhimi",
+        "slides": [
+          { "emoji": "🚀", "text": "`absolute` — odam **navbatdan butunlay chiqadi**, qolganlar unga qaramaydi. U bog'lanish uchun **relative'li eng yaqin ota-elementni** qidiradi. Bunday yo'q bo'lsa — butun sahifaga bog'lanadi." },
+          { "emoji": "🐞", "text": "Xato: belgi **butun sahifaning** burchagiga uchib ketdi, chunki kartochkada relative yo'q. U faqat body'ni topdi:", "code": ".badge {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n}" },
+          { "text": "Tuzatamiz — ota-elementga `position: relative` beramiz. Endi belgi kartochka ichida «tutildi» va u bilan birga harakatlanadi:", "code": ".card {\n  position: relative;\n}\n\n.badge {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n}" },
+          { "quote": true, "text": "absolute doim eng yaqin relative ajdodni qidiradi. Topmasa — body'ga uchib ketadi." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "absolute", "prompt": "absolute'li belgi sahifa burchagiga uchib ketdi. Nimani tuzatamiz?", "options": ["Ota-elementga position: relative beramiz", "Belgiga position: static beramiz", "top va right ni olib tashlaymiz", "body'ga position: fixed beramiz"], "answer": 0, "explain": "absolute eng yaqin relative ota-elementga bog'lanadi." },
+          { "type": "truefalse", "topic": "absolute", "prompt": "absolute'li element umumiy navbatda qoladi va qo'shnilarni suradi.", "answer": false, "explain": "absolute oqimdan chiqadi — qo'shnilar uni sezmaydi." }
+        ]
+      },
+      {
+        "title": "position: fixed",
+        "slides": [
+          { "emoji": "📌", "text": "`fixed` — element **ekranga mixlangan**. Sahifani aylantirasan, u esa joyida turadi. «Yuqoriga» tugmalari va internet-do'konlardagi panellar shunday ishlaydi." },
+          { "text": "Ekranning o'ng pastki burchagidagi «yuqoriga» tugmasi:", "code": ".to-top {\n  position: fixed;\n  bottom: 20px;\n  right: 20px;\n}" }
+        ],
+        "check": [
+          { "type": "choice", "topic": "fixed", "prompt": "Sahifa aylantirilganda fixed tugma bilan nima bo'ladi?", "options": ["Ekranda joyida qoladi", "Sahifa bilan birga ketadi", "Yo'qoladi", "Shapkaga yopishadi"], "answer": 0, "explain": "fixed sahifaga emas, ekranga bog'langan." }
+        ]
+      },
+      {
+        "title": "position: sticky",
+        "slides": [
+          { "emoji": "🍯", "text": "`sticky` — ayyor gibrid. Kerakli nuqtagacha yetmaguncha u **static** kabi turadi. Yetib borganda — fixed kabi **yopishadi**." },
+          { "text": "Shapka aylantirilganda tepaga yopishadi:", "code": "header {\n  position: sticky;\n  top: 0;\n}" },
+          { "quote": true, "text": "top: 0 siz sticky ishlamaydi — yopishish nuqtasi kerak. Yana ota-elementda overflow: hidden yo'qligini tekshiring." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "sticky", "prompt": "top: 0 olib tashlansa ham sticky baribir yopishadi.", "answer": false, "explain": "sticky'ga yopishish nuqtasi kerak, masalan top: 0." }
+        ]
+      },
+      {
+        "title": "Amaliyot: SALE belgisi va uyga vazifa",
+        "slides": [
+          { "emoji": "🏷️", "text": "Topshiriq: o'ng yuqori burchagida qizil «SALE» belgisi bo'lgan mahsulot kartochkasi. Avval ota-elementga `position: relative` — bu sizning «langaringiz». Keyin belgiga `position: absolute`, `top` va `right`.", "code": ".card { position: relative; }\n.sale {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n  background: red;\n  color: white;\n}" },
+          { "text": "Bonus: «-12%», «NEW», «HIT» belgili 3 ta kartochka. Kim tezroq qilsa — **pozitsiyalash ustasi** unvonini oladi 🏅" },
+          { "emoji": "🏠", "text": "Uyga vazifa: `position: sticky` bilan tepaga yopishadigan sayt shapkasi. Sahifa uzun bo'lishi uchun 20–30 abzatsli matn ol." },
+          { "quote": true, "text": "relative siljitadi, absolute navbatdan chiqarib relative ota-elementga bog'laydi, fixed ekranga mixlaydi, sticky esa nuqtaga yetganda yopishadi." }
+        ],
+        "check": [
+          { "type": "match", "topic": "Amaliyot", "prompt": "position va u nima qilishini moslashtir", "pairs": [["relative", "Siljitadi, o'rni qoladi"], ["absolute", "Navbatdan chiqaradi"], ["fixed", "Ekranga mixlangan"], ["sticky", "Aylantirganda yopishadi"]] }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    { "type": "truefalse", "topic": "static", "prompt": "Standart holatda barcha elementlarda position: static bo'ladi.", "answer": true, "explain": "Bu oddiy oqim — normal flow." },
+    { "type": "choice", "topic": "static", "prompt": "Elementlar birin-ketin turadigan oddiy tartib qanday ataladi?", "options": ["Normal flow", "Sticky flow", "Absolute line", "Fixed order"], "answer": 0, "explain": "Normal flow — oddiy oqim, do'kondagi navbat kabi." },
+    { "type": "choice", "topic": "relative", "prompt": "Bu kod nima qiladi?", "code": ".box {\n  position: relative;\n  top: 20px;\n  left: 20px;\n}", "options": ["Qutini 20px pastga va o'ngga siljitadi", "Qutini yuqoriga va chapga siljitadi", "Qutini ekranga mixlaydi", "Qutini oqimdan chiqaradi"], "answer": 0, "explain": "top: 20px — tepadan pastga, left: 20px — chap chetdan o'ngga." },
+    { "type": "truefalse", "topic": "relative", "prompt": "relative'li element navbatdagi o'rnini saqlaydi.", "answer": true, "explain": "Qo'shnilar u siljimagandek o'z joyida turadi." },
+    { "type": "input", "topic": "relative", "prompt": "Qaysi top qiymati relative-blokni 20px yuqoriga ko'taradi? (px bilan)", "answer": ["-20px"], "explain": "Manfiy qiymat teskari tomonga siljitadi." },
+    { "type": "choice", "topic": "absolute", "prompt": "position: absolute'li element nimaga bog'lanadi?", "options": ["relative'li eng yaqin ota-elementga", "Doim ekranga", "Keyingi qo'shniga", "Hech nimaga"], "answer": 0, "explain": "relative ota-element bo'lmasa — body'ga bog'lanadi." },
+    { "type": "choice", "topic": "absolute", "prompt": "Belgi qayerda turadi?", "code": "/* .card da position yo'q */\n.badge {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n}", "options": ["Butun sahifa burchagida", "Kartochka burchagida", "Kartochka ostida", "Joyida qoladi"], "answer": 0, "explain": "relative ota-element yo'q — belgi body'ga bog'landi." },
+    { "type": "order", "topic": "absolute", "prompt": "Kartochkani belgi uchun «langar» qiladigan qoidani yig'", "tokens": [".card", "{", "position:", "relative;", "}"], "extra": ["absolute;", "fixed;"], "explain": ".card { position: relative; }" },
+    { "type": "truefalse", "topic": "absolute", "prompt": "Ota-elementga position: relative berilsa, absolute'li belgi kartochka bilan birga harakatlanadi.", "answer": true, "explain": "Belgi ekranda yotmaydi, kartochkaga bog'langan." },
+    { "type": "choice", "topic": "fixed", "prompt": "Ekran burchagida doim ko'rinadigan «yuqoriga» tugmasi uchun qaysi position mos?", "options": ["fixed", "static", "relative", "sticky"], "answer": 0, "explain": "fixed ekranga mixlangan va aylantirganda ketmaydi." },
+    { "type": "choice", "topic": "fixed", "prompt": "Tugma qayerda bo'ladi?", "code": ".to-top {\n  position: fixed;\n  bottom: 20px;\n  right: 20px;\n}", "options": ["Ekranning o'ng pastki burchagida", "Sahifaning chap yuqori burchagida", "Sahifa oxirida, matndan keyin", "Markazda"], "answer": 0, "explain": "bottom va right ekran chetlaridan hisoblanadi." },
+    { "type": "choice", "topic": "sticky", "prompt": "Nuqtaga yetmaguncha sticky o'zini qanday tutadi?", "options": ["static kabi — oddiy element", "fixed kabi — ekranga mixlangan", "absolute kabi — oqimdan chiqqan", "Ko'rinmaydi"], "answer": 0, "explain": "Avval oddiy, keyin yopishadi." },
+    { "type": "choice", "topic": "sticky", "prompt": "sticky shapka yopishmayapti. Nimani tekshiramiz?", "code": "header {\n  position: sticky;\n}", "options": ["top: 0 yo'q — yopishish nuqtasi kerak", "position: static kerak", "header ni olib tashlash kerak", "float qo'shish kerak"], "answer": 0, "explain": "sticky faqat yopishish nuqtasi bilan ishlaydi, masalan top: 0." },
+    { "type": "match", "topic": "Amaliyot", "prompt": "position va saytdagi misolni moslashtir", "pairs": [["absolute", "Kartochka burchagidagi SALE belgisi"], ["fixed", "«Yuqoriga» tugmasi"], ["sticky", "Tepaga yopishadigan shapka"], ["static", "Oddiy matn abzatsi"]] },
+    { "type": "choice", "topic": "Amaliyot", "prompt": "SALE belgisi: kartochka va belgiga nima qo'yiladi?", "options": ["Kartochkaga relative, belgiga absolute", "Kartochkaga absolute, belgiga relative", "Ikkalasiga fixed", "Ikkalasiga static"], "answer": 0, "explain": "Ota-element — «langar» (relative), belgi unga bog'lanadi (absolute)." }
+  ]
+}

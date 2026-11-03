@@ -1,0 +1,95 @@
+{
+  "title": "Lesson 5. Positioning",
+  "description": "static, relative, absolute, fixed and sticky",
+  "learn": {
+    "intro": "Hi! Lesson 5 — **positioning**. We'll learn to pull an element out of the «queue» and put it where we want — for example, a red SALE badge in the corner of a picture. Let's go!",
+    "sections": [
+      {
+        "title": "The queue and position: static",
+        "slides": [
+          { "emoji": "🧍‍♂️", "text": "Imagine a queue in a shop: everyone stands one after another, nobody can step ahead. That's how elements stand on a site by default. It's called **normal flow**." },
+          { "text": "`position: static` is the **default** state. If you write nothing, an element is static: an ordinary queue, nothing moves. You can see it in DevTools." },
+          { "quote": true, "text": "If position isn't set — it's static." }
+        ],
+        "check": [
+          { "type": "input", "topic": "static", "prompt": "What position does an element have if you write nothing?", "answer": ["static"], "explain": "static is the default value." }
+        ]
+      },
+      {
+        "title": "position: relative",
+        "slides": [
+          { "emoji": "↘️", "text": "We move the box 20px down and to the right:", "code": ".box {\n  position: relative;\n  top: 20px;\n  left: 20px;\n}" },
+          { "text": "The box moved, but it **didn't leave its place in the queue**. The neighbors stayed where they were, as if it weren't there." },
+          { "text": "Try to guess: where will the block go with `top: -20px`? Right — **up**." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "relative", "prompt": "With position: relative the neighbors move along with the element.", "answer": false, "explain": "The element moves, but its place in the flow remains — the neighbors stay put." },
+          { "type": "choice", "topic": "relative", "prompt": "Where will the block move with top: -20px?", "options": ["Up", "Down", "Left", "Nowhere"], "answer": 0, "explain": "A negative top lifts the block up." }
+        ]
+      },
+      {
+        "title": "position: absolute — the main part",
+        "slides": [
+          { "emoji": "🚀", "text": "`absolute` means a person **leaves the queue completely**, and the others ignore them. They look for the **nearest parent with relative** to attach to. If there's none, they attach to the whole page." },
+          { "emoji": "🐞", "text": "The bug: the badge flew to the corner of the **whole page** because the card has no relative. It found only body:", "code": ".badge {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n}" },
+          { "text": "We fix it — give the parent `position: relative`. Now the badge is «caught» inside the card and moves with it:", "code": ".card {\n  position: relative;\n}\n\n.badge {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n}" },
+          { "quote": true, "text": "absolute always looks for the nearest relative ancestor. If it doesn't find one, it flies off to body." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "absolute", "prompt": "An absolute badge flew to the corner of the page. What do you fix?", "options": ["Give the parent position: relative", "Give the badge position: static", "Remove top and right", "Give body position: fixed"], "answer": 0, "explain": "absolute attaches to the nearest relative parent." },
+          { "type": "truefalse", "topic": "absolute", "prompt": "An absolute element stays in the queue and pushes its neighbors.", "answer": false, "explain": "absolute leaves the flow — the neighbors don't notice it." }
+        ]
+      },
+      {
+        "title": "position: fixed",
+        "slides": [
+          { "emoji": "📌", "text": "`fixed` means the element is **nailed to the screen**. You scroll the page, and it stays in place. That's how «back to top» buttons and online-shop panels work." },
+          { "text": "A «back to top» button in the bottom-right corner of the screen:", "code": ".to-top {\n  position: fixed;\n  bottom: 20px;\n  right: 20px;\n}" }
+        ],
+        "check": [
+          { "type": "choice", "topic": "fixed", "prompt": "What happens to a fixed button when you scroll the page?", "options": ["It stays in place on the screen", "It scrolls away with the page", "It disappears", "It sticks to the header"], "answer": 0, "explain": "fixed is attached to the screen, not the page." }
+        ]
+      },
+      {
+        "title": "position: sticky",
+        "slides": [
+          { "emoji": "🍯", "text": "`sticky` is a clever hybrid. Until you reach a certain point, it behaves like **static**. Once you scroll there, it **sticks**, like fixed." },
+          { "text": "The header sticks to the top while scrolling:", "code": "header {\n  position: sticky;\n  top: 0;\n}" },
+          { "quote": true, "text": "Without top: 0, sticky won't work — it needs a sticking point. Also check that the parent has no overflow: hidden." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "sticky", "prompt": "If you remove top: 0, sticky still sticks.", "answer": false, "explain": "sticky needs a sticking point, such as top: 0." }
+        ]
+      },
+      {
+        "title": "Practice: a SALE badge and homework",
+        "slides": [
+          { "emoji": "🏷️", "text": "Task: a product card with a red «SALE» badge in the top-right corner. First give the parent `position: relative` — that's your «anchor». Then give the badge `position: absolute`, `top` and `right`.", "code": ".card { position: relative; }\n.sale {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n  background: red;\n  color: white;\n}" },
+          { "text": "Bonus: 3 cards with «-12%», «NEW» and «HIT» badges. Whoever is fastest earns the title of **positioning master** 🏅" },
+          { "emoji": "🏠", "text": "Homework: a site header with `position: sticky` that sticks to the top. Take 20–30 paragraphs of text so the page is long." },
+          { "quote": true, "text": "relative shifts, absolute pulls out of the queue and attaches to a relative parent, fixed nails to the screen, and sticky sticks once you scroll to its point." }
+        ],
+        "check": [
+          { "type": "match", "topic": "Practice", "prompt": "Match the position and what it does", "pairs": [["relative", "Shifts, keeps its place"], ["absolute", "Pulls out of the queue"], ["fixed", "Nailed to the screen"], ["sticky", "Sticks while scrolling"]] }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    { "type": "truefalse", "topic": "static", "prompt": "By default every element has position: static.", "answer": true, "explain": "This is the normal flow." },
+    { "type": "choice", "topic": "static", "prompt": "What's the ordinary order called, where elements stand one after another?", "options": ["Normal flow", "Sticky flow", "Absolute line", "Fixed order"], "answer": 0, "explain": "Normal flow — like a queue in a shop." },
+    { "type": "choice", "topic": "relative", "prompt": "What will this code do?", "code": ".box {\n  position: relative;\n  top: 20px;\n  left: 20px;\n}", "options": ["Move the box 20px down and to the right", "Move the box up and to the left", "Nail the box to the screen", "Take the box out of the flow"], "answer": 0, "explain": "top: 20px goes down from the top, left: 20px goes right from the left edge." },
+    { "type": "truefalse", "topic": "relative", "prompt": "An element with relative keeps its place in the queue.", "answer": true, "explain": "The neighbors stay put as if it hadn't moved." },
+    { "type": "input", "topic": "relative", "prompt": "Which top value lifts a relative block 20px up? (with px)", "answer": ["-20px"], "explain": "A negative value moves it the other way." },
+    { "type": "choice", "topic": "absolute", "prompt": "What does an element with position: absolute attach to?", "options": ["The nearest parent with relative", "Always the screen", "The next neighbor", "Nothing"], "answer": 0, "explain": "With no relative parent, it attaches to body." },
+    { "type": "choice", "topic": "absolute", "prompt": "Where will the badge end up?", "code": "/* .card has no position */\n.badge {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n}", "options": ["In the corner of the whole page", "In the corner of the card", "Under the card", "It stays in place"], "answer": 0, "explain": "There's no relative parent — the badge attached to body." },
+    { "type": "order", "topic": "absolute", "prompt": "Build the rule that makes the card an «anchor» for the badge", "tokens": [".card", "{", "position:", "relative;", "}"], "extra": ["absolute;", "fixed;"], "explain": ".card { position: relative; }" },
+    { "type": "truefalse", "topic": "absolute", "prompt": "If the parent gets position: relative, an absolute badge moves together with the card.", "answer": true, "explain": "The badge is attached to the card, not lying on the screen." },
+    { "type": "choice", "topic": "fixed", "prompt": "Which position suits a «back to top» button that's always visible in the screen corner?", "options": ["fixed", "static", "relative", "sticky"], "answer": 0, "explain": "fixed is nailed to the screen and doesn't scroll away." },
+    { "type": "choice", "topic": "fixed", "prompt": "Where will the button be?", "code": ".to-top {\n  position: fixed;\n  bottom: 20px;\n  right: 20px;\n}", "options": ["In the bottom-right corner of the screen", "In the top-left corner of the page", "At the end of the page, after the text", "In the center"], "answer": 0, "explain": "bottom and right are measured from the edges of the screen." },
+    { "type": "choice", "topic": "sticky", "prompt": "How does sticky behave before you scroll to its point?", "options": ["Like static — a normal element", "Like fixed — nailed to the screen", "Like absolute — out of the flow", "It's invisible"], "answer": 0, "explain": "First normal, then it sticks." },
+    { "type": "choice", "topic": "sticky", "prompt": "A sticky header doesn't stick. What do you check?", "code": "header {\n  position: sticky;\n}", "options": ["There's no top: 0 — it needs a sticking point", "It needs position: static", "The header must be removed", "It needs float"], "answer": 0, "explain": "sticky only works with a sticking point, such as top: 0." },
+    { "type": "match", "topic": "Practice", "prompt": "Match the position and an example on a site", "pairs": [["absolute", "A SALE badge in a card corner"], ["fixed", "A «back to top» button"], ["sticky", "A header that sticks to the top"], ["static", "An ordinary paragraph of text"]] },
+    { "type": "choice", "topic": "Practice", "prompt": "SALE badge: what do you give the card and the badge?", "options": ["relative to the card, absolute to the badge", "absolute to the card, relative to the badge", "fixed to both", "static to both"], "answer": 0, "explain": "The parent is the «anchor» (relative), the badge attaches to it (absolute)." }
+  ]
+}

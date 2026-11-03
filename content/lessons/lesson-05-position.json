@@ -1,0 +1,97 @@
+{
+  "id": "lesson-05-position",
+  "title": "Урок 5. Позиционирование",
+  "emoji": "📍",
+  "description": "static, relative, absolute, fixed и sticky",
+  "learn": {
+    "intro": "Привет! Урок 5 — **позиционирование**. Научимся вытаскивать элемент из «очереди» и ставить его куда нужно — например, красный значок SALE в угол картинки. Поехали!",
+    "sections": [
+      {
+        "title": "Очередь и position: static",
+        "slides": [
+          { "emoji": "🧍‍♂️", "text": "Представь очередь в магазине: все стоят друг за другом, никто не может выйти вперёд. Так элементы стоят на сайте по умолчанию. Это называется **normal flow** — обычный поток." },
+          { "text": "`position: static` — состояние **по умолчанию**. Если ничего не писать, у элемента именно static: обычная очередь, ничего не двигается. Это видно в DevTools." },
+          { "quote": true, "text": "Если position не указан — он static." }
+        ],
+        "check": [
+          { "type": "input", "topic": "static", "prompt": "Какой position у элемента, если ничего не писать?", "answer": ["static"], "explain": "static — значение по умолчанию." }
+        ]
+      },
+      {
+        "title": "position: relative",
+        "slides": [
+          { "emoji": "↘️", "text": "Сдвигаем коробку на 20px вниз и вправо:", "code": ".box {\n  position: relative;\n  top: 20px;\n  left: 20px;\n}" },
+          { "text": "Коробка сдвинулась, но **место в очереди не покинула**. Соседи остались на своих местах, как будто её там и нет." },
+          { "text": "Попробуй угадать: куда уедет блок, если поставить `top: -20px`? Правильно — **вверх**." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "relative", "prompt": "При position: relative соседи сдвигаются вслед за элементом.", "answer": false, "explain": "Элемент сдвигается, но его место в потоке остаётся — соседи стоят где стояли." },
+          { "type": "choice", "topic": "relative", "prompt": "Куда сдвинется блок при top: -20px?", "options": ["Вверх", "Вниз", "Влево", "Никуда"], "answer": 0, "explain": "Отрицательный top поднимает блок вверх." }
+        ]
+      },
+      {
+        "title": "position: absolute — главное",
+        "slides": [
+          { "emoji": "🚀", "text": "`absolute` — человек **полностью выходит из очереди**, остальные на него не смотрят. Он ищет **ближайшего родителя с relative**, чтобы к нему привязаться. Нет такого — привязывается ко всей странице." },
+          { "emoji": "🐞", "text": "Баг: бейдж улетел в угол **всей страницы**, потому что у карточки нет relative. Он нашёл только body:", "code": ".badge {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n}" },
+          { "text": "Исправляем — даём родителю `position: relative`. Теперь бейдж «пойман» внутри карточки и едет вместе с ней:", "code": ".card {\n  position: relative;\n}\n\n.badge {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n}" },
+          { "quote": true, "text": "absolute всегда ищет ближайшего relative-предка. Не нашёл — улетает к body." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "absolute", "prompt": "Бейдж с absolute улетел в угол страницы. Что исправить?", "options": ["Дать родителю position: relative", "Дать бейджу position: static", "Убрать top и right", "Дать body position: fixed"], "answer": 0, "explain": "absolute привязывается к ближайшему relative-родителю." },
+          { "type": "truefalse", "topic": "absolute", "prompt": "Элемент с absolute остаётся в общей очереди и толкает соседей.", "answer": false, "explain": "absolute выходит из потока — соседи его не замечают." }
+        ]
+      },
+      {
+        "title": "position: fixed",
+        "slides": [
+          { "emoji": "📌", "text": "`fixed` — элемент **прибит к экрану**. Прокручиваешь страницу, а он стоит на месте. Так работают кнопки «наверх» и панели в интернет-магазинах." },
+          { "text": "Кнопка «наверх» в правом нижнем углу экрана:", "code": ".to-top {\n  position: fixed;\n  bottom: 20px;\n  right: 20px;\n}" }
+        ],
+        "check": [
+          { "type": "choice", "topic": "fixed", "prompt": "Что будет с fixed-кнопкой при прокрутке страницы?", "options": ["Останется на месте экрана", "Уедет вместе со страницей", "Исчезнет", "Прилипнет к шапке"], "answer": 0, "explain": "fixed привязан к экрану, а не к странице." }
+        ]
+      },
+      {
+        "title": "position: sticky",
+        "slides": [
+          { "emoji": "🍯", "text": "`sticky` — хитрый гибрид. Пока не дошли до нужной точки, он ведёт себя как **static**. Доскроллили — **прилипает**, как fixed." },
+          { "text": "Шапка прилипает к верху при прокрутке:", "code": "header {\n  position: sticky;\n  top: 0;\n}" },
+          { "quote": true, "text": "Без top: 0 sticky не сработает — нужна точка прилипания. И проверьте, нет ли у родителя overflow: hidden." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "sticky", "prompt": "Если убрать top: 0, sticky всё равно будет прилипать.", "answer": false, "explain": "sticky нужна точка прилипания, например top: 0." }
+        ]
+      },
+      {
+        "title": "Практика: бейдж SALE и домашка",
+        "slides": [
+          { "emoji": "🏷️", "text": "Задание: карточка товара с красным бейджем «SALE» в правом верхнем углу. Сначала родителю `position: relative` — это ваш «якорь». Потом бейджу `position: absolute`, `top` и `right`.", "code": ".card { position: relative; }\n.sale {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n  background: red;\n  color: white;\n}" },
+          { "text": "Бонус: 3 карточки с бейджами «-12%», «NEW», «HIT». Кто быстрее — получает звание **мастера позиционирования** 🏅" },
+          { "emoji": "🏠", "text": "Домашка: шапка сайта с `position: sticky`, которая прилипает к верху. Возьми текст на 20–30 абзацев, чтобы страница была длинной." },
+          { "quote": true, "text": "relative сдвигает, absolute вырывает из очереди и привязывает к relative-родителю, fixed прибивает к экрану, а sticky прилипает, когда доскроллили до точки." }
+        ],
+        "check": [
+          { "type": "match", "topic": "Практика", "prompt": "Соедини position и что он делает", "pairs": [["relative", "Сдвигает, место остаётся"], ["absolute", "Вырывает из очереди"], ["fixed", "Прибит к экрану"], ["sticky", "Прилипает при прокрутке"]] }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    { "type": "truefalse", "topic": "static", "prompt": "По умолчанию у всех элементов position: static.", "answer": true, "explain": "Это обычный поток — normal flow." },
+    { "type": "choice", "topic": "static", "prompt": "Как называется обычный порядок элементов, когда они стоят друг за другом?", "options": ["Normal flow", "Sticky flow", "Absolute line", "Fixed order"], "answer": 0, "explain": "Normal flow — обычный поток, как очередь в магазине." },
+    { "type": "choice", "topic": "relative", "prompt": "Что сделает этот код?", "code": ".box {\n  position: relative;\n  top: 20px;\n  left: 20px;\n}", "options": ["Сдвинет коробку на 20px вниз и вправо", "Сдвинет коробку вверх и влево", "Прибьёт коробку к экрану", "Уберёт коробку из потока"], "answer": 0, "explain": "top: 20px — вниз от верха, left: 20px — вправо от левого края." },
+    { "type": "truefalse", "topic": "relative", "prompt": "Элемент с relative сохраняет своё место в очереди.", "answer": true, "explain": "Соседи стоят на своих местах, как будто он не сдвигался." },
+    { "type": "input", "topic": "relative", "prompt": "Какое значение top поднимет relative-блок на 20px вверх? (с px)", "answer": ["-20px"], "explain": "Отрицательное значение сдвигает в обратную сторону." },
+    { "type": "choice", "topic": "absolute", "prompt": "К чему привязывается элемент с position: absolute?", "options": ["К ближайшему родителю с relative", "Всегда к экрану", "К следующему соседу", "Ни к чему"], "answer": 0, "explain": "Нет relative-родителя — привязывается к body." },
+    { "type": "choice", "topic": "absolute", "prompt": "Куда встанет бейдж?", "code": "/* у .card нет position */\n.badge {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n}", "options": ["В угол всей страницы", "В угол карточки", "Под карточку", "Останется на месте"], "answer": 0, "explain": "relative-родителя нет — бейдж привязался к body." },
+    { "type": "order", "topic": "absolute", "prompt": "Собери правило, которое делает карточку «якорем» для бейджа", "tokens": [".card", "{", "position:", "relative;", "}"], "extra": ["absolute;", "fixed;"], "explain": ".card { position: relative; }" },
+    { "type": "truefalse", "topic": "absolute", "prompt": "Если родителю дать position: relative, бейдж с absolute будет двигаться вместе с карточкой.", "answer": true, "explain": "Бейдж привязан к карточке, а не лежит на экране." },
+    { "type": "choice", "topic": "fixed", "prompt": "Какой position подходит для кнопки «наверх», которая всегда видна в углу экрана?", "options": ["fixed", "static", "relative", "sticky"], "answer": 0, "explain": "fixed прибит к экрану и не уезжает при прокрутке." },
+    { "type": "choice", "topic": "fixed", "prompt": "Где окажется кнопка?", "code": ".to-top {\n  position: fixed;\n  bottom: 20px;\n  right: 20px;\n}", "options": ["В правом нижнем углу экрана", "В левом верхнем углу страницы", "В конце страницы, после текста", "По центру"], "answer": 0, "explain": "bottom и right отсчитываются от краёв экрана." },
+    { "type": "choice", "topic": "sticky", "prompt": "Как ведёт себя sticky, пока не доскроллили до точки?", "options": ["Как static — обычный элемент", "Как fixed — прибит к экрану", "Как absolute — вырван из потока", "Он невидим"], "answer": 0, "explain": "Сначала обычный, потом прилипает." },
+    { "type": "choice", "topic": "sticky", "prompt": "Шапка с sticky не прилипает. Что проверить?", "code": "header {\n  position: sticky;\n}", "options": ["Нет top: 0 — нужна точка прилипания", "Нужно position: static", "Нужно убрать header", "Нужно добавить float"], "answer": 0, "explain": "sticky работает только с точкой прилипания, например top: 0." },
+    { "type": "match", "topic": "Практика", "prompt": "Соедини position и пример на сайте", "pairs": [["absolute", "Бейдж SALE в углу карточки"], ["fixed", "Кнопка «наверх»"], ["sticky", "Шапка, прилипающая к верху"], ["static", "Обычный абзац текста"]] },
+    { "type": "choice", "topic": "Практика", "prompt": "Бейдж SALE: что нужно поставить карточке и бейджу?", "options": ["Карточке relative, бейджу absolute", "Карточке absolute, бейджу relative", "Обоим fixed", "Обоим static"], "answer": 0, "explain": "Родитель — «якорь» (relative), бейдж привязывается к нему (absolute)." }
+  ]
+}
