@@ -1,0 +1,97 @@
+{
+  "title": "Lesson 4. Box model — an element is a box",
+  "description": "content, padding, border, margin and box-sizing: border-box",
+  "learn": {
+    "intro": "Hi! Lesson 4 — the **Box model**. Every element on a page is a box. Let's unpack it like a parcel, layer by layer. Let's go!",
+    "sections": [
+      {
+        "title": "An element is a box",
+        "slides": [
+          { "emoji": "📦", "text": "Every element on a page is a **box**. A heading is a box, text is a box, a button is a box too." },
+          { "text": "Imagine a parcel. It has 4 parts:\n🎁 the item itself — **content** (text or an image)\n🧻 the wrapping around the item — **padding** (empty space inside)\n📦 the cardboard of the box — **border** (the frame)\n↔️ the distance to other boxes — **margin** (empty space outside)" },
+          { "text": "**Content** is what's inside the tag. Here the content is the word «Hello!»:", "code": "<div class=\"box\">Hello!</div>" },
+          { "quote": true, "text": "Remember the order from inside out: content → padding → border → margin." }
+        ],
+        "check": [
+          { "type": "order", "topic": "Parts of the box", "prompt": "Put the box layers in order from inside out", "tokens": ["content", "padding", "border", "margin"], "explain": "content → padding → border → margin." },
+          { "type": "truefalse", "topic": "Parts of the box", "prompt": "A button on a page is a box too.", "answer": true, "explain": "Any element is a box." }
+        ]
+      },
+      {
+        "title": "Padding — the wrapping inside",
+        "slides": [
+          { "emoji": "🧻", "text": "**Padding** is the empty space **inside**, between the text and the frame. An item is wrapped in foam so it doesn't touch the walls of the box. Padding moves the text away from the edge the same way." },
+          { "text": "The text moves 20px in from the edge, and the blue background gets bigger:", "code": ".box {\n  background: lightblue;\n  padding: 20px;\n}" },
+          { "quote": true, "text": "Padding is INSIDE. The background color also covers the padding." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "padding", "prompt": "Where is the padding?", "options": ["Between the text and the frame", "Outside the box", "On the frame itself", "Between two boxes"], "answer": 0, "explain": "padding is the empty space inside the box." }
+        ]
+      },
+      {
+        "title": "Border — the cardboard of the box",
+        "slides": [
+          { "emoji": "🟫", "text": "**Border** is the edge of the box, its frame. It sits outside the padding.", "code": ".box {\n  background: lightblue;\n  padding: 20px;\n  border: 2px solid black;\n}" },
+          { "text": "`border: 2px solid black;` — three words:\n`2px` — frame thickness\n`solid` — style: a solid line (`dashed` — a dashed line)\n`black` — frame color" },
+          { "quote": true, "text": "The border goes around the padding, like cardboard around the item's wrapping." }
+        ],
+        "check": [
+          { "type": "match", "topic": "border", "prompt": "Match the part of border: 2px solid black and its meaning", "pairs": [["2px", "Thickness"], ["solid", "Line style"], ["black", "Color"]] }
+        ]
+      },
+      {
+        "title": "Margin — the distance outside",
+        "slides": [
+          { "emoji": "↔️", "text": "**Margin** is the empty space **outside**: the distance from the box to other boxes. In a warehouse boxes aren't pressed together — space is left between them." },
+          { "text": "30px of empty space appears between box 1 and box 2:", "code": ".first {\n  margin-bottom: 30px; /* 30px below */\n}" },
+          { "text": "`margin-top` — above, `margin-bottom` — below, `margin-left` — on the left, `margin-right` — on the right, `margin` — on all sides at once." },
+          { "quote": true, "text": "Margin is OUTSIDE. The background color doesn't cover the margin, it's always transparent." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "margin", "prompt": "The box's background also colors the margin.", "answer": false, "explain": "margin is always transparent; the background covers only content and padding." },
+          { "type": "choice", "topic": "margin", "prompt": "Which property adds space only on the left?", "options": ["margin-left", "margin-right", "padding-left", "margin"], "answer": 0, "explain": "margin-left is the outer space on the left." }
+        ]
+      },
+      {
+        "title": "The key rule: box-sizing ⭐",
+        "slides": [
+          { "emoji": "🤔", "text": "We give a box `width: 200px`, then add `padding: 20px`. How wide is it? Many say 200px, but the browser counts differently:\n20px + 200px + 20px = **240px**. The page breaks." },
+          { "emoji": "✅", "text": "The fix goes in the very first line of the CSS file:", "code": "* {\n  box-sizing: border-box;\n}" },
+          { "text": "Now with `width: 200px` the box stays 200px: padding and border fit inside. To check: **F12 → Elements → Computed** — it shows the real size." },
+          { "quote": true, "text": "In every project the first line of CSS is * { box-sizing: border-box; }. Always!" }
+        ],
+        "check": [
+          { "type": "input", "topic": "box-sizing", "prompt": "Without box-sizing: width: 200px + padding: 20px. How wide is the box in px? (number only)", "answer": ["240", "240px"], "explain": "20 + 200 + 20 = 240." },
+          { "type": "choice", "topic": "box-sizing", "prompt": "Where can you check the real size of a box?", "options": ["F12 → Elements → Computed", "Ctrl + S", "In the index.html file", "In the console with console.log"], "answer": 0, "explain": "The Computed tab shows the real sizes." }
+        ]
+      },
+      {
+        "title": "Practice and homework",
+        "slides": [
+          { "emoji": "🧪", "text": "Make 3 identical boxes: give the first `padding: 30px`, the second `border: 5px solid red`, the third `margin: 40px`. Look at how they differ. Then add `* { box-sizing: border-box; }` at the top of the CSS and compare again.", "code": ".box {\n  width: 200px;\n  background: lightblue;\n}\n.one   { padding: 30px; }\n.two   { border: 5px solid red; }\n.three { margin: 40px; }" },
+          { "emoji": "🏠", "text": "Homework: 3 product cards in one row with equal spacing. Each has a name, a price and a button. Use padding, border and margin, and put `* { box-sizing: border-box; }` at the top of the CSS. Hint: `.card { display: inline-block; width: 250px; }`." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Practice", "prompt": "What do you use to move the cards apart?", "options": ["margin", "padding", "border", "content"], "answer": 0, "explain": "The distance between boxes is the margin." }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    { "type": "truefalse", "topic": "Parts of the box", "prompt": "Every element on a page is a box.", "answer": true, "explain": "A heading, text and a button alike." },
+    { "type": "match", "topic": "Parts of the box", "prompt": "Match the part of the parcel and its CSS name", "pairs": [["The item", "content"], ["The item's wrapping", "padding"], ["The box's cardboard", "border"], ["Distance to other boxes", "margin"]] },
+    { "type": "choice", "topic": "Parts of the box", "prompt": "What is the content in this code?", "code": "<div class=\"box\">Hello!</div>", "options": ["The word «Hello!»", "class=\"box\"", "The div tag", "Nothing"], "answer": 0, "explain": "content is what's inside the tag." },
+    { "type": "order", "topic": "Parts of the box", "prompt": "Put the layers in order from inside out", "tokens": ["content", "padding", "border", "margin"], "explain": "content → padding → border → margin." },
+    { "type": "choice", "topic": "padding", "prompt": "What does padding: 20px do?", "code": ".box {\n  background: lightblue;\n  padding: 20px;\n}", "options": ["Moves the text 20px in from the edge", "Moves the box away from its neighbors", "Draws a 20px frame", "Makes the text smaller"], "answer": 0, "explain": "padding is the empty space inside the box." },
+    { "type": "truefalse", "topic": "padding", "prompt": "The background color also covers the padding.", "answer": true, "explain": "padding is inside the box, so it's colored too." },
+    { "type": "choice", "topic": "border", "prompt": "What does solid mean in border: 2px solid black?", "options": ["A solid line", "A dashed line", "The frame color", "The frame thickness"], "answer": 0, "explain": "solid is a solid line, dashed is a dashed one." },
+    { "type": "input", "topic": "border", "prompt": "Which word makes the frame dashed? border: 2px ___ black;", "answer": ["dashed"], "explain": "dashed is a dashed line." },
+    { "type": "choice", "topic": "margin", "prompt": "What appears between the boxes?", "code": "<div class=\"box first\">1</div>\n<div class=\"box\">2</div>\n\n.first { margin-bottom: 30px; }", "options": ["30px of empty space", "A 30px frame", "Nothing", "The boxes stick together"], "answer": 0, "explain": "margin-bottom is the outer space below." },
+    { "type": "match", "topic": "margin", "prompt": "Compare padding and margin", "pairs": [["padding", "Inside the box"], ["margin", "Outside the box"]] },
+    { "type": "truefalse", "topic": "margin", "prompt": "margin is always transparent.", "answer": true, "explain": "The background doesn't cover the margin." },
+    { "type": "choice", "topic": "box-sizing", "prompt": "How wide is the box without box-sizing: border-box?", "code": ".box {\n  width: 200px;\n  padding: 20px;\n}", "options": ["240px", "200px", "220px", "180px"], "answer": 0, "explain": "20 + 200 + 20 = 240px." },
+    { "type": "choice", "topic": "box-sizing", "prompt": "And with the rule * { box-sizing: border-box; }?", "code": "* { box-sizing: border-box; }\n.box {\n  width: 200px;\n  padding: 20px;\n}", "options": ["200px", "240px", "160px", "220px"], "answer": 0, "explain": "With border-box, padding and border fit inside the width." },
+    { "type": "choice", "topic": "box-sizing", "prompt": "Where do you write * { box-sizing: border-box; }?", "options": ["In the very first line of the CSS file", "At the end of the HTML", "Inside every box", "Only in a tag's style"], "answer": 0, "explain": "It's the first rule in every project." },
+    { "type": "choice", "topic": "Practice", "prompt": "Cards need equal spacing between them, and text shouldn't stick to the edge. What do you use?", "options": ["margin between cards, padding inside", "padding between cards, margin inside", "Only border", "Only width"], "answer": 0, "explain": "margin is outside, padding is inside." }
+  ]
+}

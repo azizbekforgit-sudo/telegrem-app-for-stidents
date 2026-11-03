@@ -1,0 +1,99 @@
+{
+  "id": "lesson-04-box-model",
+  "title": "Урок 4. Box model — элемент это коробка",
+  "emoji": "📦",
+  "description": "content, padding, border, margin и box-sizing: border-box",
+  "learn": {
+    "intro": "Привет! Урок 4 — **Box model**. Каждый элемент на странице — это коробка. Разберём её, как посылку, слой за слоем. Поехали!",
+    "sections": [
+      {
+        "title": "Элемент — это коробка",
+        "slides": [
+          { "emoji": "📦", "text": "Каждый элемент на странице — **коробка**. Заголовок — коробка, текст — коробка, кнопка — тоже коробка." },
+          { "text": "Представь посылку. В ней 4 части:\n🎁 сам товар — **content** (текст или картинка)\n🧻 обёртка вокруг товара — **padding** (пустое место внутри)\n📦 картон коробки — **border** (рамка)\n↔️ расстояние до других коробок — **margin** (пустое место снаружи)" },
+          { "text": "**Content** — то, что внутри тега. Здесь content — слово «Привет!»:", "code": "<div class=\"box\">Привет!</div>" },
+          { "quote": true, "text": "Запомните порядок изнутри наружу: content → padding → border → margin." }
+        ],
+        "check": [
+          { "type": "order", "topic": "Части коробки", "prompt": "Расставь слои коробки изнутри наружу", "tokens": ["content", "padding", "border", "margin"], "explain": "content → padding → border → margin." },
+          { "type": "truefalse", "topic": "Части коробки", "prompt": "Кнопка на странице — это тоже коробка.", "answer": true, "explain": "Любой элемент — коробка." }
+        ]
+      },
+      {
+        "title": "Padding — обёртка внутри",
+        "slides": [
+          { "emoji": "🧻", "text": "**Padding** — пустое место **внутри**, между текстом и рамкой. Товар заворачивают в пену, чтобы он не касался стенок коробки. Padding так же отодвигает текст от края." },
+          { "text": "Текст сдвинется от края на 20px внутрь, голубой фон станет больше:", "code": ".box {\n  background: lightblue;\n  padding: 20px;\n}" },
+          { "quote": true, "text": "Padding — ВНУТРИ. Цвет фона распространяется и на padding." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "padding", "prompt": "Где находится padding?", "options": ["Между текстом и рамкой", "Снаружи коробки", "На самой рамке", "Между двумя коробками"], "answer": 0, "explain": "padding — пустое место внутри коробки." }
+        ]
+      },
+      {
+        "title": "Border — картон коробки",
+        "slides": [
+          { "emoji": "🟫", "text": "**Border** — граница коробки, её рамка. Она стоит снаружи от padding.", "code": ".box {\n  background: lightblue;\n  padding: 20px;\n  border: 2px solid black;\n}" },
+          { "text": "`border: 2px solid black;` — три слова:\n`2px` — толщина рамки\n`solid` — вид: сплошная линия (`dashed` — пунктир)\n`black` — цвет рамки" },
+          { "quote": true, "text": "Border — вокруг padding, как картон вокруг обёртки товара." }
+        ],
+        "check": [
+          { "type": "match", "topic": "border", "prompt": "Соедини часть border: 2px solid black и её смысл", "pairs": [["2px", "Толщина"], ["solid", "Вид линии"], ["black", "Цвет"]] }
+        ]
+      },
+      {
+        "title": "Margin — расстояние снаружи",
+        "slides": [
+          { "emoji": "↔️", "text": "**Margin** — пустое место **снаружи**: расстояние от коробки до других коробок. На складе коробки не прижимают вплотную — между ними оставляют место." },
+          { "text": "Между 1-й и 2-й коробкой появится 30px пустого места:", "code": ".first {\n  margin-bottom: 30px; /* снизу 30px */\n}" },
+          { "text": "`margin-top` — сверху, `margin-bottom` — снизу, `margin-left` — слева, `margin-right` — справа, `margin` — со всех сторон сразу." },
+          { "quote": true, "text": "Margin — СНАРУЖИ. Цвет фона на margin не распространяется, он всегда прозрачный." }
+        ],
+        "check": [
+          { "type": "truefalse", "topic": "margin", "prompt": "Фон коробки закрашивает и margin.", "answer": false, "explain": "margin всегда прозрачный, фон есть только у content и padding." },
+          { "type": "choice", "topic": "margin", "prompt": "Какое свойство даёт отступ только слева?", "options": ["margin-left", "margin-right", "padding-left", "margin"], "answer": 0, "explain": "margin-left — внешний отступ слева." }
+        ]
+      },
+      {
+        "title": "Главное правило: box-sizing ⭐",
+        "slides": [
+          { "emoji": "🤔", "text": "Даём коробке `width: 200px`, потом добавляем `padding: 20px`. Какая будет ширина? Многие скажут 200px, но браузер считает иначе:\n20px + 200px + 20px = **240px**. Страница ломается." },
+          { "emoji": "✅", "text": "Решение — в самой первой строке CSS-файла:", "code": "* {\n  box-sizing: border-box;\n}" },
+          { "text": "Теперь при `width: 200px` коробка так и остаётся 200px: padding и border помещаются внутрь. Проверить: **F12 → Elements → Computed** — там видно настоящий размер." },
+          { "quote": true, "text": "В каждом проекте первая строка CSS — * { box-sizing: border-box; }. Всегда!" }
+        ],
+        "check": [
+          { "type": "input", "topic": "box-sizing", "prompt": "Без box-sizing: width: 200px + padding: 20px. Какая ширина коробки в px? (только число)", "answer": ["240", "240px"], "explain": "20 + 200 + 20 = 240." },
+          { "type": "choice", "topic": "box-sizing", "prompt": "Где проверить настоящий размер коробки?", "options": ["F12 → Elements → Computed", "Ctrl + S", "В файле index.html", "В консоли через console.log"], "answer": 0, "explain": "В Computed видно реальные размеры." }
+        ]
+      },
+      {
+        "title": "Практика и домашка",
+        "slides": [
+          { "emoji": "🧪", "text": "Сделай 3 одинаковые коробки: первой дай `padding: 30px`, второй `border: 5px solid red`, третьей `margin: 40px`. Посмотри, чем они отличаются. Потом добавь в начало CSS `* { box-sizing: border-box; }` и сравни ещё раз.", "code": ".box {\n  width: 200px;\n  background: lightblue;\n}\n.one   { padding: 30px; }\n.two   { border: 5px solid red; }\n.three { margin: 40px; }" },
+          { "emoji": "🏠", "text": "Домашка: 3 карточки товаров в один ряд с одинаковым расстоянием. В каждой — название, цена и кнопка. Есть padding, border и margin, а в начале CSS — `* { box-sizing: border-box; }`. Подсказка: `.card { display: inline-block; width: 250px; }`." }
+        ],
+        "check": [
+          { "type": "choice", "topic": "Практика", "prompt": "Чем отодвинуть карточки друг от друга?", "options": ["margin", "padding", "border", "content"], "answer": 0, "explain": "Расстояние между коробками — это margin." }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    { "type": "truefalse", "topic": "Части коробки", "prompt": "Каждый элемент на странице — это коробка.", "answer": true, "explain": "И заголовок, и текст, и кнопка." },
+    { "type": "match", "topic": "Части коробки", "prompt": "Соедини часть посылки и её имя в CSS", "pairs": [["Товар", "content"], ["Обёртка товара", "padding"], ["Картон коробки", "border"], ["Расстояние до других коробок", "margin"]] },
+    { "type": "choice", "topic": "Части коробки", "prompt": "Что является content в этом коде?", "code": "<div class=\"box\">Привет!</div>", "options": ["Слово «Привет!»", "class=\"box\"", "Тег div", "Ничего"], "answer": 0, "explain": "content — то, что внутри тега." },
+    { "type": "order", "topic": "Части коробки", "prompt": "Расставь слои изнутри наружу", "tokens": ["content", "padding", "border", "margin"], "explain": "content → padding → border → margin." },
+    { "type": "choice", "topic": "padding", "prompt": "Что сделает padding: 20px?", "code": ".box {\n  background: lightblue;\n  padding: 20px;\n}", "options": ["Отодвинет текст от края на 20px внутрь", "Отодвинет коробку от соседей", "Нарисует рамку 20px", "Уменьшит текст"], "answer": 0, "explain": "padding — пустое место внутри коробки." },
+    { "type": "truefalse", "topic": "padding", "prompt": "Цвет фона распространяется и на padding.", "answer": true, "explain": "padding внутри коробки, поэтому он тоже закрашен." },
+    { "type": "choice", "topic": "border", "prompt": "Что значит solid в border: 2px solid black?", "options": ["Сплошная линия", "Пунктир", "Цвет рамки", "Толщина рамки"], "answer": 0, "explain": "solid — сплошная, dashed — пунктир." },
+    { "type": "input", "topic": "border", "prompt": "Какое слово сделает рамку пунктирной? border: 2px ___ black;", "answer": ["dashed"], "explain": "dashed — пунктирная линия." },
+    { "type": "choice", "topic": "margin", "prompt": "Что появится между коробками?", "code": "<div class=\"box first\">1</div>\n<div class=\"box\">2</div>\n\n.first { margin-bottom: 30px; }", "options": ["30px пустого места", "Рамка 30px", "Ничего", "Коробки склеятся"], "answer": 0, "explain": "margin-bottom — внешний отступ снизу." },
+    { "type": "match", "topic": "margin", "prompt": "Сравни padding и margin", "pairs": [["padding", "Внутри коробки"], ["margin", "Снаружи коробки"]] },
+    { "type": "truefalse", "topic": "margin", "prompt": "margin всегда прозрачный.", "answer": true, "explain": "Фон на margin не распространяется." },
+    { "type": "choice", "topic": "box-sizing", "prompt": "Какая ширина коробки без box-sizing: border-box?", "code": ".box {\n  width: 200px;\n  padding: 20px;\n}", "options": ["240px", "200px", "220px", "180px"], "answer": 0, "explain": "20 + 200 + 20 = 240px." },
+    { "type": "choice", "topic": "box-sizing", "prompt": "А с правилом * { box-sizing: border-box; }?", "code": "* { box-sizing: border-box; }\n.box {\n  width: 200px;\n  padding: 20px;\n}", "options": ["200px", "240px", "160px", "220px"], "answer": 0, "explain": "С border-box padding и border помещаются внутрь width." },
+    { "type": "choice", "topic": "box-sizing", "prompt": "Где писать * { box-sizing: border-box; }?", "options": ["В самой первой строке CSS-файла", "В конце HTML", "Внутри каждой коробки", "Только в style у тега"], "answer": 0, "explain": "Это первое правило в каждом проекте." },
+    { "type": "choice", "topic": "Практика", "prompt": "Карточкам нужно одинаковое расстояние друг от друга и чтобы текст не прилипал к краю. Что использовать?", "options": ["margin между карточками, padding внутри", "padding между карточками, margin внутри", "Только border", "Только width"], "answer": 0, "explain": "margin — снаружи, padding — внутри." }
+  ]
+}
