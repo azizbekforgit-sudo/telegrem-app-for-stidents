@@ -674,75 +674,98 @@ function curMascotInner() {
   return `${mascot(id, 'cheer', 96)}<div class="grow"><b>${esc(tr(MASCOTS[id].name))}</b><span>${esc(tr(MASCOTS[id].about))}</span></div>`;
 }
 
-// Досье маскота: характеристики-полоски и факты (текст на языке пользователя)
-function dossierHtml(id) {
-  const info = INFO[id];
-  if (!info) return '';
-  const txt = info[getLang()] || info.ru;
-  return `<div class="mp-card" data-noi18n>
-    <div class="mp-title"><b>${esc(tr(MASCOTS[id].name))}</b><span>${esc(tr(MASCOTS[id].about))}</span></div>
-    <div class="stats5">${STAT_KEYS.map((k, i) => `<div><span>${esc(tr(k))}</span><div class="bar5">${[1, 2, 3, 4, 5].map((n) => `<i class="${n <= info.s[i] ? 'on' : ''}" style="--d:${n * 70 + i * 40}ms"></i>`).join('')}</div></div>`).join('')}</div>
-    <div class="facts">${FIELDS.map(([icon, label], i) => `<div class="fact"><em>${icon}</em><div><small>${esc(tr(label))}</small><p>${esc(txt[i])}</p></div></div>`).join('')}</div></div>`;
-}
-
-// Выбор напарника: список, который листают вверх и вниз. Выбранный «оживает», сверху — досье
-function mascotPicker(current, onPick) {
+// Выбор напарника как в рилсах: на весь экран, листаем снизу вверх, инфа выезжает сбоку
+const STAT_EMOJI = ['💨', '🧠', '🦁', '🦊', '🥰'];
+function mascotReels(current, onPick) {
   const ids = Object.keys(MASCOTS);
-  const H = 170;
-  let active = ids.includes(current) ? current : ids[0];
-  openSheet(`<div class="mp" data-noi18n><div class="center"><h2>${esc(tr('Выбери напарника'))}</h2><p class="muted small">${esc(tr('Листай вверх или вниз'))}</p></div>
-      <div class="mp-wrap"><span class="mp-arrow up">${ic('alt-arrow-left')}</span><div class="mp-list" data-list>${ids.map((id) => `<div class="mp-item" data-id="${id}"></div>`).join('')}</div><span class="mp-arrow down">${ic('alt-arrow-left')}</span></div>
-      <div class="mp-dots" data-dots>${ids.map((id) => `<i data-d="${id}"></i>`).join('')}</div>
-      <div data-dossier></div>
-      <div class="mp-foot"><button class="btn block" data-choose></button></div></div>`, (el, close) => {
-    const list = $('[data-list]', el);
-    const items = $$('.mp-item', el);
-    const draw = (id, on) => { const it = items[ids.indexOf(id)]; it.innerHTML = mascot(id, on ? 'cheer' : 'happy', 140, on ? '' : 'still'); };
-    const show = () => {
-      $$('[data-d]', el).forEach((d) => d.classList.toggle('on', d.dataset.d === active));
-      $('[data-dossier]', el).innerHTML = dossierHtml(active);
-      const b = $('[data-choose]', el);
-      b.textContent = `${tr('Выбрать')}: ${tr(MASCOTS[active].name)}`;
-    };
-    ids.forEach((id) => draw(id, id === active));
-    show();
-    const place = () => {
-      const pad = (list.clientHeight - H) / 2;
-      const center = list.scrollTop + list.clientHeight / 2;
-      items.forEach((it, i) => {
-        const d = (pad + i * H + H / 2 - center) / H;
-        const t = Math.min(1, Math.abs(d));
-        it.style.transform = `perspective(700px) rotateX(${(-d * 42).toFixed(1)}deg) scale(${(1 - 0.4 * t).toFixed(3)})`;
-        it.style.opacity = (1 - 0.7 * t).toFixed(3);
-      });
-      const n = Math.max(0, Math.min(ids.length - 1, Math.round(list.scrollTop / H)));
-      if (ids[n] !== active) {
-        draw(active, false);
-        active = ids[n];
-        draw(active, true);
-        haptic('light');
-        show();
-      }
-    };
-    let raf = 0;
-    list.addEventListener('scroll', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(place); });
-    items.forEach((it, i) => (it.onclick = () => list.scrollTo({ top: i * H, behavior: 'smooth' })));
-    // мышью на компьютере: тянем список
-    let drag = null;
-    list.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') return; drag = { y: e.clientY, top: list.scrollTop }; list.style.scrollSnapType = 'none'; list.setPointerCapture(e.pointerId); });
-    list.addEventListener('pointermove', (e) => { if (drag) list.scrollTop = drag.top - (e.clientY - drag.y); });
-    const end = () => { if (!drag) return; drag = null; list.style.scrollSnapType = ''; list.scrollTo({ top: Math.round(list.scrollTop / H) * H, behavior: 'smooth' }); };
-    list.addEventListener('pointerup', end);
-    list.addEventListener('pointercancel', end);
-    list.scrollTop = ids.indexOf(active) * H;
-    requestAnimationFrame(() => { list.scrollTop = ids.indexOf(active) * H; place(); });
-    $('[data-choose]', el).onclick = () => { onPick(active); close(); };
+  const L = getLang();
+  const infoOf = (id) => { const i = INFO[id]; return { s: i.s, t: i[L] || i.ru }; };
+  const root = document.createElement('div');
+  root.className = 'reels';
+  root.dataset.noi18n = '1';
+  root.innerHTML = `<div class="reels-top"><button class="reels-x" data-x aria-label="${esc(tr('Закрыть'))}">${ic('close-circle')}</button><b data-count></b></div>
+    <div class="reels-list" data-list>${ids.map((id) => {
+    const m = MASCOTS[id];
+    const { s: st, t } = infoOf(id);
+    return `<section class="reel" data-id="${id}" style="--c:${m.color}">
+      <div class="halo"></div><div class="art" data-art></div>
+      <div class="side">${FIELDS.map(([icon, label], i) => `<button class="sb" data-f="${i}" style="--i:${i}"><em>${icon}</em><small>${esc(tr(label))}</small></button>`).join('')}</div>
+      <div class="rbub" data-bubble><small></small><p></p></div>
+      <div class="meta"><h2>${esc(tr(m.name))}</h2><p>${esc(tr(m.about))}</p>
+        <div class="stat5">${STAT_KEYS.map((k, i) => `<div style="--i:${i}"><span>${STAT_EMOJI[i]} ${esc(tr(k))}</span><div class="bar5">${[1, 2, 3, 4, 5].map((n) => `<i class="${n <= st[i] ? 'on' : ''}"></i>`).join('')}</div></div>`).join('')}</div></div>
+      <button class="reel-pick" data-pick>${id === current ? '✓ ' + esc(tr('Твой напарник')) : esc(tr('Выбрать')) + ': ' + esc(tr(m.name))}</button>
+      ${id === ids[0] ? `<div class="swipe-hint" data-hint>${ic('alt-arrow-left')}<span>${esc(tr('Свайпни вверх'))}</span></div>` : ''}
+    </section>`;
+  }).join('')}</div>`;
+  layer.appendChild(root);
+  const list = $('[data-list]', root);
+  const slides = $$('.reel', root);
+  let active = -1;
+  const art = (i, on) => { $('[data-art]', slides[i]).innerHTML = mascot(ids[i], on ? 'cheer' : 'happy', 280, on ? '' : 'still'); };
+  slides.forEach((_, i) => art(i, false));
+  const close = () => { document.removeEventListener('keydown', onKey); root.classList.add('out'); setTimeout(() => root.remove(), 220); };
+  const showFact = (i, fi) => {
+    const sl = slides[i];
+    const { t } = infoOf(ids[i]);
+    const btns = $$('.sb', sl);
+    btns.forEach((b, k) => b.classList.toggle('on', k === fi));
+    const bub = $('[data-bubble]', sl);
+    bub.classList.remove('show');
+    void bub.offsetWidth;
+    $('small', bub).textContent = `${FIELDS[fi][0]} ${tr(FIELDS[fi][1])}`;
+    $('p', bub).textContent = t[fi];
+    const br = btns[fi].getBoundingClientRect();
+    bub.style.top = `${br.top - sl.getBoundingClientRect().top + 26}px`;
+    bub.classList.add('show');
+  };
+  const activate = (i) => {
+    if (i === active || i < 0 || i >= ids.length) return;
+    if (active >= 0) { slides[active].classList.remove('on'); art(active, false); }
+    active = i;
+    slides[i].classList.add('on');
+    art(i, true);
+    $('[data-count]', root).textContent = `${i + 1} / ${ids.length}`;
+    haptic('light');
+    $('[data-hint]', root)?.classList.add('gone');
+    clearTimeout(activate.t);
+    activate.t = setTimeout(() => showFact(i, 0), 420); // инфа выезжает сбоку
+  };
+  slides.forEach((sl, i) => {
+    $$('.sb', sl).forEach((b) => (b.onclick = () => { haptic('light'); showFact(i, Number(b.dataset.f)); }));
+    $('[data-pick]', sl).onclick = () => { if (ids[i] !== current) onPick(ids[i]); close(); };
   });
+  // параллакс при свайпе: соседние слайды уезжают и уменьшаются
+  const place = () => {
+    const H = list.clientHeight || 1;
+    slides.forEach((sl, i) => {
+      const d = (i * H - list.scrollTop) / H;
+      const t = Math.min(1, Math.abs(d));
+      const a = $('[data-art]', sl);
+      a.style.transform = `translate(-50%, -50%) translateY(${(d * -70).toFixed(0)}px) scale(${(1 - 0.35 * t).toFixed(3)}) rotate(${(d * 8).toFixed(1)}deg)`;
+      a.style.opacity = (1 - 0.8 * t).toFixed(3);
+    });
+    activate(Math.round(list.scrollTop / H));
+  };
+  let raf = 0;
+  list.addEventListener('scroll', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(place); });
+  // мышью на компьютере: тянем
+  let drag = null;
+  list.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse' || e.target.closest('button')) return; drag = { y: e.clientY, top: list.scrollTop }; list.style.scrollSnapType = 'none'; list.setPointerCapture(e.pointerId); });
+  list.addEventListener('pointermove', (e) => { if (drag) list.scrollTop = drag.top - (e.clientY - drag.y); });
+  const end = () => { if (!drag) return; drag = null; list.style.scrollSnapType = ''; list.scrollTo({ top: Math.round(list.scrollTop / list.clientHeight) * list.clientHeight, behavior: 'smooth' }); };
+  list.addEventListener('pointerup', end);
+  list.addEventListener('pointercancel', end);
+  const go = (n) => list.scrollTo({ top: Math.max(0, Math.min(ids.length - 1, n)) * list.clientHeight, behavior: 'smooth' });
+  const onKey = (e) => { if (e.key === 'Escape') close(); else if (e.key === 'ArrowDown') { e.preventDefault(); go(active + 1); } else if (e.key === 'ArrowUp') { e.preventDefault(); go(active - 1); } };
+  document.addEventListener('keydown', onKey);
+  $('[data-x]', root).onclick = close;
+  const start = Math.max(0, ids.indexOf(current));
+  requestAnimationFrame(() => { list.scrollTop = start * list.clientHeight; place(); });
 }
 
 function bindAppearance(el, onChange) {
   const pk = $('[data-pickm]', el);
-  if (pk) pk.onclick = () => mascotPicker(LOOK.mascot, (id) => {
+  if (pk) pk.onclick = () => mascotReels(LOOK.mascot, (id) => {
     haptic('success');
     savePrefs({ mascot: id });
     $('[data-curm]', el).innerHTML = curMascotInner();

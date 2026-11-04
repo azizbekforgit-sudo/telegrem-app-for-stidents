@@ -44,8 +44,8 @@ export const INFO = {
     ru: ['Быстрый ёжик, 15 лет, родом с Зелёных Холмов', 'Сверхскорость и колючие факты', 'Кроссовки и ветер в лицо', 'Воды и очередей', '«Некогда ждать — решаем!»', 'Иголки встают дыбом, когда он видит ошибку'],
     uz: ["Tez tipratikan, 15 yosh, Yashil Tepaliklardan", "O'ta tezlik va tikanli faktlar", "Krossovkalar va yuzga urilgan shamol", "Suv va navbatlar", "«Kutishga vaqt yo'q — yechamiz!»", "Xatoni ko'rsa, ignalari tikka turadi"],
     en: ['A fast hedgehog, 15, from the Green Hills', 'Super speed and prickly facts', 'Sneakers and wind in the face', 'Water and queues', '«No time to wait — let\'s solve it!»', 'His quills stand up when he sees a mistake'] },
-  bik: { s: [4, 3, 5, 2, 3],
-    ru: ['Бородатый гонщик, 35 лет, вечно в пути по горным дорогам', 'Берёт любую горку и любую задачу', 'Бензин, зелёные кепки и тряские дороги', 'Пустого бака и пробок', '«Газ в пол — ответ найдётся!»', 'В бороде хранит три запасных ключа и один ответ'],
-    uz: ["Soqolli poygachi, 35 yosh, doim tog' yo'llarida", "Har qanday tepalikni va har qanday masalani oladi", "Benzin, yashil kepkalar va silkinuvchi yo'llar", "Bo'sh bak va tirbandlik", "«Gazni bos — javob topiladi!»", "Soqolida uchta zaxira kalit va bitta javobni saqlaydi"],
-    en: ['A bearded racer, 35, always on mountain roads', 'Takes any hill and any task', 'Gasoline, green caps and bumpy roads', 'An empty tank and traffic jams', '«Floor it — the answer will turn up!»', 'Keeps three spare keys and one answer in his beard'] },
+  bot: { s: [4, 5, 3, 2, 3],
+    ru: ['Робот-помощник, 3 года с момента сборки, родом из лаборатории кода', 'Проверяет ответы быстрее калькулятора', 'Чистый код, батарейки и ровные отступы', 'Бесконечных циклов и синего экрана', '«Компилируется — значит, живёт!»', 'Антенна ловит Wi-Fi и подсказки'],
+    uz: ["Yordamchi robot, yig'ilganiga 3 yil, kod laboratoriyasidan", "Javoblarni kalkulyatordan tez tekshiradi", "Toza kod, batareykalar va tekis chekinishlar", "Cheksiz sikllar va ko'k ekrandan", "«Kompilyatsiya bo'ldi — demak, tirik!»", "Antennasi Wi-Fi va maslahatlarni ushlaydi"],
+    en: ['A helper robot, 3 years since assembly, from the code lab', 'Checks answers faster than a calculator', 'Clean code, batteries and even indentation', 'Infinite loops and the blue screen', '«It compiles — so it lives!»', 'Its antenna catches Wi-Fi and hints'] },
 };
