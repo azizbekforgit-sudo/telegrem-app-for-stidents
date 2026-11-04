@@ -1,0 +1,344 @@
+{
+  "id": "lesson-06-flexbox",
+  "order": 6,
+  "title": "Урок 6. Flexbox — основы",
+  "emoji": "📐",
+  "description": "display: flex, flex-direction, justify-content, align-items",
+  "learn": {
+    "intro": "Привет! Урок 6 — **Flexbox**. Раньше, чтобы выровнять блоки, верстальщики мучались с float и хаками. Теперь ты говоришь, как расставить элементы, а браузер сам их раскладывает. Поехали!",
+    "sections": [
+      {
+        "title": "display: flex",
+        "slides": [
+          {
+            "emoji": "📦",
+            "text": "Главная идея: есть **контейнер** (родитель) и **элементы** внутри него. Настраиваем контейнер, а элементы сами подстраиваются."
+          },
+          {
+            "text": "Без Flexbox блоки `div` стоят друг под другом. Добавляем родителю `display: flex` — и они встают **в ряд**:",
+            "code": ".container {\n  display: flex;\n}"
+          },
+          {
+            "quote": true,
+            "text": "Элементы внутри контейнера называются **flex-элементами**."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "display: flex",
+            "prompt": "Куда пишут display: flex?",
+            "options": [
+              "Родителю (контейнеру)",
+              "Каждому ребёнку",
+              "В <head>",
+              "Только в body"
+            ],
+            "answer": 0,
+            "explain": "Flex включают на контейнере."
+          },
+          {
+            "type": "truefalse",
+            "topic": "display: flex",
+            "prompt": "Элементы внутри flex-контейнера называются flex-элементами.",
+            "answer": true,
+            "explain": "Контейнер — родитель, элементы — дети."
+          }
+        ]
+      },
+      {
+        "title": "flex-direction",
+        "slides": [
+          {
+            "emoji": "➡️",
+            "text": "У контейнера есть **главная ось** — направление, в котором выстраиваются элементы.\n`row` (по умолчанию) — в ряд, слева направо.\n`column` — друг под другом, сверху вниз.",
+            "code": ".container {\n  display: flex;\n  flex-direction: column;\n}"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "flex-direction",
+            "prompt": "Какое значение flex-direction по умолчанию?",
+            "options": [
+              "row",
+              "column",
+              "wrap",
+              "center"
+            ],
+            "answer": 0,
+            "explain": "row — в ряд слева направо."
+          }
+        ]
+      },
+      {
+        "title": "justify-content",
+        "slides": [
+          {
+            "emoji": "↔️",
+            "text": "`justify-content` двигает элементы **вдоль** главной оси. Для `row` это горизонталь, для `column` — вертикаль."
+          },
+          {
+            "text": "`flex-start` — к началу, `center` — по центру, `flex-end` — к концу.\n`space-between` — первый у начала, последний у конца, между ними равные промежутки.\n`space-around` — вокруг каждого равные отступы (по краям — половина промежутка).",
+            "code": ".container {\n  display: flex;\n  justify-content: space-between;\n}"
+          },
+          {
+            "quote": true,
+            "text": "`space-between` — самый частый выбор для меню: логотип слева, ссылки справа."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "justify-content",
+            "prompt": "Какое значение поставит логотип слева, а ссылки справа?",
+            "options": [
+              "space-between",
+              "center",
+              "flex-start",
+              "stretch"
+            ],
+            "answer": 0,
+            "explain": "space-between разводит крайние элементы к краям."
+          },
+          {
+            "type": "match",
+            "topic": "justify-content",
+            "prompt": "Соедини значение и результат",
+            "pairs": [
+              [
+                "flex-start",
+                "К началу"
+              ],
+              [
+                "center",
+                "По центру"
+              ],
+              [
+                "flex-end",
+                "К концу"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": "align-items и запоминалка",
+        "slides": [
+          {
+            "emoji": "↕️",
+            "text": "`align-items` двигает элементы **поперёк** главной оси. Для `row` это вертикаль. Чтобы разницу было видно, задаём контейнеру высоту:",
+            "code": ".container {\n  display: flex;\n  height: 300px;\n  align-items: center;\n}"
+          },
+          {
+            "text": "`flex-start` — к верху, `center` — по центру, `flex-end` — к низу, `stretch` (по умолчанию) — растягиваются на всю высоту."
+          },
+          {
+            "quote": true,
+            "text": "Запоминалка: `justify` — «**j**ust along» (вдоль), `align` — «**a**cross» (поперёк). Для `row`: justify-content двигает **влево-вправо**, align-items — **вверх-вниз**."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "align-items",
+            "prompt": "Что двигает элементы вверх и вниз при flex-direction: row?",
+            "options": [
+              "align-items",
+              "justify-content",
+              "flex-wrap",
+              "gap"
+            ],
+            "answer": 0,
+            "explain": "align-items — поперёк главной оси."
+          },
+          {
+            "type": "truefalse",
+            "topic": "align-items",
+            "prompt": "justify-content двигает элементы вдоль главной оси.",
+            "answer": true,
+            "explain": "justify — «just along», вдоль."
+          }
+        ]
+      },
+      {
+        "title": "Практика: меню и домашка",
+        "slides": [
+          {
+            "emoji": "🧭",
+            "text": "Навигационное меню: логотип слева, ссылки справа, всё по центру по вертикали:",
+            "code": ".menu {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 16px;\n  background: #14141f;\n  color: white;\n}"
+          },
+          {
+            "quote": true,
+            "text": "Домашка: карточка профиля — **аватар слева**, **имя и описание справа**, всё по центру по вертикали. Родителю `display: flex` и `align-items: center`, аватару фиксированная ширина, например `width: 80px`."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Практика",
+            "prompt": "Что нужно родителю карточки профиля, чтобы всё было по центру по вертикали?",
+            "options": [
+              "display: flex и align-items: center",
+              "Только margin",
+              "float: left",
+              "position: fixed"
+            ],
+            "answer": 0,
+            "explain": "Flex + align-items: center."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "display: flex",
+      "prompt": "Что произойдёт после display: flex у родителя?",
+      "options": [
+        "Блоки встанут в ряд",
+        "Блоки исчезнут",
+        "Блоки станут красными",
+        "Ничего"
+      ],
+      "answer": 0,
+      "explain": "Элементы выстраиваются по главной оси."
+    },
+    {
+      "type": "truefalse",
+      "topic": "display: flex",
+      "prompt": "Мы настраиваем контейнер, а элементы внутри подстраиваются сами.",
+      "answer": true,
+      "explain": "В этом главная идея Flexbox."
+    },
+    {
+      "type": "choice",
+      "topic": "flex-direction",
+      "prompt": "Что делает flex-direction: column?",
+      "options": [
+        "Ставит элементы друг под другом",
+        "Ставит в ряд",
+        "Прячет элементы",
+        "Увеличивает шрифт"
+      ],
+      "answer": 0,
+      "explain": "Главная ось становится вертикальной."
+    },
+    {
+      "type": "choice",
+      "topic": "justify-content",
+      "prompt": "Как элементы расположены при space-between?",
+      "options": [
+        "Первый у начала, последний у конца, между ними равные промежутки",
+        "Все прижаты слева",
+        "Все по центру",
+        "Друг на друге"
+      ],
+      "answer": 0,
+      "explain": "Это самый частый выбор для меню."
+    },
+    {
+      "type": "match",
+      "topic": "justify-content",
+      "prompt": "Соедини значение и смысл",
+      "pairs": [
+        [
+          "center",
+          "По центру"
+        ],
+        [
+          "space-between",
+          "Крайние у краёв, между равные промежутки"
+        ],
+        [
+          "flex-end",
+          "К концу"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "align-items",
+      "prompt": "Какое значение align-items по умолчанию?",
+      "options": [
+        "stretch",
+        "center",
+        "flex-start",
+        "flex-end"
+      ],
+      "answer": 0,
+      "explain": "stretch растягивает на всю высоту контейнера."
+    },
+    {
+      "type": "choice",
+      "topic": "align-items",
+      "prompt": "Какое свойство ставит элементы по центру по вертикали при row?",
+      "options": [
+        "align-items: center",
+        "justify-content: center",
+        "flex-direction: center",
+        "gap: center"
+      ],
+      "answer": 0,
+      "explain": "align-items — поперёк главной оси."
+    },
+    {
+      "type": "input",
+      "topic": "align-items",
+      "prompt": "Какое свойство двигает элементы вдоль главной оси? (одно слово с дефисом)",
+      "answer": [
+        "justify-content"
+      ],
+      "explain": "justify — «just along»."
+    },
+    {
+      "type": "choice",
+      "topic": "align-items",
+      "prompt": "Зачем задают контейнеру высоту, когда пробуют align-items?",
+      "options": [
+        "Чтобы разницу было видно",
+        "Без высоты align-items ломается",
+        "Так требует браузер",
+        "Для красоты"
+      ],
+      "answer": 0,
+      "explain": "Без высоты поперёк оси нет свободного места."
+    },
+    {
+      "type": "order",
+      "topic": "Практика",
+      "prompt": "Собери правило меню: логотип слева, ссылки справа, по центру по вертикали",
+      "tokens": [
+        "display: flex;",
+        "justify-content: space-between;",
+        "align-items: center;"
+      ],
+      "extra": [
+        "float: left;"
+      ],
+      "explain": "Flex, разведение к краям и центр по вертикали."
+    },
+    {
+      "type": "choice",
+      "topic": "Практика",
+      "prompt": "Какие три свойства делают меню из практики?",
+      "options": [
+        "display, justify-content, align-items",
+        "color, font-size, width",
+        "float, clear, position",
+        "margin, padding, border"
+      ],
+      "answer": 0,
+      "explain": "Flex-контейнер плюс два выравнивания."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Практика",
+      "prompt": "Для карточки профиля аватару стоит задать фиксированную ширину, например 80px.",
+      "answer": true,
+      "explain": "Тогда текст справа займёт остальное место."
+    }
+  ]
+}

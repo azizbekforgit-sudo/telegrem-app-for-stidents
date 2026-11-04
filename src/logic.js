@@ -272,16 +272,58 @@ export function createLogic(store, { adminIds }) {
     return { pub, already: false };
   }
   // Отправить тест одному ученику (личная публикация). noLearn: сразу тест, без обучалки
-  function sendToStudent(lessonId, userId, noLearn) {
+  function sendToStudent(lessonId, userId, noLearn, extra = {}) {
     if (!S.lessons[lessonId]) throw httpError(404, 'Тест не найден');
     const id = String(userId || '');
     if (!S.users[id] || isAdmin(id)) throw httpError(404, 'Ученик не найден');
-    const exists = Object.values(S.pubs).find((p) => p.lessonId === lessonId && p.userId === id);
+    // доступ уже есть (лично или через группу) — второй раз не выдаём
+    const exists = pubsForUser(id).find((p) => p.lessonId === lessonId);
     if (exists) return { pub: exists, already: true };
-    const pub = { id: store.nextId('p'), lessonId, groupId: null, userId: id, noLearn: Boolean(noLearn), publishedAt: Date.now() };
+    const pub = { id: store.nextId('p'), lessonId, groupId: null, userId: id, noLearn: Boolean(noLearn), publishedAt: Date.now(), ...(extra.noXp ? { noXp: true } : {}), ...(extra.auto ? { auto: true } : {}) };
     S.pubs[pub.id] = pub;
     store.save();
     return { pub, already: false };
+  }
+  // Открыть выбранным ученикам сразу несколько тестов
+  function grantLessons(userIds, lessonIds, noLearn) {
+    const users = [...new Set((userIds || []).map(String))];
+    const lessons = [...new Set((lessonIds || []).map(String))];
+    if (!users.length) throw httpError(400, 'Выбери хотя бы одного ученика');
+    if (!lessons.length) throw httpError(400, 'Выбери хотя бы один тест');
+    for (const lid of lessons) if (!S.lessons[lid]) throw httpError(404, 'Тест не найден');
+    const byUser = {};
+    let already = 0;
+    for (const uid of users) {
+      for (const lid of lessons) {
+        const r = sendToStudent(lid, uid, noLearn);
+        if (r.already) already++; else (byUser[uid] ||= []).push(r.pub);
+      }
+    }
+    return { byUser, given: Object.values(byUser).reduce((n, a) => n + a.length, 0), already };
+  }
+  // Один раз: каждому, у кого уже есть доступ к уроку N, открываем все уроки с 1 по N. Эти уроки без очков (ученик их уже проходил)
+  function migrateAccess() {
+    S.migrations ||= {};
+    if (S.migrations['access-v1']) return null;
+    const report = [];
+    const course = Object.values(S.lessons).filter((l) => Number.isFinite(l.order) && l.order < 100 && !l.personal && !l.archived).sort((a, b) => a.order - b.order);
+    for (const u of students()) {
+      const mine = pubsForUser(u.id);
+      const orders = mine.map((p) => S.lessons[p.lessonId]?.order).filter((o) => Number.isFinite(o) && o < 100);
+      if (!orders.length) continue;
+      const max = Math.max(...orders);
+      const have = new Set(mine.map((p) => p.lessonId));
+      const opened = [];
+      for (const l of course) {
+        if (l.order > max || have.has(l.id)) continue;
+        const r = sendToStudent(l.id, u.id, false, { noXp: true, auto: true });
+        if (!r.already) opened.push(l.order);
+      }
+      report.push({ user: { id: u.id, name: name(u) }, had: [...new Set(orders)].sort((a, b) => a - b), opened });
+    }
+    S.migrations['access-v1'] = Date.now();
+    store.save();
+    return report;
   }
   // Дать доступ к тесту сразу нескольким ученикам. Повторно тем, у кого он уже есть, не выдаётся
   function sendToStudents(lessonId, userIds, noLearn) {
@@ -380,7 +422,7 @@ export function createLogic(store, { adminIds }) {
     if (!L.doneAt) {
       L.doneAt = Date.now();
       const learnedBefore = Object.entries(S.learn).some(([k, v]) => k !== key && k.startsWith(String(uid) + ':') && v.doneAt && S.pubs[k.split(':')[1]]?.lessonId === lesson.id);
-      L.xp = learnedBefore ? 0 : 15;
+      L.xp = learnedBefore || pub.noXp ? 0 : 15;
       touchStreak(S.users[String(uid)]);
       log('learn', { user: { id: String(uid), name: name(S.users[String(uid)]) }, lesson: lesson.id, title: lesson.title, checks: L.answers });
     }
@@ -541,7 +583,8 @@ export function createLogic(store, { adminIds }) {
       preview = true;
     }
     if (!lesson) throw httpError(404, 'Тест не найден');
-    const practice = !preview && (finishedAttempts(uid, pubId).length > 0 || Object.values(S.attempts).some((x) => x.userId === uid && x.lessonId === lesson.id && x.finishedAt && !x.preview));
+    const noXp = Boolean(pubId && S.pubs[pubId]?.noXp);
+    const practice = !preview && (noXp || finishedAttempts(uid, pubId).length > 0 || Object.values(S.attempts).some((x) => x.userId === uid && x.lessonId === lesson.id && x.finishedAt && !x.preview));
     const a = { id: store.nextId('a'), lang: langOf(uid), pubId: pubId || null, lessonId: lesson.id, userId: uid, preview, practice, startedAt: Date.now(), finishedAt: null, answers: [], combo: 0, maxCombo: 0, xp: 0 };
     S.attempts[a.id] = a;
     store.save();
@@ -911,7 +954,7 @@ export function createLogic(store, { adminIds }) {
     const path = pubsForUser(uid).map((p) => {
       const l = loc(S.lessons[p.lessonId], langOf(uid));
       const b = best(uid, p.id);
-      return { pubId: p.id, title: l.title, emoji: l.emoji, description: l.description, questions: l.questions.length, topics: l.topics, groupId: p.groupId, groupName: p.userId ? 'Лично' : S.groups[p.groupId].name, personal: Boolean(p.userId), exam: l.kind === 'exam', hasLearn: Boolean(l.learn) && !p.noLearn, learnDone: learnDone(uid, p.id), learnSections: l.learn?.sections.length || 0, publishedAt: p.publishedAt, best: b ? b.pct : null, stars: b ? (b.pct === 100 ? 3 : b.pct >= 80 ? 2 : b.pct >= 50 ? 1 : 0) : null };
+      return { pubId: p.id, title: l.title, emoji: l.emoji, description: l.description, questions: l.questions.length, topics: l.topics, groupId: p.groupId, groupName: p.userId ? 'Лично' : S.groups[p.groupId].name, personal: Boolean(p.userId), forYou: Boolean(S.lessons[p.lessonId].personal), order: S.lessons[p.lessonId].order ?? null, lessonId: p.lessonId, exam: l.kind === 'exam', hasLearn: Boolean(l.learn) && !p.noLearn, learnDone: learnDone(uid, p.id), learnSections: l.learn?.sections.length || 0, publishedAt: p.publishedAt, best: b ? b.pct : null, stars: b ? (b.pct === 100 ? 3 : b.pct >= 80 ? 2 : b.pct >= 50 ? 1 : 0) : null };
     });
     return {
       user: publicUser(u),
@@ -921,6 +964,11 @@ export function createLogic(store, { adminIds }) {
       streak: currentStreak(u),
       groups: groups.map((g) => ({ id: g.id, name: g.name, emoji: g.emoji })),
       path,
+      // уроки курса, которые учитель ещё не открыл: ученик видит их закрытыми
+      locked: Object.values(S.lessons)
+        .filter((l) => Number.isFinite(l.order) && l.order < 100 && !l.personal && !l.archived && !path.some((p) => p.lessonId === l.id))
+        .sort((a, b) => a.order - b.order)
+        .map((l) => { const t = loc(l, langOf(uid)); return { lessonId: l.id, order: l.order, title: t.title, emoji: l.emoji, description: t.description, questions: t.questions.length, hasLearn: Boolean(l.learn) }; }),
       mistakes: mistakesOf(uid).length,
       feed: feed(groups.map((g) => g.id), 12, langOf(uid)),
     };
@@ -933,7 +981,7 @@ export function createLogic(store, { adminIds }) {
     const lessons = lessonsAll
       .filter((l) => !l.archived)
       .map((l) => ({
-        id: l.id, title: l.title, emoji: l.emoji, description: l.description, topics: l.topics, questions: l.questions.length,
+        id: l.id, order: l.order ?? null, title: l.title, emoji: l.emoji, description: l.description, topics: l.topics, questions: l.questions.length,
         types: [...new Set(l.questions.map((q) => q.type))],
         sentTo: Object.values(S.pubs).filter((p) => p.lessonId === l.id && S.groups[p.groupId]).map((p) => {
           const s = pubStats(p.id);
@@ -1001,7 +1049,7 @@ export function createLogic(store, { adminIds }) {
   }
 
   return {
-    S, isAdmin, isParent, duplicateXp, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
+    S, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
     upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,

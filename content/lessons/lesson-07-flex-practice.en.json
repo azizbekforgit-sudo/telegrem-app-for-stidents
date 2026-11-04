@@ -1,0 +1,340 @@
+{
+  "title": "Lesson 7. Flexbox — practice, nested containers",
+  "description": "flex-wrap, gap, nested flex, flex: 1 and a card gallery",
+  "learn": {
+    "intro": "Hi! Lesson 7 — Flexbox practice. There is almost no theory: we solve real tasks found on any site. Four tricks: `flex-wrap`, `gap`, nested containers and `flex: 1`. Let's go!",
+    "sections": [
+      {
+        "title": "flex-wrap: wrap",
+        "slides": [
+          {
+            "emoji": "📏",
+            "text": "Normally flex tries to fit all items in **one** row. If space is short, items shrink (`flex-shrink: 1`), and if shrinking is forbidden they overflow the container and a horizontal scroll appears."
+          },
+          {
+            "text": "The fix is one line on the container:",
+            "code": ".container {\n  display: flex;\n  flex-wrap: wrap;  /* didn't fit — new row */\n  width: 500px;\n}"
+          },
+          {
+            "quote": true,
+            "text": "Like words in text: didn't fit — moved to the next line. The default is `nowrap`. And `flex-wrap` goes on the **parent**, not the children."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "flex-wrap",
+            "prompt": "What does flex-wrap: wrap do?",
+            "options": [
+              "Moves items that don't fit to a new row",
+              "Squeezes the items",
+              "Deletes extra items",
+              "Colors the items"
+            ],
+            "answer": 0,
+            "explain": "Like word wrapping in text."
+          },
+          {
+            "type": "truefalse",
+            "topic": "flex-wrap",
+            "prompt": "flex-wrap should be written on each card, not on the container.",
+            "answer": false,
+            "explain": "flex-wrap goes on the parent (the container)."
+          }
+        ]
+      },
+      {
+        "title": "gap — space between items",
+        "slides": [
+          {
+            "emoji": "🧱",
+            "text": "The old way — a margin on every card:",
+            "code": ".card {\n  margin-right: 20px;\n  margin-bottom: 20px;\n}"
+          },
+          {
+            "text": "The problem: extra 20px to the right of the last card and under the last row. The new way is one line on the container, and the space goes only **between** items:",
+            "code": ".container {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 20px;\n}"
+          },
+          {
+            "quote": true,
+            "text": "Two axes separately: `gap: 30px 10px;` — the first is between **rows**, the second between **columns** (the same as `row-gap` and `column-gap`)."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "gap",
+            "prompt": "Where does gap put the space?",
+            "options": [
+              "Only between items",
+              "Only at the container edges",
+              "Inside the items",
+              "Nowhere"
+            ],
+            "answer": 0,
+            "explain": "So there is no extra 20px at the edges."
+          },
+          {
+            "type": "input",
+            "topic": "gap",
+            "prompt": "What is the property for space only between rows? (hyphenated)",
+            "answer": [
+              "row-gap"
+            ],
+            "explain": "row-gap is between rows, column-gap between columns."
+          }
+        ]
+      },
+      {
+        "title": "Nested flex containers",
+        "slides": [
+          {
+            "emoji": "🪆",
+            "text": "One element can play two roles: for its parent it is a flex **item**, for its own children a flex **container**. Almost any interface is built like this, like a nesting doll."
+          },
+          {
+            "text": "A product card: image, name, description top to bottom, and at the bottom the price on the left and a button on the right in one row:",
+            "code": ".product {  /* outer — column */\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n}\n.product-footer {  /* inner — row */\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n}"
+          },
+          {
+            "quote": true,
+            "text": "Each container controls only its **own** direct children. And `display: flex` is **not inherited** — write it on each container separately."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Nested flex",
+            "prompt": "Is display: flex inherited by children?",
+            "options": [
+              "No, it is written separately for each container",
+              "Yes, always",
+              "Only in column",
+              "Only for images"
+            ],
+            "answer": 0,
+            "explain": "This is a common beginner mistake."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Nested flex",
+            "prompt": "One element can be a flex item for its parent and a flex container for its children.",
+            "answer": true,
+            "explain": "That is nested containers."
+          }
+        ]
+      },
+      {
+        "title": "flex: 1 — share space equally",
+        "slides": [
+          {
+            "emoji": "⚖️",
+            "text": "`flex: 1` tells children «take free space equally with your neighbors». You get columns of equal width without a single px or percent:",
+            "code": ".columns {\n  display: flex;\n  gap: 20px;\n}\n.col {\n  flex: 1;\n}"
+          },
+          {
+            "quote": true,
+            "text": "The number is a **share**: `flex: 1`, `flex: 1`, `flex: 2` give 4 shares, and the third column takes 2/4 — half the width. Add a fourth column and all become equal by themselves."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "flex: 1",
+            "prompt": "Columns with flex: 1, flex: 1, flex: 2. What share does the third take?",
+            "options": [
+              "2/4",
+              "1/4",
+              "1/3",
+              "2/3"
+            ],
+            "answer": 0,
+            "explain": "There are 4 shares in total, the third has 2 of them."
+          }
+        ]
+      },
+      {
+        "title": "Practice: a gallery and homework",
+        "slides": [
+          {
+            "emoji": "🖼️",
+            "text": "6 cards, 3 per row, 20px between them. Why not `width: 33.33%`? Three 33% take almost the whole width plus two 20px `gap`s — there is not enough room and the third drops down. First subtract the gaps, then divide:",
+            "code": ".product {\n  width: calc((100% - 40px) / 3);\n}"
+          },
+          {
+            "text": "The formula for N per row: `width: calc((100% - (N - 1) × gap) / N)`. For a phone: `@media (max-width: 600px) { .product { width: 100%; } }`."
+          },
+          {
+            "quote": true,
+            "text": "Homework — a «3 advantages» block: `.features` (flex, row, gap) and three `.feature` with `flex: 1`, each containing an icon, a heading and text top to bottom, centered. Bonus: on a narrow screen the columns stack."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Practice",
+            "prompt": "Which width gives exactly 3 cards per row with gap: 20px?",
+            "options": [
+              "calc((100% - 40px) / 3)",
+              "33.33%",
+              "33%",
+              "100% / 3"
+            ],
+            "answer": 0,
+            "explain": "First subtract 2 gaps of 20px."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "flex-wrap",
+      "prompt": "What is the default value of flex-wrap?",
+      "options": [
+        "nowrap",
+        "wrap",
+        "row",
+        "stretch"
+      ],
+      "answer": 0,
+      "explain": "By default items don't wrap."
+    },
+    {
+      "type": "choice",
+      "topic": "flex-wrap",
+      "prompt": "What happens if items don't fit and flex-shrink is 0?",
+      "options": [
+        "They overflow, a horizontal scroll appears",
+        "They shrink",
+        "They disappear",
+        "They wrap themselves"
+      ],
+      "answer": 0,
+      "explain": "Without wrap and shrink they go past the edge."
+    },
+    {
+      "type": "truefalse",
+      "topic": "gap",
+      "prompt": "gap also puts space at the container edges.",
+      "answer": false,
+      "explain": "gap is only between items."
+    },
+    {
+      "type": "choice",
+      "topic": "gap",
+      "prompt": "What does gap: 30px 10px mean?",
+      "options": [
+        "30px between rows, 10px between columns",
+        "30px between columns, 10px between rows",
+        "30px top, 10px bottom",
+        "An error"
+      ],
+      "answer": 0,
+      "explain": "The first value is rows, the second columns."
+    },
+    {
+      "type": "choice",
+      "topic": "gap",
+      "prompt": "Why is gap better than margin for cards?",
+      "options": [
+        "It leaves no extra space at the edges",
+        "It is colored",
+        "It loads faster",
+        "In no way"
+      ],
+      "answer": 0,
+      "explain": "No :last-child or negative margins are needed."
+    },
+    {
+      "type": "choice",
+      "topic": "Nested flex",
+      "prompt": "How do you put the price on the left and the button on the right in one row?",
+      "options": [
+        "A separate flex container with justify-content: space-between",
+        "Only margin",
+        "float: right on both",
+        "You can't"
+      ],
+      "answer": 0,
+      "explain": "The inner container is a row."
+    },
+    {
+      "type": "match",
+      "topic": "Nested flex",
+      "prompt": "Match the element and its direction",
+      "pairs": [
+        [
+          ".product",
+          "A column (top to bottom)"
+        ],
+        [
+          ".product-footer",
+          "A row (left to right)"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "Nested flex",
+      "prompt": "What does margin-top: auto do on .product-footer in a column?",
+      "options": [
+        "Pushes it to the bottom of the card",
+        "Deletes it",
+        "Makes it red",
+        "Nothing"
+      ],
+      "answer": 0,
+      "explain": "So buttons in cards of different heights line up."
+    },
+    {
+      "type": "choice",
+      "topic": "flex: 1",
+      "prompt": "What does flex: 1 give all columns?",
+      "options": [
+        "Equal width without px and percent",
+        "Red color",
+        "A width of 1px",
+        "Nothing"
+      ],
+      "answer": 0,
+      "explain": "Each takes an equal share of free space."
+    },
+    {
+      "type": "choice",
+      "topic": "flex: 1",
+      "prompt": "What happens if you add a fourth column with flex: 1?",
+      "options": [
+        "All four become equal quarters",
+        "Three stay, the fourth hides",
+        "The site breaks",
+        "Nothing"
+      ],
+      "answer": 0,
+      "explain": "Nothing needs recalculating."
+    },
+    {
+      "type": "input",
+      "topic": "Practice",
+      "prompt": "How many shares in total do columns flex: 1, flex: 1, flex: 2 have? (a number)",
+      "answer": [
+        "4"
+      ],
+      "explain": "1 + 1 + 2 = 4."
+    },
+    {
+      "type": "choice",
+      "topic": "Practice",
+      "prompt": "Why doesn't width: 33.33% work for 3 cards with a gap?",
+      "options": [
+        "The gaps aren't counted, the third drops down",
+        "It is a wrong notation",
+        "You need 50%",
+        "It all works"
+      ],
+      "answer": 0,
+      "explain": "You need calc with the gap subtracted."
+    }
+  ]
+}

@@ -1,0 +1,341 @@
+{
+  "title": "Lesson 6. Flexbox — basics",
+  "description": "display: flex, flex-direction, justify-content, align-items",
+  "learn": {
+    "intro": "Hi! Lesson 6 — **Flexbox**. Before, designers struggled with float and hacks to align blocks. Now you say how to arrange elements and the browser lays them out. Let's go!",
+    "sections": [
+      {
+        "title": "display: flex",
+        "slides": [
+          {
+            "emoji": "📦",
+            "text": "The main idea: there is a **container** (the parent) and **items** inside it. We set up the container and the items adapt themselves."
+          },
+          {
+            "text": "Without Flexbox `div` blocks stand one under another. Add `display: flex` to the parent — and they line up **in a row**:",
+            "code": ".container {\n  display: flex;\n}"
+          },
+          {
+            "quote": true,
+            "text": "The elements inside the container are called **flex items**."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "display: flex",
+            "prompt": "Where do you write display: flex?",
+            "options": [
+              "On the parent (the container)",
+              "On each child",
+              "In <head>",
+              "Only in body"
+            ],
+            "answer": 0,
+            "explain": "Flex is turned on at the container."
+          },
+          {
+            "type": "truefalse",
+            "topic": "display: flex",
+            "prompt": "Elements inside a flex container are called flex items.",
+            "answer": true,
+            "explain": "The container is the parent, the items are the children."
+          }
+        ]
+      },
+      {
+        "title": "flex-direction",
+        "slides": [
+          {
+            "emoji": "➡️",
+            "text": "A container has a **main axis** — the direction the items line up in.\n`row` (default) — in a row, left to right.\n`column` — one under another, top to bottom.",
+            "code": ".container {\n  display: flex;\n  flex-direction: column;\n}"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "flex-direction",
+            "prompt": "What is the default value of flex-direction?",
+            "options": [
+              "row",
+              "column",
+              "wrap",
+              "center"
+            ],
+            "answer": 0,
+            "explain": "row — in a row, left to right."
+          }
+        ]
+      },
+      {
+        "title": "justify-content",
+        "slides": [
+          {
+            "emoji": "↔️",
+            "text": "`justify-content` moves items **along** the main axis. For `row` that is horizontal, for `column` — vertical."
+          },
+          {
+            "text": "`flex-start` — to the start, `center` — centered, `flex-end` — to the end.\n`space-between` — the first at the start, the last at the end, equal gaps between.\n`space-around` — equal space around each (half a gap at the edges).",
+            "code": ".container {\n  display: flex;\n  justify-content: space-between;\n}"
+          },
+          {
+            "quote": true,
+            "text": "`space-between` is the most common choice for a menu: logo on the left, links on the right."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "justify-content",
+            "prompt": "Which value puts the logo on the left and the links on the right?",
+            "options": [
+              "space-between",
+              "center",
+              "flex-start",
+              "stretch"
+            ],
+            "answer": 0,
+            "explain": "space-between pushes the end items to the edges."
+          },
+          {
+            "type": "match",
+            "topic": "justify-content",
+            "prompt": "Match the value and the result",
+            "pairs": [
+              [
+                "flex-start",
+                "To the start"
+              ],
+              [
+                "center",
+                "Centered"
+              ],
+              [
+                "flex-end",
+                "To the end"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": "align-items and a memory trick",
+        "slides": [
+          {
+            "emoji": "↕️",
+            "text": "`align-items` moves items **across** the main axis. For `row` that is vertical. To see the difference we give the container a height:",
+            "code": ".container {\n  display: flex;\n  height: 300px;\n  align-items: center;\n}"
+          },
+          {
+            "text": "`flex-start` — to the top, `center` — centered, `flex-end` — to the bottom, `stretch` (default) — stretched to the full height."
+          },
+          {
+            "quote": true,
+            "text": "A memory trick: `justify` — «**j**ust along», `align` — «**a**cross». For `row`: justify-content moves **left-right**, align-items — **up-down**."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "align-items",
+            "prompt": "What moves items up and down with flex-direction: row?",
+            "options": [
+              "align-items",
+              "justify-content",
+              "flex-wrap",
+              "gap"
+            ],
+            "answer": 0,
+            "explain": "align-items — across the main axis."
+          },
+          {
+            "type": "truefalse",
+            "topic": "align-items",
+            "prompt": "justify-content moves items along the main axis.",
+            "answer": true,
+            "explain": "justify means «just along»."
+          }
+        ]
+      },
+      {
+        "title": "Practice: a menu and homework",
+        "slides": [
+          {
+            "emoji": "🧭",
+            "text": "A navigation menu: logo on the left, links on the right, everything centered vertically:",
+            "code": ".menu {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 16px;\n  background: #14141f;\n  color: white;\n}"
+          },
+          {
+            "quote": true,
+            "text": "Homework: a profile card — **avatar on the left**, **name and description on the right**, all centered vertically. Give the parent `display: flex` and `align-items: center`, the avatar a fixed width, for example `width: 80px`."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Practice",
+            "prompt": "What does the profile card parent need to center everything vertically?",
+            "options": [
+              "display: flex and align-items: center",
+              "Only margin",
+              "float: left",
+              "position: fixed"
+            ],
+            "answer": 0,
+            "explain": "Flex + align-items: center."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "display: flex",
+      "prompt": "What happens after display: flex on the parent?",
+      "options": [
+        "The blocks line up in a row",
+        "The blocks disappear",
+        "The blocks turn red",
+        "Nothing"
+      ],
+      "answer": 0,
+      "explain": "Items line up along the main axis."
+    },
+    {
+      "type": "truefalse",
+      "topic": "display: flex",
+      "prompt": "We set up the container and the items inside adapt themselves.",
+      "answer": true,
+      "explain": "That is the main idea of Flexbox."
+    },
+    {
+      "type": "choice",
+      "topic": "flex-direction",
+      "prompt": "What does flex-direction: column do?",
+      "options": [
+        "Puts items one under another",
+        "Puts them in a row",
+        "Hides the items",
+        "Enlarges the font"
+      ],
+      "answer": 0,
+      "explain": "The main axis becomes vertical."
+    },
+    {
+      "type": "choice",
+      "topic": "justify-content",
+      "prompt": "How are items placed with space-between?",
+      "options": [
+        "The first at the start, the last at the end, equal gaps between",
+        "All pressed to the left",
+        "All centered",
+        "On top of each other"
+      ],
+      "answer": 0,
+      "explain": "This is the most common choice for a menu."
+    },
+    {
+      "type": "match",
+      "topic": "justify-content",
+      "prompt": "Match the value and meaning",
+      "pairs": [
+        [
+          "center",
+          "Centered"
+        ],
+        [
+          "space-between",
+          "Ends at the edges, equal gaps between"
+        ],
+        [
+          "flex-end",
+          "To the end"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "align-items",
+      "prompt": "What is the default value of align-items?",
+      "options": [
+        "stretch",
+        "center",
+        "flex-start",
+        "flex-end"
+      ],
+      "answer": 0,
+      "explain": "stretch fills the container's height."
+    },
+    {
+      "type": "choice",
+      "topic": "align-items",
+      "prompt": "Which property centers items vertically with row?",
+      "options": [
+        "align-items: center",
+        "justify-content: center",
+        "flex-direction: center",
+        "gap: center"
+      ],
+      "answer": 0,
+      "explain": "align-items works across the main axis."
+    },
+    {
+      "type": "input",
+      "topic": "align-items",
+      "prompt": "Which property moves items along the main axis? (one hyphenated word)",
+      "answer": [
+        "justify-content"
+      ],
+      "explain": "justify means «just along»."
+    },
+    {
+      "type": "choice",
+      "topic": "align-items",
+      "prompt": "Why give the container a height when trying align-items?",
+      "options": [
+        "So the difference is visible",
+        "align-items breaks without a height",
+        "The browser requires it",
+        "For looks"
+      ],
+      "answer": 0,
+      "explain": "Without a height there is no free space across the axis."
+    },
+    {
+      "type": "order",
+      "topic": "Practice",
+      "prompt": "Build the menu rule: logo left, links right, centered vertically",
+      "tokens": [
+        "display: flex;",
+        "justify-content: space-between;",
+        "align-items: center;"
+      ],
+      "extra": [
+        "float: left;"
+      ],
+      "explain": "Flex, spread to edges and vertical center."
+    },
+    {
+      "type": "choice",
+      "topic": "Practice",
+      "prompt": "Which three properties make the menu from the practice?",
+      "options": [
+        "display, justify-content, align-items",
+        "color, font-size, width",
+        "float, clear, position",
+        "margin, padding, border"
+      ],
+      "answer": 0,
+      "explain": "A flex container plus two alignments."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Practice",
+      "prompt": "For a profile card the avatar should get a fixed width, for example 80px.",
+      "answer": true,
+      "explain": "Then the text on the right takes the rest of the space."
+    }
+  ]
+}

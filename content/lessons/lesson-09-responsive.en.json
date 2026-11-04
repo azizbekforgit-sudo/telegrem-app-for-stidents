@@ -1,0 +1,347 @@
+{
+  "title": "Lesson 9. Responsive design, media queries",
+  "description": "meta viewport, @media, breakpoints, mobile-first and desktop-first",
+  "learn": {
+    "intro": "Hi! Lesson 9 — **responsive design**. One site is opened both on a phone (375px) and on a big monitor (1920px). We'll learn to adapt a page to any screen. Let's go!",
+    "sections": [
+      {
+        "title": "The problem and meta viewport",
+        "slides": [
+          {
+            "emoji": "📱",
+            "text": "If sizes are fixed in px (for example `width: 1000px`), on a phone the site spills off the screen: a horizontal scroll appears and cards get cut. To see a site on a phone without a phone: **F12 → the phone icon (Ctrl + Shift + M)** → choose iPhone or iPad."
+          },
+          {
+            "text": "This line must be in `<head>`:",
+            "code": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
+          },
+          {
+            "quote": true,
+            "text": "`width=device-width` — the site width equals the screen width. `initial-scale=1` — no zoom in or out. Without this line a phone thinks it is a computer: it draws the site about 980px wide and just shrinks it, so the text gets tiny. **Without it, media queries don't work on a real phone.** Tip: in VS Code type `!` and press Tab — the line is already in the template."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "meta viewport",
+            "prompt": "What happens without meta viewport on a phone?",
+            "options": [
+              "The site is drawn ~980px wide and shrunk, the text gets tiny",
+              "Nothing changes",
+              "The site turns red",
+              "The site disappears"
+            ],
+            "answer": 0,
+            "explain": "The phone thinks it is a computer."
+          },
+          {
+            "type": "truefalse",
+            "topic": "meta viewport",
+            "prompt": "Without meta viewport media queries don't work on a real phone.",
+            "answer": true,
+            "explain": "This line is needed in every HTML."
+          }
+        ]
+      },
+      {
+        "title": "@media syntax and breakpoints",
+        "slides": [
+          {
+            "emoji": "🎚️",
+            "text": "A media query is a condition in CSS: if the screen width is 768px or less, apply these styles instead of the usual ones.",
+            "code": ".box {\n  background: blue;\n}\n\n/* screen 768px or smaller */\n@media (max-width: 768px) {\n  .box {\n    background: red;\n  }\n}"
+          },
+          {
+            "text": "`max-width: 768px` — «up to 768px, including 768px». Inside `@media` we write ordinary CSS, but **only what changes**. Important: write the media query **below** the ordinary styles — CSS reads top to bottom, a lower rule replaces an upper one."
+          },
+          {
+            "quote": true,
+            "text": "Breakpoints (remember): up to **600px** — phone, up to **1024px** — tablet, over 1024px — computer."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "@media",
+            "prompt": "What does max-width: 768px mean?",
+            "options": [
+              "Up to 768px, including 768px",
+              "Only above 768px",
+              "Exactly 768px",
+              "Nothing"
+            ],
+            "answer": 0,
+            "explain": "max means «at most», for small screens."
+          },
+          {
+            "type": "match",
+            "topic": "Breakpoints",
+            "prompt": "Match the width and the device",
+            "pairs": [
+              [
+                "600px",
+                "Phone"
+              ],
+              [
+                "1024px",
+                "Tablet"
+              ],
+              [
+                "Over 1024px",
+                "Computer"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Mobile-first and desktop-first",
+        "slides": [
+          {
+            "emoji": "📲",
+            "text": "**Desktop-first**: base styles for desktop, the `max-width` condition («up to…») — for small screens we remove extras. **Mobile-first**: base styles for phones, the `min-width` condition («from…») — for large screens we add.",
+            "code": "/* mobile-first: phone first */\n.box { font-size: 16px; }\n\n/* from 768px up we add */\n@media (min-width: 768px) {\n  .box { font-size: 24px; }\n}"
+          },
+          {
+            "quote": true,
+            "text": "Companies often use mobile-first: most people visit from a phone. For beginners `max-width` is easier — we already know desktop layout and now adapt to small screens. To remember: `max` is «at most», i.e. small screens; `min` is «at least», i.e. large screens."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Mobile-first",
+            "prompt": "Which condition does mobile-first usually use?",
+            "options": [
+              "min-width",
+              "max-width",
+              "max-height",
+              "width"
+            ],
+            "answer": 0,
+            "explain": "«From…» — we add for large screens."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Mobile-first",
+            "prompt": "In desktop-first the base styles are written for desktop.",
+            "answer": true,
+            "explain": "And for small screens extras are removed."
+          }
+        ]
+      },
+      {
+        "title": "Examples: a menu and a gallery",
+        "slides": [
+          {
+            "emoji": "🧭",
+            "text": "A menu: in a row on desktop, in a column on a phone. Only **one property** changes, no need to repeat `display: flex` and `gap`:",
+            "code": ".menu {\n  display: flex;\n  flex-direction: row;       /* desktop */\n  gap: 20px;\n}\n@media (max-width: 768px) {\n  .menu {\n    flex-direction: column;  /* phone */\n  }\n}"
+          },
+          {
+            "text": "A gallery: 3 → 2 → 1 columns. Only the number in `repeat` changes:",
+            "code": ".gallery {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);  /* desktop */\n  gap: 20px;\n}\n@media (max-width: 1024px) {\n  .gallery { grid-template-columns: repeat(2, 1fr); }  /* tablet */\n}\n@media (max-width: 600px) {\n  .gallery { grid-template-columns: 1fr; }  /* phone */\n}"
+          },
+          {
+            "quote": true,
+            "text": "**Order matters:** 1024px first, then 600px. If you swap them, the 1024px rule wins on a phone and 2 columns remain, because 375px is also below 1024px."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Examples",
+            "prompt": "Why is 1024px written before 600px?",
+            "options": [
+              "Otherwise the 1024px rule wins on a phone",
+              "It looks nicer",
+              "It loads faster",
+              "No difference"
+            ],
+            "answer": 0,
+            "explain": "375px is also below 1024px, so the lower rule must be 600px."
+          }
+        ]
+      },
+      {
+        "title": "Homework",
+        "slides": [
+          {
+            "emoji": "🏠",
+            "text": "Adapt everything you made over 3 weeks (cards, menu, landing) to 3 screens. Check yourself:\n— every HTML has meta viewport;\n— two breakpoints: `max-width: 1024px` and `max-width: 600px`;\n— no horizontal scroll on a phone and nothing is cut off;\n— 3 screenshots: phone, tablet, computer (in DevTools)."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Homework",
+            "prompt": "How many breakpoints does the homework need?",
+            "options": [
+              "2",
+              "1",
+              "5",
+              "0"
+            ],
+            "answer": 0,
+            "explain": "1024px and 600px."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "The problem",
+      "prompt": "What happens on a phone if a block has width: 1000px?",
+      "options": [
+        "The site spills off the screen, a horizontal scroll appears",
+        "The block shrinks itself",
+        "Nothing",
+        "The block disappears"
+      ],
+      "answer": 0,
+      "explain": "Rigid px don't adapt."
+    },
+    {
+      "type": "choice",
+      "topic": "The problem",
+      "prompt": "How do you view a site like on a phone without a phone?",
+      "options": [
+        "F12 → Ctrl + Shift + M",
+        "Ctrl + S",
+        "F5",
+        "Alt + F4"
+      ],
+      "answer": 0,
+      "explain": "The Toggle device toolbar in DevTools."
+    },
+    {
+      "type": "choice",
+      "topic": "meta viewport",
+      "prompt": "What does width=device-width mean?",
+      "options": [
+        "The site width equals the screen width",
+        "The width is 100px",
+        "Twice as wide",
+        "No width"
+      ],
+      "answer": 0,
+      "explain": "So the phone doesn't pretend to be a computer."
+    },
+    {
+      "type": "input",
+      "topic": "meta viewport",
+      "prompt": "Where is meta viewport written? (the tag without brackets)",
+      "answer": [
+        "head"
+      ],
+      "explain": "Inside <head>."
+    },
+    {
+      "type": "choice",
+      "topic": "@media",
+      "prompt": "Where is @media written relative to ordinary styles?",
+      "options": [
+        "Below the ordinary styles",
+        "Above the ordinary styles",
+        "Always in another file",
+        "Anywhere"
+      ],
+      "answer": 0,
+      "explain": "The lower rule replaces the upper one."
+    },
+    {
+      "type": "choice",
+      "topic": "@media",
+      "prompt": "What color is .box at a 500px screen width?",
+      "code": ".box { background: blue; }\n@media (max-width: 768px) {\n  .box { background: red; }\n}",
+      "options": [
+        "red",
+        "blue",
+        "black",
+        "Будет ошибка"
+      ],
+      "answer": 0,
+      "explain": "500px ≤ 768px, the media rule applies."
+    },
+    {
+      "type": "match",
+      "topic": "Breakpoints",
+      "prompt": "Match the condition and the device",
+      "pairs": [
+        [
+          "max-width: 600px",
+          "Phone"
+        ],
+        [
+          "max-width: 1024px",
+          "Tablet"
+        ],
+        [
+          "min-width: 768px",
+          "From 768px up"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "Mobile-first",
+      "prompt": "What does min-width: 768px mean?",
+      "options": [
+        "From 768px and up",
+        "Up to 768px",
+        "Exactly 768px",
+        "Nothing"
+      ],
+      "answer": 0,
+      "explain": "min means «at least»."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Mobile-first",
+      "prompt": "It is easier for beginners to start with max-width, because they already know desktop layout.",
+      "answer": true,
+      "explain": "Then we adapt to small screens."
+    },
+    {
+      "type": "choice",
+      "topic": "Examples",
+      "prompt": "What do you change to make the menu a column on a phone?",
+      "options": [
+        "Set flex-direction: column in @media",
+        "Rewrite all the CSS",
+        "Remove display: flex",
+        "Delete the menu"
+      ],
+      "answer": 0,
+      "explain": "Only one property changes."
+    },
+    {
+      "type": "choice",
+      "topic": "Examples",
+      "prompt": "A gallery 3 → 2 → 1 columns. What changes in media?",
+      "options": [
+        "The number in repeat",
+        "The color",
+        "The font",
+        "The class name"
+      ],
+      "answer": 0,
+      "explain": "repeat(3, 1fr) → repeat(2, 1fr) → 1fr."
+    },
+    {
+      "type": "order",
+      "topic": "Examples",
+      "prompt": "Put the media rules in the correct order",
+      "tokens": [
+        "@media (max-width: 1024px) { }",
+        "@media (max-width: 600px) { }"
+      ],
+      "extra": [
+        "@media (min-width: 1px) { }"
+      ],
+      "explain": "1024px first, then 600px."
+    }
+  ]
+}

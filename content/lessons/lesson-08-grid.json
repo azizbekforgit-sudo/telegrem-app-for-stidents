@@ -1,0 +1,328 @@
+{
+  "id": "lesson-08-grid",
+  "order": 8,
+  "title": "Урок 8. CSS Grid — основы",
+  "emoji": "🔲",
+  "description": "display: grid, колонки, fr, repeat(), gap и разница Flex и Grid",
+  "learn": {
+    "intro": "Привет! Урок 8 — **CSS Grid**. Flexbox — это строка ИЛИ колонка. А Grid нужен, когда нужны и строки, и колонки сразу, как в настоящей таблице, только гибкой. Поехали!",
+    "sections": [
+      {
+        "title": "Что такое Grid",
+        "slides": [
+          {
+            "emoji": "🔲",
+            "text": "Flex — одна линия: `[1][2][3][4] →`. Grid — сетка: `[1][2][3]` и ниже `[4][5][6]`."
+          },
+          {
+            "text": "Включаем Grid и говорим, сколько колонок:",
+            "code": ".grid {\n  display: grid;\n  grid-template-columns: 1fr 1fr 1fr;\n}"
+          },
+          {
+            "quote": true,
+            "text": "Сколько значений написали — столько колонок. Блоки 4, 5, 6 сами перейдут на следующую строку, `flex-wrap` не нужен. Одного `display: grid` мало: количество колонок нужно указать. Свойства Grid пишутся **родителю**."
+          },
+          {
+            "text": "Лайфхак: F12 → Elements, нажми значок grid рядом с `.grid` — браузер покажет линии сетки."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Grid",
+            "prompt": "Куда пишут свойства Grid?",
+            "options": [
+              "Родителю (контейнеру)",
+              "Каждому ребёнку",
+              "В <head>",
+              "Только в body"
+            ],
+            "answer": 0,
+            "explain": "Как и у Flex."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Grid",
+            "prompt": "Одного display: grid достаточно, чтобы появились колонки.",
+            "answer": false,
+            "explain": "Количество колонок нужно указать в grid-template-columns."
+          }
+        ]
+      },
+      {
+        "title": "fr, строки, gap и repeat()",
+        "slides": [
+          {
+            "emoji": "🍕",
+            "text": "`fr` — «доля свободного места», как кусочки пиццы: складываем все числа — столько и кусков, каждая колонка берёт столько кусков, сколько в ней написано.",
+            "code": "grid-template-columns: 1fr 1fr;  /* 2 куска — поровну */\ngrid-template-columns: 2fr 1fr;  /* 3 куска — первая в 2 раза шире */"
+          },
+          {
+            "text": "Например `1fr 2fr 1fr`: всего 4 куска, средняя колонка получает половину ширины. `fr` удобнее процентов: он сам учитывает `gap`, `calc` не нужен."
+          },
+          {
+            "text": "`grid-template-rows` — высоты строк, работает как колонки. `gap` — отступ **между** элементами (по краям — это `padding`). `repeat()` — короткая запись:",
+            "code": "grid-template-rows: 100px 200px;\ngap: 30px 10px;  /* строки / колонки */\ngrid-template-columns: repeat(3, 1fr);"
+          },
+          {
+            "quote": true,
+            "text": "`repeat(3, 1fr)` — «повтори `1fr` 3 раза»: первое число — сколько раз, второе — что."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "fr и repeat",
+            "prompt": "Чему равно repeat(3, 1fr)?",
+            "options": [
+              "1fr 1fr 1fr",
+              "3fr",
+              "1fr 3fr",
+              "1fr / 3"
+            ],
+            "answer": 0,
+            "explain": "Это три колонки по 1fr."
+          },
+          {
+            "type": "choice",
+            "topic": "fr и repeat",
+            "prompt": "Колонки 1fr 2fr 1fr. Сколько ширины получит средняя?",
+            "options": [
+              "Половину",
+              "Треть",
+              "Четверть",
+              "Всю"
+            ],
+            "answer": 0,
+            "explain": "Всего 4 куска, у средней 2."
+          }
+        ]
+      },
+      {
+        "title": "Flex и Grid: в чём разница",
+        "slides": [
+          {
+            "emoji": "⚖️",
+            "text": "Это любят спрашивать на собеседованиях. **Flex — одна ось**: элементы стоят на одной линии, в строку или колонку. **Grid — сетка**: строки и колонки одновременно."
+          },
+          {
+            "text": "В Flex ширину колонок задают **дети** (`flex: 1`), в Grid — **родитель** (`grid-template-columns`). В Flex для переноса нужен `flex-wrap`, в Grid элементы переходят сами."
+          },
+          {
+            "quote": true,
+            "text": "Просто: элементы на одной линии — Flex (меню, кнопки в ряд). Нужна сетка — Grid (галерея, сетка товаров). Они не враги: сетку делают на Grid, а внутри карточки — Flex."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Flex и Grid",
+            "prompt": "Что лучше для галереи из 6 карточек в 3 колонки и 2 строки?",
+            "options": [
+              "Grid",
+              "Flex",
+              "float",
+              "table"
+            ],
+            "answer": 0,
+            "explain": "Сетка из строк и колонок — это Grid."
+          },
+          {
+            "type": "match",
+            "topic": "Flex и Grid",
+            "prompt": "Соедини и сопоставь",
+            "pairs": [
+              [
+                "Flex",
+                "Одна ось: строка ИЛИ колонка"
+              ],
+              [
+                "Grid",
+                "Две оси: строки И колонки"
+              ],
+              [
+                "Ширину колонок задают дети (flex: 1)",
+                "Flex"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Домашка: «3 преимущества» на Grid",
+        "slides": [
+          {
+            "emoji": "🏠",
+            "text": "Перепиши блок «3 преимущества» из прошлого урока на Grid:",
+            "code": ".features {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 24px;\n}"
+          },
+          {
+            "text": "Убери `flex: 1` у `.feature`: ширину теперь задаёт сетка. Внутри `.feature` иконка, заголовок и текст остаются колонкой по центру (там по-прежнему Flex). Оставь в CSS комментарий: что изменилось по сравнению с Flex-версией?"
+          },
+          {
+            "quote": true,
+            "text": "Главный вывод: в Flex ширину колонок задавали дети (`flex: 1`), а в Grid — родитель (`repeat(3, 1fr)`)."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Практика",
+            "prompt": "Что убирают у .feature при переходе с Flex на Grid?",
+            "options": [
+              "flex: 1",
+              "padding",
+              "gap",
+              "color"
+            ],
+            "answer": 0,
+            "explain": "Ширину теперь задаёт сетка родителя."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "Grid",
+      "prompt": "Что даёт display: grid без grid-template-columns?",
+      "options": [
+        "Ничего заметного: колонки не заданы",
+        "3 колонки",
+        "Красный фон",
+        "Ошибку"
+      ],
+      "answer": 0,
+      "explain": "Количество колонок нужно указывать самим."
+    },
+    {
+      "type": "choice",
+      "topic": "Grid",
+      "prompt": "Сколько колонок задаёт grid-template-columns: 1fr 1fr 1fr?",
+      "options": [
+        "3",
+        "1",
+        "6",
+        "Столько, сколько блоков"
+      ],
+      "answer": 0,
+      "explain": "Сколько значений, столько колонок."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Grid",
+      "prompt": "При 6 блоках и 3 колонках блоки 4, 5, 6 сами перейдут на следующую строку.",
+      "answer": true,
+      "explain": "flex-wrap для Grid не нужен."
+    },
+    {
+      "type": "choice",
+      "topic": "fr и repeat",
+      "prompt": "Колонки 2fr 1fr. Что верно?",
+      "options": [
+        "Первая в 2 раза шире второй",
+        "Они равны",
+        "Вторая шире",
+        "Первая 2px"
+      ],
+      "answer": 0,
+      "explain": "2 куска против 1."
+    },
+    {
+      "type": "input",
+      "topic": "fr и repeat",
+      "prompt": "Сколько всего кусков у колонок 1fr 2fr 1fr? (число)",
+      "answer": [
+        "4"
+      ],
+      "explain": "1 + 2 + 1 = 4."
+    },
+    {
+      "type": "order",
+      "topic": "fr и repeat",
+      "prompt": "Собери сетку из 3 равных колонок",
+      "tokens": [
+        "display: grid;",
+        "grid-template-columns:",
+        "repeat(3, 1fr);"
+      ],
+      "extra": [
+        "flex: 3;"
+      ],
+      "explain": "Grid + repeat(3, 1fr)."
+    },
+    {
+      "type": "choice",
+      "topic": "fr и repeat",
+      "prompt": "Что значит repeat(6, 1fr)?",
+      "options": [
+        "6 равных колонок",
+        "1 колонка 6fr",
+        "6 строк",
+        "Ошибка"
+      ],
+      "answer": 0,
+      "explain": "Первое число — сколько раз, второе — что повторять."
+    },
+    {
+      "type": "choice",
+      "topic": "fr и repeat",
+      "prompt": "Куда ставит отступ gap в Grid?",
+      "options": [
+        "Только между элементами",
+        "Только по краям",
+        "Внутрь элементов",
+        "Никуда"
+      ],
+      "answer": 0,
+      "explain": "Отступ от края — это padding."
+    },
+    {
+      "type": "choice",
+      "topic": "Flex и Grid",
+      "prompt": "Кто задаёт ширину колонок в Grid?",
+      "options": [
+        "Родитель (grid-template-columns)",
+        "Дети (flex: 1)",
+        "Браузер без правил",
+        "JavaScript"
+      ],
+      "answer": 0,
+      "explain": "В Flex — наоборот, дети."
+    },
+    {
+      "type": "choice",
+      "topic": "Flex и Grid",
+      "prompt": "Что лучше для меню в одну строку?",
+      "options": [
+        "Flex",
+        "Grid",
+        "float",
+        "table"
+      ],
+      "answer": 0,
+      "explain": "Одна линия — это Flex."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Flex и Grid",
+      "prompt": "Flex и Grid нельзя использовать вместе.",
+      "answer": false,
+      "explain": "Часто сетка на Grid, а внутри карточки — Flex."
+    },
+    {
+      "type": "choice",
+      "topic": "Практика",
+      "prompt": "Какой код сделает 3 колонки с gap 24px?",
+      "options": [
+        "display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;",
+        "display: flex; gap: 24px;",
+        "grid: 3; gap: 24px;",
+        "columns: 3fr;"
+      ],
+      "answer": 0,
+      "explain": "Grid + repeat + gap."
+    }
+  ]
+}

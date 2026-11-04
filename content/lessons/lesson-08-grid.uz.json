@@ -1,0 +1,325 @@
+{
+  "title": "8-dars. CSS Grid — asoslar",
+  "description": "display: grid, ustunlar, fr, repeat(), gap va Flex bilan Grid farqi",
+  "learn": {
+    "intro": "Salom! 8-dars — **CSS Grid**. Flexbox — bu qator YOKI ustun. Grid esa bir vaqtning o'zida qatorlar VA ustunlar kerak bo'lganda ishlatiladi, haqiqiy jadval kabi, faqat moslashuvchan. Ketdik!",
+    "sections": [
+      {
+        "title": "Grid nima",
+        "slides": [
+          {
+            "emoji": "🔲",
+            "text": "Flex — bitta chiziq: `[1][2][3][4] →`. Grid — to'r: `[1][2][3]` va pastda `[4][5][6]`."
+          },
+          {
+            "text": "Grid ni yoqamiz va nechta ustun borligini aytamiz:",
+            "code": ".grid {\n  display: grid;\n  grid-template-columns: 1fr 1fr 1fr;\n}"
+          },
+          {
+            "quote": true,
+            "text": "Nechta qiymat yozilsa — shuncha ustun. 4, 5, 6-bloklar o'zi keyingi qatorga o'tadi, `flex-wrap` kerak emas. Faqat `display: grid` yetarli emas: ustunlar sonini aytish kerak. Grid xususiyatlari **otaga** yoziladi."
+          },
+          {
+            "text": "Hiyla: F12 → Elements, `.grid` yonidagi grid belgisini bossang — brauzer to'r chiziqlarini ko'rsatadi."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Grid",
+            "prompt": "Grid xususiyatlari qayerga yoziladi?",
+            "options": [
+              "Otaga (konteynerga)",
+              "Har bir bolaga",
+              "<head> ichiga",
+              "Faqat body ga"
+            ],
+            "answer": 0,
+            "explain": "Flex dagi kabi."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Grid",
+            "prompt": "Faqat display: grid yetarli, ustunlar paydo bo'ladi.",
+            "answer": false,
+            "explain": "Ustunlar sonini grid-template-columns da aytish kerak."
+          }
+        ]
+      },
+      {
+        "title": "fr, qatorlar, gap va repeat()",
+        "slides": [
+          {
+            "emoji": "🍕",
+            "text": "`fr` — «bo'sh joydan ulush», pitsa bo'laklari kabi: barcha raqamlarni qo'shamiz — shuncha bo'lak, har bir ustun o'zida yozilgancha bo'lak oladi.",
+            "code": "grid-template-columns: 1fr 1fr;  /* 2 bo'lak — teng */\ngrid-template-columns: 2fr 1fr;  /* 3 bo'lak — birinchisi 2 baravar keng */"
+          },
+          {
+            "text": "Masalan `1fr 2fr 1fr`: jami 4 bo'lak, o'rtadagi ustun kenglikning yarmini oladi. `fr` foizdan qulayroq: u `gap` ni o'zi hisobga oladi, `calc` kerak emas."
+          },
+          {
+            "text": "`grid-template-rows` — qatorlar balandligi, ustunlar kabi ishlaydi. `gap` — elementlar **orasidagi** masofa (chetlarda — bu `padding`). `repeat()` — qisqa yozuv:",
+            "code": "grid-template-rows: 100px 200px;\ngap: 30px 10px;  /* qatorlar / ustunlar */\ngrid-template-columns: repeat(3, 1fr);"
+          },
+          {
+            "quote": true,
+            "text": "`repeat(3, 1fr)` — «`1fr` ni 3 marta takrorla»: birinchi raqam — necha marta, ikkinchisi — nimani."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "fr va repeat",
+            "prompt": "repeat(3, 1fr) nimaga teng?",
+            "options": [
+              "1fr 1fr 1fr",
+              "3fr",
+              "1fr 3fr",
+              "1fr / 3"
+            ],
+            "answer": 0,
+            "explain": "Bu 1fr dan uchta ustun."
+          },
+          {
+            "type": "choice",
+            "topic": "fr va repeat",
+            "prompt": "1fr 2fr 1fr ustunlar. O'rtadagi qancha kenglik oladi?",
+            "options": [
+              "Yarmini",
+              "Uchdan birini",
+              "Chorakni",
+              "Hammasini"
+            ],
+            "answer": 0,
+            "explain": "Jami 4 bo'lak, o'rtadagisida 2 ta."
+          }
+        ]
+      },
+      {
+        "title": "Flex va Grid: farq nimada",
+        "slides": [
+          {
+            "emoji": "⚖️",
+            "text": "Bu suhbatlarda ko'p so'raladi. **Flex — bitta o'q**: elementlar bitta chiziqda, qatorda yoki ustunda turadi. **Grid — to'r**: qatorlar va ustunlar bir vaqtda."
+          },
+          {
+            "text": "Flex da ustunlar kengligini **bolalar** belgilaydi (`flex: 1`), Grid da — **ota** (`grid-template-columns`). Flex da ko'chirish uchun `flex-wrap` kerak, Grid da elementlar o'zi o'tadi."
+          },
+          {
+            "quote": true,
+            "text": "Oddiy qoida: elementlar bitta chiziqda bo'lsa — Flex (menyu, qatordagi tugmalar). To'r kerak bo'lsa — Grid (galereya, mahsulotlar to'ri). Ular dushman emas: to'r Grid da, kartochka ichi esa Flex da qilinadi."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Flex va Grid",
+            "prompt": "3 ustun va 2 qatorli 6 ta kartochka galereyasi uchun nima yaxshiroq?",
+            "options": [
+              "Grid",
+              "Flex",
+              "float",
+              "table"
+            ],
+            "answer": 0,
+            "explain": "Qator va ustunlardan to'r — bu Grid."
+          },
+          {
+            "type": "match",
+            "topic": "Flex va Grid",
+            "prompt": "Moslashtir",
+            "pairs": [
+              [
+                "Flex",
+                "Bitta o'q: qator YOKI ustun"
+              ],
+              [
+                "Grid",
+                "Ikki o'q: qatorlar VA ustunlar"
+              ],
+              [
+                "Ustunlar kengligini bolalar belgilaydi (flex: 1)",
+                "Flex"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Uy vazifasi: Grid da «3 ta afzallik»",
+        "slides": [
+          {
+            "emoji": "🏠",
+            "text": "Oldingi darsdagi «3 ta afzallik» blokini Grid da qayta yoz:",
+            "code": ".features {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 24px;\n}"
+          },
+          {
+            "text": "`.feature` dan `flex: 1` ni olib tashla: kenglikni endi to'r belgilaydi. `.feature` ichida ikonka, sarlavha va matn markazdagi ustun bo'lib qoladi (u yerda hali ham Flex). CSS da bitta izoh yoz: Flex versiyaga nisbatan nima o'zgardi?"
+          },
+          {
+            "quote": true,
+            "text": "Asosiy xulosa: Flex da ustunlar kengligini bolalar belgilardi (`flex: 1`), Grid da esa ota belgilaydi (`repeat(3, 1fr)`)."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Amaliyot",
+            "prompt": "Flex dan Grid ga o'tganda .feature dan nima olib tashlanadi?",
+            "options": [
+              "flex: 1",
+              "padding",
+              "gap",
+              "color"
+            ],
+            "answer": 0,
+            "explain": "Kenglikni endi ota to'ri belgilaydi."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "Grid",
+      "prompt": "grid-template-columns siz display: grid nima beradi?",
+      "options": [
+        "Sezilarli narsa yo'q: ustunlar berilmagan",
+        "3 ta ustun",
+        "Qizil fon",
+        "Xato"
+      ],
+      "answer": 0,
+      "explain": "Ustunlar sonini o'zimiz aytishimiz kerak."
+    },
+    {
+      "type": "choice",
+      "topic": "Grid",
+      "prompt": "grid-template-columns: 1fr 1fr 1fr nechta ustun beradi?",
+      "options": [
+        "3",
+        "1",
+        "6",
+        "Столько, сколько блоков"
+      ],
+      "answer": 0,
+      "explain": "Nechta qiymat, shuncha ustun."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Grid",
+      "prompt": "6 blok va 3 ustunda 4, 5, 6-bloklar o'zi keyingi qatorga o'tadi.",
+      "answer": true,
+      "explain": "Grid uchun flex-wrap kerak emas."
+    },
+    {
+      "type": "choice",
+      "topic": "fr va repeat",
+      "prompt": "2fr 1fr ustunlar. Qaysi biri to'g'ri?",
+      "options": [
+        "Birinchisi ikkinchisidan 2 baravar keng",
+        "Ular teng",
+        "Ikkinchisi kengroq",
+        "Birinchisi 2px"
+      ],
+      "answer": 0,
+      "explain": "2 bo'lakka qarshi 1."
+    },
+    {
+      "type": "input",
+      "topic": "fr va repeat",
+      "prompt": "1fr 2fr 1fr ustunlarida jami nechta bo'lak? (son)",
+      "answer": [
+        "4"
+      ],
+      "explain": "1 + 2 + 1 = 4."
+    },
+    {
+      "type": "order",
+      "topic": "fr va repeat",
+      "prompt": "3 ta teng ustundan to'r yig'",
+      "tokens": [
+        "display: grid;",
+        "grid-template-columns:",
+        "repeat(3, 1fr);"
+      ],
+      "extra": [
+        "flex: 3;"
+      ],
+      "explain": "Grid + repeat(3, 1fr)."
+    },
+    {
+      "type": "choice",
+      "topic": "fr va repeat",
+      "prompt": "repeat(6, 1fr) nimani bildiradi?",
+      "options": [
+        "6 ta teng ustun",
+        "1 ta 6fr ustun",
+        "6 ta qator",
+        "Xato"
+      ],
+      "answer": 0,
+      "explain": "Birinchi raqam — necha marta, ikkinchisi — nimani."
+    },
+    {
+      "type": "choice",
+      "topic": "fr va repeat",
+      "prompt": "Grid da gap masofani qayerga qo'yadi?",
+      "options": [
+        "Faqat elementlar orasiga",
+        "Faqat chetlarga",
+        "Elementlar ichiga",
+        "Hech qayerga"
+      ],
+      "answer": 0,
+      "explain": "Chetdan masofa — bu padding."
+    },
+    {
+      "type": "choice",
+      "topic": "Flex va Grid",
+      "prompt": "Grid da ustunlar kengligini kim belgilaydi?",
+      "options": [
+        "Ota (grid-template-columns)",
+        "Bolalar (flex: 1)",
+        "Qoidasiz brauzer",
+        "JavaScript"
+      ],
+      "answer": 0,
+      "explain": "Flex da — aksincha, bolalar."
+    },
+    {
+      "type": "choice",
+      "topic": "Flex va Grid",
+      "prompt": "Bir qatorli menyu uchun nima yaxshiroq?",
+      "options": [
+        "Flex",
+        "Grid",
+        "float",
+        "table"
+      ],
+      "answer": 0,
+      "explain": "Bitta chiziq — bu Flex."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Flex va Grid",
+      "prompt": "Flex va Grid ni birga ishlatib bo'lmaydi.",
+      "answer": false,
+      "explain": "Ko'pincha to'r Grid da, kartochka ichi Flex da."
+    },
+    {
+      "type": "choice",
+      "topic": "Amaliyot",
+      "prompt": "Qaysi kod gap 24px li 3 ustun yasaydi?",
+      "options": [
+        "display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;",
+        "display: flex; gap: 24px;",
+        "grid: 3; gap: 24px;",
+        "columns: 3fr;"
+      ],
+      "answer": 0,
+      "explain": "Grid + repeat + gap."
+    }
+  ]
+}

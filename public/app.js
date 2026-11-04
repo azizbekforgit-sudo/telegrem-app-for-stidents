@@ -399,12 +399,13 @@ function topbar(left = '') {
 // ═══════════════ УЧЕНИК ═══════════════
 async function tabHome() {
   const m = await refreshMe();
-  if (!m.groups.length) {
+  if (!m.groups.length && !m.path.length && !(m.locked || []).length) {
     app.innerHTML = topbar() + emptyState('think', 'Почти готово!', `Учитель скоро добавит тебя в группу — и тут появятся тесты.<br><br>Твой ID: <code>${esc(m.user.id)}</code>`, '<br><button class="btn ghost" data-reload>' + ic('refresh') + 'Обновить</button>');
     $('[data-reload]').onclick = () => tabHome().catch(fail);
     return;
   }
-  const todo = m.path.find((p) => (p.hasLearn && !p.learnDone) || p.best == null);
+  const rank = (p) => (p.forYou ? -1 : p.order ?? 999);
+  const todo = [...m.path].sort((a, b) => rank(a) - rank(b)).find((p) => (p.hasLearn && !p.learnDone) || p.best == null);
   const allDone = m.path.length && !todo;
   const hero = !m.path.length
     ? { emo: 'sleepy', say: 'Пока тихо… Как только учитель отправит тест — я тебя позову!' }
@@ -419,8 +420,22 @@ async function tabHome() {
       <span>${plural(m.mistakes, 'вопрос ждёт', 'вопроса ждут', 'вопросов ждут')} исправления. Ответишь верно — уйдут из списка.</span></div>
       <span class="btn sm">${ic('refresh', 'sm')}${Math.min(m.mistakes, 10)}</span></button>`;
   }
+  // Весь курс одной дорожкой: открытые уроки + закрытые (их откроет учитель)
+  const seen = new Set();
+  const course = m.path.filter((p) => !p.forYou && p.order != null && !seen.has(p.lessonId) && seen.add(p.lessonId))
+    .map((p) => ({ order: p.order, p }))
+    .concat((m.locked || []).map((l) => ({ order: l.order, l })))
+    .sort((a, b) => a.order - b.order);
+  if (course.length) {
+    const opened = course.filter((c) => c.p);
+    const done = opened.filter((c) => c.p.best != null).length;
+    html += `<div class="unit"><div class="grow"><small>${done} из ${course.length} пройдено</small><h2>${emo(E.books)}Курс</h2><div class="bar"><i style="width:${(done / course.length) * 100}%"></i></div></div>${emo(done === course.length ? E.trophy : E.books)}</div><div class="path">`;
+    let k = 0;
+    course.forEach((c) => { if (c.p) { html += pathNodes(c.p, k, todo); k += c.p.hasLearn ? 2 : 1; } else { html += lockedNode(c.l, k); k++; } });
+    html += '</div>';
+  }
   m.groups.forEach((g) => {
-    const items = m.path.filter((p) => p.groupId === g.id && !p.personal);
+    const items = m.path.filter((p) => p.groupId === g.id && !p.personal && !p.forYou && p.order == null);
     if (!items.length) return;
     const done = items.filter((p) => p.best != null).length;
     html += `<div class="unit"><div class="grow"><small>${done} из ${items.length} пройдено</small><h2>${emo(g.emoji)}${esc(g.name)}</h2><div class="bar"><i style="width:${(done / items.length) * 100}%"></i></div></div>${emo(done === items.length ? E.trophy : E.books)}</div><div class="path">`;
@@ -428,7 +443,13 @@ async function tabHome() {
     items.forEach((p) => { html += pathNodes(p, k, todo); k += p.hasLearn ? 2 : 1; });
     html += '</div>';
   });
-  const personal = m.path.filter((p) => p.personal);
+  const loose = m.path.filter((p) => p.personal && !p.forYou && p.order == null);
+  if (loose.length) {
+    html += `<div class="unit personal"><div class="grow"><small>отдельно от курса</small><h2>${emo('📝')}Другие тесты</h2></div>${emo('🎁')}</div><div class="path">`;
+    loose.forEach((p, i) => { html += pathNodes(p, i, todo); });
+    html += '</div>';
+  }
+  const personal = m.path.filter((p) => p.forYou);
   if (personal.length) {
     html += `<div class="unit personal"><div class="grow"><small>сделано специально для тебя</small><h2>${emo('🎯')}Личные задания</h2></div>${emo('🎁')}</div><div class="path">`;
     personal.forEach((p, i) => { html += pathNodes(p, i, todo); });
@@ -439,6 +460,7 @@ async function tabHome() {
   $$('[data-pub]').forEach((b) => (b.onclick = () => { haptic('medium'); lessonSheet(m.path.find((p) => p.pubId === b.dataset.pub)); }));
   $$('[data-learn]').forEach((b) => (b.onclick = () => { haptic('medium'); learnSheet(m.path.find((p) => p.pubId === b.dataset.learn)); }));
   if (hero.emo !== 'sleepy') speak($('[data-say]'), hero.say, $('.hero .mascot'));
+  $$('[data-locked]').forEach((b) => (b.onclick = () => { haptic('light'); lockedSheet(m.locked.find((l) => l.lessonId === b.dataset.locked)); }));
   const mk = $('[data-mistakes]');
   if (mk) mk.onclick = () => { haptic('medium'); startLesson({ mistakes: true }); };
   const nx = $('[data-next]');
@@ -461,6 +483,19 @@ function pathNodes(p, k, todo) {
   const stars = p.stars != null ? `<div class="stars">${[0, 1, 2].map((s) => emo(E.star, { cls: s < p.stars ? '' : 'off' })).join('')}</div>` : '';
   out += node(k, 'test', locked ? ic('lock-keyhole', 'lg') : emo(p.best === 100 ? E.crown : p.emoji), cls, `data-pub="${p.pubId}"`, `${stars}<div class="lbl">${p.exam ? '<span class="pill gold sm">📝 тест</span><br>' : ''}<b>${esc(p.title)}</b>${p.best != null ? `<br>${p.best}%` : locked ? '<br>после обучалки' : ''}</div>`);
   return out;
+}
+
+// Закрытый урок курса: учитель ещё не дал доступ
+function lockedNode(l, k) {
+  return `<div class="pnode" style="transform:translateX(${OFFS[k % OFFS.length]}px)"><button class="node locked" data-locked="${esc(l.lessonId)}" aria-label="${esc(l.title)}">${ic('lock-keyhole', 'lg')}</button>
+    <div class="lbl"><b>${new RegExp('(^|\\D)' + l.order + '(\\D|$)').test(l.title) ? '' : l.order + '. '}${esc(l.title)}</b><br>закрыто</div></div>`;
+}
+function lockedSheet(l) {
+  if (!l) return;
+  openSheet(`<div class="stack center"><div data-m>${me('sleepy', 120)}</div><h2>${emo(l.emoji)} ${esc(l.title)}</h2><div class="say-box" data-say></div>
+    <div class="tags" style="justify-content:center"><span class="pill">${ic('lock-keyhole', 'sm')}Закрыто</span><span class="pill accent">${plural(l.questions, 'вопрос', 'вопроса', 'вопросов')}</span></div></div>`, (el) => {
+    speak($('[data-say]', el), 'Этот урок пока закрыт. Когда учитель откроет доступ — он появится здесь, и я тебе напишу!', $('[data-m] .mascot', el));
+  });
 }
 
 function feedItem(f) {
@@ -1556,6 +1591,7 @@ async function tabTests() {
   const o = await loadOverview();
   app.innerHTML = adminTop('Тесты') + `
     <div class="hero" style="margin-top:8px">${me('wow', 96)}<div class="grow"><div class="say"><b>Как появляются тесты:</b> пришли конспект урока Claude — он сделает тест в стиле Duolingo. Тест появится здесь черновиком. Ученики его не видят, пока ты не нажмёшь «Отправить».</div></div></div>
+    <button class="btn block" data-grantmany style="margin-top:14px">${ic('users-group-rounded')}Выдать доступ ученикам</button>
     <div class="stack" style="margin-top:16px">${o.lessons.map(lessonCardHtml).join('') || emptyState('sleepy', 'Тестов пока нет', 'Жду конспект — пришли его Claude.')}</div>
     ${o.hiddenLessons?.length ? `<button class="link small" data-hidden style="display:block;margin:18px auto 0">${ic('eye', 'sm')}Скрытые тесты (${o.hiddenLessons.length})</button>` : ''}`;
   bindAdminTop();
@@ -1566,6 +1602,7 @@ async function tabTests() {
   $$('[data-access]').forEach((b) => (b.onclick = () => accessSheet(o.lessons.find((l) => l.id === b.dataset.access))));
   const hid = $('[data-hidden]');
   if (hid) hid.onclick = () => hiddenSheet(o.hiddenLessons);
+  $('[data-grantmany]').onclick = () => grantStudentsSheet();
   $$('[data-pubinfo]').forEach((b) => (b.onclick = () => pubSheet(b.dataset.pubinfo)));
   $$('[data-dell]').forEach((b) => (b.onclick = async () => {
     if (!(await confirmSheet('Удалить черновик?', '', 'Удалить', true))) return;
@@ -1655,6 +1692,79 @@ function sendOneSheet(l) {
         $('[data-go]', el).disabled = true;
         try {
           const r = await api('/admin/grant', { lessonId: l.id, userIds: [...picked], noLearn });
+          haptic('success');
+          sfx.win();
+          toast(`${tr('Доступ дан')}: ${r.given}`);
+          close();
+          tabTests().catch(fail);
+        } catch (e) { label(); fail(e); }
+      };
+    },
+  );
+}
+
+// Шаг 1: выбрать учеников (одного, нескольких, группу, всех). Шаг 2: выбрать тесты.
+function grantStudentsSheet() {
+  const o = S.overview;
+  const picked = new Set();
+  const gname = (u) => u.groups.map((gid) => o.groups.find((g) => g.id === gid)?.name).filter(Boolean).join(', ') || tr('без группы');
+  const list = (q) => o.students.filter((u) => !q || u.name.toLowerCase().includes(q) || (u.username || '').toLowerCase().includes(q))
+    .map((u) => `<button class="list-check ${picked.has(u.id) ? 'on' : ''}" data-u="${esc(u.id)}">${avatar(u)}<div class="grow"><b>${esc(u.name)}</b><div class="small muted">${esc(gname(u))}</div></div></button>`).join('') || `<p class="muted center small">${esc(tr('Никого не нашли'))}</p>`;
+  openSheet(
+    `<div class="stack" data-noi18n><h2>${esc(tr('Кому дать доступ?'))}</h2>
+      ${o.groups.length ? `<div class="chips">${o.groups.map((g) => `<button class="choice" data-grp="${g.id}">${emo(g.emoji)} ${esc(g.name)}</button>`).join('')}</div>` : ''}
+      <div class="row" style="gap:8px">${o.students.length > 6 ? `<input class="input grow" data-q placeholder="${esc(tr('Поиск по имени'))}">` : '<div class="grow"></div>'}<button class="link small" data-all>${esc(tr('Выбрать всех'))}</button></div>
+      <div data-list style="max-height:46vh;overflow:auto">${list('')}</div>
+      <button class="btn block" data-next disabled><span></span></button></div>`,
+    (el, close) => {
+      const all = o.students;
+      const label = () => { const n = picked.size; const b = $('[data-next]', el); b.disabled = !n; $('span', b).textContent = `${tr('Дальше: выбрать тесты')}${n ? ` (${n})` : ''}`; $$('[data-grp]', el).forEach((g) => { const m = all.filter((u) => u.groups.includes(g.dataset.grp)); g.classList.toggle('on', m.length > 0 && m.every((u) => picked.has(u.id))); }); };
+      const bind = () => $$('[data-u]', el).forEach((b) => (b.onclick = () => { haptic('light'); const id = b.dataset.u; picked.has(id) ? picked.delete(id) : picked.add(id); b.classList.toggle('on', picked.has(id)); label(); }));
+      bind(); label();
+      const q = $('[data-q]', el);
+      const redraw = () => { $('[data-list]', el).innerHTML = list(q ? q.value.trim().toLowerCase() : ''); bind(); };
+      if (q) q.oninput = redraw;
+      $$('[data-grp]', el).forEach((g) => (g.onclick = () => { haptic('light'); const m = all.filter((u) => u.groups.includes(g.dataset.grp)); const every = m.every((u) => picked.has(u.id)); m.forEach((u) => (every ? picked.delete(u.id) : picked.add(u.id))); redraw(); label(); }));
+      $('[data-all]', el).onclick = () => { haptic('light'); const every = all.length && all.every((u) => picked.has(u.id)); all.forEach((u) => (every ? picked.delete(u.id) : picked.add(u.id))); redraw(); label(); };
+      $('[data-next]', el).onclick = () => { const ids = [...picked]; close(); grantTestsSheet(ids); };
+    },
+  );
+}
+
+function grantTestsSheet(userIds) {
+  const o = S.overview;
+  const users = o.students.filter((u) => userIds.includes(u.id));
+  // у кого уже есть доступ к тесту (лично или через группу)
+  const haveCount = (l) => users.filter((u) => l.personalFor.some((s) => s.userId === u.id) || l.sentTo.some((s) => u.groups.includes(s.groupId))).length;
+  const lessons = o.lessons.filter((l) => !l.exam || true);
+  const picked = new Set();
+  let noLearn = false;
+  const row = (l) => {
+    const n = haveCount(l);
+    const full = n === users.length;
+    const note = full ? tr('уже открыт') : n ? `${tr('уже у')} ${n} ${tr('из')} ${users.length}` : tr('закрыт');
+    return `<button class="list-check ${picked.has(l.id) ? 'on' : ''}" data-l="${esc(l.id)}" ${full ? 'disabled' : ''}>${emo(l.emoji)}<div class="grow"><b>${l.order != null && l.order < 100 && !new RegExp('(^|\\D)' + l.order + '(\\D|$)').test(l.title) ? l.order + '. ' : ''}${esc(l.title)}</b><div class="small muted">${esc(note)}</div></div></button>`;
+  };
+  const maxOrder = Math.max(0, ...lessons.map((l) => (l.order != null && l.order < 100 ? l.order : 0)));
+  openSheet(
+    `<div class="stack" data-noi18n><h2>${esc(tr('Какие тесты открыть?'))}</h2><p class="muted small">${esc(tr('Выбрано учеников'))}: ${users.length}</p>
+      <div class="row" style="gap:8px"><select class="input grow" data-upto><option value="">${esc(tr('Открыть уроки с 1 по…'))}</option>${Array.from({ length: maxOrder }, (_, i) => `<option value="${i + 1}">1 – ${i + 1}</option>`).join('')}</select><button class="link small" data-all>${esc(tr('Выбрать все'))}</button></div>
+      <div data-list style="max-height:44vh;overflow:auto">${lessons.map(row).join('')}</div>
+      <div class="field"><span>${emo('📖')} ${esc(tr('Обучалка'))}</span><div class="choices"><button class="choice" data-nl="1">${esc(tr('Сразу тест'))}</button><button class="choice on" data-nl="0">${esc(tr('С обучалкой'))}</button></div></div>
+      <button class="btn block" data-go disabled>${ic('plain-2')}<span></span></button></div>`,
+    (el, close) => {
+      const label = () => { const n = picked.size; const b = $('[data-go]', el); b.disabled = !n; $('span', b).textContent = `${tr('Дать доступ')}${n ? ` (${n})` : ''}`; };
+      const paint = () => { $$('[data-l]', el).forEach((b) => b.classList.toggle('on', picked.has(b.dataset.l))); label(); };
+      const free = () => lessons.filter((l) => haveCount(l) < users.length);
+      $$('[data-l]', el).forEach((b) => (b.onclick = () => { if (b.disabled) return; haptic('light'); const id = b.dataset.l; picked.has(id) ? picked.delete(id) : picked.add(id); paint(); }));
+      $('[data-upto]', el).onchange = (e) => { const n = Number(e.target.value); if (!n) return; picked.clear(); free().filter((l) => l.order != null && l.order <= n).forEach((l) => picked.add(l.id)); paint(); };
+      $('[data-all]', el).onclick = () => { haptic('light'); const every = free().every((l) => picked.has(l.id)); free().forEach((l) => (every ? picked.delete(l.id) : picked.add(l.id))); paint(); };
+      $$('[data-nl]', el).forEach((b) => (b.onclick = () => { noLearn = b.dataset.nl === '1'; $$('[data-nl]', el).forEach((x) => x.classList.toggle('on', x === b)); }));
+      label();
+      $('[data-go]', el).onclick = async () => {
+        $('[data-go]', el).disabled = true;
+        try {
+          const r = await api('/admin/grant-many', { userIds, lessonIds: [...picked], noLearn });
           haptic('success');
           sfx.win();
           toast(`${tr('Доступ дан')}: ${r.given}`);

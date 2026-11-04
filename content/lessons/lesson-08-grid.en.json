@@ -1,0 +1,325 @@
+{
+  "title": "Lesson 8. CSS Grid — basics",
+  "description": "display: grid, columns, fr, repeat(), gap and the difference between Flex and Grid",
+  "learn": {
+    "intro": "Hi! Lesson 8 — **CSS Grid**. Flexbox is a row OR a column. Grid is for when you need rows AND columns at once, like a real table, but flexible. Let's go!",
+    "sections": [
+      {
+        "title": "What Grid is",
+        "slides": [
+          {
+            "emoji": "🔲",
+            "text": "Flex is one line: `[1][2][3][4] →`. Grid is a grid: `[1][2][3]` and below `[4][5][6]`."
+          },
+          {
+            "text": "We turn on Grid and say how many columns:",
+            "code": ".grid {\n  display: grid;\n  grid-template-columns: 1fr 1fr 1fr;\n}"
+          },
+          {
+            "quote": true,
+            "text": "As many values as you write — that many columns. Blocks 4, 5, 6 move to the next row themselves, no `flex-wrap` needed. `display: grid` alone is not enough: you must say the number of columns. Grid properties go on the **parent**."
+          },
+          {
+            "text": "Tip: F12 → Elements, click the grid badge next to `.grid` — the browser shows the grid lines."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Grid",
+            "prompt": "Where do you write Grid properties?",
+            "options": [
+              "On the parent (the container)",
+              "On each child",
+              "In <head>",
+              "Only in body"
+            ],
+            "answer": 0,
+            "explain": "As with Flex."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Grid",
+            "prompt": "display: grid alone is enough to get columns.",
+            "answer": false,
+            "explain": "You must set the number of columns in grid-template-columns."
+          }
+        ]
+      },
+      {
+        "title": "fr, rows, gap and repeat()",
+        "slides": [
+          {
+            "emoji": "🍕",
+            "text": "`fr` is a «share of free space», like pizza slices: add all the numbers — that many slices, each column takes as many as is written.",
+            "code": "grid-template-columns: 1fr 1fr;  /* 2 parts — equal */\ngrid-template-columns: 2fr 1fr;  /* 3 parts — first twice as wide */"
+          },
+          {
+            "text": "For example `1fr 2fr 1fr`: 4 parts in total, the middle column gets half the width. `fr` beats percentages: it accounts for `gap` itself, no `calc` needed."
+          },
+          {
+            "text": "`grid-template-rows` — row heights, works like columns. `gap` — space **between** items (at the edges that is `padding`). `repeat()` — a short form:",
+            "code": "grid-template-rows: 100px 200px;\ngap: 30px 10px;  /* rows / columns */\ngrid-template-columns: repeat(3, 1fr);"
+          },
+          {
+            "quote": true,
+            "text": "`repeat(3, 1fr)` — «repeat `1fr` 3 times»: the first number is how many times, the second is what."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "fr and repeat",
+            "prompt": "What is repeat(3, 1fr) equal to?",
+            "options": [
+              "1fr 1fr 1fr",
+              "3fr",
+              "1fr 3fr",
+              "1fr / 3"
+            ],
+            "answer": 0,
+            "explain": "That is three columns of 1fr."
+          },
+          {
+            "type": "choice",
+            "topic": "fr and repeat",
+            "prompt": "Columns 1fr 2fr 1fr. How much width does the middle one get?",
+            "options": [
+              "Half",
+              "A third",
+              "A quarter",
+              "All of it"
+            ],
+            "answer": 0,
+            "explain": "4 parts total, the middle has 2."
+          }
+        ]
+      },
+      {
+        "title": "Flex and Grid: the difference",
+        "slides": [
+          {
+            "emoji": "⚖️",
+            "text": "This is often asked in interviews. **Flex is one axis**: items stand on one line, in a row or a column. **Grid is a grid**: rows and columns at once."
+          },
+          {
+            "text": "In Flex the **children** set column widths (`flex: 1`), in Grid the **parent** does (`grid-template-columns`). Flex needs `flex-wrap` to wrap, in Grid items wrap themselves."
+          },
+          {
+            "quote": true,
+            "text": "The simple rule: items on one line — Flex (a menu, buttons in a row). Need a grid — Grid (a gallery, a product grid). They aren't enemies: the grid is made with Grid, the inside of a card with Flex."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Flex and Grid",
+            "prompt": "What is better for a gallery of 6 cards in 3 columns and 2 rows?",
+            "options": [
+              "Grid",
+              "Flex",
+              "float",
+              "table"
+            ],
+            "answer": 0,
+            "explain": "A grid of rows and columns is Grid."
+          },
+          {
+            "type": "match",
+            "topic": "Flex and Grid",
+            "prompt": "Match them",
+            "pairs": [
+              [
+                "Flex",
+                "One axis: a row OR a column"
+              ],
+              [
+                "Grid",
+                "Two axes: rows AND columns"
+              ],
+              [
+                "Children set widths (flex: 1)",
+                "Flex"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Homework: «3 advantages» with Grid",
+        "slides": [
+          {
+            "emoji": "🏠",
+            "text": "Rewrite the «3 advantages» block from the last lesson with Grid:",
+            "code": ".features {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 24px;\n}"
+          },
+          {
+            "text": "Remove `flex: 1` from `.feature`: the grid now sets the width. Inside `.feature` the icon, heading and text stay a centered column (still Flex there). Leave a comment in the CSS: what changed compared with the Flex version?"
+          },
+          {
+            "quote": true,
+            "text": "The main takeaway: in Flex children set the column widths (`flex: 1`), in Grid the parent does (`repeat(3, 1fr)`)."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Practice",
+            "prompt": "What is removed from .feature when moving from Flex to Grid?",
+            "options": [
+              "flex: 1",
+              "padding",
+              "gap",
+              "color"
+            ],
+            "answer": 0,
+            "explain": "The parent grid now sets the width."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "Grid",
+      "prompt": "What does display: grid give without grid-template-columns?",
+      "options": [
+        "Nothing visible: no columns set",
+        "3 columns",
+        "A red background",
+        "An error"
+      ],
+      "answer": 0,
+      "explain": "You must set the number of columns yourself."
+    },
+    {
+      "type": "choice",
+      "topic": "Grid",
+      "prompt": "How many columns does grid-template-columns: 1fr 1fr 1fr set?",
+      "options": [
+        "3",
+        "1",
+        "6",
+        "Столько, сколько блоков"
+      ],
+      "answer": 0,
+      "explain": "As many values, as many columns."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Grid",
+      "prompt": "With 6 blocks and 3 columns, blocks 4, 5, 6 move to the next row themselves.",
+      "answer": true,
+      "explain": "Grid needs no flex-wrap."
+    },
+    {
+      "type": "choice",
+      "topic": "fr and repeat",
+      "prompt": "Columns 2fr 1fr. What is true?",
+      "options": [
+        "The first is twice as wide as the second",
+        "They are equal",
+        "The second is wider",
+        "The first is 2px"
+      ],
+      "answer": 0,
+      "explain": "2 parts against 1."
+    },
+    {
+      "type": "input",
+      "topic": "fr and repeat",
+      "prompt": "How many parts in total do columns 1fr 2fr 1fr have? (a number)",
+      "answer": [
+        "4"
+      ],
+      "explain": "1 + 2 + 1 = 4."
+    },
+    {
+      "type": "order",
+      "topic": "fr and repeat",
+      "prompt": "Build a grid of 3 equal columns",
+      "tokens": [
+        "display: grid;",
+        "grid-template-columns:",
+        "repeat(3, 1fr);"
+      ],
+      "extra": [
+        "flex: 3;"
+      ],
+      "explain": "Grid + repeat(3, 1fr)."
+    },
+    {
+      "type": "choice",
+      "topic": "fr and repeat",
+      "prompt": "What does repeat(6, 1fr) mean?",
+      "options": [
+        "6 equal columns",
+        "1 column of 6fr",
+        "6 rows",
+        "An error"
+      ],
+      "answer": 0,
+      "explain": "The first number is how many times, the second what."
+    },
+    {
+      "type": "choice",
+      "topic": "fr and repeat",
+      "prompt": "Where does gap put space in Grid?",
+      "options": [
+        "Only between items",
+        "Only at the edges",
+        "Inside the items",
+        "Nowhere"
+      ],
+      "answer": 0,
+      "explain": "Space from the edge is padding."
+    },
+    {
+      "type": "choice",
+      "topic": "Flex and Grid",
+      "prompt": "Who sets column widths in Grid?",
+      "options": [
+        "The parent (grid-template-columns)",
+        "The children (flex: 1)",
+        "The browser without rules",
+        "JavaScript"
+      ],
+      "answer": 0,
+      "explain": "In Flex it is the other way around."
+    },
+    {
+      "type": "choice",
+      "topic": "Flex and Grid",
+      "prompt": "What is better for a one-row menu?",
+      "options": [
+        "Flex",
+        "Grid",
+        "float",
+        "table"
+      ],
+      "answer": 0,
+      "explain": "One line is Flex."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Flex and Grid",
+      "prompt": "Flex and Grid can't be used together.",
+      "answer": false,
+      "explain": "Often the grid is Grid and the inside of a card is Flex."
+    },
+    {
+      "type": "choice",
+      "topic": "Practice",
+      "prompt": "Which code makes 3 columns with a 24px gap?",
+      "options": [
+        "display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;",
+        "display: flex; gap: 24px;",
+        "grid: 3; gap: 24px;",
+        "columns: 3fr;"
+      ],
+      "answer": 0,
+      "explain": "Grid + repeat + gap."
+    }
+  ]
+}

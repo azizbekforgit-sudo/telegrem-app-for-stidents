@@ -21,6 +21,7 @@ const T = {
   parentHello: { ru: (n) => `👨‍👩‍👧 Здравствуйте, <b>${n}</b>!\n\nВ приложении вы увидите прогресс своего ребёнка и всех учеников курса, общую лигу и лигу группы. Откройте приложение и выберите своего ребёнка.`, uz: (n) => `👨‍👩‍👧 Assalomu alaykum, <b>${n}</b>!\n\nIlovada farzandingiz va kursning barcha o'quvchilari natijalarini, umumiy liga va guruh ligasini ko'rasiz. Ilovani oching va farzandingizni tanlang.`, en: (n) => `👨‍👩‍👧 Hello, <b>${n}</b>!\n\nIn the app you'll see your child's progress and that of every student in the course, the global league and the group league. Open the app and choose your child.` },
   siteLogin: { ru: (u, l, p) => `🌐 <b>Вход в Зубрик на сайте</b>\n\nТам твой же аккаунт: те же очки, тесты и лига.\n\n🔗 ${u}\n👤 Логин: <code>${l}</code>\n🔑 Пароль: <code>${p}</code>\n\nНикому не показывай пароль. Новый пароль — команда /site.`, uz: (u, l, p) => `🌐 <b>Zubrikka saytda kirish</b>\n\nU yerda sening o'sha akkaunting: o'sha ochkolar, testlar va liga.\n\n🔗 ${u}\n👤 Login: <code>${l}</code>\n🔑 Parol: <code>${p}</code>\n\nParolni hech kimga ko'rsatma. Yangi parol — /site buyrug'i.`, en: (u, l, p) => `🌐 <b>Sign in to Zubrik on the website</b>\n\nIt's your same account: the same points, tests and league.\n\n🔗 ${u}\n👤 Login: <code>${l}</code>\n🔑 Password: <code>${p}</code>\n\nDon't show your password to anyone. New password — the /site command.` },
   bonus: { ru: (x, r) => `🎁 <b>Учитель начислил тебе ${x} XP!</b>${r ? '\n' + r : ''}\n\nТак держать! 💪`, uz: (x, r) => `🎁 <b>Ustoz senga ${x} XP berdi!</b>${r ? '\n' + r : ''}\n\nShunday davom et! 💪`, en: (x, r) => `🎁 <b>Your teacher gave you ${x} XP!</b>${r ? '\n' + r : ''}\n\nKeep it up! 💪` },
+  access: { ru: (n, list, more) => `🔓 <b>Тебе открыли ${n} ${n === 1 ? 'урок' : 'урока(ов)'}!</b>\n\n${list}${more}\n\nЗаходи на «Путь» и учись 💪`, uz: (n, list, more) => `🔓 <b>Senga ${n} ta dars ochildi!</b>\n\n${list}${more}\n\n«Yo'l» bo'limiga kir va o'qi 💪`, en: (n, list, more) => `🔓 <b>${n} lesson${n === 1 ? '' : 's'} unlocked for you!</b>\n\n${list}${more}\n\nOpen your Path and learn 💪` },
   remindTest: { ru: (t) => `\n\n🧩 Тест: <b>${t}</b>\nТы его ещё не сдал — заходи! ⏳`, uz: (t) => `\n\n🧩 Test: <b>${t}</b>\nSen uni hali topshirmading — kir! ⏳`, en: (t) => `\n\n🧩 Test: <b>${t}</b>\nYou haven't taken it yet — come in! ⏳` },
 };
 
@@ -198,6 +199,16 @@ export function createBot({ token, logic, store, appUrl, adminIds }) {
     }
   }
 
+  // Открыли сразу несколько уроков: одно сообщение со списком
+  async function notifyAccess(uid, pubs) {
+    if (!pubs?.length) return null;
+    if (pubs.length === 1) return notifyPersonal(pubs[0]);
+    const lang = langOf(uid);
+    const lessons = pubs.map((p) => S.lessons[p.lessonId]).filter(Boolean).sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+    const list = lessons.slice(0, 12).map((l) => `${l.emoji} ${esc(l.title)}`).join('\n');
+    const more = lessons.length > 12 ? `\n… +${lessons.length - 12}` : '';
+    return safeSend(uid, tt('access', lang, pubs.length, list, more), { reply_markup: privateKb(tt('openTask', lang)) });
+  }
   async function notifyPersonal(pub) {
     const l = S.lessons[pub.lessonId];
     const lang = langOf(pub.userId);
@@ -284,5 +295,5 @@ export function createBot({ token, logic, store, appUrl, adminIds }) {
     console.log(`[bot] @${bot.botInfo.username} готов`);
   }
 
-  return { bot, setup, notifyPublish, notifyPersonal, announce, tickReminders, onRoleChosen, sendLogin, notifyBonus };
+  return { bot, setup, notifyPublish, notifyPersonal, announce, tickReminders, onRoleChosen, sendLogin, notifyBonus, notifyAccess };
 }

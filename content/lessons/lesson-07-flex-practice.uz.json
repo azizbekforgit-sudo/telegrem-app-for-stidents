@@ -1,0 +1,340 @@
+{
+  "title": "7-dars. Flexbox — amaliyot, ichma-ich konteynerlar",
+  "description": "flex-wrap, gap, ichma-ich flex, flex: 1 va kartochkalar galereyasi",
+  "learn": {
+    "intro": "Salom! 7-dars — Flexbox amaliyoti. Nazariya deyarli yo'q: har qanday saytda uchraydigan real vazifalarni yechamiz. To'rt usul: `flex-wrap`, `gap`, ichma-ich konteynerlar va `flex: 1`. Ketdik!",
+    "sections": [
+      {
+        "title": "flex-wrap: wrap",
+        "slides": [
+          {
+            "emoji": "📏",
+            "text": "Odatda flex barcha elementlarni **bitta** qatorga joylashtirishga harakat qiladi. Joy kam bo'lsa, elementlar siqiladi (`flex-shrink: 1`), siqilish taqiqlansa — konteynerdan chiqib ketadi va gorizontal skroll paydo bo'ladi."
+          },
+          {
+            "text": "Yechim — konteynerga bitta qator:",
+            "code": ".container {\n  display: flex;\n  flex-wrap: wrap;  /* sig'madi — yangi qatorga */\n  width: 500px;\n}"
+          },
+          {
+            "quote": true,
+            "text": "Matndagi so'zlar kabi: sig'madi — keyingi qatorga o'tdi. Standart qiymat — `nowrap`. Va `flex-wrap` **otaga** yoziladi, bolalarga emas."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "flex-wrap",
+            "prompt": "flex-wrap: wrap nima qiladi?",
+            "options": [
+              "Sig'magan elementlarni yangi qatorga o'tkazadi",
+              "Elementlarni siqadi",
+              "Ortiqcha elementlarni o'chiradi",
+              "Elementlarni bo'yaydi"
+            ],
+            "answer": 0,
+            "explain": "Matndagi so'z ko'chirilishi kabi."
+          },
+          {
+            "type": "truefalse",
+            "topic": "flex-wrap",
+            "prompt": "flex-wrap har bir kartochkaga yoziladi, konteynerga emas.",
+            "answer": false,
+            "explain": "flex-wrap otaga (konteynerga) yoziladi."
+          }
+        ]
+      },
+      {
+        "title": "gap — elementlar orasidagi masofa",
+        "slides": [
+          {
+            "emoji": "🧱",
+            "text": "Eski usul — har bir kartochkaga margin:",
+            "code": ".card {\n  margin-right: 20px;\n  margin-bottom: 20px;\n}"
+          },
+          {
+            "text": "Muammo: oxirgi kartochkaning o'ng tomonida va oxirgi qatorning tagida ortiqcha 20px qoladi. Yangi usul — konteynerga bitta qator, masofa faqat elementlar **orasiga** qo'yiladi:",
+            "code": ".container {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 20px;\n}"
+          },
+          {
+            "quote": true,
+            "text": "Ikki o'q alohida: `gap: 30px 10px;` — birinchisi **qatorlar** orasida, ikkinchisi **ustunlar** orasida (`row-gap` va `column-gap` bilan bir xil)."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "gap",
+            "prompt": "gap masofani qayerga qo'yadi?",
+            "options": [
+              "Faqat elementlar orasiga",
+              "Faqat konteyner chetlariga",
+              "Elementlar ichiga",
+              "Hech qayerga"
+            ],
+            "answer": 0,
+            "explain": "Shuning uchun chetlarda ortiqcha 20px yo'q."
+          },
+          {
+            "type": "input",
+            "topic": "gap",
+            "prompt": "Faqat qatorlar orasidagi masofa xossasi qanday ataladi? (defis bilan)",
+            "answer": [
+              "row-gap"
+            ],
+            "explain": "row-gap — qatorlar orasida, column-gap — ustunlar orasida."
+          }
+        ]
+      },
+      {
+        "title": "Ichma-ich flex konteynerlar",
+        "slides": [
+          {
+            "emoji": "🪆",
+            "text": "Bitta element ikki rol o'ynashi mumkin: otasi uchun u flex-**element**, o'z bolalari uchun esa flex-**konteyner**. Deyarli har qanday interfeys shunday, matryoshka kabi quriladi."
+          },
+          {
+            "text": "Mahsulot kartochkasi: rasm, nom, tavsif yuqoridan pastga, pastda esa narx chapda va tugma o'ngda bir qatorda:",
+            "code": ".product {  /* tashqi — ustun */\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n}\n.product-footer {  /* ichki — qator */\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n}"
+          },
+          {
+            "quote": true,
+            "text": "Har bir konteyner faqat **o'zining** bevosita bolalarini boshqaradi. Va `display: flex` **meros bo'lmaydi** — har bir konteynerga alohida yoziladi."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Ichma-ich flex",
+            "prompt": "display: flex bolalarga meros bo'ladimi?",
+            "options": [
+              "Yo'q, har bir konteynerga alohida yoziladi",
+              "Ha, doim",
+              "Faqat column da",
+              "Faqat rasmlar uchun"
+            ],
+            "answer": 0,
+            "explain": "Bu yangi boshlovchilarning keng tarqalgan xatosi."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Ichma-ich flex",
+            "prompt": "Bitta element otasi uchun flex-element va o'z bolalari uchun flex-konteyner bo'lishi mumkin.",
+            "answer": true,
+            "explain": "Bu ichma-ich konteynerlar."
+          }
+        ]
+      },
+      {
+        "title": "flex: 1 — joyni teng bo'lamiz",
+        "slides": [
+          {
+            "emoji": "⚖️",
+            "text": "`flex: 1` bolalarga «bo'sh joyni qo'shnilar bilan teng ol» deydi. Bitta px yoki foizsiz bir xil kenglikdagi ustunlar hosil bo'ladi:",
+            "code": ".columns {\n  display: flex;\n  gap: 20px;\n}\n.col {\n  flex: 1;\n}"
+          },
+          {
+            "quote": true,
+            "text": "Raqam — bu **ulush**: `flex: 1`, `flex: 1`, `flex: 2` jami 4 ulush beradi, uchinchi ustun 2/4 — kenglikning yarmini egallaydi. To'rtinchi ustun qo'shsang — hammasi o'zi teng bo'ladi."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "flex: 1",
+            "prompt": "flex: 1, flex: 1, flex: 2 li ustunlar. Uchinchisi qancha ulush egallaydi?",
+            "options": [
+              "2/4",
+              "1/4",
+              "1/3",
+              "2/3"
+            ],
+            "answer": 0,
+            "explain": "Jami 4 ulush, uchinchisida 2 tasi."
+          }
+        ]
+      },
+      {
+        "title": "Amaliyot: galereya va uy vazifasi",
+        "slides": [
+          {
+            "emoji": "🖼️",
+            "text": "6 ta kartochka, qatorda 3 tadan, orasida 20px. Nega `width: 33.33%` emas? Uchta 33% deyarli butun kenglik, ustiga yana ikkita 20px `gap` — joy yetmaydi, uchinchisi pastga tushadi. Avval masofalarni ayiramiz, keyin bo'lamiz:",
+            "code": ".product {\n  width: calc((100% - 40px) / 3);\n}"
+          },
+          {
+            "text": "Qatordagi N ta uchun formula: `width: calc((100% - (N - 1) × gap) / N)`. Telefon uchun: `@media (max-width: 600px) { .product { width: 100%; } }`."
+          },
+          {
+            "quote": true,
+            "text": "Uy vazifasi — «3 ta afzallik» bloki: `.features` (flex, row, gap) va `flex: 1` li uchta `.feature`, har birining ichida ikonka, sarlavha va matn yuqoridan pastga markazda. Bonus: tor ekranda ustunlar bir-birining ostida."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Amaliyot",
+            "prompt": "gap: 20px bo'lganda qatorda aniq 3 ta kartochka beradigan width qaysi?",
+            "options": [
+              "calc((100% - 40px) / 3)",
+              "33.33%",
+              "33%",
+              "100% / 3"
+            ],
+            "answer": 0,
+            "explain": "Avval 2 ta 20px oraliqni ayiramiz."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "flex-wrap",
+      "prompt": "flex-wrap ning standart qiymati qaysi?",
+      "options": [
+        "nowrap",
+        "wrap",
+        "row",
+        "stretch"
+      ],
+      "answer": 0,
+      "explain": "Standart holatda elementlar ko'chirilmaydi."
+    },
+    {
+      "type": "choice",
+      "topic": "flex-wrap",
+      "prompt": "Elementlar sig'masa va flex-shrink: 0 bo'lsa nima bo'ladi?",
+      "options": [
+        "Konteynerdan chiqadi, gorizontal skroll paydo bo'ladi",
+        "Siqiladi",
+        "Yo'qoladi",
+        "O'zi ko'chadi"
+      ],
+      "answer": 0,
+      "explain": "wrap va siqilishsiz ular chetdan chiqadi."
+    },
+    {
+      "type": "truefalse",
+      "topic": "gap",
+      "prompt": "gap masofani konteyner chetlariga ham qo'yadi.",
+      "answer": false,
+      "explain": "gap — faqat elementlar orasida."
+    },
+    {
+      "type": "choice",
+      "topic": "gap",
+      "prompt": "gap: 30px 10px nimani bildiradi?",
+      "options": [
+        "Qatorlar orasida 30px, ustunlar orasida 10px",
+        "Ustunlar orasida 30px, qatorlar orasida 10px",
+        "Tepadan 30px, pastdan 10px",
+        "Xato"
+      ],
+      "answer": 0,
+      "explain": "Birinchi qiymat — qatorlar, ikkinchisi — ustunlar."
+    },
+    {
+      "type": "choice",
+      "topic": "gap",
+      "prompt": "gap kartochkalar uchun margin dan nimasi yaxshi?",
+      "options": [
+        "Chetlarda ortiqcha masofa qoldirmaydi",
+        "U rangli",
+        "U tezroq yuklanadi",
+        "Hech nimasi bilan"
+      ],
+      "answer": 0,
+      "explain": "Na :last-child, na manfiy margin kerak."
+    },
+    {
+      "type": "choice",
+      "topic": "Ichma-ich flex",
+      "prompt": "Kartochkada narxni chapga va tugmani o'ngga bir qatorda qanday joylashtirish mumkin?",
+      "options": [
+        "justify-content: space-between li alohida flex-konteyner",
+        "Faqat margin",
+        "Ikkalasiga float: right",
+        "Mumkin emas"
+      ],
+      "answer": 0,
+      "explain": "Ichki konteyner — qator."
+    },
+    {
+      "type": "match",
+      "topic": "Ichma-ich flex",
+      "prompt": "Element va uning yo'nalishini moslashtir",
+      "pairs": [
+        [
+          ".product",
+          "Ustun (yuqoridan pastga)"
+        ],
+        [
+          ".product-footer",
+          "Qator (chapdan o'ngga)"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "Ichma-ich flex",
+      "prompt": "Ustundagi .product-footer ga margin-top: auto nima qiladi?",
+      "options": [
+        "Uni kartochka pastiga bosadi",
+        "Uni o'chiradi",
+        "Qizil qiladi",
+        "Hech narsa"
+      ],
+      "answer": 0,
+      "explain": "Shunda turli balandlikdagi kartochkalarda tugmalar bir chiziqda turadi."
+    },
+    {
+      "type": "choice",
+      "topic": "flex: 1",
+      "prompt": "flex: 1 barcha ustunlarga nima beradi?",
+      "options": [
+        "px va foizsiz bir xil kenglik",
+        "Qizil rang",
+        "1px kenglik",
+        "Hech narsa"
+      ],
+      "answer": 0,
+      "explain": "Har biri bo'sh joyning teng ulushini oladi."
+    },
+    {
+      "type": "choice",
+      "topic": "flex: 1",
+      "prompt": "flex: 1 li to'rtinchi ustun qo'shilsa nima bo'ladi?",
+      "options": [
+        "To'rttasi ham chorakdan teng bo'ladi",
+        "Uchtasi qoladi, to'rtinchisi yashirinadi",
+        "Sayt buziladi",
+        "Hech narsa"
+      ],
+      "answer": 0,
+      "explain": "Hech narsani qayta hisoblash shart emas."
+    },
+    {
+      "type": "input",
+      "topic": "Amaliyot",
+      "prompt": "flex: 1, flex: 1, flex: 2 ustunlarida jami nechta ulush? (son)",
+      "answer": [
+        "4"
+      ],
+      "explain": "1 + 1 + 2 = 4."
+    },
+    {
+      "type": "choice",
+      "topic": "Amaliyot",
+      "prompt": "Nega gap bilan 3 ta kartochka uchun width: 33.33% ishlamaydi?",
+      "options": [
+        "Oraliqlar hisobga olinmagan, uchinchisi pastga tushadi",
+        "Bu noto'g'ri yozuv",
+        "50% kerak",
+        "Hammasi ishlaydi"
+      ],
+      "answer": 0,
+      "explain": "gap ni ayiradigan calc kerak."
+    }
+  ]
+}

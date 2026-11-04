@@ -69,6 +69,13 @@ if (fs.existsSync(bonusFile)) {
   }
 }
 
+// Один раз открываем всё до самого дальнего урока, к которому у ученика уже есть доступ
+const accessReport = logic.migrateAccess();
+if (accessReport) {
+  for (const r of accessReport) console.log('[access-migrate] ' + JSON.stringify(r));
+  console.log(`[access-migrate-end] учеников: ${accessReport.length}`);
+}
+
 // Скрыть из списка учителя старые тесты (content/archive.json: ["id", …]); срабатывает один раз для каждого
 const archiveFile = path.join(root, 'content', 'archive.json');
 if (fs.existsSync(archiveFile)) {
@@ -225,6 +232,13 @@ adm.post('/grant', h(async (req) => {
   const { created, already } = logic.sendToStudents(lessonId, userIds, noLearn);
   for (const pub of created) await tg?.notifyPersonal(pub);
   return { given: created.length, already };
+}));
+// Открыть выбранным ученикам сразу несколько тестов
+adm.post('/grant-many', h(async (req) => {
+  const { userIds, lessonIds, noLearn } = req.body || {};
+  const r = logic.grantLessons(userIds, lessonIds, noLearn);
+  for (const [uid, pubs] of Object.entries(r.byUser)) await tg?.notifyAccess(uid, pubs);
+  return { given: r.given, already: r.already, students: Object.keys(r.byUser).length };
 }));
 adm.post('/lessons/:lid/archive', h((req) => (logic.setArchived(req.params.lid, req.body?.archived !== false), { ok: true })));
 adm.delete('/pubs/:pid', h((req) => (logic.unpublish(req.params.pid), { ok: true })));

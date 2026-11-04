@@ -1,0 +1,347 @@
+{
+  "title": "9-dars. Moslashuvchanlik, media queries",
+  "description": "meta viewport, @media, breakpointlar, mobile-first va desktop-first",
+  "learn": {
+    "intro": "Salom! 9-dars — **moslashuvchanlik**. Bitta saytni ham telefondan (375px), ham katta monitordan (1920px) ochishadi. Sahifani istalgan ekranga moslashtirishni o'rganamiz. Ketdik!",
+    "sections": [
+      {
+        "title": "Muammo va meta viewport",
+        "slides": [
+          {
+            "emoji": "📱",
+            "text": "Agar o'lchamlar qat'iy px bilan berilsa (masalan, `width: 1000px`), telefonda sayt ekrandan chiqib ketadi: gorizontal skroll paydo bo'ladi, kartochkalar kesilib qoladi. Saytni telefonsiz telefonda ko'rish: **F12 → telefon belgisi (Ctrl + Shift + M)** → iPhone yoki iPad ni tanlang."
+          },
+          {
+            "text": "`<head>` ichida bu qator bo'lishi shart:",
+            "code": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
+          },
+          {
+            "quote": true,
+            "text": "`width=device-width` — sayt kengligi = qurilma ekrani kengligi. `initial-scale=1` — kattalashtirish va kichraytirishsiz. Bu qator bo'lmasa, telefon o'zini kompyuter deb o'ylaydi: saytni taxminan 980px kenglikda chizadi va kichraytiradi, matn mayda bo'ladi. **Usiz media query'lar haqiqiy telefonda ishlamaydi.** Hiyla: VS Code da `!` yozib Tab bossang, shablonda bu qator allaqachon bo'ladi."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "meta viewport",
+            "prompt": "Telefonda meta viewport bo'lmasa nima bo'ladi?",
+            "options": [
+              "Sayt ~980px kenglikda chiziladi va kichrayadi, matn mayda bo'ladi",
+              "Hech narsa o'zgarmaydi",
+              "Sayt qizil bo'ladi",
+              "Sayt yo'qoladi"
+            ],
+            "answer": 0,
+            "explain": "Telefon o'zini kompyuter deb hisoblaydi."
+          },
+          {
+            "type": "truefalse",
+            "topic": "meta viewport",
+            "prompt": "meta viewport siz media query'lar haqiqiy telefonda ishlamaydi.",
+            "answer": true,
+            "explain": "Bu qator har bir HTML da kerak."
+          }
+        ]
+      },
+      {
+        "title": "@media sintaksisi va breykpointlar",
+        "slides": [
+          {
+            "emoji": "🎚️",
+            "text": "Media query — CSS dagi shart: ekran kengligi 768px yoki kichik bo'lsa — oddiy uslublar o'rniga shularni qo'lla.",
+            "code": ".box {\n  background: blue;\n}\n\n/* ekran 768px yoki kichik */\n@media (max-width: 768px) {\n  .box {\n    background: red;\n  }\n}"
+          },
+          {
+            "text": "`max-width: 768px` — «768px gacha (768px ham kiradi)». `@media` ichida oddiy CSS yoziladi, lekin **faqat o'zgaradigan narsalar**. Muhim: media query oddiy uslublardan **pastda** yoziladi — CSS yuqoridan pastga o'qiladi, pastdagi qoida yuqoridagisini almashtiradi."
+          },
+          {
+            "quote": true,
+            "text": "Breykpointlar (yodlab ol): **600px** gacha — telefon, **1024px** gacha — planshet, 1024px dan katta — kompyuter."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "@media",
+            "prompt": "max-width: 768px nimani bildiradi?",
+            "options": [
+              "768px gacha, 768px ham kiradi",
+              "Faqat 768px dan katta",
+              "Aynan 768px",
+              "Hech narsa"
+            ],
+            "answer": 0,
+            "explain": "max — «eng ko'pi bilan», kichik ekranlar uchun."
+          },
+          {
+            "type": "match",
+            "topic": "Breykpointlar",
+            "prompt": "Kenglik va qurilmani moslashtir",
+            "pairs": [
+              [
+                "600px",
+                "Telefon"
+              ],
+              [
+                "1024px",
+                "Planshet"
+              ],
+              [
+                "1024px dan katta",
+                "Kompyuter"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Mobile-first va desktop-first",
+        "slides": [
+          {
+            "emoji": "📲",
+            "text": "**Desktop-first**: asosiy uslublar kompyuter uchun, `max-width` sharti («...gacha») — kichik ekranlar uchun ortiqchasini olib tashlaymiz. **Mobile-first**: asosiy uslublar telefon uchun, `min-width` sharti («...dan boshlab») — katta ekranlar uchun qo'shamiz.",
+            "code": "/* mobile-first: avval telefon */\n.box { font-size: 16px; }\n\n/* 768px va undan katta ekranlar uchun qo'shamiz */\n@media (min-width: 768px) {\n  .box { font-size: 24px; }\n}"
+          },
+          {
+            "quote": true,
+            "text": "Kompaniyalarda ko'pincha mobile-first ishlatiladi, chunki odamlarning ko'pchiligi telefondan kiradi. Boshlovchilar uchun `max-width` osonroq: kompyuter uchun yasashni bilamiz, endi kichik ekranlarga moslaymiz. Qanday eslab qolish: `max` — «eng ko'pi bilan», ya'ni kichik ekranlar; `min` — «eng kamida», ya'ni katta ekranlar."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Mobile-first",
+            "prompt": "Mobile-first da odatda qanday shart bo'ladi?",
+            "options": [
+              "min-width",
+              "max-width",
+              "max-height",
+              "width"
+            ],
+            "answer": 0,
+            "explain": "«...dan boshlab» — katta ekranlar uchun qo'shamiz."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Mobile-first",
+            "prompt": "Desktop-first da asosiy uslublar kompyuter uchun yoziladi.",
+            "answer": true,
+            "explain": "Kichik ekranlar uchun ortiqchasi olib tashlanadi."
+          }
+        ]
+      },
+      {
+        "title": "Misollar: menyu va galereya",
+        "slides": [
+          {
+            "emoji": "🧭",
+            "text": "Menyu: kompyuterda qatorda, telefonda ustunda. Faqat **bitta xususiyat** o'zgaradi, `display: flex` va `gap` ni qayta yozish shart emas:",
+            "code": ".menu {\n  display: flex;\n  flex-direction: row;       /* kompyuter */\n  gap: 20px;\n}\n@media (max-width: 768px) {\n  .menu {\n    flex-direction: column;  /* telefon */\n  }\n}"
+          },
+          {
+            "text": "Galereya: 3 → 2 → 1 ustun. Faqat `repeat` ichidagi raqam o'zgaradi:",
+            "code": ".gallery {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);  /* kompyuter */\n  gap: 20px;\n}\n@media (max-width: 1024px) {\n  .gallery { grid-template-columns: repeat(2, 1fr); }  /* planshet */\n}\n@media (max-width: 600px) {\n  .gallery { grid-template-columns: 1fr; }  /* telefon */\n}"
+          },
+          {
+            "quote": true,
+            "text": "**Tartib muhim:** avval 1024px, keyin 600px. O'rnini almashtirsangiz, telefonda 1024px qoidasi ishlaydi va 2 ta ustun bo'lib qoladi, chunki 375px ham 1024px dan kichik."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Misollar",
+            "prompt": "Nega 1024px 600px dan oldin yoziladi?",
+            "options": [
+              "Aks holda telefonda 1024px qoidasi ishlaydi",
+              "Shunday chiroyliroq",
+              "Shunday tezroq yuklanadi",
+              "Farqi yo'q"
+            ],
+            "answer": 0,
+            "explain": "375px ham 1024px dan kichik, shuning uchun pastki qoida 600px bo'lishi kerak."
+          }
+        ]
+      },
+      {
+        "title": "Uy vazifasi",
+        "slides": [
+          {
+            "emoji": "🏠",
+            "text": "3 hafta davomida qilgan hamma narsangni (kartochkalar, menyu, landing) 3 ekranga moslashtir. O'zingni tekshir:\n— har bir HTML da meta viewport bor;\n— ikkita breykpoint: `max-width: 1024px` va `max-width: 600px`;\n— telefonda gorizontal skroll yo'q va hech narsa kesilmaydi;\n— 3 ta skrinshot: telefon, planshet, kompyuter (DevTools da)."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Uy vazifasi",
+            "prompt": "Uy vazifasida nechta breykpoint kerak?",
+            "options": [
+              "2",
+              "1",
+              "5",
+              "0"
+            ],
+            "answer": 0,
+            "explain": "1024px va 600px."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "Muammo",
+      "prompt": "Blokda width: 1000px bo'lsa telefonda nima bo'ladi?",
+      "options": [
+        "Sayt ekrandan chiqadi, gorizontal skroll paydo bo'ladi",
+        "Blok o'zi kichrayadi",
+        "Hech narsa",
+        "Blok yo'qoladi"
+      ],
+      "answer": 0,
+      "explain": "Qat'iy px moslashmaydi."
+    },
+    {
+      "type": "choice",
+      "topic": "Muammo",
+      "prompt": "Telefonsiz saytni telefondagidek qanday ko'rish mumkin?",
+      "options": [
+        "F12 → Ctrl + Shift + M",
+        "Ctrl + S",
+        "F5",
+        "Alt + F4"
+      ],
+      "answer": 0,
+      "explain": "DevTools dagi Toggle device toolbar."
+    },
+    {
+      "type": "choice",
+      "topic": "meta viewport",
+      "prompt": "width=device-width nimani bildiradi?",
+      "options": [
+        "Sayt kengligi ekran kengligiga teng",
+        "Kenglik 100px",
+        "2 baravar katta kenglik",
+        "Kengliksiz"
+      ],
+      "answer": 0,
+      "explain": "Shunda telefon o'zini kompyuter qilib ko'rsatmaydi."
+    },
+    {
+      "type": "input",
+      "topic": "meta viewport",
+      "prompt": "meta viewport qayerga yoziladi? (tegni qavslarsiz)",
+      "answer": [
+        "head"
+      ],
+      "explain": "<head> ichiga."
+    },
+    {
+      "type": "choice",
+      "topic": "@media",
+      "prompt": "@media oddiy uslublarga nisbatan qayerda yoziladi?",
+      "options": [
+        "Oddiy uslublardan pastda",
+        "Oddiy uslublardan yuqorida",
+        "Doim boshqa faylda",
+        "Istalgan joyda"
+      ],
+      "answer": 0,
+      "explain": "Pastdagi qoida yuqoridagisini almashtiradi."
+    },
+    {
+      "type": "choice",
+      "topic": "@media",
+      "prompt": "Ekran kengligi 500px bo'lganda .box qanday rangda?",
+      "code": ".box { background: blue; }\n@media (max-width: 768px) {\n  .box { background: red; }\n}",
+      "options": [
+        "red",
+        "blue",
+        "black",
+        "Будет ошибка"
+      ],
+      "answer": 0,
+      "explain": "500px ≤ 768px, media ishlaydi."
+    },
+    {
+      "type": "match",
+      "topic": "Breykpointlar",
+      "prompt": "Shart va qurilmani moslashtir",
+      "pairs": [
+        [
+          "max-width: 600px",
+          "Telefon"
+        ],
+        [
+          "max-width: 1024px",
+          "Planshet"
+        ],
+        [
+          "min-width: 768px",
+          "768px va undan katta"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "Mobile-first",
+      "prompt": "min-width: 768px nimani bildiradi?",
+      "options": [
+        "768px dan boshlab va katta",
+        "768px gacha",
+        "Aynan 768px",
+        "Hech narsa"
+      ],
+      "answer": 0,
+      "explain": "min — «eng kamida»."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Mobile-first",
+      "prompt": "Boshlovchilarga max-width dan boshlash osonroq, chunki kompyuter maketini ular allaqachon biladi.",
+      "answer": true,
+      "explain": "Keyin kichik ekranlarga moslaymiz."
+    },
+    {
+      "type": "choice",
+      "topic": "Misollar",
+      "prompt": "Telefonda menyu ustun bo'lishi uchun nimani o'zgartirish kerak?",
+      "options": [
+        "@media da flex-direction: column berish",
+        "Butun CSS ni qayta yozish",
+        "display: flex ni olib tashlash",
+        "Menyuni o'chirish"
+      ],
+      "answer": 0,
+      "explain": "Faqat bitta xususiyat o'zgaradi."
+    },
+    {
+      "type": "choice",
+      "topic": "Misollar",
+      "prompt": "Galereya 3 → 2 → 1 ustun. Media da nima o'zgaradi?",
+      "options": [
+        "repeat dagi son",
+        "Rang",
+        "Shrift",
+        "Klass nomi"
+      ],
+      "answer": 0,
+      "explain": "repeat(3, 1fr) → repeat(2, 1fr) → 1fr."
+    },
+    {
+      "type": "order",
+      "topic": "Misollar",
+      "prompt": "Media qoidalarini to'g'ri tartibda joylashtir",
+      "tokens": [
+        "@media (max-width: 1024px) { }",
+        "@media (max-width: 600px) { }"
+      ],
+      "extra": [
+        "@media (min-width: 1px) { }"
+      ],
+      "explain": "Avval 1024px, keyin 600px."
+    }
+  ]
+}

@@ -1,0 +1,350 @@
+{
+  "id": "lesson-09-responsive",
+  "order": 9,
+  "title": "Урок 9. Адаптивность, media queries",
+  "emoji": "📱",
+  "description": "meta viewport, @media, breakpoints, mobile-first и desktop-first",
+  "learn": {
+    "intro": "Привет! Урок 9 — **адаптивность**. Один сайт открывают и с телефона (375px), и с большого монитора (1920px). Научимся подстраивать страницу под любой экран. Поехали!",
+    "sections": [
+      {
+        "title": "Проблема и meta viewport",
+        "slides": [
+          {
+            "emoji": "📱",
+            "text": "Если размеры заданы жёстко в px (например, `width: 1000px`), на телефоне сайт вылезает за экран: появляется горизонтальный скролл, карточки обрезаются. Посмотреть сайт на телефоне без телефона можно так: **F12 → значок телефона (Ctrl + Shift + M)** → выбрать iPhone или iPad."
+          },
+          {
+            "text": "В `<head>` обязательно должна быть эта строка:",
+            "code": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
+          },
+          {
+            "quote": true,
+            "text": "`width=device-width` — ширина сайта равна ширине экрана. `initial-scale=1` — без увеличения и уменьшения. Без этой строки телефон думает, что он компьютер: рисует сайт шириной около 980px и просто уменьшает его, а текст становится мелким. **Без неё media queries на настоящем телефоне не работают.** Лайфхак: в VS Code напиши `!` и нажми Tab — строка уже будет в шаблоне."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "meta viewport",
+            "prompt": "Что будет без meta viewport на телефоне?",
+            "options": [
+              "Сайт нарисуется шириной ~980px и уменьшится, текст станет мелким",
+              "Ничего не изменится",
+              "Сайт станет красным",
+              "Сайт исчезнет"
+            ],
+            "answer": 0,
+            "explain": "Телефон считает себя компьютером."
+          },
+          {
+            "type": "truefalse",
+            "topic": "meta viewport",
+            "prompt": "Без meta viewport media queries на реальном телефоне не работают.",
+            "answer": true,
+            "explain": "Эта строка нужна в каждом HTML."
+          }
+        ]
+      },
+      {
+        "title": "Синтаксис @media и брейкпоинты",
+        "slides": [
+          {
+            "emoji": "🎚️",
+            "text": "Media query — это условие в CSS: если ширина экрана 768px или меньше — применить эти стили вместо обычных.",
+            "code": ".box {\n  background: blue;\n}\n\n/* экран 768px или меньше */\n@media (max-width: 768px) {\n  .box {\n    background: red;\n  }\n}"
+          },
+          {
+            "text": "`max-width: 768px` — «до 768px, включая 768px». Внутри `@media` пишем обычный CSS, но **только то, что меняется**. Важно: media query пишут **ниже** обычных стилей — CSS читается сверху вниз, нижнее правило заменяет верхнее."
+          },
+          {
+            "quote": true,
+            "text": "Брейкпоинты (запомни): до **600px** — телефон, до **1024px** — планшет, больше 1024px — компьютер."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "@media",
+            "prompt": "Что значит max-width: 768px?",
+            "options": [
+              "До 768px, включая 768px",
+              "Только больше 768px",
+              "Ровно 768px",
+              "Ничего"
+            ],
+            "answer": 0,
+            "explain": "max — «самое большее», для малых экранов."
+          },
+          {
+            "type": "match",
+            "topic": "Брейкпоинты",
+            "prompt": "Соедини ширину и устройство",
+            "pairs": [
+              [
+                "600px",
+                "Телефон"
+              ],
+              [
+                "1024px",
+                "Планшет"
+              ],
+              [
+                "Больше 1024px",
+                "Компьютер"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Mobile-first и desktop-first",
+        "slides": [
+          {
+            "emoji": "📲",
+            "text": "**Desktop-first**: основные стили для компьютера, условие `max-width` («до…») — для маленьких экранов убираем лишнее. **Mobile-first**: основные стили для телефона, условие `min-width` («от…») — для больших экранов добавляем.",
+            "code": "/* mobile-first: сначала телефон */\n.box { font-size: 16px; }\n\n/* от 768px и больше добавляем */\n@media (min-width: 768px) {\n  .box { font-size: 24px; }\n}"
+          },
+          {
+            "quote": true,
+            "text": "В компаниях чаще используют mobile-first: большинство заходит с телефона. Новичкам проще `max-width` — десктопную вёрстку мы уже умеем, теперь подстраиваем под малые экраны. Как запомнить: `max` — «самое большее», то есть малые экраны; `min` — «самое меньшее», то есть большие."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Mobile-first",
+            "prompt": "Какое условие обычно у mobile-first?",
+            "options": [
+              "min-width",
+              "max-width",
+              "max-height",
+              "width"
+            ],
+            "answer": 0,
+            "explain": "«От…» — добавляем для больших экранов."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Mobile-first",
+            "prompt": "В desktop-first основные стили пишут для компьютера.",
+            "answer": true,
+            "explain": "А для малых экранов убирают лишнее."
+          }
+        ]
+      },
+      {
+        "title": "Примеры: меню и галерея",
+        "slides": [
+          {
+            "emoji": "🧭",
+            "text": "Меню: на компьютере в ряд, на телефоне в колонку. Меняется **одно свойство**, `display: flex` и `gap` повторять не нужно:",
+            "code": ".menu {\n  display: flex;\n  flex-direction: row;       /* компьютер */\n  gap: 20px;\n}\n@media (max-width: 768px) {\n  .menu {\n    flex-direction: column;  /* телефон */\n  }\n}"
+          },
+          {
+            "text": "Галерея: 3 → 2 → 1 колонка. Меняется только число в `repeat`:",
+            "code": ".gallery {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);  /* компьютер */\n  gap: 20px;\n}\n@media (max-width: 1024px) {\n  .gallery { grid-template-columns: repeat(2, 1fr); }  /* планшет */\n}\n@media (max-width: 600px) {\n  .gallery { grid-template-columns: 1fr; }  /* телефон */\n}"
+          },
+          {
+            "quote": true,
+            "text": "**Порядок важен:** сначала 1024px, потом 600px. Если поменять местами, на телефоне сработает правило 1024px и останется 2 колонки, потому что 375px тоже меньше 1024px."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Примеры",
+            "prompt": "Почему 1024px пишут раньше 600px?",
+            "options": [
+              "Иначе на телефоне сработает правило 1024px",
+              "Так красивее",
+              "Так быстрее грузится",
+              "Нет разницы"
+            ],
+            "answer": 0,
+            "explain": "375px тоже меньше 1024px, поэтому нижнее правило должно быть 600px."
+          }
+        ]
+      },
+      {
+        "title": "Домашка",
+        "slides": [
+          {
+            "emoji": "🏠",
+            "text": "Адаптируй всё, что делал 3 недели (карточки, меню, лендинг), под 3 экрана. Проверь себя:\n— в каждом HTML есть meta viewport;\n— два брейкпоинта: `max-width: 1024px` и `max-width: 600px`;\n— на телефоне нет горизонтального скролла и ничего не обрезается;\n— 3 скриншота: телефон, планшет, компьютер (в DevTools)."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Домашка",
+            "prompt": "Сколько брейкпоинтов нужно в домашке?",
+            "options": [
+              "2",
+              "1",
+              "5",
+              "0"
+            ],
+            "answer": 0,
+            "explain": "1024px и 600px."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "Проблема",
+      "prompt": "Что будет на телефоне, если у блока width: 1000px?",
+      "options": [
+        "Сайт вылезет за экран, появится горизонтальный скролл",
+        "Блок сам уменьшится",
+        "Ничего",
+        "Блок исчезнет"
+      ],
+      "answer": 0,
+      "explain": "Жёсткие px не подстраиваются."
+    },
+    {
+      "type": "choice",
+      "topic": "Проблема",
+      "prompt": "Как посмотреть сайт как на телефоне, не имея телефона?",
+      "options": [
+        "F12 → Ctrl + Shift + M",
+        "Ctrl + S",
+        "F5",
+        "Alt + F4"
+      ],
+      "answer": 0,
+      "explain": "Toggle device toolbar в DevTools."
+    },
+    {
+      "type": "choice",
+      "topic": "meta viewport",
+      "prompt": "Что значит width=device-width?",
+      "options": [
+        "Ширина сайта равна ширине экрана",
+        "Ширина 100px",
+        "Ширина в 2 раза больше",
+        "Без ширины"
+      ],
+      "answer": 0,
+      "explain": "Так телефон не притворяется компьютером."
+    },
+    {
+      "type": "input",
+      "topic": "meta viewport",
+      "prompt": "Где пишут meta viewport? (тег без скобок)",
+      "answer": [
+        "head"
+      ],
+      "explain": "Внутри <head>."
+    },
+    {
+      "type": "choice",
+      "topic": "@media",
+      "prompt": "Где пишут @media относительно обычных стилей?",
+      "options": [
+        "Ниже обычных стилей",
+        "Выше обычных стилей",
+        "В другом файле всегда",
+        "Где угодно"
+      ],
+      "answer": 0,
+      "explain": "Нижнее правило заменяет верхнее."
+    },
+    {
+      "type": "choice",
+      "topic": "@media",
+      "prompt": "Какого цвета .box при ширине экрана 500px?",
+      "code": ".box { background: blue; }\n@media (max-width: 768px) {\n  .box { background: red; }\n}",
+      "options": [
+        "red",
+        "blue",
+        "black",
+        "Будет ошибка"
+      ],
+      "answer": 0,
+      "explain": "500px ≤ 768px, срабатывает media."
+    },
+    {
+      "type": "match",
+      "topic": "Брейкпоинты",
+      "prompt": "Соедини условие и устройство",
+      "pairs": [
+        [
+          "max-width: 600px",
+          "Телефон"
+        ],
+        [
+          "max-width: 1024px",
+          "Планшет"
+        ],
+        [
+          "min-width: 768px",
+          "От 768px и больше"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "Mobile-first",
+      "prompt": "Что означает min-width: 768px?",
+      "options": [
+        "От 768px и больше",
+        "До 768px",
+        "Ровно 768px",
+        "Ничего"
+      ],
+      "answer": 0,
+      "explain": "min — «самое меньшее»."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Mobile-first",
+      "prompt": "Новичкам проще начать с max-width, потому что десктопную вёрстку они уже умеют.",
+      "answer": true,
+      "explain": "Потом подстраиваем под малые экраны."
+    },
+    {
+      "type": "choice",
+      "topic": "Примеры",
+      "prompt": "Что поменять, чтобы меню на телефоне стало колонкой?",
+      "options": [
+        "В @media задать flex-direction: column",
+        "Переписать весь CSS",
+        "Убрать display: flex",
+        "Удалить меню"
+      ],
+      "answer": 0,
+      "explain": "Меняется только одно свойство."
+    },
+    {
+      "type": "choice",
+      "topic": "Примеры",
+      "prompt": "Галерея 3 → 2 → 1 колонка. Что меняется в media?",
+      "options": [
+        "Число в repeat",
+        "Цвет",
+        "Шрифт",
+        "Название класса"
+      ],
+      "answer": 0,
+      "explain": "repeat(3, 1fr) → repeat(2, 1fr) → 1fr."
+    },
+    {
+      "type": "order",
+      "topic": "Примеры",
+      "prompt": "Расставь media-правила в правильном порядке",
+      "tokens": [
+        "@media (max-width: 1024px) { }",
+        "@media (max-width: 600px) { }"
+      ],
+      "extra": [
+        "@media (min-width: 1px) { }"
+      ],
+      "explain": "Сначала 1024px, потом 600px."
+    }
+  ]
+}

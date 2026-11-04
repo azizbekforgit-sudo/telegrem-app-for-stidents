@@ -1,0 +1,341 @@
+{
+  "title": "6-dars. Flexbox — asoslar",
+  "description": "display: flex, flex-direction, justify-content, align-items",
+  "learn": {
+    "intro": "Salom! 6-dars — **Flexbox**. Avval bloklarni tekislash uchun verstalchilar float va hiylalar bilan qiynalardi. Endi sen elementlarni qanday joylashtirishni aytasan, brauzer o'zi joylaydi. Ketdik!",
+    "sections": [
+      {
+        "title": "display: flex",
+        "slides": [
+          {
+            "emoji": "📦",
+            "text": "Asosiy g'oya: **konteyner** (ota) va uning ichida **elementlar** bor. Konteynerni sozlaymiz, elementlar o'zlari moslashadi."
+          },
+          {
+            "text": "Flexbox siz `div` bloklar bir-birining ostida turadi. Otaga `display: flex` qo'shamiz — ular **qatorga** turadi:",
+            "code": ".container {\n  display: flex;\n}"
+          },
+          {
+            "quote": true,
+            "text": "Konteyner ichidagi elementlar **flex-elementlar** deyiladi."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "display: flex",
+            "prompt": "display: flex qayerga yoziladi?",
+            "options": [
+              "Otaga (konteynerga)",
+              "Har bir bolaga",
+              "<head> ichiga",
+              "Faqat body ga"
+            ],
+            "answer": 0,
+            "explain": "Flex konteynerda yoqiladi."
+          },
+          {
+            "type": "truefalse",
+            "topic": "display: flex",
+            "prompt": "Flex-konteyner ichidagi elementlar flex-elementlar deyiladi.",
+            "answer": true,
+            "explain": "Konteyner — ota, elementlar — bolalar."
+          }
+        ]
+      },
+      {
+        "title": "flex-direction",
+        "slides": [
+          {
+            "emoji": "➡️",
+            "text": "Konteynerning **asosiy o'qi** bor — elementlar joylashadigan yo'nalish.\n`row` (standart) — qatorda, chapdan o'ngga.\n`column` — bir-birining ostida, yuqoridan pastga.",
+            "code": ".container {\n  display: flex;\n  flex-direction: column;\n}"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "flex-direction",
+            "prompt": "flex-direction ning standart qiymati qaysi?",
+            "options": [
+              "row",
+              "column",
+              "wrap",
+              "center"
+            ],
+            "answer": 0,
+            "explain": "row — qatorda chapdan o'ngga."
+          }
+        ]
+      },
+      {
+        "title": "justify-content",
+        "slides": [
+          {
+            "emoji": "↔️",
+            "text": "`justify-content` elementlarni asosiy o'q **bo'ylab** suradi. `row` uchun bu gorizontal, `column` uchun — vertikal."
+          },
+          {
+            "text": "`flex-start` — boshiga, `center` — markazda, `flex-end` — oxiriga.\n`space-between` — birinchisi boshida, oxirgisi oxirida, orasida teng oraliqlar.\n`space-around` — har birining atrofida teng chekinish (chetlarda — oraliqning yarmi).",
+            "code": ".container {\n  display: flex;\n  justify-content: space-between;\n}"
+          },
+          {
+            "quote": true,
+            "text": "`space-between` — menyu uchun eng ko'p tanlov: logotip chapda, havolalar o'ngda."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "justify-content",
+            "prompt": "Qaysi qiymat logotipni chapga, havolalarni o'ngga qo'yadi?",
+            "options": [
+              "space-between",
+              "center",
+              "flex-start",
+              "stretch"
+            ],
+            "answer": 0,
+            "explain": "space-between chekka elementlarni chetlarga suradi."
+          },
+          {
+            "type": "match",
+            "topic": "justify-content",
+            "prompt": "Qiymat va natijani moslashtir",
+            "pairs": [
+              [
+                "flex-start",
+                "Boshiga"
+              ],
+              [
+                "center",
+                "Markazda"
+              ],
+              [
+                "flex-end",
+                "Oxiriga"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": "align-items va eslab qolish",
+        "slides": [
+          {
+            "emoji": "↕️",
+            "text": "`align-items` elementlarni asosiy o'qqa **ko'ndalang** suradi. `row` uchun bu vertikal. Farq ko'rinishi uchun konteynerga balandlik beramiz:",
+            "code": ".container {\n  display: flex;\n  height: 300px;\n  align-items: center;\n}"
+          },
+          {
+            "text": "`flex-start` — tepaga, `center` — markazda, `flex-end` — pastga, `stretch` (standart) — butun balandlikka cho'ziladi."
+          },
+          {
+            "quote": true,
+            "text": "Eslab qolish: `justify` — «**j**ust along» (bo'ylab), `align` — «**a**cross» (ko'ndalang). `row` uchun: justify-content **chapga-o'ngga**, align-items — **yuqoriga-pastga** suradi."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "align-items",
+            "prompt": "flex-direction: row da elementlarni yuqoriga va pastga nima suradi?",
+            "options": [
+              "align-items",
+              "justify-content",
+              "flex-wrap",
+              "gap"
+            ],
+            "answer": 0,
+            "explain": "align-items — asosiy o'qqa ko'ndalang."
+          },
+          {
+            "type": "truefalse",
+            "topic": "align-items",
+            "prompt": "justify-content elementlarni asosiy o'q bo'ylab suradi.",
+            "answer": true,
+            "explain": "justify — «just along», bo'ylab."
+          }
+        ]
+      },
+      {
+        "title": "Amaliyot: menyu va uy vazifasi",
+        "slides": [
+          {
+            "emoji": "🧭",
+            "text": "Navigatsiya menyusi: logotip chapda, havolalar o'ngda, hammasi vertikal markazda:",
+            "code": ".menu {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  padding: 16px;\n  background: #14141f;\n  color: white;\n}"
+          },
+          {
+            "quote": true,
+            "text": "Uy vazifasi: profil kartochkasi — **avatar chapda**, **ism va tavsif o'ngda**, hammasi vertikal markazda. Otaga `display: flex` va `align-items: center`, avatarga qat'iy kenglik, masalan `width: 80px`."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Amaliyot",
+            "prompt": "Hammasi vertikal markazda bo'lishi uchun profil kartochkasi otasiga nima kerak?",
+            "options": [
+              "display: flex va align-items: center",
+              "Faqat margin",
+              "float: left",
+              "position: fixed"
+            ],
+            "answer": 0,
+            "explain": "Flex + align-items: center."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "display: flex",
+      "prompt": "Otaga display: flex berilgandan keyin nima bo'ladi?",
+      "options": [
+        "Bloklar qatorga turadi",
+        "Bloklar yo'qoladi",
+        "Bloklar qizil bo'ladi",
+        "Hech narsa"
+      ],
+      "answer": 0,
+      "explain": "Elementlar asosiy o'q bo'ylab joylashadi."
+    },
+    {
+      "type": "truefalse",
+      "topic": "display: flex",
+      "prompt": "Biz konteynerni sozlaymiz, ichidagi elementlar o'zlari moslashadi.",
+      "answer": true,
+      "explain": "Bu Flexbox ning asosiy g'oyasi."
+    },
+    {
+      "type": "choice",
+      "topic": "flex-direction",
+      "prompt": "flex-direction: column nima qiladi?",
+      "options": [
+        "Elementlarni bir-birining ostiga qo'yadi",
+        "Qatorga qo'yadi",
+        "Elementlarni yashiradi",
+        "Shriftni kattalashtiradi"
+      ],
+      "answer": 0,
+      "explain": "Asosiy o'q vertikal bo'ladi."
+    },
+    {
+      "type": "choice",
+      "topic": "justify-content",
+      "prompt": "space-between da elementlar qanday joylashadi?",
+      "options": [
+        "Birinchisi boshida, oxirgisi oxirida, orasida teng oraliqlar",
+        "Hammasi chapga yopishgan",
+        "Hammasi markazda",
+        "Bir-birining ustida"
+      ],
+      "answer": 0,
+      "explain": "Bu menyu uchun eng ko'p tanlov."
+    },
+    {
+      "type": "match",
+      "topic": "justify-content",
+      "prompt": "Qiymat va ma'noni moslashtir",
+      "pairs": [
+        [
+          "center",
+          "Markazda"
+        ],
+        [
+          "space-between",
+          "Chekkalar chetda, orasi teng"
+        ],
+        [
+          "flex-end",
+          "Oxiriga"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "align-items",
+      "prompt": "align-items ning standart qiymati qaysi?",
+      "options": [
+        "stretch",
+        "center",
+        "flex-start",
+        "flex-end"
+      ],
+      "answer": 0,
+      "explain": "stretch konteyner balandligiga cho'zadi."
+    },
+    {
+      "type": "choice",
+      "topic": "align-items",
+      "prompt": "row da elementlarni vertikal markazga qaysi xossa qo'yadi?",
+      "options": [
+        "align-items: center",
+        "justify-content: center",
+        "flex-direction: center",
+        "gap: center"
+      ],
+      "answer": 0,
+      "explain": "align-items — asosiy o'qqa ko'ndalang."
+    },
+    {
+      "type": "input",
+      "topic": "align-items",
+      "prompt": "Qaysi xossa elementlarni asosiy o'q bo'ylab suradi? (defisli bitta so'z)",
+      "answer": [
+        "justify-content"
+      ],
+      "explain": "justify — «just along»."
+    },
+    {
+      "type": "choice",
+      "topic": "align-items",
+      "prompt": "align-items sinalganda nega konteynerga balandlik beriladi?",
+      "options": [
+        "Farq ko'rinishi uchun",
+        "Balandliksiz align-items buziladi",
+        "Brauzer shuni talab qiladi",
+        "Chiroy uchun"
+      ],
+      "answer": 0,
+      "explain": "Balandliksiz ko'ndalang o'qda bo'sh joy yo'q."
+    },
+    {
+      "type": "order",
+      "topic": "Amaliyot",
+      "prompt": "Menyu qoidasini yig': logotip chapda, havolalar o'ngda, vertikal markazda",
+      "tokens": [
+        "display: flex;",
+        "justify-content: space-between;",
+        "align-items: center;"
+      ],
+      "extra": [
+        "float: left;"
+      ],
+      "explain": "Flex, chetlarga surish va vertikal markaz."
+    },
+    {
+      "type": "choice",
+      "topic": "Amaliyot",
+      "prompt": "Amaliyotdagi menyuni qaysi uch xossa qiladi?",
+      "options": [
+        "display, justify-content, align-items",
+        "color, font-size, width",
+        "float, clear, position",
+        "margin, padding, border"
+      ],
+      "answer": 0,
+      "explain": "Flex-konteyner va ikkita tekislash."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Amaliyot",
+      "prompt": "Profil kartochkasida avatarga qat'iy kenglik, masalan 80px berish kerak.",
+      "answer": true,
+      "explain": "Shunda o'ngdagi matn qolgan joyni egallaydi."
+    }
+  ]
+}
