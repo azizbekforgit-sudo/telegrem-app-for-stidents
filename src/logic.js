@@ -751,6 +751,22 @@ export function createLogic(store, { adminIds }) {
     rows.forEach((r, i) => (r.rank = i + 1));
     return { rows, total: rows.length };
   }
+  // Кто из учеников сколько раз решал тест и с каким результатом каждый раз
+  function pubAttempts(pubId) {
+    const pub = S.pubs[pubId];
+    if (!pub) throw httpError(404, 'Тест не найден');
+    const lesson = S.lessons[pub.lessonId];
+    const g = S.groups[pub.groupId];
+    const members = pub.userId ? [pub.userId] : g ? g.memberIds.filter((id) => !isAdmin(id)) : [];
+    const rows = members.map((uid) => {
+      const u = S.users[uid];
+      const attempts = finishedAttempts(uid, pubId).sort((a, b) => a.finishedAt - b.finishedAt).map((a, i) => ({ n: i + 1, ...scoreOf(a), at: a.finishedAt, practice: Boolean(a.practice), xp: a.xp || 0 }));
+      const b = best(uid, pubId);
+      return { userId: uid, name: name(u), username: u?.username || '', photoUrl: u?.photoUrl || null, prefs: u?.prefs || null, learnDone: lesson?.learn && !pub.noLearn ? learnDone(uid, pubId) : null, attempts, best: b ? b.pct : null };
+    }).sort((a, b) => (b.best ?? -1) - (a.best ?? -1) || a.name.localeCompare(b.name));
+    return { pubId, title: lesson?.title, emoji: lesson?.emoji, groupName: pub.userId ? 'Лично' : g?.name, publishedAt: pub.publishedAt, size: rows.length, started: rows.filter((r) => r.attempts.length).length, avg: avg(rows.filter((r) => r.best != null).map((r) => r.best)), rows };
+  }
+
   function leaderboard(gid) {
     const g = S.groups[gid];
     if (!g) throw httpError(404, 'Группа не найдена');
@@ -985,7 +1001,7 @@ export function createLogic(store, { adminIds }) {
   }
 
   return {
-    S, isAdmin, isParent, duplicateXp, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
+    S, isAdmin, isParent, duplicateXp, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
     upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,

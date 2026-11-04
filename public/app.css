@@ -635,3 +635,11 @@ code { background: var(--card-2); padding: 1px 6px; border-radius: 7px; font-siz
 
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chips .choice { padding: 6px 12px; font-size: 13px; }
+
+/* результаты учеников по тесту */
+.att { max-height: 64vh; overflow: auto; display: grid; gap: 4px; }
+.att-row { padding: 10px 0; border-top: 1.5px solid var(--line); }
+.att-row:first-child { border-top: none; }
+.att-list { margin: 8px 0 0 52px; display: grid; gap: 6px; }
+.att-list > div { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; }
+.att-n { width: 22px; height: 22px; border-radius: 50%; background: var(--accent-l); color: var(--accent-d); display: grid; place-items: center; font-size: 12px; font-weight: 900; flex: none; }

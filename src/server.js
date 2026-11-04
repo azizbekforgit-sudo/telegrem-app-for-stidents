@@ -229,6 +229,7 @@ adm.post('/grant', h(async (req) => {
 adm.post('/lessons/:lid/archive', h((req) => (logic.setArchived(req.params.lid, req.body?.archived !== false), { ok: true })));
 adm.delete('/pubs/:pid', h((req) => (logic.unpublish(req.params.pid), { ok: true })));
 adm.get('/pubs/:pid', h((req) => logic.pubStats(req.params.pid)));
+adm.get('/pubs/:pid/attempts', h((req) => logic.pubAttempts(req.params.pid)));
 adm.get('/reminders', h(() => logic.listReminders()));
 adm.post('/report', h(() => logic.report()));
 adm.post('/reminders', h((req) => logic.createReminder(req.body || {})));

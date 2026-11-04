@@ -1415,7 +1415,7 @@ async function tabGroups() {
 async function viewGroup(gid) {
   const [st] = await Promise.all([api(`/admin/groups/${gid}/stats`), S.overview ? null : loadOverview()]);
   const g = st.group;
-  const tabs = [['members', 'Ученики'], ['stats', 'Статистика'], ['league', 'Лига']];
+  const tabs = [['members', 'Ученики'], ['tests', 'Тесты'], ['stats', 'Статистика'], ['league', 'Лига']];
   let body = '';
   if (S.groupTab === 'members') {
     const rows = st.leaderboard.rows;
@@ -1425,6 +1425,12 @@ async function viewGroup(gid) {
         <div class="small muted">${r.done}/${st.tests.length} тестов · ср. ${pctText(r.avg)} · ${r.xp} XP</div></div>
         ${mis[r.userId] ? `<span class="pill bad" title="Ошибок в копилке">${ic('refresh', 'sm')}${mis[r.userId]}</span>` : ''}
         <button class="iconbtn" data-rm="${r.userId}" aria-label="Убрать">${ic('trash-bin-trash', 'sm')}</button></div>`).join('') : '<p class="muted center small" style="padding:14px">В группе пока нет учеников</p>'}</div>`;
+  } else if (S.groupTab === 'tests') {
+    body = !st.tests.length
+      ? emptyState('sleepy', 'Тестов ещё не было', 'Отправь группе тест во вкладке «Тесты».')
+      : `<p class="muted small" style="margin-top:14px">Нажми на тест, чтобы увидеть, кто и сколько раз его решал.</p>
+        <div class="stack" style="margin-top:10px">${st.tests.map((t) => `<button class="card tap row" data-gtest="${t.pubId}" style="gap:12px;width:100%;text-align:left;font:inherit;color:inherit">${emo(t.emoji, { cls: 'lg' })}<div class="grow"><b>${esc(t.title)}</b>
+          <div class="small muted">решили ${t.done}/${t.size} · ${ago(t.publishedAt)}</div></div>${pctPill(t.avg)}<span class="faint">${ic('alt-arrow-right')}</span></button>`).join('')}</div>`;
   } else if (S.groupTab === 'stats') {
     body = !st.tests.length
       ? emptyState('sleepy', 'Тестов ещё не было', 'Отправь группе тест во вкладке «Тесты».')
@@ -1460,6 +1466,20 @@ async function viewGroup(gid) {
   }));
   const add = $('[data-add]');
   if (add) add.onclick = () => addMembersSheet(g);
+  $$('[data-gtest]').forEach((b) => (b.onclick = () => testAttemptsSheet(b.dataset.gtest)));
+}
+
+// Кто из учеников решал тест, сколько раз и сколько процентов набрал каждый раз
+async function testAttemptsSheet(pubId) {
+  const d = await api(`/admin/pubs/${pubId}/attempts`).catch(fail);
+  if (!d) return;
+  const pill = (p) => `<span class="pill ${p >= 80 ? 'good' : p >= 50 ? 'gold' : 'bad'}">${p}%</span>`;
+  const row = (r) => `<div class="att-row"><div class="row" style="gap:10px">${avatar(r)}<div class="grow" style="min-width:0"><b class="ellipsis" style="display:block">${esc(r.name)}</b>
+      <div class="small muted">${r.attempts.length ? `${esc(tr('Решал'))} ${esc(tr(plural(r.attempts.length, 'раз', 'раза', 'раз')))}${r.learnDone === false ? ' · ' + esc(tr('обучалка не пройдена')) : ''}` : `${esc(tr('Не решал'))}${r.learnDone ? ' · ' + esc(tr('обучалка ✓')) : r.learnDone === false ? ' · ' + esc(tr('обучалка не пройдена')) : ''}`}</div></div>${r.best != null ? pill(r.best) : '<span class="pill">—</span>'}</div>
+      ${r.attempts.length ? `<div class="att-list">${r.attempts.map((a) => `<div><span class="att-n">${a.n}</span><span class="grow">${esc(tr('попытка'))}${a.practice ? ' · ' + esc(tr('тренировка')) : ''} <span class="faint small">· ${a.correct}/${a.total} · ${esc(ago(a.at))}</span></span>${pill(a.pct)}</div>`).join('')}</div>` : ''}</div>`;
+  openSheet(`<div class="stack" data-noi18n><h2>${emo(d.emoji)} ${esc(d.title)}</h2>
+    <p class="muted small">${esc(tr(d.groupName || ''))} · ${esc(tr('решили'))} ${d.started}/${d.size}${d.avg != null ? ` · ${esc(tr('среднее'))} ${d.avg}%` : ''}</p>
+    <div class="att">${d.rows.map(row).join('') || `<p class="muted center small">${esc(tr('Нет учеников'))}</p>`}</div></div>`);
 }
 
 function addMembersSheet(g) {
