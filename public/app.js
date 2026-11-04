@@ -1405,8 +1405,21 @@ async function viewStudent(uid) {
     ${statsHtml(st, { self: false })}
     ${S.me.isParent ? '' : `<div class="card stack small" style="margin-top:16px"><b>${emo(E.laptop)} Вход на сайт</b><p class="muted">${st.siteLogin ? `Логин: <code data-noi18n>${esc(st.siteLogin)}</code>` : 'Входа пока нет'}</p>
       ${String(uid).startsWith('w') ? '' : `<button class="btn ghost block" data-relogin>${ic('lock-keyhole')}${st.siteLogin ? 'Новый пароль' : 'Создать вход'}</button>`}</div>
+      <div style="margin-top:12px"><button class="btn ghost block" data-bonus>${emo('🎁')}Начислить баллы</button></div>
       <div style="margin-top:12px"><button class="btn ghost block" data-assign="${esc(uid)}">${ic('user-plus-rounded')}Добавить в группу</button></div>`}`;
   $('[data-back]').onclick = back;
+  const bb = $('[data-bonus]');
+  if (bb) bb.onclick = () => openSheet(`<div class="stack"><h2>${emo('🎁')} Начислить баллы</h2><p class="muted small">${esc(u?.name || '')} получит XP в общую лигу и лигу группы. Чтобы снять баллы, введи число с минусом.</p>
+      <input class="input" data-xp type="number" inputmode="numeric" placeholder="Например, 50">
+      <input class="input" data-reason maxlength="200" placeholder="За что (необязательно)">
+      <button class="btn block" data-ok>${ic('check-circle')}Начислить</button></div>`, (el, close) => {
+    $('[data-ok]', el).onclick = async () => {
+      try {
+        const r = await api(`/admin/students/${uid}/bonus`, { xp: Number($('[data-xp]', el).value), reason: $('[data-reason]', el).value });
+        haptic('success'); toast(`Готово: теперь ${r.total} XP`); close(); viewStudent(uid).catch(fail);
+      } catch (e) { fail(e); }
+    };
+  });
   const rl = $('[data-relogin]');
   if (rl) rl.onclick = async () => {
     if (!(await confirmSheet('Выдать новый пароль?', 'Старый пароль перестанет работать. Бот пришлёт новый ученику в личку.', 'Выдать'))) return;

@@ -20,6 +20,7 @@ const T = {
   iParent: { ru: '👨‍👩‍👧 Я родитель', uz: '👨‍👩‍👧 Men ota-onaman', en: '👨‍👩‍👧 I am a parent' },
   parentHello: { ru: (n) => `👨‍👩‍👧 Здравствуйте, <b>${n}</b>!\n\nВ приложении вы увидите прогресс своего ребёнка и всех учеников курса, общую лигу и лигу группы. Откройте приложение и выберите своего ребёнка.`, uz: (n) => `👨‍👩‍👧 Assalomu alaykum, <b>${n}</b>!\n\nIlovada farzandingiz va kursning barcha o'quvchilari natijalarini, umumiy liga va guruh ligasini ko'rasiz. Ilovani oching va farzandingizni tanlang.`, en: (n) => `👨‍👩‍👧 Hello, <b>${n}</b>!\n\nIn the app you'll see your child's progress and that of every student in the course, the global league and the group league. Open the app and choose your child.` },
   siteLogin: { ru: (u, l, p) => `🌐 <b>Вход в Зубрик на сайте</b>\n\nТам твой же аккаунт: те же очки, тесты и лига.\n\n🔗 ${u}\n👤 Логин: <code>${l}</code>\n🔑 Пароль: <code>${p}</code>\n\nНикому не показывай пароль. Новый пароль — команда /site.`, uz: (u, l, p) => `🌐 <b>Zubrikka saytda kirish</b>\n\nU yerda sening o'sha akkaunting: o'sha ochkolar, testlar va liga.\n\n🔗 ${u}\n👤 Login: <code>${l}</code>\n🔑 Parol: <code>${p}</code>\n\nParolni hech kimga ko'rsatma. Yangi parol — /site buyrug'i.`, en: (u, l, p) => `🌐 <b>Sign in to Zubrik on the website</b>\n\nIt's your same account: the same points, tests and league.\n\n🔗 ${u}\n👤 Login: <code>${l}</code>\n🔑 Password: <code>${p}</code>\n\nDon't show your password to anyone. New password — the /site command.` },
+  bonus: { ru: (x, r) => `🎁 <b>Учитель начислил тебе ${x} XP!</b>${r ? '\n' + r : ''}\n\nТак держать! 💪`, uz: (x, r) => `🎁 <b>Ustoz senga ${x} XP berdi!</b>${r ? '\n' + r : ''}\n\nShunday davom et! 💪`, en: (x, r) => `🎁 <b>Your teacher gave you ${x} XP!</b>${r ? '\n' + r : ''}\n\nKeep it up! 💪` },
   remindTest: { ru: (t) => `\n\n🧩 Тест: <b>${t}</b>\nТы его ещё не сдал — заходи! ⏳`, uz: (t) => `\n\n🧩 Test: <b>${t}</b>\nSen uni hali topshirmading — kir! ⏳`, en: (t) => `\n\n🧩 Test: <b>${t}</b>\nYou haven't taken it yet — come in! ⏳` },
 };
 
@@ -98,6 +99,10 @@ export function createBot({ token, logic, store, appUrl, adminIds }) {
 
   // Логин и пароль для сайта — в личку ученику
   const siteUrl = () => (process.env.SITE_URL || appUrl).replace(/\/$/, '');
+  async function notifyBonus(b) {
+    if (!b || b.xp <= 0 || String(b.userId).startsWith('w')) return null;
+    return safeSend(b.userId, tt('bonus', langOf(b.userId), b.xp, esc(b.reason)), { reply_markup: privateKb(tt('open', langOf(b.userId))) });
+  }
   async function sendLogin(l) {
     if (!l?.password || String(l.userId).startsWith('w')) return null;
     return safeSend(l.userId, tt('siteLogin', langOf(l.userId), esc(siteUrl()), esc(l.login), esc(l.password)));
@@ -279,5 +284,5 @@ export function createBot({ token, logic, store, appUrl, adminIds }) {
     console.log(`[bot] @${bot.botInfo.username} готов`);
   }
 
-  return { bot, setup, notifyPublish, notifyPersonal, announce, tickReminders, onRoleChosen, sendLogin };
+  return { bot, setup, notifyPublish, notifyPersonal, announce, tickReminders, onRoleChosen, sendLogin, notifyBonus };
 }

@@ -647,10 +647,26 @@ export function createLogic(store, { adminIds }) {
   }
 
   // ───────── статистика ─────────
-  const totalXp = (uid) => countedAttempts(uid).reduce((s, a) => s + (a.xp || 0), 0) + learnXp(uid);
+  // Бонусы учителя считаются и в общей лиге, и в лиге группы
+  const bonusXp = (uid) => Object.values(S.bonuses || {}).filter((b) => b.userId === String(uid)).reduce((s, b) => s + b.xp, 0);
+  const totalXp = (uid) => countedAttempts(uid).reduce((s, a) => s + (a.xp || 0), 0) + learnXp(uid) + bonusXp(uid);
   function groupXp(uid, gid) {
     const pubIds = new Set(pubsForGroup(gid).map((p) => p.id));
-    return countedAttempts(uid).filter((a) => pubIds.has(a.pubId)).reduce((s, a) => s + (a.xp || 0), 0) + learnXp(uid, pubIds);
+    return countedAttempts(uid).filter((a) => pubIds.has(a.pubId)).reduce((s, a) => s + (a.xp || 0), 0) + learnXp(uid, pubIds) + bonusXp(uid);
+  }
+  // Начислить (или снять, если xp < 0) баллы вручную. id делает начисление однократным
+  function addBonus({ id, userId, xp, reason }) {
+    const u = S.users[String(userId)];
+    if (!u || isAdmin(u.id)) throw httpError(404, 'Ученик не найден');
+    xp = Math.trunc(Number(xp));
+    if (!xp || Math.abs(xp) > 1000) throw httpError(400, 'Баллы: целое число от -1000 до 1000');
+    S.bonuses ||= {};
+    const bid = id || store.nextId('b');
+    if (S.bonuses[bid]) return { bonus: S.bonuses[bid], already: true };
+    S.bonuses[bid] = { id: bid, userId: u.id, xp, reason: String(reason || '').slice(0, 200), at: Date.now() };
+    store.save();
+    log('bonus', { user: { id: u.id, name: name(u) }, xp, reason: S.bonuses[bid].reason, total: totalXp(u.id) });
+    return { bonus: S.bonuses[bid], already: false, total: totalXp(u.id) };
   }
 
   function pubStats(pubId) {
@@ -931,7 +947,7 @@ export function createLogic(store, { adminIds }) {
   }
 
   return {
-    S, isAdmin, isParent, duplicateXp, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
+    S, isAdmin, isParent, duplicateXp, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
     upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,

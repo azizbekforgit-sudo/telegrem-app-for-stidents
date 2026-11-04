@@ -56,6 +56,19 @@ for (const row of (process.env.SEED_ACCOUNTS || '').split(';').map((x) => x.trim
   if (logic.ensureAccount({ email, password, name })) console.log(`[accounts] ${email}`);
 }
 
+// Бонусные баллы из content/bonuses.json: [{ id, login | userId, xp, reason }]. Каждый id начисляется один раз
+const bonusFile = path.join(root, 'content', 'bonuses.json');
+if (fs.existsSync(bonusFile)) {
+  for (const b of JSON.parse(fs.readFileSync(bonusFile, 'utf8'))) {
+    const userId = b.userId || logic.S.accounts?.[String(b.login || '').trim().toLowerCase()]?.userId;
+    if (!userId) { console.error(`[bonus] не найден ученик: ${b.login || b.userId}`); continue; }
+    try {
+      const r = logic.addBonus({ id: 'content:' + b.id, userId, xp: b.xp, reason: b.reason });
+      if (r.already) console.log(`[bonus] уже начислено: ${b.id}`);
+    } catch (e) { console.error(`[bonus] ${b.id}: ${e.message}`); }
+  }
+}
+
 const tg = BOT_TOKEN && process.env.NO_BOT !== '1' ? createBot({ token: BOT_TOKEN, logic, store, appUrl: PUBLIC_URL + '/', adminIds: ADMIN_IDS }) : null;
 
 const app = express();
@@ -169,6 +182,11 @@ adm.post('/logins', h(async () => {
   const list = logic.issueLoginsAll();
   for (const l of list) l.sent = Boolean(await tg?.sendLogin(l));
   return list;
+}));
+adm.post('/students/:uid/bonus', h(async (req) => {
+  const r = logic.addBonus({ userId: req.params.uid, xp: req.body?.xp, reason: req.body?.reason });
+  await tg?.notifyBonus(r.bonus);
+  return r;
 }));
 adm.post('/students/:uid/login', h(async (req) => {
   const l = logic.issueLogin(req.params.uid, { reset: true });

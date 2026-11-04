@@ -16,6 +16,7 @@ export function emptyState() {
     learn: {},      // `${userId}:${pubId}` -> { answers, startedAt, doneAt, correct, total } — прохождение обучалки
     accounts: {},   // email -> { userId, salt, hash } — вход на сайте без Telegram
     sessions: {},   // sha256(токена) -> { userId, createdAt }
+    bonuses: {},    // id -> { id, userId, xp, reason, at } — баллы, которые учитель начислил вручную
     seq: 1,
   };
 }
