@@ -15,6 +15,9 @@ export const MASCOTS = {
   boo: { name: 'Бу', about: 'Призрак в капюшоне. Звонит спросить: «Ну что, решил тест?»', color: '#3b3644' },
   ano: { name: 'Ано', about: 'Хакер в маске. Взламывает любые задачи — честно', color: '#2b2a33' },
   zip: { name: 'Зип', about: 'Супербыстрый. Решает тесты быстрее молнии', color: '#e8322f' },
+  fox: { name: 'Рыжик', about: 'Хитрый лис в галстуке. Находит подвох в любом вопросе', color: '#f07b2a' },
+  hog: { name: 'Шустрик', about: 'Быстрый ёжик. Решает на ходу и не ждёт никого', color: '#1bb5a2' },
+  bik: { name: 'Газик', about: 'Бородатый гонщик. Берёт любую горку — и любую задачу', color: '#2fae5e' },
   ugo: { name: 'Уголёк', about: 'Чёрный котик. Замечает ошибки даже в темноте', color: '#ff9a1f' },
 };
 
@@ -360,7 +363,59 @@ BODIES.ugo = function ugo(id) {
   return { pal: { blush: '#ff6f8f', tongue: '#ff6f8f' }, back: tail + ears + feet, body: body + `<ellipse cx="68" cy="60" rx="14" ry="6" transform="rotate(-25 68 60)" fill="#fff" opacity=".22"/>`, nose, f, a, fill: '#1d1c22', st, b: { cx: 100, top: 28 } };
 };
 
-const GRAD = { mimi: ['#ffffff', '#f3e6ef'], kapi: ['#e6aa74', '#c07b48'], dino: ['#8ff0b4', '#45c27b'], axi: ['#ffd6e6', '#ff9cc4'], boo: ['#56505f', '#17141c'], ano: ['#4a4952', '#141319'], zip: ['#ff6b5e', '#c41e1e'], ugo: ['#3a3842', '#0a0a0d'] };
+BODIES.fox = function fox(id) {
+  const st = '#c25512';
+  const fill = `url(#${id}b)`;
+  const tail = `<path d="M150 152 C192 152 200 112 184 82 C178 108 162 118 146 122 Z" fill="#f07b2a" stroke="${st}" stroke-width="3" stroke-linejoin="round"/><path d="M184 82 C174 98 178 108 190 102 C197 94 191 86 184 84Z" fill="#fff" stroke="#e6dccf" stroke-width="2"/>`;
+  const ears = `<path d="M52 72 C46 42 52 20 60 16 C72 22 88 44 92 60 Z" fill="${fill}" stroke="${st}" stroke-width="3" stroke-linejoin="round"/><path d="M148 72 C154 42 148 20 140 16 C128 22 112 44 108 60 Z" fill="${fill}" stroke="${st}" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M59 62 C56 46 59 33 63 30 C71 35 80 47 84 58 Z" fill="#5b2a17"/><path d="M141 62 C144 46 141 33 137 30 C129 35 120 47 116 58 Z" fill="#5b2a17"/>`;
+  const body = `<path d="M100 46 C150 46 172 74 172 112 C172 156 146 178 100 178 C54 178 28 156 28 112 C28 74 50 46 100 46Z" fill="${fill}" stroke="${st}" stroke-width="3"/>`;
+  const muzzle = `<path d="M100 102 C124 102 140 111 140 124 C140 137 122 144 100 144 C78 144 60 137 60 124 C60 111 76 102 100 102Z" fill="#fff1dc"/>`;
+  const shirt = `<path d="M42 152 C62 144 82 147 100 152 C118 147 138 144 158 152 C162 166 142 178 100 178 C58 178 38 166 42 152Z" fill="#a7d957" stroke="#7fae30" stroke-width="2.4" stroke-linejoin="round"/>
+    <path d="M100 152 L83 146 L89 162Z" fill="#c5eb7e" stroke="#7fae30" stroke-width="2"/><path d="M100 152 L117 146 L111 162Z" fill="#c5eb7e" stroke="#7fae30" stroke-width="2"/>
+    <path d="M100 152 L94 158 L97 176 L100 180 L103 176 L106 158Z" fill="#4b3f9e"/><path d="M96 162 L104 160 M96.6 168 L103.4 166 M97 174 L103 172" stroke="#b6acff" stroke-width="2"/>`;
+  const nose = `<path d="M93 109 Q100 104 107 109 Q104 118 100 119 Q96 118 93 109Z" fill="#2b1b17"/>`;
+  const f = { x: 100, y: 96, ex: 25, ey: 90, my: 129, s: 0.85, blurId: id + 'k', idleEyes: 'slit', idleMouth: 'grin' };
+  const a = { l: [38, 156], r: [162, 156], chin: [86, 152] };
+  return { pal: { blush: '#ff9a7a', tongue: '#ff8aa8' }, back: tail + ears, body: body + shine(68, 66, 17, 9) + muzzle + shirt, nose, f, a, fill: '#ff9a4d', st, b: { cx: 100, top: 22 } };
+};
+
+BODIES.hog = function hog(id) {
+  const st = '#0f8579';
+  const fill = `url(#${id}b)`;
+  const quills = [-178, -152, -126, -100, -74, -48, -22, 4, 28, 152, 178].map((deg) => {
+    const r = (d) => (d * Math.PI) / 180;
+    const pt = (rad, d) => `${(100 + rad * Math.cos(r(d))).toFixed(1)} ${(104 + rad * Math.sin(r(d))).toFixed(1)}`;
+    return `<path d="M${pt(66, deg - 13)} L${pt(106, deg)} L${pt(66, deg + 13)}Z" fill="#12968a" stroke="${st}" stroke-width="2.6" stroke-linejoin="round"/>`;
+  }).join('');
+  const ears = `<circle cx="62" cy="52" r="13" fill="${fill}" stroke="${st}" stroke-width="3"/><circle cx="138" cy="52" r="13" fill="${fill}" stroke="${st}" stroke-width="3"/><circle cx="62" cy="53" r="6.5" fill="#ffd9c2"/><circle cx="138" cy="53" r="6.5" fill="#ffd9c2"/>`;
+  const body = `<path d="M100 42 C146 42 166 72 166 110 C166 154 140 178 100 178 C60 178 34 154 34 110 C34 72 54 42 100 42Z" fill="${fill}" stroke="${st}" stroke-width="3"/>`;
+  const patch = `<path d="M100 88 C126 84 152 96 152 120 C152 146 128 162 100 162 C72 162 48 146 48 120 C48 96 74 84 100 88Z" fill="#ffe9c9"/>`;
+  const band = `<path d="M40 80 Q100 60 160 80 L157 91 Q100 73 43 91Z" fill="#ffd23d" stroke="#e8a000" stroke-width="2.4" stroke-linejoin="round"/><path transform="translate(100 74)" d="M2 -9 L-5 2 L-1 2 L-3 9 L5 -3 L1 -3 L4 -9Z" fill="#fff"/>`;
+  const nose = `<ellipse cx="100" cy="121" rx="6.5" ry="4.8" fill="#2b2b33"/><circle cx="98" cy="119.5" r="1.4" fill="#fff" opacity=".8"/>`;
+  const feet = `<ellipse cx="72" cy="180" rx="21" ry="11" fill="#ffd23d" stroke="#e8a000" stroke-width="3"/><rect x="62" y="170" width="20" height="5" rx="2.5" fill="#fff"/><ellipse cx="128" cy="180" rx="21" ry="11" fill="#ffd23d" stroke="#e8a000" stroke-width="3"/><rect x="118" y="170" width="20" height="5" rx="2.5" fill="#fff"/>`;
+  const f = { x: 100, y: 108, ex: 25, ey: 106, my: 138, s: 0.9, blurId: id + 'k' };
+  const a = { l: [40, 152], r: [160, 152], chin: [86, 150] };
+  return { pal: { blush: '#ff9cae', tongue: '#ff8aa8' }, back: quills + ears + feet, body: body + shine(66, 62, 16, 8) + patch, top: band, nose, f, a, fill: '#9ff3e6', st, b: { cx: 100, top: 26 } };
+};
+
+BODIES.bik = function bik(id) {
+  const st = '#c25512';
+  const fill = `url(#${id}b)`;
+  const tires = `<ellipse cx="68" cy="178" rx="20" ry="12" fill="#2a2a30" stroke="#111" stroke-width="3"/><ellipse cx="68" cy="178" rx="7" ry="4.5" fill="#9aa0aa"/><ellipse cx="132" cy="178" rx="20" ry="12" fill="#2a2a30" stroke="#111" stroke-width="3"/><ellipse cx="132" cy="178" rx="7" ry="4.5" fill="#9aa0aa"/>`;
+  const body = `<path d="M100 50 C150 50 172 76 172 114 C172 156 146 178 100 178 C54 178 28 156 28 114 C28 76 50 50 100 50Z" fill="${fill}" stroke="${st}" stroke-width="3"/><path d="M44 152 Q100 174 156 152" stroke="#fff" stroke-width="6" fill="none" opacity=".6" stroke-linecap="round"/>`;
+  const head = `<ellipse cx="100" cy="98" rx="54" ry="46" fill="#ffd2ae" stroke="#e6a77c" stroke-width="3"/>`;
+  const beard = `<path d="M48 104 C50 142 74 158 100 158 C126 158 150 142 152 104 C144 120 128 124 100 124 C72 124 56 120 48 104Z" fill="#7a4a2b" stroke="#5e3920" stroke-width="2.4" stroke-linejoin="round"/>`;
+  const stache = `<path d="M78 119 C88 112 96 118 100 120 C104 118 112 112 122 119 C114 128 104 125 100 124 C96 125 86 128 78 119Z" fill="#7a4a2b" stroke="#5e3920" stroke-width="2" stroke-linejoin="round"/>`;
+  const cap = `<path d="M46 84 C48 44 152 44 154 84 C132 73 68 73 46 84Z" fill="#2fae5e" stroke="#1d8444" stroke-width="3" stroke-linejoin="round"/><circle cx="100" cy="52" r="4.5" fill="#1d8444"/>
+    <path d="M58 82 C80 90 120 90 142 82 C148 90 132 96 100 96 C68 96 52 90 58 82Z" fill="#1d8444"/>`;
+  const nose = `<ellipse cx="100" cy="114" rx="8" ry="6" fill="#f0a384"/>`;
+  const f = { x: 100, y: 106, ex: 24, ey: 109, my: 138, s: 0.85, blurId: id + 'k', idleMouth: 'smile' };
+  const a = { l: [38, 154], r: [162, 154], chin: [86, 152] };
+  return { pal: { blush: '#ff9c8a', tongue: '#ff8aa8' }, back: tires, body: body + head + beard + stache, top: cap, nose, f, a, fill: '#ffc07a', st, b: { cx: 100, top: 40 } };
+};
+
+const GRAD = { mimi: ['#ffffff', '#f3e6ef'], kapi: ['#e6aa74', '#c07b48'], dino: ['#8ff0b4', '#45c27b'], axi: ['#ffd6e6', '#ff9cc4'], boo: ['#56505f', '#17141c'], ano: ['#4a4952', '#141319'], zip: ['#ff6b5e', '#c41e1e'], ugo: ['#3a3842', '#0a0a0d'], fox: ['#ffa458', '#e8661a'], hog: ['#7ff0e0', '#14a896'], bik: ['#ffb35c', '#e8761a'] };
 
 export function mascot(id = 'mimi', emo = 'happy', size = 120, cls = '', crop = false) {
   if (!BODIES[id]) id = 'mimi';

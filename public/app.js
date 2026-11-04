@@ -3,6 +3,7 @@
 import { ICONS } from './icons.js';
 import { mascot, MASCOTS } from './mascots.js';
 import { LANGS, setLang, tr, detectLang, getLang } from './i18n.js';
+import { INFO, STAT_KEYS, FIELDS } from './mascot-info.js';
 const LOCALE = () => ({ ru: 'ru-RU', en: 'en-US' })[getLang()] || 'ru-RU';
 const UZ_MONTHS = ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentabr', 'oktabr', 'noyabr', 'dekabr'];
 // Дата на языке интерфейса (для узбекского у браузеров нет названий месяцев — делаем сами)
@@ -662,23 +663,91 @@ function colorPicker(start, onPick) {
 
 // Выбор напарника, цвета и темы (первый вход, профиль, настройки учителя)
 function appearanceHtml() {
-  return `<div class="field"><span>Напарник</span><div class="mascot-pick">${Object.entries(MASCOTS).map(([id, m]) => `<button data-mascot="${id}" class="${LOOK.mascot === id ? 'on' : ''}">${mascot(id, LOOK.mascot === id ? 'peace' : 'happy', 84, 'still')}<b>${m.name}</b></button>`).join('')}</div>
-      <p class="mascot-about" data-about>${esc(MASCOTS[LOOK.mascot]?.about || '')}</p></div>
+  return `<div class="field"><span>Напарник</span><div class="mascot-cur" data-curm data-noi18n>${curMascotInner()}</div>
+      <button class="btn ghost block" data-pickm style="margin-top:10px">${ic('refresh')}Выбрать другого напарника</button></div>
     <div class="field" style="margin-top:18px"><span>Цвет приложения</span><div class="swatches">${ACCENTS.map(([id, name, c]) => `<button class="swatch ${LOOK.accent === id ? 'on' : ''}" data-accent="${id}" title="${name}" style="background:${c};color:${c}">${ic('check-circle')}</button>`).join('')}<button class="swatch rainbow ${HEX_RE.test(LOOK.accent) ? 'on' : ''}" data-custom title="Свой цвет" style="color:${HEX_RE.test(LOOK.accent) ? LOOK.accent : '#ff4d8d'}"><i style="background:${HEX_RE.test(LOOK.accent) ? LOOK.accent : 'transparent'}"></i></button></div></div>
     <div class="field" style="margin-top:18px"><span>Тема</span><div class="seg">${[['auto', 'monitor', 'Авто'], ['light', 'sun-2', 'Светлая'], ['dark', 'moon', 'Тёмная']].map(([id, icon, t]) => `<button data-mode="${id}" class="${LOOK.mode === id ? 'on' : ''}">${ic(icon, 'sm')}${t}</button>`).join('')}</div></div>
     <div class="field" style="margin-top:18px"><span>Язык</span><div class="seg" data-noi18n>${LANGS.map(([id, t]) => `<button data-lang="${id}" class="${LOOK.lang === id ? 'on' : ''}">${t}</button>`).join('')}</div></div>`;
 }
+function curMascotInner() {
+  const id = MASCOTS[LOOK.mascot] ? LOOK.mascot : 'mimi';
+  return `${mascot(id, 'cheer', 96)}<div class="grow"><b>${esc(tr(MASCOTS[id].name))}</b><span>${esc(tr(MASCOTS[id].about))}</span></div>`;
+}
+
+// Досье маскота: характеристики-полоски и факты (текст на языке пользователя)
+function dossierHtml(id) {
+  const info = INFO[id];
+  if (!info) return '';
+  const txt = info[getLang()] || info.ru;
+  return `<div class="mp-card" data-noi18n>
+    <div class="mp-title"><b>${esc(tr(MASCOTS[id].name))}</b><span>${esc(tr(MASCOTS[id].about))}</span></div>
+    <div class="stats5">${STAT_KEYS.map((k, i) => `<div><span>${esc(tr(k))}</span><div class="bar5">${[1, 2, 3, 4, 5].map((n) => `<i class="${n <= info.s[i] ? 'on' : ''}" style="--d:${n * 70 + i * 40}ms"></i>`).join('')}</div></div>`).join('')}</div>
+    <div class="facts">${FIELDS.map(([icon, label], i) => `<div class="fact"><em>${icon}</em><div><small>${esc(tr(label))}</small><p>${esc(txt[i])}</p></div></div>`).join('')}</div></div>`;
+}
+
+// Выбор напарника: список, который листают вверх и вниз. Выбранный «оживает», сверху — досье
+function mascotPicker(current, onPick) {
+  const ids = Object.keys(MASCOTS);
+  const H = 170;
+  let active = ids.includes(current) ? current : ids[0];
+  openSheet(`<div class="mp" data-noi18n><div class="center"><h2>${esc(tr('Выбери напарника'))}</h2><p class="muted small">${esc(tr('Листай вверх или вниз'))}</p></div>
+      <div class="mp-wrap"><span class="mp-arrow up">${ic('alt-arrow-left')}</span><div class="mp-list" data-list>${ids.map((id) => `<div class="mp-item" data-id="${id}"></div>`).join('')}</div><span class="mp-arrow down">${ic('alt-arrow-left')}</span></div>
+      <div class="mp-dots" data-dots>${ids.map((id) => `<i data-d="${id}"></i>`).join('')}</div>
+      <div data-dossier></div>
+      <div class="mp-foot"><button class="btn block" data-choose></button></div></div>`, (el, close) => {
+    const list = $('[data-list]', el);
+    const items = $$('.mp-item', el);
+    const draw = (id, on) => { const it = items[ids.indexOf(id)]; it.innerHTML = mascot(id, on ? 'cheer' : 'happy', 140, on ? '' : 'still'); };
+    const show = () => {
+      $$('[data-d]', el).forEach((d) => d.classList.toggle('on', d.dataset.d === active));
+      $('[data-dossier]', el).innerHTML = dossierHtml(active);
+      const b = $('[data-choose]', el);
+      b.textContent = `${tr('Выбрать')}: ${tr(MASCOTS[active].name)}`;
+    };
+    ids.forEach((id) => draw(id, id === active));
+    show();
+    const place = () => {
+      const pad = (list.clientHeight - H) / 2;
+      const center = list.scrollTop + list.clientHeight / 2;
+      items.forEach((it, i) => {
+        const d = (pad + i * H + H / 2 - center) / H;
+        const t = Math.min(1, Math.abs(d));
+        it.style.transform = `perspective(700px) rotateX(${(-d * 42).toFixed(1)}deg) scale(${(1 - 0.4 * t).toFixed(3)})`;
+        it.style.opacity = (1 - 0.7 * t).toFixed(3);
+      });
+      const n = Math.max(0, Math.min(ids.length - 1, Math.round(list.scrollTop / H)));
+      if (ids[n] !== active) {
+        draw(active, false);
+        active = ids[n];
+        draw(active, true);
+        haptic('light');
+        show();
+      }
+    };
+    let raf = 0;
+    list.addEventListener('scroll', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(place); });
+    items.forEach((it, i) => (it.onclick = () => list.scrollTo({ top: i * H, behavior: 'smooth' })));
+    // мышью на компьютере: тянем список
+    let drag = null;
+    list.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') return; drag = { y: e.clientY, top: list.scrollTop }; list.style.scrollSnapType = 'none'; list.setPointerCapture(e.pointerId); });
+    list.addEventListener('pointermove', (e) => { if (drag) list.scrollTop = drag.top - (e.clientY - drag.y); });
+    const end = () => { if (!drag) return; drag = null; list.style.scrollSnapType = ''; list.scrollTo({ top: Math.round(list.scrollTop / H) * H, behavior: 'smooth' }); };
+    list.addEventListener('pointerup', end);
+    list.addEventListener('pointercancel', end);
+    list.scrollTop = ids.indexOf(active) * H;
+    requestAnimationFrame(() => { list.scrollTop = ids.indexOf(active) * H; place(); });
+    $('[data-choose]', el).onclick = () => { onPick(active); close(); };
+  });
+}
+
 function bindAppearance(el, onChange) {
-  $$('[data-mascot]', el).forEach((b) => (b.onclick = () => {
-    haptic('medium');
-    savePrefs({ mascot: b.dataset.mascot });
-    $$('[data-mascot]', el).forEach((x) => {
-      x.classList.toggle('on', x === b);
-      x.querySelector('svg').outerHTML = mascot(x.dataset.mascot, x === b ? 'cheer' : 'happy', 84, x === b ? '' : 'still');
-    });
-    $('[data-about]', el).textContent = MASCOTS[b.dataset.mascot].about;
+  const pk = $('[data-pickm]', el);
+  if (pk) pk.onclick = () => mascotPicker(LOOK.mascot, (id) => {
+    haptic('success');
+    savePrefs({ mascot: id });
+    $('[data-curm]', el).innerHTML = curMascotInner();
     onChange?.();
-  }));
+  });
   const sw = $$('[data-accent], [data-custom]', el);
   $$('[data-accent]', el).forEach((b) => (b.onclick = () => { haptic('light'); savePrefs({ accent: b.dataset.accent }); sw.forEach((x) => x.classList.toggle('on', x === b)); onChange?.(); }));
   const cb = $('[data-custom]', el);
