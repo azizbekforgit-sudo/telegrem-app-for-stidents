@@ -1,0 +1,278 @@
+{
+  "title": "23-dars. Git va GitHub",
+  "description": "init, add, commit, push, shoxlar va GitHub ga ulash",
+  "learn": {
+    "intro": "Salom! 23-dars — **Git va GitHub**. Word dagi kurs ishini tasavvur qil: «kurs_final_v2_TUZATILDI» kabi 20 ta versiya. Git tarixni saqlaydi va tartibsizlikka yo'l qo'ymaydi. Ketdik!",
+    "sections": [
+      {
+        "title": "Git va GitHub",
+        "slides": [
+          {
+            "emoji": "🌿",
+            "text": "**Git** — kompyuteringdagi dastur, u o'zgarishlar tarixini yuritadi. **GitHub** — loyihalar internetda saqlanadigan sayt."
+          },
+          {
+            "quote": true,
+            "text": "Git — dastur, GitHub — natija joylanadigan joy."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Git va GitHub",
+            "prompt": "GitHub nima?",
+            "options": [
+              "Loyihalar saqlanadigan sayt",
+              "Kompyuterdagi tarix dasturi",
+              "Dasturlash tili",
+              "Brauzer"
+            ],
+            "answer": 0,
+            "explain": "GitHub — sayt, Git — dastur."
+          }
+        ]
+      },
+      {
+        "title": "Asosiy buyruqlar",
+        "slides": [
+          {
+            "emoji": "📦",
+            "text": "`git init` — papkada arxiv yaratamiz.\n`git add .` — narsalarni posilkaga joylaymiz.\n`git commit -m \"xabar\"` — posilkani tavsif bilan muhrlaymiz.\n`git push` — posilkani GitHub ga yuboramiz."
+          },
+          {
+            "quote": true,
+            "text": "Mazmunli xabarlar yoz: «obuna formasini qo'shdim». `fix` yoki `123` yozma."
+          }
+        ],
+        "check": [
+          {
+            "type": "match",
+            "topic": "Buyruqlar",
+            "prompt": "Buyruq va o'xshatishni moslashtir",
+            "pairs": [
+              [
+                "git add .",
+                "Narsalarni posilkaga joylaymiz"
+              ],
+              [
+                "git commit",
+                "Posilkani muhrlaymiz"
+              ],
+              [
+                "git push",
+                "Posilkani yuboramiz"
+              ],
+              [
+                "git init",
+                "Arxiv yaratamiz"
+              ]
+            ]
+          },
+          {
+            "type": "choice",
+            "topic": "Buyruqlar",
+            "prompt": "Qaysi commit xabari yaxshi?",
+            "options": [
+              "obuna formasini qo'shdim",
+              "fix",
+              "123",
+              "asdf"
+            ],
+            "answer": 0,
+            "explain": "Xabar nima o'zgarganini tushuntirishi kerak."
+          }
+        ]
+      },
+      {
+        "title": "Shoxlar va GitHub",
+        "slides": [
+          {
+            "emoji": "🌱",
+            "text": "Shox — asosiy loyihani buzmaslik uchun loyihaning parallel versiyasi:",
+            "code": "git branch новая-ветка\ngit checkout -b новая-ветка"
+          },
+          {
+            "text": "GitHub ga ulash:",
+            "code": "git remote add origin ссылка-на-репозиторий\ngit push -u origin main"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Shoxlar",
+            "prompt": "Shox nima uchun kerak?",
+            "options": [
+              "Asosiy versiyani buzmaslik uchun",
+              "Loyihani o'chirish uchun",
+              "Rangni o'zgartirish uchun",
+              "Shoxlar kerak emas"
+            ],
+            "answer": 0,
+            "explain": "Shox — tajribalar uchun parallel versiya."
+          }
+        ]
+      },
+      {
+        "title": "Amaliyot va uy vazifasi",
+        "slides": [
+          {
+            "emoji": "🚀",
+            "text": "Amaliyot: GitHub da akkaunt yarat, repozitoriy yarat va oldingi darslarda yig'ilgan lendingni u yerga yukla."
+          },
+          {
+            "quote": true,
+            "text": "Uy vazifasi: mazmunli xabarli 3 ta alohida commit qil: «ranglarni to'g'riladim», «seksiya qo'shdim», «moslashuvchanlikni to'g'riladim»."
+          }
+        ],
+        "check": [
+          {
+            "type": "input",
+            "topic": "Amaliyot",
+            "prompt": "Qaysi buyruq commitlarni GitHub ga yuboradi? (git va so'z)",
+            "answer": [
+              "git push"
+            ],
+            "explain": "git push — GitHub ga yuborish."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "truefalse",
+      "topic": "Git va GitHub",
+      "prompt": "Git — kompyuterdagi dastur, GitHub — loyihalarni saqlash sayti.",
+      "answer": true,
+      "explain": "Bular har xil narsalar."
+    },
+    {
+      "type": "choice",
+      "topic": "Git va GitHub",
+      "prompt": "Git nima qiladi?",
+      "options": [
+        "O'zgarishlar tarixini yuritadi",
+        "Saytni bo'yaydi",
+        "O'yinlarni ishga tushiradi",
+        "Rasm chizadi"
+      ],
+      "answer": 0,
+      "explain": "Git loyiha versiyalarini saqlaydi."
+    },
+    {
+      "type": "choice",
+      "topic": "Buyruqlar",
+      "prompt": "Qaysi buyruq papkada tarix ombori yaratadi?",
+      "options": [
+        "git init",
+        "git add .",
+        "git push",
+        "git commit"
+      ],
+      "answer": 0,
+      "explain": "git init — arxiv yaratish."
+    },
+    {
+      "type": "choice",
+      "topic": "Buyruqlar",
+      "prompt": "Qaysi buyruq saqlash uchun o'zgarishlarni tanlaydi?",
+      "options": [
+        "git add .",
+        "git init",
+        "git push",
+        "git branch"
+      ],
+      "answer": 0,
+      "explain": "git add — posilkaga joylash."
+    },
+    {
+      "type": "order",
+      "topic": "Buyruqlar",
+      "prompt": "Buyruqlarni ish tartibida joylashtir",
+      "tokens": [
+        "git add .",
+        "git commit -m \"msg\"",
+        "git push"
+      ],
+      "extra": [
+        "git init2"
+      ],
+      "explain": "Avval add, keyin commit, keyin push."
+    },
+    {
+      "type": "choice",
+      "topic": "Buyruqlar",
+      "prompt": "git commit -m \"xabar\" nima qiladi?",
+      "options": [
+        "Imzoli snimokni saqlaydi",
+        "Loyihani o'chiradi",
+        "Saytni yuklab oladi",
+        "Brauzerni ochadi"
+      ],
+      "answer": 0,
+      "explain": "Commit — saqlangan versiya."
+    },
+    {
+      "type": "choice",
+      "topic": "Buyruqlar",
+      "prompt": "Qaysi commit xabari yaxshiroq?",
+      "options": [
+        "sharhlar seksiyasini qo'shdim",
+        "fix",
+        "123",
+        "aaa"
+      ],
+      "answer": 0,
+      "explain": "Nima o'zgargani tushunarli."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Buyruqlar",
+      "prompt": "«fix» va «123» kabi xabarlar — yaxshi amaliyot.",
+      "answer": false,
+      "explain": "Ular hech narsani tushuntirmaydi."
+    },
+    {
+      "type": "choice",
+      "topic": "Shoxlar",
+      "prompt": "Qaysi buyruq shox yaratadi va unga o'tadi?",
+      "options": [
+        "git checkout -b имя",
+        "git init имя",
+        "git push имя",
+        "git add имя"
+      ],
+      "answer": 0,
+      "explain": "checkout -b — yaratish va o'tish."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Shoxlar",
+      "prompt": "Shox — asosiy loyihani buzmaslik uchun parallel versiya.",
+      "answer": true,
+      "explain": "Xavfsiz tajriba o'tkazish mumkin."
+    },
+    {
+      "type": "input",
+      "topic": "Amaliyot",
+      "prompt": "Qaysi buyruq commitlarni GitHub ga yuboradi?",
+      "answer": [
+        "git push"
+      ],
+      "explain": "git push GitHub ga yuboradi."
+    },
+    {
+      "type": "choice",
+      "topic": "Amaliyot",
+      "prompt": "Uy vazifasida nima qilish kerak?",
+      "options": [
+        "Mazmunli xabarli 3 ta commit",
+        "Repozitoriyni o'chirish",
+        "O'yin yozish",
+        "Hech narsa"
+      ],
+      "answer": 0,
+      "explain": "Commitlar orasida kichik o'zgarishlar kirit."
+    }
+  ]
+}

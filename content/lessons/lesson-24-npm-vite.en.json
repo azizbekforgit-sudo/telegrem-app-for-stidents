@@ -1,0 +1,280 @@
+{
+  "title": "Lesson 24. npm, bundlers (Vite), modules",
+  "description": "npm, Vite, package.json, npm install, npm run dev, import and export",
+  "learn": {
+    "intro": "Hi! Lesson 24 — **npm, Vite and modules**. Real projects have hundreds of files, and they must be assembled into a ready site. Let's go!",
+    "sections": [
+      {
+        "title": "What npm is",
+        "slides": [
+          {
+            "emoji": "🛒",
+            "text": "**npm** is a store of ready pieces of code, libraries. Why sew clothes from scratch if you can buy them?"
+          },
+          {
+            "text": "Checking the install in the terminal:",
+            "code": "node -v\nnpm -v"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "npm",
+            "prompt": "What is npm?",
+            "options": [
+              "A store of ready libraries",
+              "A browser",
+              "A programming language",
+              "A game"
+            ],
+            "answer": 0,
+            "explain": "npm is a package manager."
+          }
+        ]
+      },
+      {
+        "title": "A Vite project",
+        "slides": [
+          {
+            "emoji": "⚡",
+            "text": "We create a project:",
+            "code": "npm create vite@latest"
+          },
+          {
+            "text": "Folders and files appear: `src`, `index.html`, `package.json`. `package.json` is the **project passport**: which libraries are used and how to start the project."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "package.json",
+            "prompt": "What is package.json?",
+            "options": [
+              "The project passport",
+              "A picture",
+              "A page style",
+              "A browser"
+            ],
+            "answer": 0,
+            "explain": "It lists libraries and run commands."
+          }
+        ]
+      },
+      {
+        "title": "Installing and running",
+        "slides": [
+          {
+            "emoji": "▶️",
+            "text": "We install and run:",
+            "code": "npm install     # install all libraries from package.json\nnpm run dev     # start a local server"
+          },
+          {
+            "quote": true,
+            "text": "When you change code the page updates itself, no F5. It is called **hot reload**."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Running",
+            "prompt": "Which command starts the local server?",
+            "options": [
+              "npm run dev",
+              "npm install",
+              "npm create",
+              "npm stop"
+            ],
+            "answer": 0,
+            "explain": "npm run dev starts the dev server."
+          },
+          {
+            "type": "input",
+            "topic": "Running",
+            "prompt": "What is the automatic page update on code change called? (two parts)",
+            "answer": [
+              "hot reload",
+              "hotreload"
+            ],
+            "explain": "Hot reload — the page refreshes itself."
+          }
+        ]
+      },
+      {
+        "title": "Modules: import and export",
+        "slides": [
+          {
+            "emoji": "🪟",
+            "text": "The `utils.js` file puts a function on the «shop window»:",
+            "code": "export function sum(a, b) {\n  return a + b;\n}"
+          },
+          {
+            "text": "The `main.js` file takes it from the window:",
+            "code": "import { sum } from \"./utils.js\";\nconsole.log(sum(2, 3)); // 5"
+          },
+          {
+            "quote": true,
+            "text": "Practice: recreate the landing with Vite and split the JS into two files with `import` and `export`. Homework: push the project to GitHub as a new commit."
+          }
+        ],
+        "check": [
+          {
+            "type": "match",
+            "topic": "Modules",
+            "prompt": "Match the word and meaning",
+            "pairs": [
+              [
+                "export",
+                "Put on the window"
+              ],
+              [
+                "import",
+                "Take from the window"
+              ]
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "truefalse",
+      "topic": "npm",
+      "prompt": "npm is a store of ready code libraries.",
+      "answer": true,
+      "explain": "You can take ready code instead of writing from scratch."
+    },
+    {
+      "type": "choice",
+      "topic": "npm",
+      "prompt": "What do the commands node -v and npm -v check?",
+      "options": [
+        "That Node and npm are installed",
+        "Internet speed",
+        "The site color",
+        "Battery charge"
+      ],
+      "answer": 0,
+      "explain": "The commands show versions."
+    },
+    {
+      "type": "choice",
+      "topic": "Vite",
+      "prompt": "Which command creates a Vite project?",
+      "options": [
+        "npm create vite@latest",
+        "npm run vite",
+        "vite new",
+        "npm start vite"
+      ],
+      "answer": 0,
+      "explain": "npm create vite@latest."
+    },
+    {
+      "type": "choice",
+      "topic": "package.json",
+      "prompt": "What is stored in package.json?",
+      "options": [
+        "Which libraries are used and how to run the project",
+        "Photos",
+        "All site passwords",
+        "Music"
+      ],
+      "answer": 0,
+      "explain": "It is the project passport."
+    },
+    {
+      "type": "choice",
+      "topic": "Running",
+      "prompt": "What does npm install do?",
+      "options": [
+        "Installs all libraries from package.json",
+        "Starts the server",
+        "Deletes the project",
+        "Opens the browser"
+      ],
+      "answer": 0,
+      "explain": "First install, then dev."
+    },
+    {
+      "type": "order",
+      "topic": "Running",
+      "prompt": "Put the project start steps in order",
+      "tokens": [
+        "npm create vite@latest",
+        "npm install",
+        "npm run dev"
+      ],
+      "extra": [
+        "npm destroy"
+      ],
+      "explain": "Create → install → run."
+    },
+    {
+      "type": "choice",
+      "topic": "Running",
+      "prompt": "What is hot reload?",
+      "options": [
+        "The page updates itself when code changes",
+        "The site restarts the computer",
+        "Deleting the cache",
+        "A new browser"
+      ],
+      "answer": 0,
+      "explain": "No need to press F5."
+    },
+    {
+      "type": "choice",
+      "topic": "Modules",
+      "prompt": "What does export do?",
+      "options": [
+        "Puts a function «on the window» for other files",
+        "Deletes a file",
+        "Starts the server",
+        "Colors the page"
+      ],
+      "answer": 0,
+      "explain": "export puts it out."
+    },
+    {
+      "type": "choice",
+      "topic": "Modules",
+      "prompt": "What does main.js print?",
+      "code": "// utils.js\nexport function sum(a, b) {\n  return a + b;\n}\n\n// main.js\nimport { sum } from \"./utils.js\";\nconsole.log(sum(2, 3));",
+      "options": [
+        "5",
+        "\"2 + 3\"",
+        "undefined",
+        "An error"
+      ],
+      "answer": 0,
+      "explain": "sum(2, 3) equals 5."
+    },
+    {
+      "type": "match",
+      "topic": "Modules",
+      "prompt": "Match the command and the action",
+      "pairs": [
+        [
+          "npm install",
+          "Install libraries"
+        ],
+        [
+          "npm run dev",
+          "Start the server"
+        ],
+        [
+          "npm create vite@latest",
+          "Create a project"
+        ]
+      ]
+    },
+    {
+      "type": "truefalse",
+      "topic": "Modules",
+      "prompt": "import takes a function that was put out with export.",
+      "answer": true,
+      "explain": "Like from the shop window."
+    }
+  ]
+}

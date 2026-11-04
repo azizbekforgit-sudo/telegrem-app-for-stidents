@@ -1,0 +1,298 @@
+{
+  "title": "11-dars. Formalar va psevdoklasslar",
+  "description": "Forma teglari, label, :hover, :focus, :nth-child",
+  "learn": {
+    "intro": "Salom! 11-dars — **formalar va psevdoklasslar**. Login, qidiruv, izoh — bularning hammasi forma. Ularni JavaScript'siz interaktiv qilamiz. Ketdik!",
+    "sections": [
+      {
+        "title": "Forma asosiy teglari",
+        "slides": [
+          {
+            "emoji": "📝",
+            "text": "Forma teglardan yig'iladi:",
+            "code": "<form>\n  <input type=\"text\" placeholder=\"Ism\">\n  <input type=\"email\" placeholder=\"Email\">\n  <input type=\"password\" placeholder=\"Parol\">\n  <textarea placeholder=\"Xabar\"></textarea>\n  <button type=\"submit\">Yuborish</button>\n</form>"
+          },
+          {
+            "text": "Yana `<input type=\"checkbox\">` (belgi), `<input type=\"radio\">` (bittasini tanlash) va `<option>` ro'yxatli `<select>` bor."
+          },
+          {
+            "quote": true,
+            "text": "Brauzer `type=\"email\"` ni o'zi tekshiradi: email kiritilmasa, forma yuborilmaydi."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Forma teglari",
+            "prompt": "Qaysi type email tekshiruvli maydon beradi?",
+            "options": [
+              "email",
+              "text",
+              "mail",
+              "check"
+            ],
+            "answer": 0,
+            "explain": "type=\"email\" email kiritilganini tekshiradi."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Forma teglari",
+            "prompt": "Ko'p qatorli xabar uchun <textarea> mos.",
+            "answer": true,
+            "explain": "textarea — ko'p qatorli maydon."
+          }
+        ]
+      },
+      {
+        "title": "label va for",
+        "slides": [
+          {
+            "emoji": "🏷️",
+            "text": "Maydonni imzolaymiz:",
+            "code": "<label for=\"name\">Ваше имя</label>\n<input type=\"text\" id=\"name\">"
+          },
+          {
+            "text": "Nima uchun: label matniga bosish kursorni maydonga qo'yadi, ko'rish qobiliyati zaif odamlar uchun dasturlar maydonni to'g'ri o'qiydi."
+          },
+          {
+            "quote": true,
+            "text": "label dagi `for` input dagi `id` bilan bir xil bo'lishi kerak."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "label",
+            "prompt": "label for=\"name\" va input id=\"name\" bog'lanishi nima beradi?",
+            "options": [
+              "Imzoga bosish kursorni maydonga qo'yadi",
+              "Maydon qizil bo'ladi",
+              "Forma o'zi yuboriladi",
+              "Maydon yo'qoladi"
+            ],
+            "answer": 0,
+            "explain": "Bu qulayroq va ochiqroq."
+          }
+        ]
+      },
+      {
+        "title": ":hover va :focus",
+        "slides": [
+          {
+            "emoji": "🖱️",
+            "text": "`:hover` — kursor element ustida turganda uslub:",
+            "code": "button:hover {\n  background: #6d28d9;\n}"
+          },
+          {
+            "text": "`:focus` — maydon tanlanganda, ya'ni kursor ichida turganda uslub:",
+            "code": "input:focus {\n  border-color: #7c3aed;\n  outline: none;\n}"
+          }
+        ],
+        "check": [
+          {
+            "type": "match",
+            "topic": ":hover va :focus",
+            "prompt": "Psevdoklass va u qachon ishlashini moslashtir",
+            "pairs": [
+              [
+                ":hover",
+                "Kursor element ustida"
+              ],
+              [
+                ":focus",
+                "Maydon tanlangan"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": ":nth-child, :first-child, :last-child",
+        "slides": [
+          {
+            "emoji": "🔢",
+            "text": "`:nth-child()` elementni aka-ukalar orasidagi raqami bo'yicha tanlaydi (hisob 1 dan):",
+            "code": "li:nth-child(2) { color: red; }      /* 2 */\nli:nth-child(odd) { background: #eee; }  /* 1, 3, 5 */"
+          },
+          {
+            "text": "Birinchi va oxirgi:",
+            "code": "li:first-child { font-weight: bold; }\nli:last-child { border-bottom: none; }"
+          },
+          {
+            "quote": true,
+            "text": "Foydali: navbatlashuvchi qatorli jadvallar va turli rangli kartochkalar. Uy vazifasi: 10-darsdagi lendingga obuna formasini qo'sh."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "nth-child",
+            "prompt": "6 tadan qaysi bandlar qizil bo'ladi?",
+            "code": "li:nth-child(odd) { color: red; }",
+            "options": [
+              "1, 3, 5",
+              "2, 4, 6",
+              "1, 2, 3",
+              "3, 4, 5"
+            ],
+            "answer": 0,
+            "explain": "odd — toq: 1, 3, 5."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "Forma teglari",
+      "prompt": "Qaysi teg xabar uchun ko'p qatorli maydon yaratadi?",
+      "options": [
+        "<textarea>",
+        "<input>",
+        "<select>",
+        "<label>"
+      ],
+      "answer": 0,
+      "explain": "textarea — ko'p qatorli maydon."
+    },
+    {
+      "type": "choice",
+      "topic": "Forma teglari",
+      "prompt": "type=\"email\" maydoniga email bo'lmagan narsa kiritilsa nima bo'ladi?",
+      "options": [
+        "Forma yuborilmaydi",
+        "Brauzer o'zi tuzatadi",
+        "Sayt ishdan chiqadi",
+        "Hech narsa"
+      ],
+      "answer": 0,
+      "explain": "Brauzer type=\"email\" ni o'zi tekshiradi."
+    },
+    {
+      "type": "input",
+      "topic": "Forma teglari",
+      "prompt": "Forma yuborish tugmasi qaysi teg bilan qilinadi? (qavslarsiz)",
+      "answer": [
+        "button",
+        "<button>"
+      ],
+      "explain": "type=\"submit\" bilan button."
+    },
+    {
+      "type": "choice",
+      "topic": "label",
+      "prompt": "label va input da nima bir xil bo'lishi kerak?",
+      "options": [
+        "label dagi for va input dagi id",
+        "Rang",
+        "O'lcham",
+        "Hech narsa"
+      ],
+      "answer": 0,
+      "explain": "for va id orqali bog'lanadi."
+    },
+    {
+      "type": "truefalse",
+      "topic": "label",
+      "prompt": "label matniga bosish kursorni bog'langan maydonga qo'yadi.",
+      "answer": true,
+      "explain": "Bu label ishlatish sabablaridan biri."
+    },
+    {
+      "type": "choice",
+      "topic": ":hover va :focus",
+      "prompt": "button:hover qachon ishlaydi?",
+      "options": [
+        "Kursor tugma ustida turganda",
+        "Tugma bosilib qo'yib yuborilganda",
+        "Sahifa yuklanganda",
+        "Hech qachon"
+      ],
+      "answer": 0,
+      "explain": ":hover — kursor element ustida turganda."
+    },
+    {
+      "type": "choice",
+      "topic": ":hover va :focus",
+      "prompt": "Kursor kiritish maydoni ichida turganda qaysi psevdoklass ishlaydi?",
+      "options": [
+        ":focus",
+        ":hover",
+        ":first-child",
+        ":odd"
+      ],
+      "answer": 0,
+      "explain": ":focus — maydon tanlangan."
+    },
+    {
+      "type": "order",
+      "topic": ":hover va :focus",
+      "prompt": "Fokusdagi maydon selektorini yig'",
+      "tokens": [
+        "input",
+        ":focus",
+        "{",
+        "border-color: #7c3aed;",
+        "}"
+      ],
+      "extra": [
+        "hover"
+      ],
+      "explain": "Selektor + psevdoklass + uslublar bloki."
+    },
+    {
+      "type": "choice",
+      "topic": "nth-child",
+      "prompt": "li:nth-child(2) nimani tanlaydi?",
+      "options": [
+        "Faqat ikkinchi band",
+        "Ikkinchisidan tashqari hammasini",
+        "Dastlabki ikkita",
+        "Oxirgisini"
+      ],
+      "answer": 0,
+      "explain": "Raqam birdan hisoblanadi."
+    },
+    {
+      "type": "choice",
+      "topic": "nth-child",
+      "prompt": "6 tadan qaysilari qizil bo'ladi?",
+      "code": "li:nth-child(odd) { color: red; }",
+      "options": [
+        "1, 3, 5",
+        "2, 4, 6",
+        "1, 2, 3",
+        "Все"
+      ],
+      "answer": 0,
+      "explain": "odd — toq raqamlar."
+    },
+    {
+      "type": "match",
+      "topic": "first va last",
+      "prompt": "Selektor va elementni moslashtir",
+      "pairs": [
+        [
+          ":first-child",
+          "Birinchi element"
+        ],
+        [
+          ":last-child",
+          "Oxirgi element"
+        ],
+        [
+          ":nth-child(even)",
+          "Juft elementlar"
+        ]
+      ]
+    },
+    {
+      "type": "truefalse",
+      "topic": "first va last",
+      "prompt": "li:last-child { border-bottom: none; } oxirgi banddan chiziqni olib tashlaydi.",
+      "answer": true,
+      "explain": ":last-child ning odatiy qo'llanilishi."
+    }
+  ]
+}

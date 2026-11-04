@@ -1,0 +1,273 @@
+{
+  "title": "Lesson 19. The DOM",
+  "description": "The page tree, querySelector, textContent, style, classList",
+  "learn": {
+    "intro": "Hi! Lesson 19 — the **DOM**. Until now JavaScript lived in the console. Today we learn to find page elements and change them. Let's go!",
+    "sections": [
+      {
+        "title": "What the DOM is",
+        "slides": [
+          {
+            "emoji": "🌳",
+            "text": "The browser turns your HTML into a **tree of objects**. JavaScript can read this tree and change it. This is where JS becomes the brain of the site."
+          },
+          {
+            "text": "The tree:",
+            "code": "html\n └── body\n      └── div\n           └── p"
+          }
+        ],
+        "check": [
+          {
+            "type": "truefalse",
+            "topic": "DOM",
+            "prompt": "The DOM is a tree of objects the browser builds from HTML.",
+            "answer": true,
+            "explain": "JavaScript works with exactly this tree."
+          }
+        ]
+      },
+      {
+        "title": "querySelector and querySelectorAll",
+        "slides": [
+          {
+            "emoji": "🔍",
+            "text": "`querySelector` finds the **first** element. The syntax is as in CSS (selectors from lesson 3).",
+            "code": "const title = document.querySelector(\".card h2\");"
+          },
+          {
+            "text": "`querySelectorAll` finds **all** elements:",
+            "code": "const cards = document.querySelectorAll(\".card\");\ncards.forEach((card) => {\n  console.log(card);\n});"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Finding elements",
+            "prompt": "Which method finds ALL the cards?",
+            "options": [
+              "querySelectorAll",
+              "querySelector",
+              "getAll",
+              "find"
+            ],
+            "answer": 0,
+            "explain": "querySelectorAll returns all matching elements."
+          }
+        ]
+      },
+      {
+        "title": "Text and styles",
+        "slides": [
+          {
+            "emoji": "✏️",
+            "text": "Change the text:",
+            "code": "const paragraph = document.querySelector(\"p\");\nparagraph.textContent = \"New text\";"
+          },
+          {
+            "text": "Change the styles:",
+            "code": "const title = document.querySelector(\"h1\");\ntitle.style.color = \"red\";"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Text and styles",
+            "prompt": "How do you change the text of element el?",
+            "options": [
+              "el.textContent = \"текст\"",
+              "el.text(\"текст\")",
+              "el.write(\"текст\")",
+              "el = \"текст\""
+            ],
+            "answer": 0,
+            "explain": "The textContent property holds the element's text."
+          }
+        ]
+      },
+      {
+        "title": "Classes: add, remove, toggle",
+        "slides": [
+          {
+            "emoji": "🔀",
+            "text": "Classes through `classList`:",
+            "code": "menu.classList.add(\"active\");     // add\nmenu.classList.remove(\"active\");  // remove\nmenu.classList.toggle(\"active\");  // switch"
+          },
+          {
+            "quote": true,
+            "text": "`toggle`: if the class is there it removes it, if not it adds it. Perfect for a menu: click — opens, click again — closes."
+          },
+          {
+            "text": "Homework: a script that finds all landing cards with `querySelectorAll` and adds a bordered class when the page loads."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "classList",
+            "prompt": "What does classList.toggle(\"active\") do?",
+            "options": [
+              "Adds the class if absent and removes it if present",
+              "Always adds the class",
+              "Always removes the class",
+              "Changes the color"
+            ],
+            "answer": 0,
+            "explain": "toggle switches the class."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "truefalse",
+      "topic": "DOM",
+      "prompt": "JavaScript can read and change the DOM tree.",
+      "answer": true,
+      "explain": "That makes the site «alive»."
+    },
+    {
+      "type": "choice",
+      "topic": "DOM",
+      "prompt": "What does the browser turn HTML into?",
+      "options": [
+        "A tree of objects",
+        "A picture",
+        "A database",
+        "Sound"
+      ],
+      "answer": 0,
+      "explain": "That tree is called the DOM."
+    },
+    {
+      "type": "choice",
+      "topic": "Finding elements",
+      "prompt": "What does querySelector(\".card\") return?",
+      "options": [
+        "The first element with class card",
+        "All card elements",
+        "The card text",
+        "Nothing"
+      ],
+      "answer": 0,
+      "explain": "querySelector returns the first match."
+    },
+    {
+      "type": "choice",
+      "topic": "Finding elements",
+      "prompt": "Which one finds all cards?",
+      "options": [
+        "document.querySelectorAll(\".card\")",
+        "document.querySelector(\".card\")",
+        "document.cards()",
+        "document.find(\".card\")"
+      ],
+      "answer": 0,
+      "explain": "You need querySelectorAll."
+    },
+    {
+      "type": "input",
+      "topic": "Finding elements",
+      "prompt": "Which method finds ALL elements by selector? (one word)",
+      "answer": [
+        "querySelectorAll"
+      ],
+      "explain": "querySelectorAll — all matches."
+    },
+    {
+      "type": "choice",
+      "topic": "Text and styles",
+      "prompt": "What does the code do?",
+      "code": "const title = document.querySelector(\"h1\");\ntitle.style.color = \"red\";",
+      "options": [
+        "Makes the heading red",
+        "Deletes the heading",
+        "Changes the text",
+        "Nothing"
+      ],
+      "answer": 0,
+      "explain": "style.color changes the color."
+    },
+    {
+      "type": "order",
+      "topic": "Text and styles",
+      "prompt": "Build the line: change the paragraph text",
+      "tokens": [
+        "paragraph",
+        ".textContent",
+        "=",
+        "\"Hello\";"
+      ],
+      "extra": [
+        ".innerText2"
+      ],
+      "explain": "The textContent property and an assignment."
+    },
+    {
+      "type": "choice",
+      "topic": "classList",
+      "prompt": "Which method ADDS a class?",
+      "options": [
+        "classList.add",
+        "classList.remove",
+        "classList.toggle2",
+        "classList.push"
+      ],
+      "answer": 0,
+      "explain": "add adds."
+    },
+    {
+      "type": "match",
+      "topic": "classList",
+      "prompt": "Match the method and the action",
+      "pairs": [
+        [
+          "add",
+          "Add a class"
+        ],
+        [
+          "remove",
+          "Remove a class"
+        ],
+        [
+          "toggle",
+          "Switch a class"
+        ]
+      ]
+    },
+    {
+      "type": "truefalse",
+      "topic": "classList",
+      "prompt": "toggle is handy for a menu: click opens it, click again closes it.",
+      "answer": true,
+      "explain": "Each call flips the state."
+    },
+    {
+      "type": "choice",
+      "topic": "Practice",
+      "prompt": "What will this script do when the page loads?",
+      "code": "document.querySelectorAll(\".card\").forEach((card) => {\n  card.classList.add(\"framed\");\n});",
+      "options": [
+        "Adds class framed to all cards",
+        "Deletes the cards",
+        "Nothing, waits for a click",
+        "An error"
+      ],
+      "answer": 0,
+      "explain": "The script runs right away, without clicks."
+    },
+    {
+      "type": "choice",
+      "topic": "Practice",
+      "prompt": "What do you need to change a heading color with JS?",
+      "options": [
+        "Find the element and change style.color",
+        "Rewrite all the HTML",
+        "Buy a plugin",
+        "Restart the computer"
+      ],
+      "answer": 0,
+      "explain": "Find first, then change."
+    }
+  ]
+}

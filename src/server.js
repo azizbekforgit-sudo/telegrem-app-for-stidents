@@ -69,6 +69,13 @@ if (fs.existsSync(bonusFile)) {
   }
 }
 
+// Скрыть из списка учителя старые тесты (content/archive.json: ["id", …]); срабатывает один раз для каждого
+const archiveFile = path.join(root, 'content', 'archive.json');
+if (fs.existsSync(archiveFile)) {
+  const n = logic.applyArchive(JSON.parse(fs.readFileSync(archiveFile, 'utf8')));
+  if (n) console.log(`[archive] скрыто тестов: ${n}`);
+}
+
 const tg = BOT_TOKEN && process.env.NO_BOT !== '1' ? createBot({ token: BOT_TOKEN, logic, store, appUrl: PUBLIC_URL + '/', adminIds: ADMIN_IDS }) : null;
 
 const app = express();
@@ -212,6 +219,14 @@ adm.post('/send-student', h(async (req) => {
   if (!already) await tg?.notifyPersonal(pub);
   return { pub, already };
 }));
+// Дать доступ к тесту выбранным ученикам (один или много)
+adm.post('/grant', h(async (req) => {
+  const { lessonId, userIds, noLearn } = req.body || {};
+  const { created, already } = logic.sendToStudents(lessonId, userIds, noLearn);
+  for (const pub of created) await tg?.notifyPersonal(pub);
+  return { given: created.length, already };
+}));
+adm.post('/lessons/:lid/archive', h((req) => (logic.setArchived(req.params.lid, req.body?.archived !== false), { ok: true })));
 adm.delete('/pubs/:pid', h((req) => (logic.unpublish(req.params.pid), { ok: true })));
 adm.get('/pubs/:pid', h((req) => logic.pubStats(req.params.pid)));
 adm.get('/reminders', h(() => logic.listReminders()));

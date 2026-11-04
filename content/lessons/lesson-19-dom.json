@@ -1,0 +1,276 @@
+{
+  "id": "lesson-19-dom",
+  "order": 19,
+  "title": "Урок 19. DOM",
+  "emoji": "🌳",
+  "description": "Дерево страницы, querySelector, textContent, style, classList",
+  "learn": {
+    "intro": "Привет! Урок 19 — **DOM**. До сих пор JavaScript жил в консоли. Сегодня научимся находить элементы страницы и менять их. Поехали!",
+    "sections": [
+      {
+        "title": "Что такое DOM",
+        "slides": [
+          {
+            "emoji": "🌳",
+            "text": "Браузер превращает твой HTML в **дерево объектов**. JavaScript может читать это дерево и менять его. Здесь JS становится мозгом сайта."
+          },
+          {
+            "text": "Дерево:",
+            "code": "html\n └── body\n      └── div\n           └── p"
+          }
+        ],
+        "check": [
+          {
+            "type": "truefalse",
+            "topic": "DOM",
+            "prompt": "DOM — это дерево объектов, которое браузер строит из HTML.",
+            "answer": true,
+            "explain": "JavaScript работает именно с этим деревом."
+          }
+        ]
+      },
+      {
+        "title": "querySelector и querySelectorAll",
+        "slides": [
+          {
+            "emoji": "🔍",
+            "text": "`querySelector` находит **первый** элемент. Синтаксис — как в CSS (селекторы из урока 3).",
+            "code": "const title = document.querySelector(\".card h2\");"
+          },
+          {
+            "text": "`querySelectorAll` находит **все** элементы:",
+            "code": "const cards = document.querySelectorAll(\".card\");\ncards.forEach((card) => {\n  console.log(card);\n});"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Поиск элементов",
+            "prompt": "Какой метод найдёт ВСЕ карточки?",
+            "options": [
+              "querySelectorAll",
+              "querySelector",
+              "getAll",
+              "find"
+            ],
+            "answer": 0,
+            "explain": "querySelectorAll возвращает все подходящие элементы."
+          }
+        ]
+      },
+      {
+        "title": "Текст и стили",
+        "slides": [
+          {
+            "emoji": "✏️",
+            "text": "Меняем текст:",
+            "code": "const paragraph = document.querySelector(\"p\");\nparagraph.textContent = \"Новый текст\";"
+          },
+          {
+            "text": "Меняем стили:",
+            "code": "const title = document.querySelector(\"h1\");\ntitle.style.color = \"red\";"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Текст и стили",
+            "prompt": "Как поменять текст элемента el?",
+            "options": [
+              "el.textContent = \"текст\"",
+              "el.text(\"текст\")",
+              "el.write(\"текст\")",
+              "el = \"текст\""
+            ],
+            "answer": 0,
+            "explain": "Свойство textContent хранит текст элемента."
+          }
+        ]
+      },
+      {
+        "title": "Классы: add, remove, toggle",
+        "slides": [
+          {
+            "emoji": "🔀",
+            "text": "Классы через `classList`:",
+            "code": "menu.classList.add(\"active\");     // добавить\nmenu.classList.remove(\"active\");  // удалить\nmenu.classList.toggle(\"active\");  // переключить"
+          },
+          {
+            "quote": true,
+            "text": "`toggle`: есть класс — уберёт, нет — добавит. Идеально для меню: нажали — открылось, ещё раз — закрылось."
+          },
+          {
+            "text": "Домашка: скрипт, который находит все карточки лендинга через `querySelectorAll` и добавляет им класс с рамкой при загрузке страницы."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "classList",
+            "prompt": "Что делает classList.toggle(\"active\")?",
+            "options": [
+              "Добавляет класс, если его нет, и убирает, если есть",
+              "Всегда добавляет класс",
+              "Всегда удаляет класс",
+              "Меняет цвет"
+            ],
+            "answer": 0,
+            "explain": "toggle переключает класс."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "truefalse",
+      "topic": "DOM",
+      "prompt": "JavaScript может читать и менять дерево DOM.",
+      "answer": true,
+      "explain": "Так сайт становится «живым»."
+    },
+    {
+      "type": "choice",
+      "topic": "DOM",
+      "prompt": "Во что браузер превращает HTML?",
+      "options": [
+        "В дерево объектов",
+        "В картинку",
+        "В базу данных",
+        "В звук"
+      ],
+      "answer": 0,
+      "explain": "Это дерево называется DOM."
+    },
+    {
+      "type": "choice",
+      "topic": "Поиск элементов",
+      "prompt": "Что вернёт querySelector(\".card\")?",
+      "options": [
+        "Первый элемент с классом card",
+        "Все элементы card",
+        "Текст карточки",
+        "Ничего"
+      ],
+      "answer": 0,
+      "explain": "querySelector — первый подходящий."
+    },
+    {
+      "type": "choice",
+      "topic": "Поиск элементов",
+      "prompt": "Какая запись найдёт все карточки?",
+      "options": [
+        "document.querySelectorAll(\".card\")",
+        "document.querySelector(\".card\")",
+        "document.cards()",
+        "document.find(\".card\")"
+      ],
+      "answer": 0,
+      "explain": "Нужен querySelectorAll."
+    },
+    {
+      "type": "input",
+      "topic": "Поиск элементов",
+      "prompt": "Каким методом находят ВСЕ элементы по селектору? (одно слово)",
+      "answer": [
+        "querySelectorAll"
+      ],
+      "explain": "querySelectorAll — все подходящие."
+    },
+    {
+      "type": "choice",
+      "topic": "Текст и стили",
+      "prompt": "Что сделает код?",
+      "code": "const title = document.querySelector(\"h1\");\ntitle.style.color = \"red\";",
+      "options": [
+        "Сделает заголовок красным",
+        "Удалит заголовок",
+        "Поменяет текст",
+        "Ничего"
+      ],
+      "answer": 0,
+      "explain": "style.color меняет цвет."
+    },
+    {
+      "type": "order",
+      "topic": "Текст и стили",
+      "prompt": "Собери строку: поменять текст абзаца",
+      "tokens": [
+        "paragraph",
+        ".textContent",
+        "=",
+        "\"Hello\";"
+      ],
+      "extra": [
+        ".innerText2"
+      ],
+      "explain": "Свойство textContent и присваивание."
+    },
+    {
+      "type": "choice",
+      "topic": "classList",
+      "prompt": "Какой метод ДОБАВЛЯЕТ класс?",
+      "options": [
+        "classList.add",
+        "classList.remove",
+        "classList.toggle2",
+        "classList.push"
+      ],
+      "answer": 0,
+      "explain": "add — добавить."
+    },
+    {
+      "type": "match",
+      "topic": "classList",
+      "prompt": "Соедини метод и действие",
+      "pairs": [
+        [
+          "add",
+          "Добавить класс"
+        ],
+        [
+          "remove",
+          "Удалить класс"
+        ],
+        [
+          "toggle",
+          "Переключить класс"
+        ]
+      ]
+    },
+    {
+      "type": "truefalse",
+      "topic": "classList",
+      "prompt": "toggle удобен для меню: нажали — открылось, ещё раз — закрылось.",
+      "answer": true,
+      "explain": "Каждый вызов переключает состояние."
+    },
+    {
+      "type": "choice",
+      "topic": "Практика",
+      "prompt": "Что сделает этот скрипт при загрузке страницы?",
+      "code": "document.querySelectorAll(\".card\").forEach((card) => {\n  card.classList.add(\"framed\");\n});",
+      "options": [
+        "Добавит всем карточкам класс framed",
+        "Удалит карточки",
+        "Ничего, ждёт клика",
+        "Ошибка"
+      ],
+      "answer": 0,
+      "explain": "Скрипт срабатывает сразу, без нажатий."
+    },
+    {
+      "type": "choice",
+      "topic": "Практика",
+      "prompt": "Что нужно, чтобы поменять цвет заголовка через JS?",
+      "options": [
+        "Найти элемент и поменять style.color",
+        "Переписать весь HTML",
+        "Купить плагин",
+        "Перезагрузить компьютер"
+      ],
+      "answer": 0,
+      "explain": "Сначала найти, потом изменить."
+    }
+  ]
+}

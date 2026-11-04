@@ -1,5 +1,6 @@
 {
   "id": "lesson-17-arrays",
+  "order": 17,
   "title": "Урок 17. Массивы и методы",
   "emoji": "🧺",
   "description": "Индексы, length, push/pop, forEach, map, filter, find",

@@ -1,0 +1,291 @@
+{
+  "id": "lesson-26-react-state",
+  "order": 26,
+  "title": "Урок 26. React — useState и мини-проект",
+  "emoji": "🎛️",
+  "description": "Состояние, счётчик, поле ввода, список задач",
+  "learn": {
+    "intro": "Привет! Урок 26 — **useState**. Props приходят снаружи и не меняются. А компоненту иногда нужно помнить своё значение: счётчик, открыт ли список. Для этого есть useState. Поехали!",
+    "sections": [
+      {
+        "title": "Синтаксис useState",
+        "slides": [
+          {
+            "emoji": "🎛️",
+            "text": "Создаём состояние:",
+            "code": "import { useState } from \"react\";\n\nconst [count, setCount] = useState(0);"
+          },
+          {
+            "text": "`count` — текущее значение.\n`setCount` — функция, которая меняет значение.\n`useState(0)` — стартовое значение."
+          },
+          {
+            "quote": true,
+            "text": "`count = 5` напрямую нельзя. Только через `setCount`, иначе React не узнает, что экран надо обновить."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "useState",
+            "prompt": "Что делает setCount?",
+            "options": [
+              "Меняет значение и обновляет экран",
+              "Удаляет компонент",
+              "Красит кнопку",
+              "Ничего"
+            ],
+            "answer": 0,
+            "explain": "Только через setCount React обновляет экран."
+          },
+          {
+            "type": "truefalse",
+            "topic": "useState",
+            "prompt": "Можно просто написать count = 5, и экран обновится.",
+            "answer": false,
+            "explain": "React не узнает об изменении."
+          }
+        ]
+      },
+      {
+        "title": "Счётчик",
+        "slides": [
+          {
+            "emoji": "➕",
+            "text": "Три кнопки: +1, −1 и сброс.",
+            "code": "function Counter() {\n  const [count, setCount] = useState(0);\n\n  return (\n    <div>\n      <p>{count}</p>\n      <button onClick={() => setCount(count + 1)}>+1</button>\n      <button onClick={() => setCount(count - 1)}>-1</button>\n      <button onClick={() => setCount(0)}>Сброс</button>\n    </div>\n  );\n}"
+          },
+          {
+            "quote": true,
+            "text": "Если бы `count` был обычной переменной, экран не обновился бы, хотя значение в памяти изменилось. Поэтому нужен `useState`."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Счётчик",
+            "prompt": "Чему равно count после двух нажатий на +1?",
+            "options": [
+              "2",
+              "1",
+              "0",
+              "3"
+            ],
+            "answer": 0,
+            "explain": "Старт 0, два раза +1 — получается 2."
+          }
+        ]
+      },
+      {
+        "title": "Поле ввода",
+        "slides": [
+          {
+            "emoji": "⌨️",
+            "text": "Связываем поле со состоянием:",
+            "code": "const [text, setText] = useState(\"\");\n\n<input value={text} onChange={(e) => setText(e.target.value)} />"
+          },
+          {
+            "quote": true,
+            "text": "`e.target.value` — то же самое, что `e.target` из урока 20."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Поле ввода",
+            "prompt": "Что хранит e.target.value в onChange?",
+            "options": [
+              "Текст, который сейчас в поле",
+              "Номер поля",
+              "Цвет поля",
+              "Ничего"
+            ],
+            "answer": 0,
+            "explain": "value — текущий текст."
+          }
+        ]
+      },
+      {
+        "title": "Список задач и домашка",
+        "slides": [
+          {
+            "emoji": "📋",
+            "text": "Состояние-массив. В новый массив **распаковываем** старый через `...`:",
+            "code": "const [todos, setTodos] = useState([]);\n\nfunction addTodo(newTodo) {\n  setTodos([...todos, newTodo]);\n}"
+          },
+          {
+            "quote": true,
+            "text": "React должен получить **новый** массив, а не изменённый старый."
+          },
+          {
+            "text": "Практика: счётчик (+1, −1, сброс) и список, который показывается и скрывается через `useState` с `true` / `false`. Финальная домашка блока: перепиши to-do список на React с `useState` — добавление и удаление задач, без единого `addEventListener`, и залей проект на GitHub."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Список",
+            "prompt": "Как правильно добавить задачу в состояние-массив?",
+            "options": [
+              "setTodos([...todos, newTodo])",
+              "todos.push(newTodo)",
+              "todos = newTodo",
+              "setTodos(newTodo.length)"
+            ],
+            "answer": 0,
+            "explain": "Создаём новый массив."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "useState",
+      "prompt": "Что хранит count в const [count, setCount] = useState(0)?",
+      "options": [
+        "Текущее значение",
+        "Функцию изменения",
+        "Стартовое значение всегда",
+        "Название"
+      ],
+      "answer": 0,
+      "explain": "count — значение, setCount — функция."
+    },
+    {
+      "type": "match",
+      "topic": "useState",
+      "prompt": "Соедини часть и смысл",
+      "pairs": [
+        [
+          "count",
+          "Текущее значение"
+        ],
+        [
+          "setCount",
+          "Функция, меняющая значение"
+        ],
+        [
+          "useState(0)",
+          "Стартовое значение"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "useState",
+      "prompt": "Почему нельзя написать count = 5?",
+      "options": [
+        "React не узнает, что экран надо обновить",
+        "Это слишком медленно",
+        "Запрещено законом",
+        "Можно, ошибки нет"
+      ],
+      "answer": 0,
+      "explain": "Менять нужно только через setCount."
+    },
+    {
+      "type": "input",
+      "topic": "Счётчик",
+      "prompt": "Чему равно count после двух +1 и одного -1 (старт 0)?",
+      "answer": [
+        "1"
+      ],
+      "explain": "0 + 1 + 1 - 1 = 1."
+    },
+    {
+      "type": "choice",
+      "topic": "Счётчик",
+      "prompt": "Какая кнопка сбросит счётчик в 0?",
+      "options": [
+        "<button onClick={() => setCount(0)}>",
+        "<button onClick={count = 0}>",
+        "<button reset>",
+        "<button onClick={setCount}>"
+      ],
+      "answer": 0,
+      "explain": "setCount(0) устанавливает 0."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Счётчик",
+      "prompt": "Если count — обычная переменная, экран не обновится.",
+      "answer": true,
+      "explain": "Поэтому нужен useState."
+    },
+    {
+      "type": "order",
+      "topic": "Поле ввода",
+      "prompt": "Собери связку поля со состоянием",
+      "tokens": [
+        "<input",
+        "value={text}",
+        "onChange={(e) => setText(e.target.value)}",
+        "/>"
+      ],
+      "extra": [
+        "onClick={text}"
+      ],
+      "explain": "value и onChange."
+    },
+    {
+      "type": "choice",
+      "topic": "Поле ввода",
+      "prompt": "Что делает onChange у поля ввода?",
+      "options": [
+        "Срабатывает при каждом изменении текста",
+        "Удаляет поле",
+        "Отправляет форму",
+        "Ничего"
+      ],
+      "answer": 0,
+      "explain": "Внутри обновляем состояние."
+    },
+    {
+      "type": "choice",
+      "topic": "Список",
+      "prompt": "Что делает ...todos в setTodos([...todos, newTodo])?",
+      "options": [
+        "Распаковывает старый массив в новый",
+        "Удаляет массив",
+        "Сортирует массив",
+        "Копирует страницу"
+      ],
+      "answer": 0,
+      "explain": "Остаются старые задачи + новая."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Список",
+      "prompt": "React должен получить новый массив, а не изменённый старый.",
+      "answer": true,
+      "explain": "Иначе он не заметит изменений."
+    },
+    {
+      "type": "choice",
+      "topic": "Практика",
+      "prompt": "Как скрывать и показывать список в React?",
+      "options": [
+        "useState со значениями true / false",
+        "Через alert",
+        "Перезагрузкой страницы",
+        "Нельзя"
+      ],
+      "answer": 0,
+      "explain": "Булево состояние и условный показ."
+    },
+    {
+      "type": "choice",
+      "topic": "Практика",
+      "prompt": "Что требуется в финальной домашке блока?",
+      "options": [
+        "To-do на React с useState без addEventListener",
+        "Написать на jQuery",
+        "Ничего",
+        "Удалить проект"
+      ],
+      "answer": 0,
+      "explain": "Добавление и удаление задач, затем GitHub."
+    }
+  ]
+}

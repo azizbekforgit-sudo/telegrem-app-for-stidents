@@ -1,0 +1,261 @@
+{
+  "title": "22-dars. async/await va xatolarni qayta ishlash",
+  "description": "async, await, try/catch va yuklanish ko'rsatkichi",
+  "learn": {
+    "intro": "Salom! 22-dars — **async/await**. .then().then() zanjirini o'qish qiyin. Asinxron kodni oddiy kabi qator-qator yozishni o'rganamiz. Ketdik!",
+    "sections": [
+      {
+        "title": "Bitta so'rov, ikki usul",
+        "slides": [
+          {
+            "emoji": "🔗",
+            "text": "`.then` bilan:",
+            "code": "fetch(url)\n  .then((response) => response.json())\n  .then((data) => console.log(data));"
+          },
+          {
+            "text": "`async/await` bilan:",
+            "code": "async function loadData() {\n  const response = await fetch(url);\n  const data = await response.json();\n  console.log(data);\n}\nloadData();"
+          },
+          {
+            "quote": true,
+            "text": "Ikkalasi ham bir xil ish qiladi, lekin ikkinchisi **yuqoridan pastga** o'qiladi."
+          }
+        ],
+        "check": [
+          {
+            "type": "truefalse",
+            "topic": "async/await",
+            "prompt": "async/await va .then bir xil ish qiladi, lekin har xil yoziladi.",
+            "answer": true,
+            "explain": "Ikkinchisi oddiy kod kabi o'qiladi."
+          }
+        ]
+      },
+      {
+        "title": "Kalit so'zlar",
+        "slides": [
+          {
+            "emoji": "🔑",
+            "text": "Funksiya oldidagi `async` — «bu funksiya kuta oladi».\nChaqiruv oldidagi `await` — «natija kelguncha shu qatorda to'xta»."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "async/await",
+            "prompt": "await nima qiladi?",
+            "options": [
+              "Shu qatorda natijani kutadi",
+              "Funksiyani o'chiradi",
+              "Rangni o'zgartiradi",
+              "Sikl yaratadi"
+            ],
+            "answer": 0,
+            "explain": "await natija kelguncha to'xtaydi."
+          },
+          {
+            "type": "choice",
+            "topic": "async/await",
+            "prompt": "Funksiyada await ishlatish uchun uning oldiga nima yoziladi?",
+            "options": [
+              "async",
+              "wait",
+              "later",
+              "defer"
+            ],
+            "answer": 0,
+            "explain": "async function nom() { }."
+          }
+        ]
+      },
+      {
+        "title": "try / catch",
+        "slides": [
+          {
+            "emoji": "🛟",
+            "text": "`try` — bajarishga urinamiz, `catch` — xatoda nima qilish: internet yo'qoldi yoki server ishlamayapti.",
+            "code": "async function loadData() {\n  try {\n    const response = await fetch(url);\n    const data = await response.json();\n    console.log(data);\n  } catch (error) {\n    console.log(\"Nimadir noto'g'ri ketdi:\", error);\n  }\n}"
+          },
+          {
+            "quote": true,
+            "text": "Tekshirish: DevTools da **Network** bo'limini oching va **Offline** ni yoqing. So'rov yiqiladi va `catch` ishlaydi."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "try/catch",
+            "prompt": "catch bloki qachon ishlaydi?",
+            "options": [
+              "try da xato bo'lganda",
+              "Doim",
+              "Hech qachon",
+              "Faqat muvaffaqiyatda"
+            ],
+            "answer": 0,
+            "explain": "catch try dagi xatolarni ushlaydi."
+          }
+        ]
+      },
+      {
+        "title": "Yuklanish ko'rsatkichi va amaliyot",
+        "slides": [
+          {
+            "emoji": "⏳",
+            "text": "Ma'lumotni kutayotganda — «Yuklanmoqda…», xatoda — xabar:",
+            "code": "const status = document.querySelector(\"#status\");\n\nasync function loadData() {\n  status.textContent = \"Yuklanmoqda...\";\n  try {\n    const response = await fetch(url);\n    const data = await response.json();\n    status.textContent = \"\";\n  } catch (error) {\n    status.textContent = \"Yuklashda xato\";\n  }\n}"
+          },
+          {
+            "quote": true,
+            "text": "Amaliyot: oldingi darsdagi fetch ni `async/await` va `try/catch` ga qayta yoz. Uy vazifasi: API loyihasiga «Yuklanmoqda…» ko'rsatkichi va xato xabarini qo'sh."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Yuklanish",
+            "prompt": "«Yuklanmoqda...» yozuvini qachon tozalash kerak?",
+            "options": [
+              "Ma'lumot kelganda",
+              "Hech qachon",
+              "So'rovdan oldin",
+              "Sahifa yopilganda"
+            ],
+            "answer": 0,
+            "explain": "Ma'lumot keldi — ko'rsatkich endi kerak emas."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "async/await",
+      "prompt": "Qaysi variant yuqoridan pastga o'qiladi?",
+      "options": [
+        "async/await",
+        ".then().then() zanjiri",
+        "Ikkalasi bir xil",
+        "Hech biri"
+      ],
+      "answer": 0,
+      "explain": "async/await oddiy kod kabi yoziladi."
+    },
+    {
+      "type": "truefalse",
+      "topic": "async/await",
+      "prompt": "Funksiya oldidagi async «bu funksiya kuta oladi» degani.",
+      "answer": true,
+      "explain": "Shunda ichida await ishlatish mumkin."
+    },
+    {
+      "type": "choice",
+      "topic": "async/await",
+      "prompt": "Chaqiruv oldidagi await nimani bildiradi?",
+      "options": [
+        "Natija kelguncha to'xta",
+        "Bu qatorni o'tkazib yubor",
+        "Ikki marta bajar",
+        "O'zgaruvchini o'chir"
+      ],
+      "answer": 0,
+      "explain": "await shu qatorda kutadi."
+    },
+    {
+      "type": "order",
+      "topic": "async/await",
+      "prompt": "So'rovning ikki qatorini yig'",
+      "tokens": [
+        "const response = await fetch(url);",
+        "const data = await response.json();"
+      ],
+      "extra": [
+        "const data = fetch(url).json();"
+      ],
+      "explain": "Avval fetch, keyin json()."
+    },
+    {
+      "type": "choice",
+      "topic": "async/await",
+      "prompt": "Xato qayerda?",
+      "code": "function loadData() {\n  const response = await fetch(url);\n}",
+      "options": [
+        "Funksiya oldida async yo'q",
+        "Qavs yo'q",
+        "Xato yo'q",
+        "Ortiqcha return"
+      ],
+      "answer": 0,
+      "explain": "await faqat async-funksiyada ishlaydi."
+    },
+    {
+      "type": "choice",
+      "topic": "try/catch",
+      "prompt": "try nima qiladi?",
+      "options": [
+        "Kodni bajarib ko'radi",
+        "Xatoni ushlaydi",
+        "Funksiya yaratadi",
+        "Kodni o'chiradi"
+      ],
+      "answer": 0,
+      "explain": "catch ushlaydi, try urinadi."
+    },
+    {
+      "type": "truefalse",
+      "topic": "try/catch",
+      "prompt": "try da hammasi yaxshi o'tsa, catch bloki ham bajariladi.",
+      "answer": false,
+      "explain": "catch — faqat xatoda."
+    },
+    {
+      "type": "choice",
+      "topic": "try/catch",
+      "prompt": "catch ishlashini qanday tekshirish mumkin?",
+      "options": [
+        "DevTools da Network → Offline",
+        "Kompyuterni qayta yoqish",
+        "Kodni o'chirish",
+        "Hech qanday"
+      ],
+      "answer": 0,
+      "explain": "Internetsiz so'rov yiqiladi."
+    },
+    {
+      "type": "input",
+      "topic": "try/catch",
+      "prompt": "try dan keyin xatoni qaysi so'z ushlaydi? (bitta so'z)",
+      "answer": [
+        "catch"
+      ],
+      "explain": "try { } catch (error) { }"
+    },
+    {
+      "type": "choice",
+      "topic": "Yuklanish",
+      "prompt": "So'rov xatosida foydalanuvchiga nimani ko'rsatamiz?",
+      "options": [
+        "«Yuklashda xato» xabari",
+        "Tushuntirishsiz bo'sh ekran",
+        "Hech narsa",
+        "Reklama"
+      ],
+      "answer": 0,
+      "explain": "Foydalanuvchi nima bo'lganini tushunishi kerak."
+    },
+    {
+      "type": "choice",
+      "topic": "Yuklanish",
+      "prompt": "async-funksiyada «Yuklanmoqda...» qayerga qo'yiladi?",
+      "options": [
+        "So'rovdan oldin",
+        "catch dan keyin",
+        "Funksiyadan tashqari",
+        "Hech qayerda"
+      ],
+      "answer": 0,
+      "explain": "Avval ko'rsatkichni ko'rsatamiz, keyin ma'lumot so'raymiz."
+    }
+  ]
+}

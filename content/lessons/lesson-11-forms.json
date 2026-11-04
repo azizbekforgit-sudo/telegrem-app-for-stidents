@@ -1,0 +1,301 @@
+{
+  "id": "lesson-11-forms",
+  "order": 11,
+  "title": "Урок 11. Формы и псевдоклассы",
+  "emoji": "📝",
+  "description": "Теги формы, label, :hover, :focus, :nth-child",
+  "learn": {
+    "intro": "Привет! Урок 11 — **формы и псевдоклассы**. Логин, поиск, комментарий — всё это формы. Сделаем их интерактивными без JavaScript. Поехали!",
+    "sections": [
+      {
+        "title": "Основные теги формы",
+        "slides": [
+          {
+            "emoji": "📝",
+            "text": "Форма собирается из тегов:",
+            "code": "<form>\n  <input type=\"text\" placeholder=\"Имя\">\n  <input type=\"email\" placeholder=\"Email\">\n  <input type=\"password\" placeholder=\"Пароль\">\n  <textarea placeholder=\"Сообщение\"></textarea>\n  <button type=\"submit\">Отправить</button>\n</form>"
+          },
+          {
+            "text": "Ещё есть `<input type=\"checkbox\">` (галочка), `<input type=\"radio\">` (выбор одного) и `<select>` со списком `<option>`."
+          },
+          {
+            "quote": true,
+            "text": "Браузер сам проверяет `type=\"email\"`: если введён не email, форма не отправится."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Теги формы",
+            "prompt": "Какой type даёт поле с проверкой на email?",
+            "options": [
+              "email",
+              "text",
+              "mail",
+              "check"
+            ],
+            "answer": 0,
+            "explain": "type=\"email\" проверяет, что введён email."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Теги формы",
+            "prompt": "Для многострочного сообщения подходит <textarea>.",
+            "answer": true,
+            "explain": "textarea — многострочное поле."
+          }
+        ]
+      },
+      {
+        "title": "label и for",
+        "slides": [
+          {
+            "emoji": "🏷️",
+            "text": "Подписываем поле:",
+            "code": "<label for=\"name\">Ваше имя</label>\n<input type=\"text\" id=\"name\">"
+          },
+          {
+            "text": "Зачем: клик по тексту label ставит курсор в поле, а программы для людей с нарушением зрения правильно читают поле."
+          },
+          {
+            "quote": true,
+            "text": "`for` у label должен совпадать с `id` у input."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "label",
+            "prompt": "Что даёт связка label for=\"name\" и input id=\"name\"?",
+            "options": [
+              "Клик по подписи ставит курсор в поле",
+              "Поле становится красным",
+              "Форма отправляется сама",
+              "Поле исчезает"
+            ],
+            "answer": 0,
+            "explain": "Это удобнее и доступнее."
+          }
+        ]
+      },
+      {
+        "title": ":hover и :focus",
+        "slides": [
+          {
+            "emoji": "🖱️",
+            "text": "`:hover` — стиль, пока курсор над элементом:",
+            "code": "button:hover {\n  background: #6d28d9;\n}"
+          },
+          {
+            "text": "`:focus` — стиль, когда поле выбрано, то есть курсор стоит внутри:",
+            "code": "input:focus {\n  border-color: #7c3aed;\n  outline: none;\n}"
+          }
+        ],
+        "check": [
+          {
+            "type": "match",
+            "topic": ":hover и :focus",
+            "prompt": "Соедини псевдокласс и когда он работает",
+            "pairs": [
+              [
+                ":hover",
+                "Курсор над элементом"
+              ],
+              [
+                ":focus",
+                "Поле выбрано"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": ":nth-child, :first-child, :last-child",
+        "slides": [
+          {
+            "emoji": "🔢",
+            "text": "`:nth-child()` выбирает элемент по номеру среди братьев (счёт с 1):",
+            "code": "li:nth-child(2) { color: red; }      /* 2 */\nli:nth-child(odd) { background: #eee; }  /* 1, 3, 5 */"
+          },
+          {
+            "text": "Первый и последний:",
+            "code": "li:first-child { font-weight: bold; }\nli:last-child { border-bottom: none; }"
+          },
+          {
+            "quote": true,
+            "text": "Пригодится: таблицы с чередующимися строками и карточки в разных цветах. Домашка: добавь форму подписки в лендинг из урока 10."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "nth-child",
+            "prompt": "Какие пункты из 6 станут красными?",
+            "code": "li:nth-child(odd) { color: red; }",
+            "options": [
+              "1, 3, 5",
+              "2, 4, 6",
+              "1, 2, 3",
+              "3, 4, 5"
+            ],
+            "answer": 0,
+            "explain": "odd — нечётные: 1, 3, 5."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "Теги формы",
+      "prompt": "Какой тег создаёт многострочное поле для сообщения?",
+      "options": [
+        "<textarea>",
+        "<input>",
+        "<select>",
+        "<label>"
+      ],
+      "answer": 0,
+      "explain": "textarea — многострочное поле."
+    },
+    {
+      "type": "choice",
+      "topic": "Теги формы",
+      "prompt": "Что будет, если в поле type=\"email\" ввести не email?",
+      "options": [
+        "Форма не отправится",
+        "Браузер исправит сам",
+        "Сайт упадёт",
+        "Ничего"
+      ],
+      "answer": 0,
+      "explain": "Браузер сам проверяет type=\"email\"."
+    },
+    {
+      "type": "input",
+      "topic": "Теги формы",
+      "prompt": "Каким тегом делают кнопку отправки формы? (без скобок)",
+      "answer": [
+        "button",
+        "<button>"
+      ],
+      "explain": "button с type=\"submit\"."
+    },
+    {
+      "type": "choice",
+      "topic": "label",
+      "prompt": "Что должно совпадать у label и input?",
+      "options": [
+        "for у label и id у input",
+        "Цвет",
+        "Размер",
+        "Ничего"
+      ],
+      "answer": 0,
+      "explain": "По for и id они связываются."
+    },
+    {
+      "type": "truefalse",
+      "topic": "label",
+      "prompt": "Клик по тексту label ставит курсор в связанное поле.",
+      "answer": true,
+      "explain": "Это одна из причин использовать label."
+    },
+    {
+      "type": "choice",
+      "topic": ":hover и :focus",
+      "prompt": "Когда работает button:hover?",
+      "options": [
+        "Пока курсор над кнопкой",
+        "Когда кнопка нажата и отпущена",
+        "Когда страница загрузилась",
+        "Никогда"
+      ],
+      "answer": 0,
+      "explain": ":hover — пока курсор над элементом."
+    },
+    {
+      "type": "choice",
+      "topic": ":hover и :focus",
+      "prompt": "Какой псевдокласс сработает, когда курсор стоит внутри поля ввода?",
+      "options": [
+        ":focus",
+        ":hover",
+        ":first-child",
+        ":odd"
+      ],
+      "answer": 0,
+      "explain": ":focus — поле выбрано."
+    },
+    {
+      "type": "order",
+      "topic": ":hover и :focus",
+      "prompt": "Собери селектор поля в фокусе",
+      "tokens": [
+        "input",
+        ":focus",
+        "{",
+        "border-color: #7c3aed;",
+        "}"
+      ],
+      "extra": [
+        "hover"
+      ],
+      "explain": "Селектор + псевдокласс + блок стилей."
+    },
+    {
+      "type": "choice",
+      "topic": "nth-child",
+      "prompt": "Что выберет li:nth-child(2)?",
+      "options": [
+        "Только второй пункт",
+        "Все, кроме второго",
+        "Первые два",
+        "Последний"
+      ],
+      "answer": 0,
+      "explain": "Номер считают с единицы."
+    },
+    {
+      "type": "choice",
+      "topic": "nth-child",
+      "prompt": "Какие из 6 пунктов станут красными?",
+      "code": "li:nth-child(odd) { color: red; }",
+      "options": [
+        "1, 3, 5",
+        "2, 4, 6",
+        "1, 2, 3",
+        "Все"
+      ],
+      "answer": 0,
+      "explain": "odd — нечётные номера."
+    },
+    {
+      "type": "match",
+      "topic": "first и last",
+      "prompt": "Соедини селектор и элемент",
+      "pairs": [
+        [
+          ":first-child",
+          "Первый элемент"
+        ],
+        [
+          ":last-child",
+          "Последний элемент"
+        ],
+        [
+          ":nth-child(even)",
+          "Чётные элементы"
+        ]
+      ]
+    },
+    {
+      "type": "truefalse",
+      "topic": "first и last",
+      "prompt": "li:last-child { border-bottom: none; } уберёт линию у последнего пункта.",
+      "answer": true,
+      "explain": "Типичное применение :last-child."
+    }
+  ]
+}

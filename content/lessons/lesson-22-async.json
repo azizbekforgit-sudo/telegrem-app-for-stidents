@@ -1,0 +1,264 @@
+{
+  "id": "lesson-22-async",
+  "order": 22,
+  "title": "Урок 22. async/await и обработка ошибок",
+  "emoji": "⏳",
+  "description": "async, await, try/catch и индикатор загрузки",
+  "learn": {
+    "intro": "Привет! Урок 22 — **async/await**. Цепочка .then().then() трудно читается. Научимся писать асинхронный код построчно, как обычный. Поехали!",
+    "sections": [
+      {
+        "title": "Один запрос, два способа",
+        "slides": [
+          {
+            "emoji": "🔗",
+            "text": "С `.then`:",
+            "code": "fetch(url)\n  .then((response) => response.json())\n  .then((data) => console.log(data));"
+          },
+          {
+            "text": "С `async/await`:",
+            "code": "async function loadData() {\n  const response = await fetch(url);\n  const data = await response.json();\n  console.log(data);\n}\nloadData();"
+          },
+          {
+            "quote": true,
+            "text": "Оба делают одно и то же, но второй читается **сверху вниз**."
+          }
+        ],
+        "check": [
+          {
+            "type": "truefalse",
+            "topic": "async/await",
+            "prompt": "async/await и .then делают одно и то же, но по-разному записаны.",
+            "answer": true,
+            "explain": "Второй читается как обычный код."
+          }
+        ]
+      },
+      {
+        "title": "Ключевые слова",
+        "slides": [
+          {
+            "emoji": "🔑",
+            "text": "`async` перед функцией — «эта функция умеет ждать».\n`await` перед вызовом — «остановись на этой строке, пока не придёт результат»."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "async/await",
+            "prompt": "Что делает await?",
+            "options": [
+              "Ждёт результата на этой строке",
+              "Удаляет функцию",
+              "Меняет цвет",
+              "Создаёт цикл"
+            ],
+            "answer": 0,
+            "explain": "await останавливается, пока не придёт результат."
+          },
+          {
+            "type": "choice",
+            "topic": "async/await",
+            "prompt": "Что пишут перед функцией, чтобы в ней можно было использовать await?",
+            "options": [
+              "async",
+              "wait",
+              "later",
+              "defer"
+            ],
+            "answer": 0,
+            "explain": "async function имя() { }."
+          }
+        ]
+      },
+      {
+        "title": "try / catch",
+        "slides": [
+          {
+            "emoji": "🛟",
+            "text": "`try` — пробуем выполнить, `catch` — что делать при ошибке: пропал интернет или сервер не работает.",
+            "code": "async function loadData() {\n  try {\n    const response = await fetch(url);\n    const data = await response.json();\n    console.log(data);\n  } catch (error) {\n    console.log(\"Что-то пошло не так:\", error);\n  }\n}"
+          },
+          {
+            "quote": true,
+            "text": "Проверить: в DevTools открой вкладку **Network** и включи **Offline**. Запрос упадёт, и сработает `catch`."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "try/catch",
+            "prompt": "Когда сработает блок catch?",
+            "options": [
+              "Когда в try случилась ошибка",
+              "Всегда",
+              "Никогда",
+              "Только при успехе"
+            ],
+            "answer": 0,
+            "explain": "catch ловит ошибки из try."
+          }
+        ]
+      },
+      {
+        "title": "Индикатор загрузки и практика",
+        "slides": [
+          {
+            "emoji": "⏳",
+            "text": "Пока ждём данные — пишем «Загрузка…», при ошибке — сообщение:",
+            "code": "const status = document.querySelector(\"#status\");\n\nasync function loadData() {\n  status.textContent = \"Загрузка...\";\n  try {\n    const response = await fetch(url);\n    const data = await response.json();\n    status.textContent = \"\";\n  } catch (error) {\n    status.textContent = \"Ошибка загрузки\";\n  }\n}"
+          },
+          {
+            "quote": true,
+            "text": "Практика: перепиши fetch из прошлого урока на `async/await` и `try/catch`. Домашка: добавь в проект с API индикатор «Загрузка…» и сообщение об ошибке."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Загрузка",
+            "prompt": "Когда очищать надпись «Загрузка...»?",
+            "options": [
+              "Когда данные пришли",
+              "Никогда",
+              "До запроса",
+              "Когда страница закрыта"
+            ],
+            "answer": 0,
+            "explain": "Данные пришли — индикатор больше не нужен."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "async/await",
+      "prompt": "Какой вариант читается сверху вниз?",
+      "options": [
+        "async/await",
+        "Цепочка .then().then()",
+        "Оба одинаково",
+        "Ни один"
+      ],
+      "answer": 0,
+      "explain": "async/await пишется как обычный код."
+    },
+    {
+      "type": "truefalse",
+      "topic": "async/await",
+      "prompt": "async перед функцией значит «эта функция умеет ждать».",
+      "answer": true,
+      "explain": "Так можно использовать await внутри."
+    },
+    {
+      "type": "choice",
+      "topic": "async/await",
+      "prompt": "Что значит await перед вызовом?",
+      "options": [
+        "Остановись, пока не придёт результат",
+        "Пропусти эту строку",
+        "Выполни дважды",
+        "Удали переменную"
+      ],
+      "answer": 0,
+      "explain": "await ждёт на этой строке."
+    },
+    {
+      "type": "order",
+      "topic": "async/await",
+      "prompt": "Собери две строки запроса",
+      "tokens": [
+        "const response = await fetch(url);",
+        "const data = await response.json();"
+      ],
+      "extra": [
+        "const data = fetch(url).json();"
+      ],
+      "explain": "Сначала fetch, потом json()."
+    },
+    {
+      "type": "choice",
+      "topic": "async/await",
+      "prompt": "Где ошибка?",
+      "code": "function loadData() {\n  const response = await fetch(url);\n}",
+      "options": [
+        "Нет async перед функцией",
+        "Нет скобок",
+        "Ошибки нет",
+        "Лишний return"
+      ],
+      "answer": 0,
+      "explain": "await работает только в async-функции."
+    },
+    {
+      "type": "choice",
+      "topic": "try/catch",
+      "prompt": "Что делает try?",
+      "options": [
+        "Пробует выполнить код",
+        "Ловит ошибку",
+        "Создаёт функцию",
+        "Удаляет код"
+      ],
+      "answer": 0,
+      "explain": "catch ловит, try пробует."
+    },
+    {
+      "type": "truefalse",
+      "topic": "try/catch",
+      "prompt": "Если в try всё прошло хорошо, блок catch выполнится тоже.",
+      "answer": false,
+      "explain": "catch — только при ошибке."
+    },
+    {
+      "type": "choice",
+      "topic": "try/catch",
+      "prompt": "Как проверить, что catch работает?",
+      "options": [
+        "Network → Offline в DevTools",
+        "Перезагрузить компьютер",
+        "Удалить код",
+        "Никак"
+      ],
+      "answer": 0,
+      "explain": "Без интернета запрос упадёт."
+    },
+    {
+      "type": "input",
+      "topic": "try/catch",
+      "prompt": "Какое слово ловит ошибку после try? (одно слово)",
+      "answer": [
+        "catch"
+      ],
+      "explain": "try { } catch (error) { }"
+    },
+    {
+      "type": "choice",
+      "topic": "Загрузка",
+      "prompt": "Что показываем пользователю при ошибке запроса?",
+      "options": [
+        "Сообщение «Ошибка загрузки»",
+        "Пустой экран без объяснений",
+        "Ничего",
+        "Реклама"
+      ],
+      "answer": 0,
+      "explain": "Пользователю нужно понимать, что произошло."
+    },
+    {
+      "type": "choice",
+      "topic": "Загрузка",
+      "prompt": "Где ставят «Загрузка...» в async-функции?",
+      "options": [
+        "Перед запросом",
+        "После catch",
+        "Вне функции",
+        "Нигде"
+      ],
+      "answer": 0,
+      "explain": "Сначала показываем индикатор, потом запрашиваем данные."
+    }
+  ]
+}

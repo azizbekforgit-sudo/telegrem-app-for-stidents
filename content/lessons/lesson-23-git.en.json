@@ -1,0 +1,278 @@
+{
+  "title": "Lesson 23. Git and GitHub",
+  "description": "init, add, commit, push, branches and connecting to GitHub",
+  "learn": {
+    "intro": "Hi! Lesson 23 — **Git and GitHub**. Imagine a coursework in Word: 20 file versions like «coursework_final_v2_FIXED». Git keeps the history and prevents a mess. Let's go!",
+    "sections": [
+      {
+        "title": "Git and GitHub",
+        "slides": [
+          {
+            "emoji": "🌿",
+            "text": "**Git** is a program on your computer that keeps the history of changes. **GitHub** is a site where projects are stored online."
+          },
+          {
+            "quote": true,
+            "text": "Git is the program, GitHub is the place where you publish the result."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Git and GitHub",
+            "prompt": "What is GitHub?",
+            "options": [
+              "A site where projects are stored",
+              "A history program on a computer",
+              "A programming language",
+              "A browser"
+            ],
+            "answer": 0,
+            "explain": "GitHub is a site, Git is a program."
+          }
+        ]
+      },
+      {
+        "title": "Basic commands",
+        "slides": [
+          {
+            "emoji": "📦",
+            "text": "`git init` — we create an archive in the folder.\n`git add .` — we pack things into a parcel.\n`git commit -m \"message\"` — we seal the parcel with a description.\n`git push` — we send the parcel to GitHub."
+          },
+          {
+            "quote": true,
+            "text": "Write meaningful messages: «added a subscribe form». Don't write `fix` or `123`."
+          }
+        ],
+        "check": [
+          {
+            "type": "match",
+            "topic": "Commands",
+            "prompt": "Match the command and the analogy",
+            "pairs": [
+              [
+                "git add .",
+                "We pack things into a parcel"
+              ],
+              [
+                "git commit",
+                "We seal the parcel"
+              ],
+              [
+                "git push",
+                "We send the parcel"
+              ],
+              [
+                "git init",
+                "We create an archive"
+              ]
+            ]
+          },
+          {
+            "type": "choice",
+            "topic": "Commands",
+            "prompt": "Which commit message is good?",
+            "options": [
+              "added a subscribe form",
+              "fix",
+              "123",
+              "asdf"
+            ],
+            "answer": 0,
+            "explain": "The message should explain what changed."
+          }
+        ]
+      },
+      {
+        "title": "Branches and GitHub",
+        "slides": [
+          {
+            "emoji": "🌱",
+            "text": "A branch is a parallel version of the project so you don't break the main one:",
+            "code": "git branch новая-ветка\ngit checkout -b новая-ветка"
+          },
+          {
+            "text": "Connecting to GitHub:",
+            "code": "git remote add origin ссылка-на-репозиторий\ngit push -u origin main"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Branches",
+            "prompt": "What is a branch for?",
+            "options": [
+              "So you don't break the main version",
+              "To delete the project",
+              "To change the color",
+              "Branches aren't needed"
+            ],
+            "answer": 0,
+            "explain": "A branch is a parallel version for experiments."
+          }
+        ]
+      },
+      {
+        "title": "Practice and homework",
+        "slides": [
+          {
+            "emoji": "🚀",
+            "text": "Practice: create a GitHub account, create a repository and push your landing built in earlier lessons."
+          },
+          {
+            "quote": true,
+            "text": "Homework: make 3 separate commits with meaningful messages: «fixed colors», «added a section», «fixed responsive»."
+          }
+        ],
+        "check": [
+          {
+            "type": "input",
+            "topic": "Practice",
+            "prompt": "Which command sends commits to GitHub? (git and a word)",
+            "answer": [
+              "git push"
+            ],
+            "explain": "git push sends to GitHub."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "truefalse",
+      "topic": "Git and GitHub",
+      "prompt": "Git is a program on a computer, GitHub is a site for storing projects.",
+      "answer": true,
+      "explain": "They are different things."
+    },
+    {
+      "type": "choice",
+      "topic": "Git and GitHub",
+      "prompt": "What does Git do?",
+      "options": [
+        "Keeps the history of changes",
+        "Colors the site",
+        "Runs games",
+        "Draws pictures"
+      ],
+      "answer": 0,
+      "explain": "Git saves project versions."
+    },
+    {
+      "type": "choice",
+      "topic": "Commands",
+      "prompt": "Which command creates a history store in a folder?",
+      "options": [
+        "git init",
+        "git add .",
+        "git push",
+        "git commit"
+      ],
+      "answer": 0,
+      "explain": "git init creates the archive."
+    },
+    {
+      "type": "choice",
+      "topic": "Commands",
+      "prompt": "Which command selects changes to save?",
+      "options": [
+        "git add .",
+        "git init",
+        "git push",
+        "git branch"
+      ],
+      "answer": 0,
+      "explain": "git add packs the parcel."
+    },
+    {
+      "type": "order",
+      "topic": "Commands",
+      "prompt": "Put the commands in working order",
+      "tokens": [
+        "git add .",
+        "git commit -m \"msg\"",
+        "git push"
+      ],
+      "extra": [
+        "git init2"
+      ],
+      "explain": "First add, then commit, then push."
+    },
+    {
+      "type": "choice",
+      "topic": "Commands",
+      "prompt": "What does git commit -m \"message\" do?",
+      "options": [
+        "Saves a snapshot with a caption",
+        "Deletes the project",
+        "Downloads a site",
+        "Opens a browser"
+      ],
+      "answer": 0,
+      "explain": "A commit is a saved version."
+    },
+    {
+      "type": "choice",
+      "topic": "Commands",
+      "prompt": "Which commit message is better?",
+      "options": [
+        "added a reviews section",
+        "fix",
+        "123",
+        "aaa"
+      ],
+      "answer": 0,
+      "explain": "It is clear what changed."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Commands",
+      "prompt": "Messages like \"fix\" and \"123\" are good practice.",
+      "answer": false,
+      "explain": "They explain nothing."
+    },
+    {
+      "type": "choice",
+      "topic": "Branches",
+      "prompt": "Which command creates a branch and switches to it?",
+      "options": [
+        "git checkout -b имя",
+        "git init имя",
+        "git push имя",
+        "git add имя"
+      ],
+      "answer": 0,
+      "explain": "checkout -b creates and switches."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Branches",
+      "prompt": "A branch is a parallel version of the project so you don't break the main one.",
+      "answer": true,
+      "explain": "You can experiment safely."
+    },
+    {
+      "type": "input",
+      "topic": "Practice",
+      "prompt": "Which command sends commits to GitHub?",
+      "answer": [
+        "git push"
+      ],
+      "explain": "git push sends to GitHub."
+    },
+    {
+      "type": "choice",
+      "topic": "Practice",
+      "prompt": "What do you do in the homework?",
+      "options": [
+        "3 commits with meaningful messages",
+        "Delete the repository",
+        "Write a game",
+        "Nothing"
+      ],
+      "answer": 0,
+      "explain": "Make small changes between commits."
+    }
+  ]
+}

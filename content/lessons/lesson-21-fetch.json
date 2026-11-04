@@ -1,0 +1,284 @@
+{
+  "id": "lesson-21-fetch",
+  "order": 21,
+  "title": "Урок 21. Fetch API и JSON",
+  "emoji": "🌐",
+  "description": "JSON, fetch, promise, .then, .catch и работа с данными",
+  "learn": {
+    "intro": "Привет! Урок 21 — **Fetch API и JSON**. Реальные сайты берут данные с сервера: погоду, товары, посты. Научимся «ходить» на сервер за данными. Поехали!",
+    "sections": [
+      {
+        "title": "Что такое JSON",
+        "slides": [
+          {
+            "emoji": "📄",
+            "text": "Все данные мы писали руками в коде. Реальные сайты получают их с сервера. **JSON** — тот же формат, что объекты JS, только в виде текста. Так данные передают по интернету."
+          },
+          {
+            "text": "Объект JS и тот же объект в JSON:",
+            "code": "// Объект JS\nconst user = { name: \"Аня\", age: 25 };\n// Тот же объект в формате JSON\n// {\"name\": \"Аня\", \"age\": 25}"
+          }
+        ],
+        "check": [
+          {
+            "type": "truefalse",
+            "topic": "JSON",
+            "prompt": "JSON — это формат данных, похожий на объекты JS, но в виде текста.",
+            "answer": true,
+            "explain": "Так данные передают между сервером и сайтом."
+          }
+        ]
+      },
+      {
+        "title": "fetch и promise",
+        "slides": [
+          {
+            "emoji": "🛰️",
+            "text": "`fetch` — способ «сходить» на сервер и забрать данные:",
+            "code": "fetch(\"https://jsonplaceholder.typicode.com/users\")\n  .then((response) => response.json())\n  .then((data) => console.log(data))\n  .catch((error) => console.log(\"Ошибка:\", error));"
+          },
+          {
+            "quote": true,
+            "text": "`fetch` возвращает **promise** — обещание, что данные придут чуть позже, не мгновенно."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "fetch",
+            "prompt": "Что возвращает fetch?",
+            "options": [
+              "promise",
+              "Сразу данные",
+              "Строку",
+              "Число"
+            ],
+            "answer": 0,
+            "explain": "Promise — обещание, что данные придут позже."
+          }
+        ]
+      },
+      {
+        "title": ".then, json() и .catch",
+        "slides": [
+          {
+            "emoji": "🔗",
+            "text": "`.then` — что делать, когда пришёл результат. `response.json()` превращает «сырой» ответ в объект JS. `.catch` ловит ошибку, если сервер недоступен или нет интернета."
+          },
+          {
+            "quote": true,
+            "text": "Шпаргалка: `fetch(url)` — запросить; `.then(r => r.json())` — превратить в объект; `.catch(err => ...)` — ошибка."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "then и catch",
+            "prompt": "Зачем response.json()?",
+            "options": [
+              "Превратить ответ в объект JS",
+              "Отправить запрос",
+              "Показать ошибку",
+              "Закрыть сайт"
+            ],
+            "answer": 0,
+            "explain": "Ответ приходит «сырым»."
+          },
+          {
+            "type": "choice",
+            "topic": "then и catch",
+            "prompt": "Что делает .catch?",
+            "options": [
+              "Обрабатывает ошибку",
+              "Отправляет запрос",
+              "Удаляет данные",
+              "Ускоряет сайт"
+            ],
+            "answer": 0,
+            "explain": "Срабатывает, если что-то пошло не так."
+          }
+        ]
+      },
+      {
+        "title": "Работа с данными и практика",
+        "slides": [
+          {
+            "emoji": "🗃️",
+            "text": "Данные обычно приходят **массивом объектов**. Дальше работаем методами из урока 17:",
+            "code": "data.forEach((user) => {\n  console.log(user.name);\n});"
+          },
+          {
+            "text": "Практика: запрос к публичному API (посты или пользователи) и вывод на страницу через `querySelector`, `forEach` и `createElement`. Домашка: найди любой бесплатный API (страны, котики, шутки) и выведи 5 элементов на страницу."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Данные",
+            "prompt": "В каком виде данные обычно приходят с сервера?",
+            "options": [
+              "Массив объектов",
+              "Одна цифра",
+              "Картинка",
+              "Звук"
+            ],
+            "answer": 0,
+            "explain": "Это список карточек."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "truefalse",
+      "topic": "JSON",
+      "prompt": "JSON — формат данных в виде текста, похожий на объект JS.",
+      "answer": true,
+      "explain": "Так данные ходят по интернету."
+    },
+    {
+      "type": "choice",
+      "topic": "JSON",
+      "prompt": "Какая запись — JSON?",
+      "options": [
+        "{\"name\": \"Аня\", \"age\": 25}",
+        "name = Аня; age = 25",
+        "<user name=\"Аня\">",
+        "[name: Аня]"
+      ],
+      "answer": 0,
+      "explain": "В JSON ключи в двойных кавычках."
+    },
+    {
+      "type": "choice",
+      "topic": "fetch",
+      "prompt": "Для чего нужен fetch?",
+      "options": [
+        "Запросить данные с сервера",
+        "Покрасить кнопку",
+        "Создать папку",
+        "Выключить сайт"
+      ],
+      "answer": 0,
+      "explain": "fetch «ходит» на сервер за данными."
+    },
+    {
+      "type": "choice",
+      "topic": "fetch",
+      "prompt": "Что такое promise?",
+      "options": [
+        "Обещание, что данные придут позже",
+        "Тип картинки",
+        "Имя переменной",
+        "Ошибка"
+      ],
+      "answer": 0,
+      "explain": "Ответ приходит не мгновенно."
+    },
+    {
+      "type": "truefalse",
+      "topic": "fetch",
+      "prompt": "Данные от fetch приходят мгновенно, поэтому promise не нужен.",
+      "answer": false,
+      "explain": "Запрос идёт по сети, поэтому нужно ждать."
+    },
+    {
+      "type": "choice",
+      "topic": "then и catch",
+      "prompt": "Что произойдёт, если нет интернета?",
+      "options": [
+        "Сработает .catch",
+        "Сработает .then",
+        "Сайт удалится",
+        "Ничего"
+      ],
+      "answer": 0,
+      "explain": "Ошибка попадает в .catch."
+    },
+    {
+      "type": "order",
+      "topic": "then и catch",
+      "prompt": "Собери цепочку fetch",
+      "tokens": [
+        "fetch(url)",
+        ".then((r) => r.json())",
+        ".then((data) => console.log(data))",
+        ".catch((e) => console.log(e));"
+      ],
+      "extra": [
+        ".stop()"
+      ],
+      "explain": "Запрос → json → вывод → ошибка."
+    },
+    {
+      "type": "input",
+      "topic": "then и catch",
+      "prompt": "Какой метод превращает ответ в объект JS? (с response., без скобок)",
+      "answer": [
+        "response.json",
+        "json"
+      ],
+      "explain": "response.json() превращает ответ в объект."
+    },
+    {
+      "type": "choice",
+      "topic": "Данные",
+      "prompt": "Какой метод пройдёт по каждому пользователю из data?",
+      "options": [
+        "data.forEach(...)",
+        "data.fetch(...)",
+        "data.get(...)",
+        "data.run(...)"
+      ],
+      "answer": 0,
+      "explain": "forEach из урока 17."
+    },
+    {
+      "type": "choice",
+      "topic": "Данные",
+      "prompt": "Что выведет этот код, если data — массив пользователей?",
+      "code": "data.forEach((user) => {\n  console.log(user.name);\n});",
+      "options": [
+        "Имя каждого пользователя",
+        "Ничего",
+        "Ошибку",
+        "Только первого"
+      ],
+      "answer": 0,
+      "explain": "forEach вызовет console.log для каждого."
+    },
+    {
+      "type": "match",
+      "topic": "Данные",
+      "prompt": "Соедини действие и запись",
+      "pairs": [
+        [
+          "Запросить данные",
+          "fetch(url)"
+        ],
+        [
+          "Превратить в объект",
+          ".then(r => r.json())"
+        ],
+        [
+          "Обработать ошибку",
+          ".catch(err => ...)"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "Практика",
+      "prompt": "Что нужно для вывода данных API на страницу?",
+      "options": [
+        "fetch, querySelector, forEach и createElement",
+        "Только CSS",
+        "Только HTML",
+        "Ничего"
+      ],
+      "answer": 0,
+      "explain": "Вся цепочка инструментов из прошлых уроков."
+    }
+  ]
+}

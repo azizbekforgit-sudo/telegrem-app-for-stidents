@@ -1,5 +1,6 @@
 {
   "id": "lesson-12-css-variables",
+  "order": 12,
   "title": "Урок 12. CSS-переменные и анимации",
   "emoji": "🎨",
   "description": ":root и var(), transition, @keyframes, transform",

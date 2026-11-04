@@ -1,5 +1,6 @@
 {
   "id": "lesson-04-box-model",
+  "order": 4,
   "title": "Урок 4. Box model — элемент это коробка",
   "emoji": "📦",
   "description": "content, padding, border, margin и box-sizing: border-box",

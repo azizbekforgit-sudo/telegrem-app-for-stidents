@@ -1,0 +1,280 @@
+{
+  "title": "24-dars. npm, yig'uvchilar (Vite), modullar",
+  "description": "npm, Vite, package.json, npm install, npm run dev, import va export",
+  "learn": {
+    "intro": "Salom! 24-dars — **npm, Vite va modullar**. Haqiqiy loyihalarda yuzlab fayllar bor va ularni tayyor saytga yig'ish kerak. Ketdik!",
+    "sections": [
+      {
+        "title": "npm nima",
+        "slides": [
+          {
+            "emoji": "🛒",
+            "text": "**npm** — tayyor kod bo'laklari, kutubxonalar do'koni. Kiyimni noldan tikib nima kerak, uni sotib olish mumkin-ku?"
+          },
+          {
+            "text": "Terminalda o'rnatilganini tekshirish:",
+            "code": "node -v\nnpm -v"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "npm",
+            "prompt": "npm nima?",
+            "options": [
+              "Tayyor kutubxonalar do'koni",
+              "Brauzer",
+              "Dasturlash tili",
+              "O'yin"
+            ],
+            "answer": 0,
+            "explain": "npm — paket menejeri."
+          }
+        ]
+      },
+      {
+        "title": "Vite loyihasi",
+        "slides": [
+          {
+            "emoji": "⚡",
+            "text": "Loyiha yaratamiz:",
+            "code": "npm create vite@latest"
+          },
+          {
+            "text": "`src`, `index.html`, `package.json` papka va fayllari paydo bo'ladi. `package.json` — **loyiha pasporti**: qaysi kutubxonalar ishlatiladi va loyiha qanday ishga tushiriladi."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "package.json",
+            "prompt": "package.json nima?",
+            "options": [
+              "Loyiha pasporti",
+              "Rasm",
+              "Sahifa uslubi",
+              "Brauzer"
+            ],
+            "answer": 0,
+            "explain": "U yerda kutubxonalar ro'yxati va ishga tushirish buyruqlari."
+          }
+        ]
+      },
+      {
+        "title": "O'rnatish va ishga tushirish",
+        "slides": [
+          {
+            "emoji": "▶️",
+            "text": "O'rnatamiz va ishga tushiramiz:",
+            "code": "npm install     # package.json dagi barcha kutubxonalarni o'rnatish\nnpm run dev     # mahalliy serverni ishga tushirish"
+          },
+          {
+            "quote": true,
+            "text": "Kod o'zgarganda sahifa F5 siz o'zi yangilanadi. Bu **hot reload** deyiladi."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Ishga tushirish",
+            "prompt": "Qaysi buyruq mahalliy serverni ishga tushiradi?",
+            "options": [
+              "npm run dev",
+              "npm install",
+              "npm create",
+              "npm stop"
+            ],
+            "answer": 0,
+            "explain": "npm run dev — dasturlash serverini ishga tushirish."
+          },
+          {
+            "type": "input",
+            "topic": "Ishga tushirish",
+            "prompt": "Kod o'zgarganda sahifaning avtomatik yangilanishi qanday ataladi? (ikki qism, lotincha)",
+            "answer": [
+              "hot reload",
+              "hotreload"
+            ],
+            "explain": "Hot reload — sahifa o'zi yangilanadi."
+          }
+        ]
+      },
+      {
+        "title": "Modullar: import va export",
+        "slides": [
+          {
+            "emoji": "🪟",
+            "text": "`utils.js` fayli funksiyani «vitrinaga» chiqaradi:",
+            "code": "export function sum(a, b) {\n  return a + b;\n}"
+          },
+          {
+            "text": "`main.js` fayli uni vitrinadan oladi:",
+            "code": "import { sum } from \"./utils.js\";\nconsole.log(sum(2, 3)); // 5"
+          },
+          {
+            "quote": true,
+            "text": "Amaliyot: lendingni Vite orqali qayta yarat va JS ni `import` va `export` bilan ikki faylga bo'l. Uy vazifasi: loyihani GitHub ga yangi commit bilan yukla."
+          }
+        ],
+        "check": [
+          {
+            "type": "match",
+            "topic": "Modullar",
+            "prompt": "So'z va ma'noni moslashtir",
+            "pairs": [
+              [
+                "export",
+                "Vitrinaga chiqarish"
+              ],
+              [
+                "import",
+                "Vitrinadan olish"
+              ]
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "truefalse",
+      "topic": "npm",
+      "prompt": "npm — tayyor kod kutubxonalari do'koni.",
+      "answer": true,
+      "explain": "Noldan yozish o'rniga tayyorini olish mumkin."
+    },
+    {
+      "type": "choice",
+      "topic": "npm",
+      "prompt": "node -v va npm -v buyruqlari bilan nima tekshiriladi?",
+      "options": [
+        "Node va npm o'rnatilganini",
+        "Internet tezligini",
+        "Sayt rangini",
+        "Batareya zaryadini"
+      ],
+      "answer": 0,
+      "explain": "Buyruqlar versiyalarni ko'rsatadi."
+    },
+    {
+      "type": "choice",
+      "topic": "Vite",
+      "prompt": "Qaysi buyruq Vite loyihasini yaratadi?",
+      "options": [
+        "npm create vite@latest",
+        "npm run vite",
+        "vite new",
+        "npm start vite"
+      ],
+      "answer": 0,
+      "explain": "npm create vite@latest."
+    },
+    {
+      "type": "choice",
+      "topic": "package.json",
+      "prompt": "package.json da nima saqlanadi?",
+      "options": [
+        "Qaysi kutubxonalar ishlatiladi va loyiha qanday ishga tushadi",
+        "Fotosuratlar",
+        "Barcha saytlar parollari",
+        "Musiqa"
+      ],
+      "answer": 0,
+      "explain": "Bu loyiha pasporti."
+    },
+    {
+      "type": "choice",
+      "topic": "Ishga tushirish",
+      "prompt": "npm install nima qiladi?",
+      "options": [
+        "package.json dagi barcha kutubxonalarni o'rnatadi",
+        "Serverni ishga tushiradi",
+        "Loyihani o'chiradi",
+        "Brauzerni ochadi"
+      ],
+      "answer": 0,
+      "explain": "Avval install, keyin dev."
+    },
+    {
+      "type": "order",
+      "topic": "Ishga tushirish",
+      "prompt": "Loyihani ishga tushirish qadamlarini joylashtir",
+      "tokens": [
+        "npm create vite@latest",
+        "npm install",
+        "npm run dev"
+      ],
+      "extra": [
+        "npm destroy"
+      ],
+      "explain": "Yaratish → o'rnatish → ishga tushirish."
+    },
+    {
+      "type": "choice",
+      "topic": "Ishga tushirish",
+      "prompt": "Hot reload nima?",
+      "options": [
+        "Kod o'zgarganda sahifa o'zi yangilanadi",
+        "Sayt kompyuterni qayta yoqadi",
+        "Keshni o'chirish",
+        "Yangi brauzer"
+      ],
+      "answer": 0,
+      "explain": "F5 bosish shart emas."
+    },
+    {
+      "type": "choice",
+      "topic": "Modullar",
+      "prompt": "export nima qiladi?",
+      "options": [
+        "Funksiyani boshqa fayllar uchun «vitrinaga» chiqaradi",
+        "Faylni o'chiradi",
+        "Serverni ishga tushiradi",
+        "Sahifani bo'yaydi"
+      ],
+      "answer": 0,
+      "explain": "export — chiqarish."
+    },
+    {
+      "type": "choice",
+      "topic": "Modullar",
+      "prompt": "main.js nima chiqaradi?",
+      "code": "// utils.js\nexport function sum(a, b) {\n  return a + b;\n}\n\n// main.js\nimport { sum } from \"./utils.js\";\nconsole.log(sum(2, 3));",
+      "options": [
+        "5",
+        "\"2 + 3\"",
+        "undefined",
+        "Xato"
+      ],
+      "answer": 0,
+      "explain": "sum(2, 3) 5 ga teng."
+    },
+    {
+      "type": "match",
+      "topic": "Modullar",
+      "prompt": "Buyruq va amalni moslashtir",
+      "pairs": [
+        [
+          "npm install",
+          "Kutubxonalarni o'rnatish"
+        ],
+        [
+          "npm run dev",
+          "Serverni ishga tushirish"
+        ],
+        [
+          "npm create vite@latest",
+          "Loyiha yaratish"
+        ]
+      ]
+    },
+    {
+      "type": "truefalse",
+      "topic": "Modullar",
+      "prompt": "import export orqali chiqarilgan funksiyani oladi.",
+      "answer": true,
+      "explain": "Vitrinadan olgandek."
+    }
+  ]
+}

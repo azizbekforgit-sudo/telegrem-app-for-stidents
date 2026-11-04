@@ -1,0 +1,290 @@
+{
+  "title": "Lesson 13. JavaScript — variables, types, operators",
+  "description": "let, const, data types, typeof, arithmetic, === and template strings",
+  "learn": {
+    "intro": "Hi! Lesson 13 — **JavaScript**. HTML is the skeleton, CSS is the clothes, and JavaScript is the brain. The site starts to think and react. Let's go!",
+    "sections": [
+      {
+        "title": "let, const, var",
+        "slides": [
+          {
+            "emoji": "📦",
+            "text": "`const` — a variable that cannot be reassigned, like a person's name. `let` — can be changed, like age. `var` — the old way, we don't use it."
+          },
+          {
+            "text": "Example:",
+            "code": "const name = \"Anya\";\nlet age = 25;\nage = 26;        // allowed\n// name = \"Ira\"; // not allowed, error"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "let and const",
+            "prompt": "Which word is for a value that changes (age)?",
+            "options": [
+              "let",
+              "const",
+              "var (современный)",
+              "fix"
+            ],
+            "answer": 0,
+            "explain": "let can be changed, const cannot."
+          },
+          {
+            "type": "truefalse",
+            "topic": "let and const",
+            "prompt": "const can be reassigned, it is just a fancy word.",
+            "answer": false,
+            "explain": "const forbids reassignment — you get an error."
+          }
+        ]
+      },
+      {
+        "title": "Data types and typeof",
+        "slides": [
+          {
+            "emoji": "🏷️",
+            "text": "Types:\n`string` — text `\"Anya\"`\n`number` — a number `25`\n`boolean` — `true` / `false`\n`undefined` — a value not set yet\n`null` — a value that is empty on purpose"
+          },
+          {
+            "text": "`typeof` shows the type. Console: F12 → Console.",
+            "code": "console.log(typeof \"Anya\"); // string\nconsole.log(typeof 25);     // number\nconsole.log(typeof true);   // boolean"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Data types",
+            "prompt": "What does typeof 25 print?",
+            "options": [
+              "number",
+              "string",
+              "boolean",
+              "undefined"
+            ],
+            "answer": 0,
+            "explain": "25 is a number."
+          },
+          {
+            "type": "match",
+            "topic": "Data types",
+            "prompt": "Match the type and an example",
+            "pairs": [
+              [
+                "string",
+                "\"Аня\""
+              ],
+              [
+                "number",
+                "25"
+              ],
+              [
+                "boolean",
+                "true"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Arithmetic and the remainder %",
+        "slides": [
+          {
+            "emoji": "🧮",
+            "text": "Familiar operations:",
+            "code": "console.log(10 + 3); // 13\nconsole.log(10 - 3); // 7\nconsole.log(10 * 3); // 30\nconsole.log(10 / 3); // 3.333...\nconsole.log(10 % 3); // 1 (remainder)"
+          },
+          {
+            "quote": true,
+            "text": "The `%` operator gives the remainder of division. To check if a number is even: `number % 2 === 0`."
+          }
+        ],
+        "check": [
+          {
+            "type": "input",
+            "topic": "Arithmetic",
+            "prompt": "What is 10 % 3?",
+            "answer": [
+              "1"
+            ],
+            "explain": "10 = 3·3 + 1, remainder 1."
+          }
+        ]
+      },
+      {
+        "title": "== and === and template strings",
+        "slides": [
+          {
+            "emoji": "⚖️",
+            "text": "`==` compares the value and ignores the type. `===` compares both the value and the type.",
+            "code": "console.log(\"5\" == 5);  // true\nconsole.log(\"5\" === 5); // false"
+          },
+          {
+            "quote": true,
+            "text": "In projects we use only `===`: `==` often leads to bugs."
+          },
+          {
+            "text": "A template string uses backticks, variables go in `${}`:",
+            "code": "const name = \"Your name\";\nconst age = 20;\nconsole.log(`My name is ${name}, I am ${age}`);"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Comparison",
+            "prompt": "What does \"5\" === 5 print?",
+            "options": [
+              "false",
+              "true",
+              "undefined",
+              "Ошибка"
+            ],
+            "answer": 0,
+            "explain": "=== also compares the type: a string and a number differ."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "let and const",
+      "prompt": "Which word declares a variable that cannot be reassigned?",
+      "options": [
+        "const",
+        "let",
+        "var",
+        "change"
+      ],
+      "answer": 0,
+      "explain": "const is a constant variable."
+    },
+    {
+      "type": "choice",
+      "topic": "let and const",
+      "prompt": "What will happen?",
+      "code": "const name = \"Аня\";\nname = \"Ира\";",
+      "options": [
+        "An error: const can't be reassigned",
+        "The name becomes \"Ira\"",
+        "Nothing",
+        "The name disappears"
+      ],
+      "answer": 0,
+      "explain": "You cannot reassign const."
+    },
+    {
+      "type": "truefalse",
+      "topic": "let and const",
+      "prompt": "var is the modern way and you should use it.",
+      "answer": false,
+      "explain": "var is the old way, we don't use it."
+    },
+    {
+      "type": "match",
+      "topic": "Data types",
+      "prompt": "Match the type and what it is",
+      "pairs": [
+        [
+          "string",
+          "Text"
+        ],
+        [
+          "number",
+          "A number"
+        ],
+        [
+          "boolean",
+          "Yes or no"
+        ],
+        [
+          "undefined",
+          "Value not set"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "Data types",
+      "prompt": "What does let x; with no value mean?",
+      "options": [
+        "x is undefined",
+        "x is 0",
+        "x is null",
+        "An error"
+      ],
+      "answer": 0,
+      "explain": "The value isn't set — undefined."
+    },
+    {
+      "type": "choice",
+      "topic": "Data types",
+      "prompt": "What does typeof true print?",
+      "options": [
+        "boolean",
+        "string",
+        "number",
+        "true"
+      ],
+      "answer": 0,
+      "explain": "true/false is the boolean type."
+    },
+    {
+      "type": "input",
+      "topic": "Arithmetic",
+      "prompt": "What is 10 % 3?",
+      "answer": [
+        "1"
+      ],
+      "explain": "The remainder of 10 divided by 3 is 1."
+    },
+    {
+      "type": "choice",
+      "topic": "Arithmetic",
+      "prompt": "How do you check a number is even?",
+      "options": [
+        "число % 2 === 0",
+        "число / 2",
+        "число - 2",
+        "число * 2 === 0"
+      ],
+      "answer": 0,
+      "explain": "An even number has remainder 0 when divided by 2."
+    },
+    {
+      "type": "choice",
+      "topic": "Comparison",
+      "prompt": "What does \"5\" == 5 print?",
+      "options": [
+        "true",
+        "false",
+        "undefined",
+        "Ошибка"
+      ],
+      "answer": 0,
+      "explain": "== ignores the type, the values are equal."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Comparison",
+      "prompt": "In projects it is better to use === instead of ==.",
+      "answer": true,
+      "explain": "=== is stricter and causes fewer bugs."
+    },
+    {
+      "type": "order",
+      "topic": "Template strings",
+      "prompt": "Build the name output with a template string",
+      "tokens": [
+        "console.log(",
+        "`My name is ${name}`",
+        ");"
+      ],
+      "extra": [
+        "\"My name is \" name"
+      ],
+      "explain": "A template string uses backticks with ${}."
+    }
+  ]
+}

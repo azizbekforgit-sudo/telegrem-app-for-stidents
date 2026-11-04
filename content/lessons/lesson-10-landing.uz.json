@@ -1,0 +1,301 @@
+{
+  "title": "10-dars. Mini-loyiha — lending",
+  "description": "Sahifani noldan yig'amiz: flex, grid, semantika va moslashuvchanlik",
+  "learn": {
+    "intro": "Salom! 10-dars — **mini-loyiha**. Hozirgacha bilganlarimizdan to'liq lending yig'amiz. Ketdik!",
+    "sections": [
+      {
+        "title": "Nima yig'amiz",
+        "slides": [
+          {
+            "emoji": "🏗️",
+            "text": "Bugun sahifani noldan yig'amiz. Hammasidan foydalanamiz: box model, flexbox, grid va moslashuvchanlik."
+          },
+          {
+            "text": "Lending maketi:\n— menyuli shapka\n— sarlavha va tugmali hero-blok\n— 3 ta afzallik\n— kartochkalar yoki sharhlar\n— futer"
+          },
+          {
+            "quote": true,
+            "text": "**Blok-blok** yig'amiz, butun sahifani birdaniga emas."
+          }
+        ],
+        "check": [
+          {
+            "type": "truefalse",
+            "topic": "Tuzilma",
+            "prompt": "Lendingni blok-blok yig'ish yaxshiroq.",
+            "answer": true,
+            "explain": "Shunda adashmaslik va natijani tekshirish osonroq."
+          },
+          {
+            "type": "choice",
+            "topic": "Tuzilma",
+            "prompt": "Quyidagilardan qaysi biri dars lending maketiga KIRMAYDI?",
+            "options": [
+              "Menyuli shapka",
+              "Futer",
+              "Ma'lumotlar bazasi",
+              "Hero-blok"
+            ],
+            "answer": 2,
+            "explain": "Ma'lumotlar bazasi sahifa maketiga kirmaydi."
+          }
+        ]
+      },
+      {
+        "title": "Flex yoki grid?",
+        "slides": [
+          {
+            "emoji": "🧰",
+            "text": "Har bir blokdan oldin o'zingdan so'ra: bu yerda qaysi vosita kerak — **flex** yoki **grid**?"
+          },
+          {
+            "text": "`flex` — elementlar bir qator yoki ustunda, tekislash (masalan, shapkadagi menyu).\n`grid` — qator va ustunlardan to'r, bir necha qatorli kartochkalar."
+          },
+          {
+            "quote": true,
+            "text": "Avval vositani tanlaymiz, keyin kod yozamiz."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Flex va grid",
+            "prompt": "Bir necha qatorli kartochkalar to'ri uchun nima yaxshiroq?",
+            "options": [
+              "grid",
+              "flex",
+              "jadval",
+              "float"
+            ],
+            "answer": 0,
+            "explain": "grid — qator va ustunlardan iborat to'r."
+          },
+          {
+            "type": "choice",
+            "topic": "Flex va grid",
+            "prompt": "Shapkadagi bir qatorli menyu uchun nima yaxshiroq?",
+            "options": [
+              "flex",
+              "grid",
+              "jadval",
+              "absolute"
+            ],
+            "answer": 0,
+            "explain": "flex — elementlar bir qatorda va tekislash."
+          }
+        ]
+      },
+      {
+        "title": "Oldingi darslardan eslatmalar",
+        "slides": [
+          {
+            "emoji": "📌",
+            "text": "CSS ning birinchi qatori:",
+            "code": "* {\n  box-sizing: border-box;\n}"
+          },
+          {
+            "text": "`gap` — elementlar orasidagi masofa, ortiqcha margin kerak emas.\nSemantik teglar: oddiy `<div>` o'rniga `<header>`, `<section>`, `<footer>`."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Semantika",
+            "prompt": "Sahifa pastki qismi uchun qaysi teg yaxshiroq?",
+            "options": [
+              "<footer>",
+              "<div>",
+              "<p>",
+              "<bottom>"
+            ],
+            "answer": 0,
+            "explain": "<footer> — pastki qism semantik tegi."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Semantika",
+            "prompt": "gap flex va grid da elementlar orasidagi masofani beradi.",
+            "answer": true,
+            "explain": "Shunda ortiqcha margin kerak bo'lmaydi."
+          }
+        ]
+      },
+      {
+        "title": "Tuzilma va moslashuvchanlik",
+        "slides": [
+          {
+            "emoji": "🧱",
+            "text": "Sahifa tuzilishi:",
+            "code": "<header>...</header>\n<section class=\"hero\">...</section>\n<section class=\"features\">...</section>\n<section class=\"cards\">...</section>\n<footer>...</footer>"
+          },
+          {
+            "text": "Oxirida uchta breykpoint bo'yicha o't:",
+            "code": "@media (max-width: 1024px) { /* планшет */ }\n@media (max-width: 600px)  { /* телефон */ }"
+          },
+          {
+            "text": "Uy vazifasi: lendingni tugatish va tugmalarga hover effekti qo'shish (batafsil — keyingi darsda)."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Moslashuvchanlik",
+            "prompt": "Bu qoida qaysi ekran kengligi uchun?",
+            "code": "@media (max-width: 1024px) { }",
+            "options": [
+              "Planshet",
+              "Telefon",
+              "Monitor",
+              "Soat"
+            ],
+            "answer": 0,
+            "explain": "1024px — bu planshet."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "truefalse",
+      "topic": "Tuzilma",
+      "prompt": "Lendingni butun sahifani birdaniga emas, blok-blok yig'ish yaxshiroq.",
+      "answer": true,
+      "explain": "Shunda har bir qadamni tekshirish osonroq."
+    },
+    {
+      "type": "choice",
+      "topic": "Tuzilma",
+      "prompt": "Har bir blokdan oldin birinchi bo'lib qanday savol beriladi?",
+      "options": [
+        "Flex yoki grid?",
+        "Qaysi rangni tanlash?",
+        "Necha qator kod?",
+        "JavaScript kerakmi?"
+      ],
+      "answer": 0,
+      "explain": "Avval vositani tanlaymiz."
+    },
+    {
+      "type": "match",
+      "topic": "Flex va grid",
+      "prompt": "Vaziyat va vositani moslashtir",
+      "pairs": [
+        [
+          "Elementlar bir qatorda, tekislash",
+          "flex"
+        ],
+        [
+          "Bir necha qatorli kartochkalar to'ri",
+          "grid"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "Flex va grid",
+      "prompt": "Bir qatordagi 3 ta afzallik bloki uchun nima yaxshiroq?",
+      "options": [
+        "flex или grid",
+        "Faqat margin",
+        "Faqat float",
+        "Jadval"
+      ],
+      "answer": 0,
+      "explain": "Qator uchun flex ham, grid ham mos."
+    },
+    {
+      "type": "choice",
+      "topic": "Semantika",
+      "prompt": "Sayt shapkasi uchun qaysi teg yaxshiroq?",
+      "options": [
+        "<header>",
+        "<div>",
+        "<top>",
+        "<head>"
+      ],
+      "answer": 0,
+      "explain": "<header> — shapkaning semantik tegi. <head> — butunlay boshqa narsa."
+    },
+    {
+      "type": "input",
+      "topic": "Semantika",
+      "prompt": "Pastki qism uchun oddiy <div> o'rniga qaysi teg qo'yiladi? (qavslarsiz)",
+      "answer": [
+        "footer",
+        "<footer>"
+      ],
+      "explain": "footer — pastki qismning semantik tegi."
+    },
+    {
+      "type": "order",
+      "topic": "Tuzilma",
+      "prompt": "Sahifa bloklarini yuqoridan pastga joylashtir",
+      "tokens": [
+        "<header>",
+        "<section class=\"hero\">",
+        "<section class=\"features\">",
+        "<footer>"
+      ],
+      "extra": [
+        "<aside>"
+      ],
+      "explain": "Shapka → hero → afzalliklar → futer."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Asosiy qoidalar",
+      "prompt": "gap elementlar orasida ortiqcha margin ishlatmaslikka imkon beradi.",
+      "answer": true,
+      "explain": "gap elementlar orasidagi masofani beradi."
+    },
+    {
+      "type": "choice",
+      "topic": "Asosiy qoidalar",
+      "prompt": "Loyiha CSS ida birinchi qatorga qaysi qoida yoziladi?",
+      "options": [
+        "* { box-sizing: border-box; }",
+        "p { color: red; }",
+        "body { margin: 0; }",
+        "h1 { font-size: 40px; }"
+      ],
+      "answer": 0,
+      "explain": "box-sizing: border-box bilan o'lchamlar bashorat qilinadigan bo'ladi."
+    },
+    {
+      "type": "choice",
+      "topic": "Moslashuvchanlik",
+      "prompt": "Bu qoida qaysi ekran kengligi uchun?",
+      "code": "@media (max-width: 600px) { }",
+      "options": [
+        "Telefon",
+        "Planshet",
+        "Monitor",
+        "Istalgan"
+      ],
+      "answer": 0,
+      "explain": "600px breykpoint — telefonlar uchun."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Moslashuvchanlik",
+      "prompt": "Ish oxirida 1024px va 600px breykpointlarini ko'rib chiqish kerak.",
+      "answer": true,
+      "explain": "Shunda sahifa planshet va telefonda yaxshi ko'rinadi."
+    },
+    {
+      "type": "choice",
+      "topic": "Moslashuvchanlik",
+      "prompt": "10-dars uy vazifasida nima yozilgan edi?",
+      "options": [
+        "Lendingni tugatish va tugmalarga hover qo'shish",
+        "O'yin yozish",
+        "Ma'lumotlar bazasini ulash",
+        "React o'rnatish"
+      ],
+      "answer": 0,
+      "explain": "Hover ni keyingi darsda batafsil ko'rib chiqamiz."
+    }
+  ]
+}

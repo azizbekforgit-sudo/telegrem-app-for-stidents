@@ -1,5 +1,6 @@
 {
   "id": "lesson-05-position",
+  "order": 5,
   "title": "Урок 5. Позиционирование",
   "emoji": "📍",
   "description": "static, relative, absolute, fixed и sticky",

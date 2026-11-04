@@ -215,6 +215,7 @@ export function createLogic(store, { adminIds }) {
       prev.personal = lesson.personal || prev.personal || null;
       prev.tr = lesson.tr || prev.tr || null;
       prev.kind = lesson.kind || prev.kind || 'lesson';
+      if (lesson.order != null) prev.order = Number(lesson.order);
       store.save();
       return prev;
     }
@@ -227,6 +228,9 @@ export function createLogic(store, { adminIds }) {
       topics,
       questions: lesson.questions,
       kind: lesson.kind || 'lesson',
+      order: lesson.order != null ? Number(lesson.order) : (prev?.order ?? null),
+      archived: prev?.archived || false,
+      archiveApplied: prev?.archiveApplied || false,
       learn: lesson.learn || null,
       personal: lesson.personal || null,
       tr: lesson.tr || null,
@@ -278,6 +282,37 @@ export function createLogic(store, { adminIds }) {
     S.pubs[pub.id] = pub;
     store.save();
     return { pub, already: false };
+  }
+  // Дать доступ к тесту сразу нескольким ученикам. Повторно тем, у кого он уже есть, не выдаётся
+  function sendToStudents(lessonId, userIds, noLearn) {
+    if (!S.lessons[lessonId]) throw httpError(404, 'Тест не найден');
+    const ids = [...new Set((userIds || []).map(String))];
+    if (!ids.length) throw httpError(400, 'Выбери хотя бы одного ученика');
+    const created = [];
+    let already = 0;
+    for (const id of ids) {
+      const r = sendToStudent(lessonId, id, noLearn);
+      if (r.already) already++; else created.push(r.pub);
+    }
+    return { created, already };
+  }
+  // Скрыть тест из списка учителя (ученики и результаты не трогаем) или вернуть обратно
+  function setArchived(lessonId, archived) {
+    const l = S.lessons[lessonId];
+    if (!l) throw httpError(404, 'Тест не найден');
+    l.archived = Boolean(archived);
+    store.save();
+    return l;
+  }
+  // Один раз при запуске скрываем тесты из content/archive.json; вернуть их учитель может сам
+  function applyArchive(ids) {
+    let n = 0;
+    for (const id of ids || []) {
+      const l = S.lessons[id];
+      if (l && !l.archiveApplied) { l.archived = true; l.archiveApplied = true; n++; }
+    }
+    if (n) store.save();
+    return n;
   }
   function unpublish(pid) {
     delete S.pubs[pid];
@@ -877,8 +912,10 @@ export function createLogic(store, { adminIds }) {
 
   function adminOverview() {
     const groups = Object.values(S.groups).sort((a, b) => a.createdAt - b.createdAt).map(groupCard);
-    const lessons = Object.values(S.lessons)
-      .sort((a, b) => b.createdAt - a.createdAt)
+    const lessonsAll = Object.values(S.lessons).sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || b.createdAt - a.createdAt);
+    const hidden = lessonsAll.filter((l) => l.archived).map((l) => ({ id: l.id, title: l.title, emoji: l.emoji }));
+    const lessons = lessonsAll
+      .filter((l) => !l.archived)
       .map((l) => ({
         id: l.id, title: l.title, emoji: l.emoji, description: l.description, topics: l.topics, questions: l.questions.length,
         types: [...new Set(l.questions.map((q) => q.type))],
@@ -900,6 +937,7 @@ export function createLogic(store, { adminIds }) {
       totals: { students: allStudents.length, groups: groups.length, sent: Object.keys(S.pubs).length, avg: avg(avgs) },
       groups,
       lessons,
+      hiddenLessons: hidden,
       students: allStudents,
       unassigned: unassigned().map(publicUser),
       feed: feed(Object.keys(S.groups), 15),
@@ -947,7 +985,7 @@ export function createLogic(store, { adminIds }) {
   }
 
   return {
-    S, isAdmin, isParent, duplicateXp, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
+    S, isAdmin, isParent, duplicateXp, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
     upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,

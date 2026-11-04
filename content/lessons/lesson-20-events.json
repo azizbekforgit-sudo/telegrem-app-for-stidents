@@ -1,0 +1,309 @@
+{
+  "id": "lesson-20-events",
+  "order": 20,
+  "title": "Урок 20. События",
+  "emoji": "⚡",
+  "description": "addEventListener, события, объект e, делегирование, preventDefault",
+  "learn": {
+    "intro": "Привет! Урок 20 — **события**. Настоящий сайт реагирует на клик, ввод и наведение. Поехали!",
+    "sections": [
+      {
+        "title": "addEventListener",
+        "slides": [
+          {
+            "emoji": "⚡",
+            "text": "Раньше мы меняли элементы вручную. Но сайт должен реагировать на действия пользователя — это **событие**."
+          },
+          {
+            "text": "Нажали кнопку — поменялся текст:",
+            "code": "const button = document.querySelector(\"button\");\nconst text = document.querySelector(\"p\");\n\nbutton.addEventListener(\"click\", function () {\n  text.textContent = \"Кнопку нажали!\";\n});"
+          },
+          {
+            "quote": true,
+            "text": "Разбор: на какой элемент — `button`; какое событие — `\"click\"`; что делать — функция внутри."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "addEventListener",
+            "prompt": "Что передают в addEventListener вторым аргументом?",
+            "options": [
+              "Функцию, что делать",
+              "Название элемента",
+              "Цвет",
+              "Число"
+            ],
+            "answer": 0,
+            "explain": "Первый — событие, второй — функция."
+          }
+        ]
+      },
+      {
+        "title": "Частые события и объект e",
+        "slides": [
+          {
+            "emoji": "🖱️",
+            "text": "`click` — клик мышью\n`input` — каждое изменение поля\n`submit` — отправка формы\n`mouseover` / `mouseout` — курсор зашёл / вышел"
+          },
+          {
+            "text": "Объект события `e`:",
+            "code": "button.addEventListener(\"click\", function (e) {\n  console.log(e.target); // на какой элемент нажали\n});"
+          }
+        ],
+        "check": [
+          {
+            "type": "match",
+            "topic": "События",
+            "prompt": "Соедини событие и когда оно срабатывает",
+            "pairs": [
+              [
+                "click",
+                "Клик мышью"
+              ],
+              [
+                "input",
+                "Изменение поля"
+              ],
+              [
+                "submit",
+                "Отправка формы"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Делегирование и preventDefault",
+        "slides": [
+          {
+            "emoji": "🛡️",
+            "text": "Элементов много — вешать обработчик на каждый неудобно, и новые его не получат. Решение: **один обработчик на родителя** и проверка через `e.target`. Как один охранник на входе вместо охранника у каждой двери."
+          },
+          {
+            "text": "Клик по `li` удаляет его:",
+            "code": "const list = document.querySelector(\"ul\");\nlist.addEventListener(\"click\", function (e) {\n  if (e.target.tagName === \"LI\") {\n    e.target.remove();\n  }\n});"
+          },
+          {
+            "text": "При отправке формы страница перезагружается. Отмена — `e.preventDefault()`:",
+            "code": "form.addEventListener(\"submit\", function (e) {\n  e.preventDefault();\n  console.log(\"Форма отправлена без перезагрузки\");\n});"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Делегирование",
+            "prompt": "В чём идея делегирования?",
+            "options": [
+              "Один обработчик на родителя вместо многих",
+              "Каждому элементу свой обработчик",
+              "Удалить все элементы",
+              "Отключить события"
+            ],
+            "answer": 0,
+            "explain": "Родитель ловит клики по детям."
+          },
+          {
+            "type": "choice",
+            "topic": "preventDefault",
+            "prompt": "Зачем e.preventDefault() в submit?",
+            "options": [
+              "Чтобы страница не перезагружалась",
+              "Чтобы форма отправилась дважды",
+              "Чтобы удалить форму",
+              "Чтобы сменить цвет"
+            ],
+            "answer": 0,
+            "explain": "Отменяет действие по умолчанию."
+          }
+        ]
+      },
+      {
+        "title": "Практика: список задач",
+        "slides": [
+          {
+            "emoji": "✅",
+            "text": "Поле ввода и кнопка «Добавить»: по клику создаётся новый `li` с текстом из поля.",
+            "code": "const input = document.querySelector(\"input\");\nconst addBtn = document.querySelector(\"#add\");\nconst list = document.querySelector(\"ul\");\n\naddBtn.addEventListener(\"click\", function () {\n  const li = document.createElement(\"li\");\n  li.textContent = input.value;\n  list.append(li);\n  input.value = \"\";\n});"
+          },
+          {
+            "quote": true,
+            "text": "Домашка: по клику на пункт он удаляется. Используй делегирование на весь список."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Практика",
+            "prompt": "Какой метод создаёт новый элемент?",
+            "options": [
+              "document.createElement(\"li\")",
+              "document.newElement(\"li\")",
+              "list.make(\"li\")",
+              "createLi()"
+            ],
+            "answer": 0,
+            "explain": "createElement создаёт элемент."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "addEventListener",
+      "prompt": "Что делает этот код?",
+      "code": "button.addEventListener(\"click\", function () {\n  text.textContent = \"OK\";\n});",
+      "options": [
+        "При клике меняет текст",
+        "Удаляет кнопку",
+        "Перезагружает страницу",
+        "Ничего"
+      ],
+      "answer": 0,
+      "explain": "Обработчик click меняет textContent."
+    },
+    {
+      "type": "order",
+      "topic": "addEventListener",
+      "prompt": "Собери вызов обработчика клика",
+      "tokens": [
+        "button",
+        ".addEventListener(",
+        "\"click\",",
+        "handler",
+        ");"
+      ],
+      "extra": [
+        "\"hover\","
+      ],
+      "explain": "Элемент, метод, событие, функция."
+    },
+    {
+      "type": "truefalse",
+      "topic": "addEventListener",
+      "prompt": "Событие — это реакция сайта на действие пользователя.",
+      "answer": true,
+      "explain": "Клик, ввод текста, наведение — всё это события."
+    },
+    {
+      "type": "match",
+      "topic": "События",
+      "prompt": "Соедини событие и смысл",
+      "pairs": [
+        [
+          "click",
+          "Клик мышью"
+        ],
+        [
+          "input",
+          "Каждое изменение поля"
+        ],
+        [
+          "submit",
+          "Отправка формы"
+        ],
+        [
+          "mouseover",
+          "Курсор зашёл"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "Объект e",
+      "prompt": "Что хранит e.target?",
+      "options": [
+        "Элемент, на который нажали",
+        "Текст страницы",
+        "Номер события",
+        "Название сайта"
+      ],
+      "answer": 0,
+      "explain": "target — цель события."
+    },
+    {
+      "type": "choice",
+      "topic": "Делегирование",
+      "prompt": "Зачем нужно делегирование?",
+      "options": [
+        "Один обработчик работает и для новых элементов",
+        "Чтобы страница грузилась дольше",
+        "Чтобы скрыть список",
+        "Чтобы отключить JS"
+      ],
+      "answer": 0,
+      "explain": "Новые элементы получают реакцию автоматически."
+    },
+    {
+      "type": "choice",
+      "topic": "Делегирование",
+      "prompt": "Что сделает клик по пункту?",
+      "code": "list.addEventListener(\"click\", function (e) {\n  if (e.target.tagName === \"LI\") {\n    e.target.remove();\n  }\n});",
+      "options": [
+        "Удалит этот пункт",
+        "Удалит весь список",
+        "Добавит пункт",
+        "Ничего"
+      ],
+      "answer": 0,
+      "explain": "Проверка tagName === \"LI\" и remove()."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Делегирование",
+      "prompt": "При делегировании обработчик вешают на родителя.",
+      "answer": true,
+      "explain": "Родитель ловит клики по детям."
+    },
+    {
+      "type": "choice",
+      "topic": "preventDefault",
+      "prompt": "Что произойдёт БЕЗ preventDefault при отправке формы?",
+      "options": [
+        "Страница перезагрузится",
+        "Форма удалится",
+        "Ничего",
+        "Сайт сломается навсегда"
+      ],
+      "answer": 0,
+      "explain": "Это поведение по умолчанию."
+    },
+    {
+      "type": "input",
+      "topic": "preventDefault",
+      "prompt": "Какой метод отменяет действие по умолчанию? (без скобок и e.)",
+      "answer": [
+        "preventDefault"
+      ],
+      "explain": "e.preventDefault() отменяет действие по умолчанию."
+    },
+    {
+      "type": "choice",
+      "topic": "Практика",
+      "prompt": "Что делает list.append(li)?",
+      "options": [
+        "Добавляет элемент li в список",
+        "Удаляет li",
+        "Меняет цвет li",
+        "Создаёт список"
+      ],
+      "answer": 0,
+      "explain": "append — добавить в конец."
+    },
+    {
+      "type": "choice",
+      "topic": "Практика",
+      "prompt": "Зачем input.value = \"\" после добавления задачи?",
+      "options": [
+        "Очистить поле для следующей задачи",
+        "Удалить задачу",
+        "Сломать форму",
+        "Ни зачем"
+      ],
+      "answer": 0,
+      "explain": "Поле снова пустое и готово к вводу."
+    }
+  ]
+}

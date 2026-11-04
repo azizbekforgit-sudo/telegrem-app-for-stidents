@@ -704,23 +704,32 @@ function mascotReels(current, onPick) {
   const art = (i, on) => { $('[data-art]', slides[i]).innerHTML = mascot(ids[i], on ? 'cheer' : 'happy', 280, on ? '' : 'still'); };
   slides.forEach((_, i) => art(i, false));
   const close = () => { document.removeEventListener('keydown', onKey); root.classList.add('out'); setTimeout(() => root.remove(), 220); };
+  let hideT = 0;
+  const hideFact = (i) => {
+    clearTimeout(hideT);
+    $$('.sb', slides[i]).forEach((b) => b.classList.remove('on'));
+    const bub = $('[data-bubble]', slides[i]);
+    if (bub.classList.contains('show')) { bub.classList.remove('show'); bub.classList.add('hide'); }
+  };
   const showFact = (i, fi) => {
     const sl = slides[i];
+    clearTimeout(hideT);
     const { t } = infoOf(ids[i]);
     const btns = $$('.sb', sl);
     btns.forEach((b, k) => b.classList.toggle('on', k === fi));
     const bub = $('[data-bubble]', sl);
-    bub.classList.remove('show');
+    bub.classList.remove('show', 'hide');
     void bub.offsetWidth;
     $('small', bub).textContent = `${FIELDS[fi][0]} ${tr(FIELDS[fi][1])}`;
     $('p', bub).textContent = t[fi];
     const br = btns[fi].getBoundingClientRect();
     bub.style.top = `${br.top - sl.getBoundingClientRect().top + 26}px`;
     bub.classList.add('show');
+    hideT = setTimeout(() => hideFact(i), 5000);
   };
   const activate = (i) => {
     if (i === active || i < 0 || i >= ids.length) return;
-    if (active >= 0) { slides[active].classList.remove('on'); art(active, false); }
+    if (active >= 0) { hideFact(active); slides[active].classList.remove('on'); art(active, false); }
     active = i;
     slides[i].classList.add('on');
     art(i, true);
@@ -731,7 +740,7 @@ function mascotReels(current, onPick) {
     activate.t = setTimeout(() => showFact(i, 0), 420); // инфа выезжает сбоку
   };
   slides.forEach((sl, i) => {
-    $$('.sb', sl).forEach((b) => (b.onclick = () => { haptic('light'); showFact(i, Number(b.dataset.f)); }));
+    $$('.sb', sl).forEach((b) => (b.onclick = () => { haptic('light'); if (b.classList.contains('on')) hideFact(i); else showFact(i, Number(b.dataset.f)); }));
     $('[data-pick]', sl).onclick = () => { if (ids[i] !== current) onPick(ids[i]); close(); };
   });
   // параллакс при свайпе: соседние слайды уезжают и уменьшаются
@@ -1527,12 +1536,16 @@ async function tabTests() {
   const o = await loadOverview();
   app.innerHTML = adminTop('Тесты') + `
     <div class="hero" style="margin-top:8px">${me('wow', 96)}<div class="grow"><div class="say"><b>Как появляются тесты:</b> пришли конспект урока Claude — он сделает тест в стиле Duolingo. Тест появится здесь черновиком. Ученики его не видят, пока ты не нажмёшь «Отправить».</div></div></div>
-    <div class="stack" style="margin-top:16px">${o.lessons.map(lessonCardHtml).join('') || emptyState('sleepy', 'Тестов пока нет', 'Жду конспект — пришли его Claude.')}</div>`;
+    <div class="stack" style="margin-top:16px">${o.lessons.map(lessonCardHtml).join('') || emptyState('sleepy', 'Тестов пока нет', 'Жду конспект — пришли его Claude.')}</div>
+    ${o.hiddenLessons?.length ? `<button class="link small" data-hidden style="display:block;margin:18px auto 0">${ic('eye', 'sm')}Скрытые тесты (${o.hiddenLessons.length})</button>` : ''}`;
   bindAdminTop();
   $$('[data-preview]').forEach((b) => (b.onclick = () => startLesson({ lessonId: b.dataset.preview })));
   $$('[data-learnprev]').forEach((b) => (b.onclick = () => startLearn({ lessonId: b.dataset.learnprev })));
   $$('[data-send]').forEach((b) => (b.onclick = () => sendSheet(o.lessons.find((l) => l.id === b.dataset.send))));
   $$('[data-sendone]').forEach((b) => (b.onclick = () => sendOneSheet(o.lessons.find((l) => l.id === b.dataset.sendone))));
+  $$('[data-access]').forEach((b) => (b.onclick = () => accessSheet(o.lessons.find((l) => l.id === b.dataset.access))));
+  const hid = $('[data-hidden]');
+  if (hid) hid.onclick = () => hiddenSheet(o.hiddenLessons);
   $$('[data-pubinfo]').forEach((b) => (b.onclick = () => pubSheet(b.dataset.pubinfo)));
   $$('[data-dell]').forEach((b) => (b.onclick = async () => {
     if (!(await confirmSheet('Удалить черновик?', '', 'Удалить', true))) return;
@@ -1548,9 +1561,9 @@ function lessonCardHtml(l) {
       ${l.sentTo.length || l.personalFor.length ? '' : '<span class="pill gold">черновик</span>'}</div>
     ${l.topics.length ? `<p class="small muted" style="margin-top:10px">Темы: ${l.topics.map(esc).join(' · ')}</p>` : ''}
     ${l.sentTo.length ? `<div style="margin-top:12px">${l.sentTo.map((s) => `<button class="list-check" data-pubinfo="${s.pubId}">${ic('plain-2', 'sm')}<div class="grow"><b>${esc(s.groupName)}</b><div class="small muted">${s.learned != null ? `обучалку ${s.learned}/${s.size} · ` : ''}тест ${s.done}/${s.size} · ${ago(s.publishedAt)}</div></div>${pctPill(s.avg)}</button>`).join('')}</div>` : ''}
-    ${l.personalFor.length ? `<div style="margin-top:12px">${l.personalFor.map((s) => `<button class="list-check" data-pubinfo="${s.pubId}">${emo('🎯')}<div class="grow"><b>Лично: ${esc(s.name)}</b><div class="small muted">${l.hasLearn ? (s.noLearn ? 'без обучалки · ' : s.learnDone ? 'обучалка ✓ · ' : 'обучалка не пройдена · ') : ''}${s.best != null ? 'тест ' + s.best + '%' : 'тест не сдан'}</div></div>${pctPill(s.best)}</button>`).join('')}</div>` : ''}
+    ${l.personalFor.length ? `<button class="list-check" data-access="${l.id}" style="margin-top:12px">${emo('🎯')}<div class="grow"><b>Доступ: ${l.personalFor.length}</b><div class="small muted">сдали ${l.personalFor.filter((x) => x.best != null).length}/${l.personalFor.length}</div></div>${pctPill(Math.round(l.personalFor.filter((x) => x.best != null).reduce((a, x) => a + x.best, 0) / Math.max(1, l.personalFor.filter((x) => x.best != null).length)) || null)}</button>` : ''}
     <div class="row" style="margin-top:14px">${l.hasLearn ? `<button class="btn ghost sm" data-learnprev="${l.id}">${emo('📖')}Обучалка</button>` : ''}<button class="btn ghost sm" data-preview="${l.id}">${ic('eye', 'sm')}Превью</button></div>
-    <div class="row" style="margin-top:8px"><button class="btn ghost sm grow" data-sendone="${l.id}">${ic('user-rounded', 'sm')}Ученику</button><button class="btn sm grow" data-send="${l.id}">${ic('plain-2', 'sm')}Отправить</button>${l.sentTo.length ? '' : `<button class="iconbtn" data-dell="${l.id}" aria-label="Удалить">${ic('trash-bin-trash', 'sm')}</button>`}</div>
+    <div class="row" style="margin-top:8px"><button class="btn ghost sm grow" data-sendone="${l.id}">${ic('users-group-rounded', 'sm')}Ученики</button><button class="btn sm grow" data-send="${l.id}">${ic('plain-2', 'sm')}Отправить</button>${l.sentTo.length ? '' : `<button class="iconbtn" data-dell="${l.id}" aria-label="Удалить">${ic('trash-bin-trash', 'sm')}</button>`}</div>
   </div>`;
 }
 
@@ -1591,39 +1604,65 @@ function sendSheet(l) {
   );
 }
 
-// Отправить тест одному ученику, можно без обучалки
+// Дать доступ к тесту выбранным ученикам: один, несколько или все
 function sendOneSheet(l) {
   const o = S.overview;
-  const sent = new Set(l.personalFor.map((s) => s.userId));
-  let uid = null;
-  let noLearn = l.hasLearn;
+  const has = new Set(l.personalFor.map((s) => s.userId));
+  const gname = (u) => u.groups.map((gid) => o.groups.find((g) => g.id === gid)?.name).filter(Boolean).join(', ') || tr('без группы');
+  const picked = new Set();
+  let noLearn = false; // по умолчанию с обучалкой
+  const free = o.students.filter((u) => !has.has(u.id));
   const list = (q) => o.students.filter((u) => !q || u.name.toLowerCase().includes(q) || (u.username || '').toLowerCase().includes(q))
-    .map((u) => `<button class="list-check ${u.id === uid ? 'on' : ''}" data-u="${esc(u.id)}" ${sent.has(u.id) ? 'disabled' : ''}>${avatar(u)}<div class="grow"><b>${esc(u.name)}</b><div class="small muted">${sent.has(u.id) ? 'уже отправлен' : u.username ? '@' + esc(u.username) : u.email ? esc(u.email) : ''}</div></div></button>`).join('') || '<p class="muted center small">Никого не нашли</p>';
+    .map((u) => `<button class="list-check ${picked.has(u.id) ? 'on' : ''}" data-u="${esc(u.id)}" ${has.has(u.id) ? 'disabled' : ''}>${avatar(u)}<div class="grow"><b>${esc(u.name)}</b><div class="small muted">${has.has(u.id) ? esc(tr('доступ уже есть')) : esc(gname(u))}</div></div></button>`).join('') || `<p class="muted center small">${esc(tr('Никого не нашли'))}</p>`;
   openSheet(
-    `<div class="stack"><h2>Отправить ученику</h2><p class="muted">${emo(l.emoji)} ${esc(l.title)}</p>
-      ${o.students.length > 6 ? '<input class="input" data-q placeholder="Поиск по имени">' : ''}
-      <div data-list style="max-height:46vh;overflow:auto">${list('')}</div>
-      ${l.hasLearn ? `<div class="field"><span>${emo('📖')} Обучалка</span><div class="choices"><button class="choice ${noLearn ? 'on' : ''}" data-nl="1">Сразу тест</button><button class="choice ${noLearn ? '' : 'on'}" data-nl="0">С обучалкой</button></div></div>` : ''}
-      <button class="btn block" data-go disabled>${ic('plain-2')}Отправить</button></div>`,
+    `<div class="stack" data-noi18n><h2>${esc(tr('Дать доступ к тесту'))}</h2><p class="muted">${emo(l.emoji)} ${esc(l.title)}</p>
+      ${o.groups.length ? `<div class="chips" data-chips>${o.groups.map((g) => `<button class="choice" data-grp="${g.id}">${emo(g.emoji)} ${esc(g.name)}</button>`).join('')}</div>` : ''}
+      <div class="row" style="gap:8px">${o.students.length > 6 ? `<input class="input grow" data-q placeholder="${esc(tr('Поиск по имени'))}">` : '<div class="grow"></div>'}<button class="link small" data-all>${esc(tr('Выбрать всех'))}</button></div>
+      <div data-list style="max-height:42vh;overflow:auto">${list('')}</div>
+      ${l.hasLearn ? `<div class="field"><span>${emo('📖')} ${esc(tr('Обучалка'))}</span><div class="choices"><button class="choice ${noLearn ? 'on' : ''}" data-nl="1">${esc(tr('Сразу тест'))}</button><button class="choice ${noLearn ? '' : 'on'}" data-nl="0">${esc(tr('С обучалкой'))}</button></div></div>` : ''}
+      <button class="btn block" data-go disabled>${ic('plain-2')}<span></span></button></div>`,
     (el, close) => {
-      const bind = () => $$('[data-u]', el).forEach((b) => (b.onclick = () => { if (b.disabled) return; uid = b.dataset.u; $$('[data-u]', el).forEach((x) => x.classList.toggle('on', x === b)); $('[data-go]', el).disabled = false; }));
-      bind();
+      const label = () => { const n = picked.size; const b = $('[data-go]', el); b.disabled = !n; $('span', b).textContent = `${tr('Дать доступ')}${n ? ` (${n})` : ''}`; $$('[data-grp]', el).forEach((g) => { const m = free.filter((u) => u.groups.includes(g.dataset.grp)); g.classList.toggle('on', m.length > 0 && m.every((u) => picked.has(u.id))); }); };
+      const bind = () => $$('[data-u]', el).forEach((b) => (b.onclick = () => { if (b.disabled) return; haptic('light'); const id = b.dataset.u; picked.has(id) ? picked.delete(id) : picked.add(id); b.classList.toggle('on', picked.has(id)); label(); }));
+      bind(); label();
       const q = $('[data-q]', el);
-      if (q) q.oninput = () => { $('[data-list]', el).innerHTML = list(q.value.trim().toLowerCase()); bind(); };
+      const redraw = () => { $('[data-list]', el).innerHTML = list(q ? q.value.trim().toLowerCase() : ''); bind(); };
+      if (q) q.oninput = redraw;
+      $$('[data-grp]', el).forEach((g) => (g.onclick = () => { haptic('light'); const m = free.filter((u) => u.groups.includes(g.dataset.grp)); const all = m.every((u) => picked.has(u.id)); m.forEach((u) => (all ? picked.delete(u.id) : picked.add(u.id))); redraw(); label(); }));
+      $('[data-all]', el).onclick = () => { haptic('light'); const all = free.length && free.every((u) => picked.has(u.id)); free.forEach((u) => (all ? picked.delete(u.id) : picked.add(u.id))); redraw(); label(); };
       $$('[data-nl]', el).forEach((b) => (b.onclick = () => { noLearn = b.dataset.nl === '1'; $$('[data-nl]', el).forEach((x) => x.classList.toggle('on', x === b)); }));
       $('[data-go]', el).onclick = async () => {
         $('[data-go]', el).disabled = true;
         try {
-          await api('/admin/send-student', { lessonId: l.id, userId: uid, noLearn });
+          const r = await api('/admin/grant', { lessonId: l.id, userIds: [...picked], noLearn });
           haptic('success');
           sfx.win();
-          toast('Тест отправлен');
+          toast(`${tr('Доступ дан')}: ${r.given}`);
           close();
           tabTests().catch(fail);
-        } catch (e) { $('[data-go]', el).disabled = false; fail(e); }
+        } catch (e) { label(); fail(e); }
       };
     },
   );
+}
+
+// У кого есть личный доступ к тесту, их результаты и отзыв доступа
+function accessSheet(l) {
+  openSheet(`<div class="stack" data-noi18n><h2>${emo(l.emoji)} ${esc(l.title)}</h2><p class="muted small">${esc(tr('Доступ'))}: ${l.personalFor.length}</p>
+    <div style="max-height:56vh;overflow:auto">${l.personalFor.map((s) => `<div class="item"><div class="grow"><b class="ellipsis" style="display:block">${esc(s.name)}</b><div class="small muted">${l.hasLearn ? (s.noLearn ? tr('без обучалки') + ' · ' : s.learnDone ? tr('обучалка ✓') + ' · ' : tr('обучалка не пройдена') + ' · ') : ''}${s.best != null ? tr('тест') + ' ' + s.best + '%' : tr('тест не сдан')}</div></div>${pctPill(s.best)}<button class="iconbtn" data-rev="${s.pubId}" aria-label="${esc(tr('Отозвать'))}">${ic('trash-bin-trash', 'sm')}</button></div>`).join('')}</div></div>`, (el, close) => {
+    $$('[data-rev]', el).forEach((b) => (b.onclick = async () => {
+      if (!(await confirmSheet('Отозвать доступ?', 'Ученик перестанет видеть этот тест, его результаты по нему удалятся.', 'Отозвать', true))) return;
+      try { await del('/admin/pubs/' + b.dataset.rev); close(); tabTests().catch(fail); } catch (e) { fail(e); }
+    }));
+  });
+}
+
+// Скрытые тесты: можно вернуть в список
+function hiddenSheet(list) {
+  openSheet(`<div class="stack"><h2>Скрытые тесты</h2><p class="muted small">Их нет в списке, но у учеников они остаются, а результаты сохранены.</p>
+    <div>${list.map((l) => `<div class="item">${emo(l.emoji)}<b class="grow">${esc(l.title)}</b><button class="btn ghost sm" data-back="${l.id}">Вернуть</button></div>`).join('')}</div></div>`, (el, close) => {
+    $$('[data-back]', el).forEach((b) => (b.onclick = async () => { try { await api(`/admin/lessons/${b.dataset.back}/archive`, { archived: false }); close(); tabTests().catch(fail); } catch (e) { fail(e); } }));
+  });
 }
 
 async function pubSheet(pid) {

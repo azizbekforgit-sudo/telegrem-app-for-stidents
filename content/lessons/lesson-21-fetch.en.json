@@ -1,0 +1,281 @@
+{
+  "title": "Lesson 21. Fetch API and JSON",
+  "description": "JSON, fetch, promises, .then, .catch and working with data",
+  "learn": {
+    "intro": "Hi! Lesson 21 — **Fetch API and JSON**. Real sites get data from a server: weather, products, posts. We'll learn to «go» to the server for data. Let's go!",
+    "sections": [
+      {
+        "title": "What JSON is",
+        "slides": [
+          {
+            "emoji": "📄",
+            "text": "We wrote all the data by hand in code. Real sites get it from a server. **JSON** is the same format as JS objects, only as text. That is how data travels over the internet."
+          },
+          {
+            "text": "A JS object and the same object in JSON:",
+            "code": "// A JS object\nconst user = { name: \"Anya\", age: 25 };\n// The same object in JSON format\n// {\"name\": \"Anya\", \"age\": 25}"
+          }
+        ],
+        "check": [
+          {
+            "type": "truefalse",
+            "topic": "JSON",
+            "prompt": "JSON is a data format similar to JS objects, but as text.",
+            "answer": true,
+            "explain": "This is how data is passed between a server and a site."
+          }
+        ]
+      },
+      {
+        "title": "fetch and promises",
+        "slides": [
+          {
+            "emoji": "🛰️",
+            "text": "`fetch` is a way to «go» to the server and bring data:",
+            "code": "fetch(\"https://jsonplaceholder.typicode.com/users\")\n  .then((response) => response.json())\n  .then((data) => console.log(data))\n  .catch((error) => console.log(\"Error:\", error));"
+          },
+          {
+            "quote": true,
+            "text": "`fetch` returns a **promise** — a promise that the data will arrive a bit later, not instantly."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "fetch",
+            "prompt": "What does fetch return?",
+            "options": [
+              "promise",
+              "The data right away",
+              "A string",
+              "A number"
+            ],
+            "answer": 0,
+            "explain": "A promise — data will arrive later."
+          }
+        ]
+      },
+      {
+        "title": ".then, json() and .catch",
+        "slides": [
+          {
+            "emoji": "🔗",
+            "text": "`.then` — what to do when the result arrives. `response.json()` turns the «raw» response into a JS object. `.catch` catches an error if the server is down or there is no internet."
+          },
+          {
+            "quote": true,
+            "text": "Cheat sheet: `fetch(url)` — request; `.then(r => r.json())` — turn into an object; `.catch(err => ...)` — an error."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "then and catch",
+            "prompt": "Why response.json()?",
+            "options": [
+              "To turn the response into a JS object",
+              "To send a request",
+              "To show an error",
+              "To close the site"
+            ],
+            "answer": 0,
+            "explain": "The response arrives «raw»."
+          },
+          {
+            "type": "choice",
+            "topic": "then and catch",
+            "prompt": "What does .catch do?",
+            "options": [
+              "Handles an error",
+              "Sends a request",
+              "Deletes data",
+              "Speeds up the site"
+            ],
+            "answer": 0,
+            "explain": "Runs if something goes wrong."
+          }
+        ]
+      },
+      {
+        "title": "Working with data and practice",
+        "slides": [
+          {
+            "emoji": "🗃️",
+            "text": "Data usually comes as an **array of objects**. Then we work with it using methods from lesson 17:",
+            "code": "data.forEach((user) => {\n  console.log(user.name);\n});"
+          },
+          {
+            "text": "Practice: a request to a public API (posts or users) and showing it on the page with `querySelector`, `forEach` and `createElement`. Homework: find any free API (countries, cats, jokes) and show 5 items on the page."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Data",
+            "prompt": "In what form does data usually arrive from a server?",
+            "options": [
+              "An array of objects",
+              "A single digit",
+              "A picture",
+              "A sound"
+            ],
+            "answer": 0,
+            "explain": "It is a list of cards."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "truefalse",
+      "topic": "JSON",
+      "prompt": "JSON is a text data format similar to a JS object.",
+      "answer": true,
+      "explain": "That is how data travels online."
+    },
+    {
+      "type": "choice",
+      "topic": "JSON",
+      "prompt": "Which one is JSON?",
+      "options": [
+        "{\"name\": \"Аня\", \"age\": 25}",
+        "name = Аня; age = 25",
+        "<user name=\"Аня\">",
+        "[name: Аня]"
+      ],
+      "answer": 0,
+      "explain": "In JSON keys are in double quotes."
+    },
+    {
+      "type": "choice",
+      "topic": "fetch",
+      "prompt": "What is fetch for?",
+      "options": [
+        "To request data from a server",
+        "To color a button",
+        "To create a folder",
+        "To turn the site off"
+      ],
+      "answer": 0,
+      "explain": "fetch «goes» to the server for data."
+    },
+    {
+      "type": "choice",
+      "topic": "fetch",
+      "prompt": "What is a promise?",
+      "options": [
+        "A promise that data will come later",
+        "An image type",
+        "A variable name",
+        "An error"
+      ],
+      "answer": 0,
+      "explain": "The answer does not come instantly."
+    },
+    {
+      "type": "truefalse",
+      "topic": "fetch",
+      "prompt": "Data from fetch arrives instantly, so a promise isn't needed.",
+      "answer": false,
+      "explain": "The request goes over the network, so you have to wait."
+    },
+    {
+      "type": "choice",
+      "topic": "then and catch",
+      "prompt": "What happens if there is no internet?",
+      "options": [
+        ".catch runs",
+        ".then runs",
+        "The site is deleted",
+        "Nothing"
+      ],
+      "answer": 0,
+      "explain": "The error goes to .catch."
+    },
+    {
+      "type": "order",
+      "topic": "then and catch",
+      "prompt": "Build the fetch chain",
+      "tokens": [
+        "fetch(url)",
+        ".then((r) => r.json())",
+        ".then((data) => console.log(data))",
+        ".catch((e) => console.log(e));"
+      ],
+      "extra": [
+        ".stop()"
+      ],
+      "explain": "Request → json → output → error."
+    },
+    {
+      "type": "input",
+      "topic": "then and catch",
+      "prompt": "Which method turns the response into a JS object? (with response., no brackets)",
+      "answer": [
+        "response.json",
+        "json"
+      ],
+      "explain": "response.json() turns the response into an object."
+    },
+    {
+      "type": "choice",
+      "topic": "Data",
+      "prompt": "Which method goes through each user in data?",
+      "options": [
+        "data.forEach(...)",
+        "data.fetch(...)",
+        "data.get(...)",
+        "data.run(...)"
+      ],
+      "answer": 0,
+      "explain": "forEach from lesson 17."
+    },
+    {
+      "type": "choice",
+      "topic": "Data",
+      "prompt": "What does this code print if data is an array of users?",
+      "code": "data.forEach((user) => {\n  console.log(user.name);\n});",
+      "options": [
+        "The name of each user",
+        "Nothing",
+        "An error",
+        "Only the first"
+      ],
+      "answer": 0,
+      "explain": "forEach calls console.log for each."
+    },
+    {
+      "type": "match",
+      "topic": "Data",
+      "prompt": "Match the action and the code",
+      "pairs": [
+        [
+          "Request data",
+          "fetch(url)"
+        ],
+        [
+          "Turn into an object",
+          ".then(r => r.json())"
+        ],
+        [
+          "Handle an error",
+          ".catch(err => ...)"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "Practice",
+      "prompt": "What is needed to show API data on a page?",
+      "options": [
+        "fetch, querySelector, forEach and createElement",
+        "Only CSS",
+        "Only HTML",
+        "Nothing"
+      ],
+      "answer": 0,
+      "explain": "The whole toolchain from earlier lessons."
+    }
+  ]
+}

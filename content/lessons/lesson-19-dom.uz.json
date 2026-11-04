@@ -1,0 +1,273 @@
+{
+  "title": "19-dars. DOM",
+  "description": "Sahifa daraxti, querySelector, textContent, style, classList",
+  "learn": {
+    "intro": "Salom! 19-dars — **DOM**. Hozirgacha JavaScript konsolda yashadi. Bugun sahifa elementlarini topib o'zgartirishni o'rganamiz. Ketdik!",
+    "sections": [
+      {
+        "title": "DOM nima",
+        "slides": [
+          {
+            "emoji": "🌳",
+            "text": "Brauzer HTML ni **obyektlar daraxtiga** aylantiradi. JavaScript bu daraxtni o'qiy va o'zgartira oladi. Shu yerda JS saytning miyasiga aylanadi."
+          },
+          {
+            "text": "Daraxt:",
+            "code": "html\n └── body\n      └── div\n           └── p"
+          }
+        ],
+        "check": [
+          {
+            "type": "truefalse",
+            "topic": "DOM",
+            "prompt": "DOM — brauzer HTML dan quradigan obyektlar daraxti.",
+            "answer": true,
+            "explain": "JavaScript aynan shu daraxt bilan ishlaydi."
+          }
+        ]
+      },
+      {
+        "title": "querySelector va querySelectorAll",
+        "slides": [
+          {
+            "emoji": "🔍",
+            "text": "`querySelector` **birinchi** elementni topadi. Sintaksis CSS dagidek (3-darsdagi selektorlar).",
+            "code": "const title = document.querySelector(\".card h2\");"
+          },
+          {
+            "text": "`querySelectorAll` **hamma** elementlarni topadi:",
+            "code": "const cards = document.querySelectorAll(\".card\");\ncards.forEach((card) => {\n  console.log(card);\n});"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Elementlarni qidirish",
+            "prompt": "Qaysi metod HAMMA kartochkalarni topadi?",
+            "options": [
+              "querySelectorAll",
+              "querySelector",
+              "getAll",
+              "find"
+            ],
+            "answer": 0,
+            "explain": "querySelectorAll barcha mos elementlarni qaytaradi."
+          }
+        ]
+      },
+      {
+        "title": "Matn va uslublar",
+        "slides": [
+          {
+            "emoji": "✏️",
+            "text": "Matnni o'zgartiramiz:",
+            "code": "const paragraph = document.querySelector(\"p\");\nparagraph.textContent = \"Yangi matn\";"
+          },
+          {
+            "text": "Uslublarni o'zgartiramiz:",
+            "code": "const title = document.querySelector(\"h1\");\ntitle.style.color = \"red\";"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Matn va uslublar",
+            "prompt": "el elementining matnini qanday o'zgartirish mumkin?",
+            "options": [
+              "el.textContent = \"текст\"",
+              "el.text(\"текст\")",
+              "el.write(\"текст\")",
+              "el = \"текст\""
+            ],
+            "answer": 0,
+            "explain": "textContent xossasi element matnini saqlaydi."
+          }
+        ]
+      },
+      {
+        "title": "Klasslar: add, remove, toggle",
+        "slides": [
+          {
+            "emoji": "🔀",
+            "text": "Klasslar `classList` orqali:",
+            "code": "menu.classList.add(\"active\");     // qo'shish\nmenu.classList.remove(\"active\");  // o'chirish\nmenu.classList.toggle(\"active\");  // almashtirish"
+          },
+          {
+            "quote": true,
+            "text": "`toggle`: klass bor bo'lsa — olib tashlaydi, yo'q bo'lsa — qo'shadi. Menyu uchun juda mos: bosildi — ochildi, yana bosildi — yopildi."
+          },
+          {
+            "text": "Uy vazifasi: lending kartochkalarini `querySelectorAll` bilan topib, sahifa yuklanganda ularga ramkali klass qo'shadigan skript."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "classList",
+            "prompt": "classList.toggle(\"active\") nima qiladi?",
+            "options": [
+              "Klass bo'lmasa qo'shadi, bo'lsa olib tashlaydi",
+              "Doim klass qo'shadi",
+              "Doim klassni o'chiradi",
+              "Rangni o'zgartiradi"
+            ],
+            "answer": 0,
+            "explain": "toggle klassni almashtiradi."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "truefalse",
+      "topic": "DOM",
+      "prompt": "JavaScript DOM daraxtini o'qiy va o'zgartira oladi.",
+      "answer": true,
+      "explain": "Shunday sayt «jonli» bo'ladi."
+    },
+    {
+      "type": "choice",
+      "topic": "DOM",
+      "prompt": "Brauzer HTML ni nimaga aylantiradi?",
+      "options": [
+        "Obyektlar daraxtiga",
+        "Rasmga",
+        "Ma'lumotlar bazasiga",
+        "Tovushga"
+      ],
+      "answer": 0,
+      "explain": "Bu daraxt DOM deyiladi."
+    },
+    {
+      "type": "choice",
+      "topic": "Elementlarni qidirish",
+      "prompt": "querySelector(\".card\") nimani qaytaradi?",
+      "options": [
+        "card klassli birinchi elementni",
+        "Barcha card elementlarini",
+        "Kartochka matnini",
+        "Hech narsa"
+      ],
+      "answer": 0,
+      "explain": "querySelector — birinchi mos element."
+    },
+    {
+      "type": "choice",
+      "topic": "Elementlarni qidirish",
+      "prompt": "Qaysi yozuv hamma kartochkalarni topadi?",
+      "options": [
+        "document.querySelectorAll(\".card\")",
+        "document.querySelector(\".card\")",
+        "document.cards()",
+        "document.find(\".card\")"
+      ],
+      "answer": 0,
+      "explain": "querySelectorAll kerak."
+    },
+    {
+      "type": "input",
+      "topic": "Elementlarni qidirish",
+      "prompt": "Selektor bo'yicha HAMMA elementlar qaysi metod bilan topiladi? (bitta so'z)",
+      "answer": [
+        "querySelectorAll"
+      ],
+      "explain": "querySelectorAll — barcha mosi."
+    },
+    {
+      "type": "choice",
+      "topic": "Matn va uslublar",
+      "prompt": "Kod nima qiladi?",
+      "code": "const title = document.querySelector(\"h1\");\ntitle.style.color = \"red\";",
+      "options": [
+        "Sarlavhani qizil qiladi",
+        "Sarlavhani o'chiradi",
+        "Matnni o'zgartiradi",
+        "Hech narsa"
+      ],
+      "answer": 0,
+      "explain": "style.color rangni o'zgartiradi."
+    },
+    {
+      "type": "order",
+      "topic": "Matn va uslublar",
+      "prompt": "Qator yig': abzats matnini o'zgartirish",
+      "tokens": [
+        "paragraph",
+        ".textContent",
+        "=",
+        "\"Hello\";"
+      ],
+      "extra": [
+        ".innerText2"
+      ],
+      "explain": "textContent xossasi va tayinlash."
+    },
+    {
+      "type": "choice",
+      "topic": "classList",
+      "prompt": "Qaysi metod klass QO'SHADI?",
+      "options": [
+        "classList.add",
+        "classList.remove",
+        "classList.toggle2",
+        "classList.push"
+      ],
+      "answer": 0,
+      "explain": "add — qo'shish."
+    },
+    {
+      "type": "match",
+      "topic": "classList",
+      "prompt": "Metod va amalni moslashtir",
+      "pairs": [
+        [
+          "add",
+          "Klass qo'shish"
+        ],
+        [
+          "remove",
+          "Klassni o'chirish"
+        ],
+        [
+          "toggle",
+          "Klassni almashtirish"
+        ]
+      ]
+    },
+    {
+      "type": "truefalse",
+      "topic": "classList",
+      "prompt": "toggle menyu uchun qulay: bosildi — ochildi, yana bosildi — yopildi.",
+      "answer": true,
+      "explain": "Har chaqiruv holatni almashtiradi."
+    },
+    {
+      "type": "choice",
+      "topic": "Amaliyot",
+      "prompt": "Bu skript sahifa yuklanganda nima qiladi?",
+      "code": "document.querySelectorAll(\".card\").forEach((card) => {\n  card.classList.add(\"framed\");\n});",
+      "options": [
+        "Barcha kartochkalarga framed klassini qo'shadi",
+        "Kartochkalarni o'chiradi",
+        "Hech narsa, bosishni kutadi",
+        "Xato"
+      ],
+      "answer": 0,
+      "explain": "Skript darhol ishlaydi, bosishsiz."
+    },
+    {
+      "type": "choice",
+      "topic": "Amaliyot",
+      "prompt": "JS orqali sarlavha rangini o'zgartirish uchun nima kerak?",
+      "options": [
+        "Elementni topib style.color ni o'zgartirish",
+        "Butun HTML ni qayta yozish",
+        "Plagin sotib olish",
+        "Kompyuterni qayta yoqish"
+      ],
+      "answer": 0,
+      "explain": "Avval topish, keyin o'zgartirish."
+    }
+  ]
+}

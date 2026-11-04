@@ -137,6 +137,7 @@ export function validateLesson(l) {
       (sec.check || []).forEach((q, k) => checkQ(q, `${p}, проверка ${k + 1}`));
     });
   }
+  if (l.order != null && !Number.isFinite(Number(l.order))) errs.push('order: число');
   if (l.kind && !['lesson', 'exam'].includes(l.kind)) errs.push('kind: lesson или exam');
   if (l.personal && (!Array.isArray(l.personal) || l.personal.some((u) => !/^[\w-]+$/.test(String(u))))) errs.push('personal: список ID учеников');
   return errs;

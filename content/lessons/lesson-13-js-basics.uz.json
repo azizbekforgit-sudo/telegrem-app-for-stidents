@@ -1,0 +1,290 @@
+{
+  "title": "13-dars. JavaScript — o'zgaruvchilar, turlar, operatorlar",
+  "description": "let, const, ma'lumot turlari, typeof, arifmetika, === va shablon satrlar",
+  "learn": {
+    "intro": "Salom! 13-dars — **JavaScript**. HTML — skelet, CSS — kiyim, JavaScript esa — miya. Sayt o'ylay va javob bera boshlaydi. Ketdik!",
+    "sections": [
+      {
+        "title": "let, const, var",
+        "slides": [
+          {
+            "emoji": "📦",
+            "text": "`const` — o'zgaruvchini qayta tayinlab bo'lmaydi, odam ismi kabi. `let` — o'zgartirish mumkin, yosh kabi. `var` — eski usul, ishlatmaymiz."
+          },
+          {
+            "text": "Misol:",
+            "code": "const name = \"Anya\";\nlet age = 25;\nage = 26;        // mumkin\n// name = \"Ira\"; // mumkin emas, xato bo'ladi"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "let va const",
+            "prompt": "O'zgaradigan qiymat (yosh) uchun qaysi so'z?",
+            "options": [
+              "let",
+              "const",
+              "var (современный)",
+              "fix"
+            ],
+            "answer": 0,
+            "explain": "let ni o'zgartirish mumkin, const ni mumkin emas."
+          },
+          {
+            "type": "truefalse",
+            "topic": "let va const",
+            "prompt": "const ni qayta tayinlash mumkin, bu shunchaki chiroyli so'z.",
+            "answer": false,
+            "explain": "const qayta tayinlashni taqiqlaydi — xato bo'ladi."
+          }
+        ]
+      },
+      {
+        "title": "Ma'lumot turlari va typeof",
+        "slides": [
+          {
+            "emoji": "🏷️",
+            "text": "Turlar:\n`string` — matn `\"Anya\"`\n`number` — son `25`\n`boolean` — `true` / `false`\n`undefined` — qiymat hali berilmagan\n`null` — qiymat ataylab bo'sh"
+          },
+          {
+            "text": "`typeof` turni ko'rsatadi. Konsol: F12 → Console.",
+            "code": "console.log(typeof \"Anya\"); // string\nconsole.log(typeof 25);     // number\nconsole.log(typeof true);   // boolean"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Ma'lumot turlari",
+            "prompt": "typeof 25 nima chiqaradi?",
+            "options": [
+              "number",
+              "string",
+              "boolean",
+              "undefined"
+            ],
+            "answer": 0,
+            "explain": "25 — bu son (number)."
+          },
+          {
+            "type": "match",
+            "topic": "Ma'lumot turlari",
+            "prompt": "Tur va misolni moslashtir",
+            "pairs": [
+              [
+                "string",
+                "\"Аня\""
+              ],
+              [
+                "number",
+                "25"
+              ],
+              [
+                "boolean",
+                "true"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Arifmetika va qoldiq %",
+        "slides": [
+          {
+            "emoji": "🧮",
+            "text": "Tanish amallar:",
+            "code": "console.log(10 + 3); // 13\nconsole.log(10 - 3); // 7\nconsole.log(10 * 3); // 30\nconsole.log(10 / 3); // 3.333...\nconsole.log(10 % 3); // 1 (qoldiq)"
+          },
+          {
+            "quote": true,
+            "text": "`%` operatori bo'lishdan qoldiqni beradi. Son juftligini bilish uchun: `son % 2 === 0`."
+          }
+        ],
+        "check": [
+          {
+            "type": "input",
+            "topic": "Arifmetika",
+            "prompt": "10 % 3 nimaga teng?",
+            "answer": [
+              "1"
+            ],
+            "explain": "10 = 3·3 + 1, qoldiq 1."
+          }
+        ]
+      },
+      {
+        "title": "== va === va shablon satrlar",
+        "slides": [
+          {
+            "emoji": "⚖️",
+            "text": "`==` qiymatni solishtiradi, turga qaramaydi. `===` ham qiymatni, ham turni solishtiradi.",
+            "code": "console.log(\"5\" == 5);  // true\nconsole.log(\"5\" === 5); // false"
+          },
+          {
+            "quote": true,
+            "text": "Loyihalarda faqat `===` ishlatamiz: `==` ko'pincha xatoga olib keladi."
+          },
+          {
+            "text": "Shablon satr — teskari qo'shtirnoqda, o'zgaruvchilar `${}` orqali:",
+            "code": "const name = \"Ismingiz\";\nconst age = 20;\nconsole.log(`Mening ismim ${name}, men ${age} yoshdaman`);"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Taqqoslash",
+            "prompt": "\"5\" === 5 nima chiqaradi?",
+            "options": [
+              "false",
+              "true",
+              "undefined",
+              "Ошибка"
+            ],
+            "answer": 0,
+            "explain": "=== turni ham solishtiradi: satr va son — har xil."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "let va const",
+      "prompt": "Qaysi so'z qayta tayinlab bo'lmaydigan o'zgaruvchini e'lon qiladi?",
+      "options": [
+        "const",
+        "let",
+        "var",
+        "change"
+      ],
+      "answer": 0,
+      "explain": "const — doimiy o'zgaruvchi."
+    },
+    {
+      "type": "choice",
+      "topic": "let va const",
+      "prompt": "Nima bo'ladi?",
+      "code": "const name = \"Аня\";\nname = \"Ира\";",
+      "options": [
+        "Xato: const ni qayta tayinlab bo'lmaydi",
+        "Ism \"Ira\" bo'ladi",
+        "Hech narsa",
+        "Ism yo'qoladi"
+      ],
+      "answer": 0,
+      "explain": "const ni qayta tayinlab bo'lmaydi."
+    },
+    {
+      "type": "truefalse",
+      "topic": "let va const",
+      "prompt": "var — zamonaviy usul, undan foydalanish kerak.",
+      "answer": false,
+      "explain": "var — eski usul, uni ishlatmaymiz."
+    },
+    {
+      "type": "match",
+      "topic": "Ma'lumot turlari",
+      "prompt": "Tur va u nimaligini moslashtir",
+      "pairs": [
+        [
+          "string",
+          "Matn"
+        ],
+        [
+          "number",
+          "Son"
+        ],
+        [
+          "boolean",
+          "Ha yoki yo'q"
+        ],
+        [
+          "undefined",
+          "Qiymat berilmagan"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "Ma'lumot turlari",
+      "prompt": "Qiymatsiz let x; nimani bildiradi?",
+      "options": [
+        "x undefined ga teng",
+        "x 0 ga teng",
+        "x null ga teng",
+        "Xato"
+      ],
+      "answer": 0,
+      "explain": "Qiymat hali berilmagan — undefined."
+    },
+    {
+      "type": "choice",
+      "topic": "Ma'lumot turlari",
+      "prompt": "typeof true nima chiqaradi?",
+      "options": [
+        "boolean",
+        "string",
+        "number",
+        "true"
+      ],
+      "answer": 0,
+      "explain": "true/false — boolean turi."
+    },
+    {
+      "type": "input",
+      "topic": "Arifmetika",
+      "prompt": "10 % 3 nimaga teng?",
+      "answer": [
+        "1"
+      ],
+      "explain": "10 ni 3 ga bo'lishdan qoldiq — 1."
+    },
+    {
+      "type": "choice",
+      "topic": "Arifmetika",
+      "prompt": "Sonning juftligini qanday tekshirish mumkin?",
+      "options": [
+        "число % 2 === 0",
+        "число / 2",
+        "число - 2",
+        "число * 2 === 0"
+      ],
+      "answer": 0,
+      "explain": "Juft sonni 2 ga bo'lishdan qoldiq 0 bo'ladi."
+    },
+    {
+      "type": "choice",
+      "topic": "Taqqoslash",
+      "prompt": "\"5\" == 5 nima chiqaradi?",
+      "options": [
+        "true",
+        "false",
+        "undefined",
+        "Ошибка"
+      ],
+      "answer": 0,
+      "explain": "== turga qaramaydi, qiymatlar teng."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Taqqoslash",
+      "prompt": "Loyihalarda == o'rniga === ishlatgan yaxshiroq.",
+      "answer": true,
+      "explain": "=== qat'iyroq va xatolar kamroq."
+    },
+    {
+      "type": "order",
+      "topic": "Shablon satrlar",
+      "prompt": "Ismni shablon satr bilan chiqarishni yig'",
+      "tokens": [
+        "console.log(",
+        "`Mening ismim ${name}`",
+        ");"
+      ],
+      "extra": [
+        "\"Mening ismim \" name"
+      ],
+      "explain": "Shablon satr — teskari qo'shtirnoq va ${} bilan."
+    }
+  ]
+}

@@ -1,0 +1,282 @@
+{
+  "id": "lesson-25-react-basics",
+  "order": 25,
+  "title": "Урок 25. React — компоненты, JSX, props",
+  "emoji": "⚛️",
+  "description": "Компоненты, JSX, отличия от HTML, использование и props",
+  "learn": {
+    "intro": "Привет! Урок 25 — **React**. Раньше весь код страницы был в одном большом файле. React собирает страницу из маленьких деталей — компонентов, как конструктор Lego. Поехали!",
+    "sections": [
+      {
+        "title": "Компонент и JSX",
+        "slides": [
+          {
+            "emoji": "🧱",
+            "text": "**Компонент** — обычная JS-функция, которая возвращает разметку:",
+            "code": "function Button() {\n  return <button>Click</button>;\n}"
+          },
+          {
+            "text": "**JSX** — это HTML прямо внутри JS. Браузер сам его не понимает, инструмент сборки (Vite) преобразует его за нас."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Компонент",
+            "prompt": "Что такое компонент в React?",
+            "options": [
+              "JS-функция, которая возвращает разметку",
+              "Картинка",
+              "Файл CSS",
+              "Браузер"
+            ],
+            "answer": 0,
+            "explain": "Компонент — деталь страницы."
+          }
+        ]
+      },
+      {
+        "title": "JSX и HTML: отличия",
+        "slides": [
+          {
+            "emoji": "⚠️",
+            "text": "В HTML `class=\"box\"`, а в JSX `className=\"box\"`.\nВ HTML `<img src=\"a.jpg\">`, а в JSX теги закрываем: `<img src=\"a.jpg\" />`."
+          },
+          {
+            "quote": true,
+            "text": "Это самая частая ошибка новичков в React."
+          }
+        ],
+        "check": [
+          {
+            "type": "match",
+            "topic": "JSX и HTML",
+            "prompt": "Соедини HTML и JSX",
+            "pairs": [
+              [
+                "class=\"box\"",
+                "className=\"box\""
+              ],
+              [
+                "<img src=\"a.jpg\">",
+                "<img src=\"a.jpg\" />"
+              ]
+            ]
+          },
+          {
+            "type": "choice",
+            "topic": "JSX и HTML",
+            "prompt": "Как правильно задать класс в JSX?",
+            "options": [
+              "className=\"box\"",
+              "class=\"box\"",
+              "klass=\"box\"",
+              "style=\"box\""
+            ],
+            "answer": 0,
+            "explain": "В JSX вместо class пишем className."
+          }
+        ]
+      },
+      {
+        "title": "Использование и props",
+        "slides": [
+          {
+            "emoji": "🧩",
+            "text": "Компонент используют как обычный HTML-тег:",
+            "code": "function App() {\n  return (\n    <div>\n      <Button />\n      <Button />\n    </div>\n  );\n}"
+          },
+          {
+            "text": "**Props** — данные снаружи, как параметры функции из урока 16:",
+            "code": "function Card({ title, price }) {\n  return <div>{title} — {price} сум</div>;\n}\n\nfunction App() {\n  return <Card title=\"Товар 1\" price={100} />;\n}"
+          },
+          {
+            "quote": true,
+            "text": "`{ title, price }` — это деструктуризация из урока 18."
+          },
+          {
+            "text": "Практика: компонент `Card` с заголовком, текстом и картинкой, три карточки. Домашка: разбей лендинг на `Header`, `Hero`, `Features`, `Footer`, каждый в своём файле."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Props",
+            "prompt": "Что такое props?",
+            "options": [
+              "Данные, которые передают компоненту снаружи",
+              "Стили",
+              "Название файла",
+              "Ошибки"
+            ],
+            "answer": 0,
+            "explain": "Props — как параметры функции."
+          },
+          {
+            "type": "choice",
+            "topic": "Props",
+            "prompt": "Что выведет компонент?",
+            "code": "function Card({ title, price }) {\n  return <div>{title} — {price} сум</div>;\n}\n// <Card title=\"Товар 1\" price={100} />",
+            "options": [
+              "Товар 1 — 100 сум",
+              "title — price сум",
+              "Ничего",
+              "Ошибка"
+            ],
+            "answer": 0,
+            "explain": "Подставятся значения props."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "truefalse",
+      "topic": "Компонент",
+      "prompt": "Компонент в React — это обычная JS-функция, возвращающая разметку.",
+      "answer": true,
+      "explain": "Название с большой буквы."
+    },
+    {
+      "type": "choice",
+      "topic": "Компонент",
+      "prompt": "Для чего React делит страницу на компоненты?",
+      "options": [
+        "Собирать страницу из маленьких переиспользуемых деталей",
+        "Чтобы страница стала красной",
+        "Чтобы отключить CSS",
+        "Без причины"
+      ],
+      "answer": 0,
+      "explain": "Как конструктор Lego."
+    },
+    {
+      "type": "choice",
+      "topic": "JSX",
+      "prompt": "Что такое JSX?",
+      "options": [
+        "HTML прямо внутри JS",
+        "Новый язык стилей",
+        "База данных",
+        "Браузер"
+      ],
+      "answer": 0,
+      "explain": "Vite превращает его в обычный JS."
+    },
+    {
+      "type": "truefalse",
+      "topic": "JSX",
+      "prompt": "Браузер сам понимает JSX без сборщика.",
+      "answer": false,
+      "explain": "Нужен инструмент сборки, например Vite."
+    },
+    {
+      "type": "choice",
+      "topic": "JSX и HTML",
+      "prompt": "Как в JSX пишут class?",
+      "options": [
+        "className",
+        "class",
+        "klass",
+        "cssClass"
+      ],
+      "answer": 0,
+      "explain": "className — самая частая ошибка новичков."
+    },
+    {
+      "type": "choice",
+      "topic": "JSX и HTML",
+      "prompt": "Как правильно записать картинку в JSX?",
+      "options": [
+        "<img src=\"a.jpg\" />",
+        "<img src=\"a.jpg\">",
+        "<image a.jpg>",
+        "<img>a.jpg</img>"
+      ],
+      "answer": 0,
+      "explain": "В JSX теги нужно закрывать."
+    },
+    {
+      "type": "match",
+      "topic": "JSX и HTML",
+      "prompt": "Соедини HTML и JSX",
+      "pairs": [
+        [
+          "class=\"a\"",
+          "className=\"a\""
+        ],
+        [
+          "<br>",
+          "<br />"
+        ],
+        [
+          "<input>",
+          "<input />"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "Использование",
+      "prompt": "Как использовать компонент Button?",
+      "options": [
+        "<Button />",
+        "Button()",
+        "<button>",
+        "call Button"
+      ],
+      "answer": 0,
+      "explain": "Как обычный тег, только с большой буквы."
+    },
+    {
+      "type": "choice",
+      "topic": "Props",
+      "prompt": "Как компонент принимает данные?",
+      "options": [
+        "Через props: function Card({ title })",
+        "Через CSS",
+        "Через alert",
+        "Никак"
+      ],
+      "answer": 0,
+      "explain": "Параметры компонента — это props."
+    },
+    {
+      "type": "choice",
+      "topic": "Props",
+      "prompt": "Как передать данные компоненту Card?",
+      "options": [
+        "<Card title=\"...\" />",
+        "Card(title)",
+        "title -> Card",
+        "<Card>title"
+      ],
+      "answer": 0,
+      "explain": "Как атрибуты тега."
+    },
+    {
+      "type": "input",
+      "topic": "Props",
+      "prompt": "Из какого урока деструктуризация в { title, price }? (номер)",
+      "answer": [
+        "18"
+      ],
+      "explain": "Деструктуризация — урок 18."
+    },
+    {
+      "type": "order",
+      "topic": "Компонент",
+      "prompt": "Собери компонент Button",
+      "tokens": [
+        "function Button() {",
+        "return <button>Click</button>;",
+        "}"
+      ],
+      "extra": [
+        "let Button ="
+      ],
+      "explain": "Функция, которая возвращает JSX."
+    }
+  ]
+}

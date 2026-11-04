@@ -1,5 +1,6 @@
 {
   "id": "lesson-01-html",
+  "order": 1,
   "title": "Урок 1. Первый HTML",
   "emoji": "🌐",
   "description": "Из чего сделан сайт, теги, каркас страницы, <p> и style",

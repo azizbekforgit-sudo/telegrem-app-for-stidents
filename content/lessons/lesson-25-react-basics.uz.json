@@ -1,0 +1,279 @@
+{
+  "title": "25-dars. React — komponentlar, JSX, props",
+  "description": "Komponentlar, JSX, HTML dan farqlar, ishlatish va props",
+  "learn": {
+    "intro": "Salom! 25-dars — **React**. Avval sahifaning butun kodi bitta katta faylda edi. React sahifani kichik detallardan — komponentlardan Lego konstruktori kabi yig'adi. Ketdik!",
+    "sections": [
+      {
+        "title": "Komponent va JSX",
+        "slides": [
+          {
+            "emoji": "🧱",
+            "text": "**Komponent** — markup qaytaradigan oddiy JS funksiya:",
+            "code": "function Button() {\n  return <button>Click</button>;\n}"
+          },
+          {
+            "text": "**JSX** — JS ichidagi HTML. Brauzer uni o'zi tushunmaydi, yig'uvchi vosita (Vite) uni biz uchun o'zgartiradi."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Komponent",
+            "prompt": "React da komponent nima?",
+            "options": [
+              "Markup qaytaradigan JS funksiya",
+              "Rasm",
+              "CSS fayli",
+              "Brauzer"
+            ],
+            "answer": 0,
+            "explain": "Komponent — sahifa detali."
+          }
+        ]
+      },
+      {
+        "title": "JSX va HTML: farqlar",
+        "slides": [
+          {
+            "emoji": "⚠️",
+            "text": "HTML da `class=\"box\"`, JSX da esa `className=\"box\"`.\nHTML da `<img src=\"a.jpg\">`, JSX da teglar yopiladi: `<img src=\"a.jpg\" />`."
+          },
+          {
+            "quote": true,
+            "text": "Bu React dagi yangi boshlovchilarning eng ko'p uchraydigan xatosi."
+          }
+        ],
+        "check": [
+          {
+            "type": "match",
+            "topic": "JSX va HTML",
+            "prompt": "HTML va JSX ni moslashtir",
+            "pairs": [
+              [
+                "class=\"box\"",
+                "className=\"box\""
+              ],
+              [
+                "<img src=\"a.jpg\">",
+                "<img src=\"a.jpg\" />"
+              ]
+            ]
+          },
+          {
+            "type": "choice",
+            "topic": "JSX va HTML",
+            "prompt": "JSX da klassni qanday to'g'ri berish kerak?",
+            "options": [
+              "className=\"box\"",
+              "class=\"box\"",
+              "klass=\"box\"",
+              "style=\"box\""
+            ],
+            "answer": 0,
+            "explain": "JSX da class o'rniga className yoziladi."
+          }
+        ]
+      },
+      {
+        "title": "Ishlatish va props",
+        "slides": [
+          {
+            "emoji": "🧩",
+            "text": "Komponent oddiy HTML teg kabi ishlatiladi:",
+            "code": "function App() {\n  return (\n    <div>\n      <Button />\n      <Button />\n    </div>\n  );\n}"
+          },
+          {
+            "text": "**Props** — tashqaridan keladigan ma'lumotlar, 16-darsdagi funksiya parametrlari kabi:",
+            "code": "function Card({ title, price }) {\n  return <div>{title} — {price} so'm</div>;\n}\n\nfunction App() {\n  return <Card title=\"Mahsulot 1\" price={100} />;\n}"
+          },
+          {
+            "quote": true,
+            "text": "`{ title, price }` — bu 18-darsdagi destrukturizatsiya."
+          },
+          {
+            "text": "Amaliyot: sarlavha, matn va rasmli `Card` komponenti, uchta kartochka. Uy vazifasi: lendingni `Header`, `Hero`, `Features`, `Footer` ga bo'l, har biri o'z faylida."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Props",
+            "prompt": "Props nima?",
+            "options": [
+              "Komponentga tashqaridan beriladigan ma'lumotlar",
+              "Uslublar",
+              "Fayl nomi",
+              "Xatolar"
+            ],
+            "answer": 0,
+            "explain": "Props — funksiya parametrlari kabi."
+          },
+          {
+            "type": "choice",
+            "topic": "Props",
+            "prompt": "Komponent nimani chiqaradi?",
+            "code": "function Card({ title, price }) {\n  return <div>{title} — {price} сум</div>;\n}\n// <Card title=\"Товар 1\" price={100} />",
+            "options": [
+              "Товар 1 — 100 сум",
+              "title — price сум",
+              "Hech narsa",
+              "Xato"
+            ],
+            "answer": 0,
+            "explain": "Props qiymatlari qo'yiladi."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "truefalse",
+      "topic": "Komponent",
+      "prompt": "React da komponent — markup qaytaradigan oddiy JS funksiya.",
+      "answer": true,
+      "explain": "Nomi bosh harf bilan."
+    },
+    {
+      "type": "choice",
+      "topic": "Komponent",
+      "prompt": "React sahifani nima uchun komponentlarga bo'ladi?",
+      "options": [
+        "Sahifani kichik qayta ishlatiladigan detallardan yig'ish",
+        "Sahifa qizil bo'lishi uchun",
+        "CSS ni o'chirish uchun",
+        "Sababsiz"
+      ],
+      "answer": 0,
+      "explain": "Lego konstruktori kabi."
+    },
+    {
+      "type": "choice",
+      "topic": "JSX",
+      "prompt": "JSX nima?",
+      "options": [
+        "JS ichidagi HTML",
+        "Yangi uslublar tili",
+        "Ma'lumotlar bazasi",
+        "Brauzer"
+      ],
+      "answer": 0,
+      "explain": "Vite uni oddiy JS ga aylantiradi."
+    },
+    {
+      "type": "truefalse",
+      "topic": "JSX",
+      "prompt": "Brauzer JSX ni yig'uvchisiz o'zi tushunadi.",
+      "answer": false,
+      "explain": "Yig'uvchi vosita, masalan Vite kerak."
+    },
+    {
+      "type": "choice",
+      "topic": "JSX va HTML",
+      "prompt": "JSX da class qanday yoziladi?",
+      "options": [
+        "className",
+        "class",
+        "klass",
+        "cssClass"
+      ],
+      "answer": 0,
+      "explain": "className — yangi boshlovchilarning eng ko'p xatosi."
+    },
+    {
+      "type": "choice",
+      "topic": "JSX va HTML",
+      "prompt": "JSX da rasmni qanday to'g'ri yozish kerak?",
+      "options": [
+        "<img src=\"a.jpg\" />",
+        "<img src=\"a.jpg\">",
+        "<image a.jpg>",
+        "<img>a.jpg</img>"
+      ],
+      "answer": 0,
+      "explain": "JSX da teglar yopilishi kerak."
+    },
+    {
+      "type": "match",
+      "topic": "JSX va HTML",
+      "prompt": "HTML va JSX ni moslashtir",
+      "pairs": [
+        [
+          "class=\"a\"",
+          "className=\"a\""
+        ],
+        [
+          "<br>",
+          "<br />"
+        ],
+        [
+          "<input>",
+          "<input />"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "Ishlatish",
+      "prompt": "Button komponentini qanday ishlatish kerak?",
+      "options": [
+        "<Button />",
+        "Button()",
+        "<button>",
+        "call Button"
+      ],
+      "answer": 0,
+      "explain": "Oddiy teg kabi, faqat bosh harf bilan."
+    },
+    {
+      "type": "choice",
+      "topic": "Props",
+      "prompt": "Komponent ma'lumotni qanday qabul qiladi?",
+      "options": [
+        "Props orqali: function Card({ title })",
+        "CSS orqali",
+        "alert orqali",
+        "Hech qanday"
+      ],
+      "answer": 0,
+      "explain": "Komponent parametrlari — props."
+    },
+    {
+      "type": "choice",
+      "topic": "Props",
+      "prompt": "Card komponentiga ma'lumotni qanday berish kerak?",
+      "options": [
+        "<Card title=\"...\" />",
+        "Card(title)",
+        "title -> Card",
+        "<Card>title"
+      ],
+      "answer": 0,
+      "explain": "Teg atributlari kabi."
+    },
+    {
+      "type": "input",
+      "topic": "Props",
+      "prompt": "{ title, price } dagi destrukturizatsiya qaysi darsdan? (raqam)",
+      "answer": [
+        "18"
+      ],
+      "explain": "Destrukturizatsiya — 18-dars."
+    },
+    {
+      "type": "order",
+      "topic": "Komponent",
+      "prompt": "Button komponentini yig'",
+      "tokens": [
+        "function Button() {",
+        "return <button>Click</button>;",
+        "}"
+      ],
+      "extra": [
+        "let Button ="
+      ],
+      "explain": "JSX qaytaradigan funksiya."
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 {
   "id": "lesson-02-css",
+  "order": 2,
   "title": "Урок 2. Что такое CSS и как его подключить",
   "emoji": "🎨",
   "description": "Теги, файл style.css, тег <link>, селектор, свойства и style",

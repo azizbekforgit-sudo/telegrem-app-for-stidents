@@ -1,5 +1,6 @@
 {
   "id": "lesson-15-loops",
+  "order": 15,
   "title": "Урок 15. Циклы",
   "emoji": "🔁",
   "description": "for, бесконечный цикл, while, for...of",

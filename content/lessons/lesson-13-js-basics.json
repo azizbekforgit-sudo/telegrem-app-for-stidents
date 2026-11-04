@@ -1,0 +1,293 @@
+{
+  "id": "lesson-13-js-basics",
+  "order": 13,
+  "title": "Урок 13. JavaScript — переменные, типы, операторы",
+  "emoji": "🧠",
+  "description": "let, const, типы данных, typeof, арифметика, === и шаблонные строки",
+  "learn": {
+    "intro": "Привет! Урок 13 — **JavaScript**. HTML — скелет, CSS — одежда, а JavaScript — мозг. Сайт начинает думать и реагировать. Поехали!",
+    "sections": [
+      {
+        "title": "let, const, var",
+        "slides": [
+          {
+            "emoji": "📦",
+            "text": "`const` — переменную нельзя переприсвоить, как имя человека. `let` — можно менять, как возраст. `var` — старый способ, не используем."
+          },
+          {
+            "text": "Пример:",
+            "code": "const name = \"Аня\";\nlet age = 25;\nage = 26;        // можно\n// name = \"Ира\"; // нельзя, будет ошибка"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "let и const",
+            "prompt": "Какое слово для значения, которое меняется (возраст)?",
+            "options": [
+              "let",
+              "const",
+              "var (современный)",
+              "fix"
+            ],
+            "answer": 0,
+            "explain": "let можно менять, const нельзя."
+          },
+          {
+            "type": "truefalse",
+            "topic": "let и const",
+            "prompt": "const можно переприсвоить, это просто красивое слово.",
+            "answer": false,
+            "explain": "const запрещает переприсваивание — будет ошибка."
+          }
+        ]
+      },
+      {
+        "title": "Типы данных и typeof",
+        "slides": [
+          {
+            "emoji": "🏷️",
+            "text": "Типы:\n`string` — текст `\"Аня\"`\n`number` — число `25`\n`boolean` — `true` / `false`\n`undefined` — значение ещё не задано\n`null` — значение специально пустое"
+          },
+          {
+            "text": "`typeof` показывает тип. Консоль: F12 → Console.",
+            "code": "console.log(typeof \"Аня\"); // string\nconsole.log(typeof 25);    // number\nconsole.log(typeof true);  // boolean"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Типы данных",
+            "prompt": "Что выведет typeof 25?",
+            "options": [
+              "number",
+              "string",
+              "boolean",
+              "undefined"
+            ],
+            "answer": 0,
+            "explain": "25 — это число (number)."
+          },
+          {
+            "type": "match",
+            "topic": "Типы данных",
+            "prompt": "Соедини тип и пример",
+            "pairs": [
+              [
+                "string",
+                "\"Аня\""
+              ],
+              [
+                "number",
+                "25"
+              ],
+              [
+                "boolean",
+                "true"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Арифметика и остаток %",
+        "slides": [
+          {
+            "emoji": "🧮",
+            "text": "Привычные действия:",
+            "code": "console.log(10 + 3); // 13\nconsole.log(10 - 3); // 7\nconsole.log(10 * 3); // 30\nconsole.log(10 / 3); // 3.333...\nconsole.log(10 % 3); // 1 (остаток)"
+          },
+          {
+            "quote": true,
+            "text": "Оператор `%` даёт остаток от деления. Чтобы узнать, чётное ли число: `число % 2 === 0`."
+          }
+        ],
+        "check": [
+          {
+            "type": "input",
+            "topic": "Арифметика",
+            "prompt": "Чему равно 10 % 3?",
+            "answer": [
+              "1"
+            ],
+            "explain": "10 = 3·3 + 1, остаток 1."
+          }
+        ]
+      },
+      {
+        "title": "== и === и шаблонные строки",
+        "slides": [
+          {
+            "emoji": "⚖️",
+            "text": "`==` сравнивает значение и не смотрит на тип. `===` сравнивает и значение, и тип.",
+            "code": "console.log(\"5\" == 5);  // true\nconsole.log(\"5\" === 5); // false"
+          },
+          {
+            "quote": true,
+            "text": "В проектах используем только `===`: `==` часто приводит к ошибкам."
+          },
+          {
+            "text": "Шаблонная строка — в обратных кавычках, переменные через `${}`:",
+            "code": "const name = \"Ваше имя\";\nconst age = 20;\nconsole.log(`Меня зовут ${name}, мне ${age} лет`);"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Сравнение",
+            "prompt": "Что выведет \"5\" === 5?",
+            "options": [
+              "false",
+              "true",
+              "undefined",
+              "Ошибка"
+            ],
+            "answer": 0,
+            "explain": "=== сравнивает и тип: строка и число — разные."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "let и const",
+      "prompt": "Какое слово объявляет переменную, которую нельзя переприсвоить?",
+      "options": [
+        "const",
+        "let",
+        "var",
+        "change"
+      ],
+      "answer": 0,
+      "explain": "const — постоянная переменная."
+    },
+    {
+      "type": "choice",
+      "topic": "let и const",
+      "prompt": "Что произойдёт?",
+      "code": "const name = \"Аня\";\nname = \"Ира\";",
+      "options": [
+        "Ошибка: const нельзя переприсвоить",
+        "Имя станет \"Ира\"",
+        "Ничего",
+        "Имя исчезнет"
+      ],
+      "answer": 0,
+      "explain": "Переприсвоить const нельзя."
+    },
+    {
+      "type": "truefalse",
+      "topic": "let и const",
+      "prompt": "var — современный способ, и его стоит использовать.",
+      "answer": false,
+      "explain": "var — старый способ, мы его не используем."
+    },
+    {
+      "type": "match",
+      "topic": "Типы данных",
+      "prompt": "Соедини тип и что это",
+      "pairs": [
+        [
+          "string",
+          "Текст"
+        ],
+        [
+          "number",
+          "Число"
+        ],
+        [
+          "boolean",
+          "Да или нет"
+        ],
+        [
+          "undefined",
+          "Значение не задано"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "Типы данных",
+      "prompt": "Что значит let x; без значения?",
+      "options": [
+        "x равно undefined",
+        "x равно 0",
+        "x равно null",
+        "Ошибка"
+      ],
+      "answer": 0,
+      "explain": "Значение ещё не задано — undefined."
+    },
+    {
+      "type": "choice",
+      "topic": "Типы данных",
+      "prompt": "Что выведет typeof true?",
+      "options": [
+        "boolean",
+        "string",
+        "number",
+        "true"
+      ],
+      "answer": 0,
+      "explain": "true/false — тип boolean."
+    },
+    {
+      "type": "input",
+      "topic": "Арифметика",
+      "prompt": "Чему равно 10 % 3?",
+      "answer": [
+        "1"
+      ],
+      "explain": "Остаток от деления 10 на 3 — 1."
+    },
+    {
+      "type": "choice",
+      "topic": "Арифметика",
+      "prompt": "Как проверить, что число чётное?",
+      "options": [
+        "число % 2 === 0",
+        "число / 2",
+        "число - 2",
+        "число * 2 === 0"
+      ],
+      "answer": 0,
+      "explain": "У чётного числа остаток от деления на 2 равен 0."
+    },
+    {
+      "type": "choice",
+      "topic": "Сравнение",
+      "prompt": "Что выведет \"5\" == 5?",
+      "options": [
+        "true",
+        "false",
+        "undefined",
+        "Ошибка"
+      ],
+      "answer": 0,
+      "explain": "== не смотрит на тип, значения равны."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Сравнение",
+      "prompt": "В проектах лучше использовать === вместо ==.",
+      "answer": true,
+      "explain": "=== строже и меньше ошибок."
+    },
+    {
+      "type": "order",
+      "topic": "Шаблонные строки",
+      "prompt": "Собери вывод имени шаблонной строкой",
+      "tokens": [
+        "console.log(",
+        "`Меня зовут ${name}`",
+        ");"
+      ],
+      "extra": [
+        "\"Меня зовут \" name"
+      ],
+      "explain": "Шаблонная строка — в обратных кавычках с ${}."
+    }
+  ]
+}

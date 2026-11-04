@@ -1,0 +1,281 @@
+{
+  "title": "21-dars. Fetch API va JSON",
+  "description": "JSON, fetch, promise, .then, .catch va ma'lumotlar bilan ishlash",
+  "learn": {
+    "intro": "Salom! 21-dars — **Fetch API va JSON**. Haqiqiy saytlar ma'lumotni serverdan oladi: ob-havo, mahsulotlar, postlar. Serverga ma'lumot uchun «borishni» o'rganamiz. Ketdik!",
+    "sections": [
+      {
+        "title": "JSON nima",
+        "slides": [
+          {
+            "emoji": "📄",
+            "text": "Barcha ma'lumotni kodga qo'lda yozardik. Haqiqiy saytlar uni serverdan oladi. **JSON** — JS obyektlari bilan bir xil format, faqat matn ko'rinishida. Ma'lumotlar internet orqali shunday uzatiladi."
+          },
+          {
+            "text": "JS obyekti va xuddi shu obyekt JSON da:",
+            "code": "// JS obyekti\nconst user = { name: \"Anya\", age: 25 };\n// Xuddi shu obyekt JSON formatida\n// {\"name\": \"Anya\", \"age\": 25}"
+          }
+        ],
+        "check": [
+          {
+            "type": "truefalse",
+            "topic": "JSON",
+            "prompt": "JSON — JS obyektlariga o'xshash, lekin matn ko'rinishidagi ma'lumot formati.",
+            "answer": true,
+            "explain": "Ma'lumotlar server va sayt orasida shunday uzatiladi."
+          }
+        ]
+      },
+      {
+        "title": "fetch va promise",
+        "slides": [
+          {
+            "emoji": "🛰️",
+            "text": "`fetch` — serverga «borib» ma'lumot olish usuli:",
+            "code": "fetch(\"https://jsonplaceholder.typicode.com/users\")\n  .then((response) => response.json())\n  .then((data) => console.log(data))\n  .catch((error) => console.log(\"Xato:\", error));"
+          },
+          {
+            "quote": true,
+            "text": "`fetch` **promise** qaytaradi — ma'lumot bir ozdan keyin, darhol emas, kelishi haqidagi va'da."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "fetch",
+            "prompt": "fetch nimani qaytaradi?",
+            "options": [
+              "promise",
+              "Darhol ma'lumot",
+              "Satr",
+              "Son"
+            ],
+            "answer": 0,
+            "explain": "Promise — ma'lumot keyinroq kelishi haqidagi va'da."
+          }
+        ]
+      },
+      {
+        "title": ".then, json() va .catch",
+        "slides": [
+          {
+            "emoji": "🔗",
+            "text": "`.then` — natija kelganda nima qilish. `response.json()` «xom» javobni JS obyektiga aylantiradi. `.catch` server ishlamasa yoki internet bo'lmasa xatoni ushlaydi."
+          },
+          {
+            "quote": true,
+            "text": "Yodnoma: `fetch(url)` — so'rash; `.then(r => r.json())` — obyektga aylantirish; `.catch(err => ...)` — xato."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "then va catch",
+            "prompt": "response.json() nima uchun?",
+            "options": [
+              "Javobni JS obyektiga aylantirish",
+              "So'rov yuborish",
+              "Xatoni ko'rsatish",
+              "Saytni yopish"
+            ],
+            "answer": 0,
+            "explain": "Javob «xom» keladi."
+          },
+          {
+            "type": "choice",
+            "topic": "then va catch",
+            "prompt": ".catch nima qiladi?",
+            "options": [
+              "Xatoni qayta ishlaydi",
+              "So'rov yuboradi",
+              "Ma'lumotni o'chiradi",
+              "Saytni tezlashtiradi"
+            ],
+            "answer": 0,
+            "explain": "Nimadir noto'g'ri ketsa ishlaydi."
+          }
+        ]
+      },
+      {
+        "title": "Ma'lumotlar bilan ishlash va amaliyot",
+        "slides": [
+          {
+            "emoji": "🗃️",
+            "text": "Ma'lumotlar odatda **obyektlar massivi** bo'lib keladi. Keyin 17-darsdagi metodlar bilan ishlaymiz:",
+            "code": "data.forEach((user) => {\n  console.log(user.name);\n});"
+          },
+          {
+            "text": "Amaliyot: ommaviy API ga so'rov (postlar yoki foydalanuvchilar) va sahifaga `querySelector`, `forEach` va `createElement` orqali chiqarish. Uy vazifasi: istalgan bepul API (mamlakatlar, mushuklar, hazillar) toping va sahifaga 5 ta elementni chiqaring."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Ma'lumotlar",
+            "prompt": "Ma'lumotlar serverdan odatda qanday ko'rinishda keladi?",
+            "options": [
+              "Obyektlar massivi",
+              "Bitta raqam",
+              "Rasm",
+              "Tovush"
+            ],
+            "answer": 0,
+            "explain": "Bu kartochkalar ro'yxati."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "truefalse",
+      "topic": "JSON",
+      "prompt": "JSON — JS obyektiga o'xshash matn ko'rinishidagi ma'lumot formati.",
+      "answer": true,
+      "explain": "Ma'lumotlar internetda shunday yuradi."
+    },
+    {
+      "type": "choice",
+      "topic": "JSON",
+      "prompt": "Qaysi yozuv — JSON?",
+      "options": [
+        "{\"name\": \"Аня\", \"age\": 25}",
+        "name = Аня; age = 25",
+        "<user name=\"Аня\">",
+        "[name: Аня]"
+      ],
+      "answer": 0,
+      "explain": "JSON da kalitlar qo'sh tirnoqda."
+    },
+    {
+      "type": "choice",
+      "topic": "fetch",
+      "prompt": "fetch nima uchun kerak?",
+      "options": [
+        "Serverdan ma'lumot so'rash",
+        "Tugmani bo'yash",
+        "Papka yaratish",
+        "Saytni o'chirish"
+      ],
+      "answer": 0,
+      "explain": "fetch ma'lumot uchun serverga «boradi»."
+    },
+    {
+      "type": "choice",
+      "topic": "fetch",
+      "prompt": "Promise nima?",
+      "options": [
+        "Ma'lumot keyinroq kelishi haqidagi va'da",
+        "Rasm turi",
+        "O'zgaruvchi nomi",
+        "Xato"
+      ],
+      "answer": 0,
+      "explain": "Javob darhol kelmaydi."
+    },
+    {
+      "type": "truefalse",
+      "topic": "fetch",
+      "prompt": "fetch ma'lumoti darhol keladi, shuning uchun promise kerak emas.",
+      "answer": false,
+      "explain": "So'rov tarmoq orqali ketadi, shuning uchun kutish kerak."
+    },
+    {
+      "type": "choice",
+      "topic": "then va catch",
+      "prompt": "Internet bo'lmasa nima bo'ladi?",
+      "options": [
+        ".catch ishlaydi",
+        ".then ishlaydi",
+        "Sayt o'chadi",
+        "Hech narsa"
+      ],
+      "answer": 0,
+      "explain": "Xato .catch ga tushadi."
+    },
+    {
+      "type": "order",
+      "topic": "then va catch",
+      "prompt": "fetch zanjirini yig'",
+      "tokens": [
+        "fetch(url)",
+        ".then((r) => r.json())",
+        ".then((data) => console.log(data))",
+        ".catch((e) => console.log(e));"
+      ],
+      "extra": [
+        ".stop()"
+      ],
+      "explain": "So'rov → json → chiqarish → xato."
+    },
+    {
+      "type": "input",
+      "topic": "then va catch",
+      "prompt": "Qaysi metod javobni JS obyektiga aylantiradi? (response. bilan, qavslarsiz)",
+      "answer": [
+        "response.json",
+        "json"
+      ],
+      "explain": "response.json() javobni obyektga aylantiradi."
+    },
+    {
+      "type": "choice",
+      "topic": "Ma'lumotlar",
+      "prompt": "data dagi har bir foydalanuvchi bo'yicha qaysi metod o'tadi?",
+      "options": [
+        "data.forEach(...)",
+        "data.fetch(...)",
+        "data.get(...)",
+        "data.run(...)"
+      ],
+      "answer": 0,
+      "explain": "17-darsdagi forEach."
+    },
+    {
+      "type": "choice",
+      "topic": "Ma'lumotlar",
+      "prompt": "data foydalanuvchilar massivi bo'lsa, bu kod nima chiqaradi?",
+      "code": "data.forEach((user) => {\n  console.log(user.name);\n});",
+      "options": [
+        "Har bir foydalanuvchi ismi",
+        "Hech narsa",
+        "Xato",
+        "Faqat birinchisini"
+      ],
+      "answer": 0,
+      "explain": "forEach har biri uchun console.log ni chaqiradi."
+    },
+    {
+      "type": "match",
+      "topic": "Ma'lumotlar",
+      "prompt": "Amal va yozuvni moslashtir",
+      "pairs": [
+        [
+          "So'rash",
+          "fetch(url)"
+        ],
+        [
+          "Obyektga aylantirish",
+          ".then(r => r.json())"
+        ],
+        [
+          "Xatoni qayta ishlash",
+          ".catch(err => ...)"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "Amaliyot",
+      "prompt": "API ma'lumotini sahifaga chiqarish uchun nima kerak?",
+      "options": [
+        "fetch, querySelector, forEach va createElement",
+        "Faqat CSS",
+        "Faqat HTML",
+        "Hech narsa"
+      ],
+      "answer": 0,
+      "explain": "Oldingi darslardagi butun vositalar zanjiri."
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 {
   "id": "lesson-16-functions",
+  "order": 16,
   "title": "Урок 16. Функции",
   "emoji": "🍳",
   "description": "Объявление и вызов, параметры, return, стрелочные функции",

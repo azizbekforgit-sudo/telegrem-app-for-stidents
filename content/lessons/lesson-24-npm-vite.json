@@ -1,0 +1,283 @@
+{
+  "id": "lesson-24-npm-vite",
+  "order": 24,
+  "title": "Урок 24. npm, сборщики (Vite), модули",
+  "emoji": "📦",
+  "description": "npm, Vite, package.json, npm install, npm run dev, import и export",
+  "learn": {
+    "intro": "Привет! Урок 24 — **npm, Vite и модули**. В реальных проектах сотни файлов, и их нужно собирать в готовый сайт. Поехали!",
+    "sections": [
+      {
+        "title": "Что такое npm",
+        "slides": [
+          {
+            "emoji": "🛒",
+            "text": "**npm** — магазин готовых кусков кода, библиотек. Зачем шить одежду с нуля, если её можно купить?"
+          },
+          {
+            "text": "Проверка установки в терминале:",
+            "code": "node -v\nnpm -v"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "npm",
+            "prompt": "Что такое npm?",
+            "options": [
+              "Магазин готовых библиотек",
+              "Браузер",
+              "Язык программирования",
+              "Игра"
+            ],
+            "answer": 0,
+            "explain": "npm — менеджер пакетов."
+          }
+        ]
+      },
+      {
+        "title": "Проект на Vite",
+        "slides": [
+          {
+            "emoji": "⚡",
+            "text": "Создаём проект:",
+            "code": "npm create vite@latest"
+          },
+          {
+            "text": "Появятся папки и файлы: `src`, `index.html`, `package.json`. `package.json` — **паспорт проекта**: какие библиотеки используются и как запустить проект."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "package.json",
+            "prompt": "Что такое package.json?",
+            "options": [
+              "Паспорт проекта",
+              "Картинка",
+              "Стиль страницы",
+              "Браузер"
+            ],
+            "answer": 0,
+            "explain": "Там список библиотек и команды запуска."
+          }
+        ]
+      },
+      {
+        "title": "Установка и запуск",
+        "slides": [
+          {
+            "emoji": "▶️",
+            "text": "Устанавливаем и запускаем:",
+            "code": "npm install     # установить все библиотеки из package.json\nnpm run dev     # запустить локальный сервер"
+          },
+          {
+            "quote": true,
+            "text": "При изменении кода страница обновляется сама, без F5. Это называется **hot reload**."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Запуск",
+            "prompt": "Какая команда запускает локальный сервер?",
+            "options": [
+              "npm run dev",
+              "npm install",
+              "npm create",
+              "npm stop"
+            ],
+            "answer": 0,
+            "explain": "npm run dev — запуск сервера разработки."
+          },
+          {
+            "type": "input",
+            "topic": "Запуск",
+            "prompt": "Как называется автообновление страницы при изменении кода? (две части, латиницей)",
+            "answer": [
+              "hot reload",
+              "hotreload"
+            ],
+            "explain": "Hot reload — страница обновляется сама."
+          }
+        ]
+      },
+      {
+        "title": "Модули: import и export",
+        "slides": [
+          {
+            "emoji": "🪟",
+            "text": "Файл `utils.js` выкладывает функцию на «витрину»:",
+            "code": "export function sum(a, b) {\n  return a + b;\n}"
+          },
+          {
+            "text": "Файл `main.js` забирает её с витрины:",
+            "code": "import { sum } from \"./utils.js\";\nconsole.log(sum(2, 3)); // 5"
+          },
+          {
+            "quote": true,
+            "text": "Практика: пересоздай лендинг через Vite и раздели JS на два файла через `import` и `export`. Домашка: залей проект на GitHub новым коммитом."
+          }
+        ],
+        "check": [
+          {
+            "type": "match",
+            "topic": "Модули",
+            "prompt": "Соедини слово и смысл",
+            "pairs": [
+              [
+                "export",
+                "Выложить на витрину"
+              ],
+              [
+                "import",
+                "Забрать с витрины"
+              ]
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "truefalse",
+      "topic": "npm",
+      "prompt": "npm — это магазин готовых библиотек кода.",
+      "answer": true,
+      "explain": "Можно взять готовое вместо написания с нуля."
+    },
+    {
+      "type": "choice",
+      "topic": "npm",
+      "prompt": "Что проверяют командами node -v и npm -v?",
+      "options": [
+        "Что Node и npm установлены",
+        "Скорость интернета",
+        "Цвет сайта",
+        "Заряд батареи"
+      ],
+      "answer": 0,
+      "explain": "Команды показывают версии."
+    },
+    {
+      "type": "choice",
+      "topic": "Vite",
+      "prompt": "Какая команда создаёт проект на Vite?",
+      "options": [
+        "npm create vite@latest",
+        "npm run vite",
+        "vite new",
+        "npm start vite"
+      ],
+      "answer": 0,
+      "explain": "npm create vite@latest."
+    },
+    {
+      "type": "choice",
+      "topic": "package.json",
+      "prompt": "Что хранится в package.json?",
+      "options": [
+        "Какие библиотеки используются и как запустить проект",
+        "Фотографии",
+        "Пароли всех сайтов",
+        "Музыка"
+      ],
+      "answer": 0,
+      "explain": "Это паспорт проекта."
+    },
+    {
+      "type": "choice",
+      "topic": "Запуск",
+      "prompt": "Что делает npm install?",
+      "options": [
+        "Ставит все библиотеки из package.json",
+        "Запускает сервер",
+        "Удаляет проект",
+        "Открывает браузер"
+      ],
+      "answer": 0,
+      "explain": "Сначала install, потом dev."
+    },
+    {
+      "type": "order",
+      "topic": "Запуск",
+      "prompt": "Расставь шаги запуска проекта",
+      "tokens": [
+        "npm create vite@latest",
+        "npm install",
+        "npm run dev"
+      ],
+      "extra": [
+        "npm destroy"
+      ],
+      "explain": "Создать → установить → запустить."
+    },
+    {
+      "type": "choice",
+      "topic": "Запуск",
+      "prompt": "Что такое hot reload?",
+      "options": [
+        "Страница обновляется сама при изменении кода",
+        "Сайт перезагружает компьютер",
+        "Удаление кэша",
+        "Новый браузер"
+      ],
+      "answer": 0,
+      "explain": "Не нужно нажимать F5."
+    },
+    {
+      "type": "choice",
+      "topic": "Модули",
+      "prompt": "Что делает export?",
+      "options": [
+        "Выкладывает функцию «на витрину» для других файлов",
+        "Удаляет файл",
+        "Запускает сервер",
+        "Красит страницу"
+      ],
+      "answer": 0,
+      "explain": "export — выложить."
+    },
+    {
+      "type": "choice",
+      "topic": "Модули",
+      "prompt": "Что выведет main.js?",
+      "code": "// utils.js\nexport function sum(a, b) {\n  return a + b;\n}\n\n// main.js\nimport { sum } from \"./utils.js\";\nconsole.log(sum(2, 3));",
+      "options": [
+        "5",
+        "\"2 + 3\"",
+        "undefined",
+        "Ошибка"
+      ],
+      "answer": 0,
+      "explain": "sum(2, 3) равно 5."
+    },
+    {
+      "type": "match",
+      "topic": "Модули",
+      "prompt": "Соедини команду и действие",
+      "pairs": [
+        [
+          "npm install",
+          "Установить библиотеки"
+        ],
+        [
+          "npm run dev",
+          "Запустить сервер"
+        ],
+        [
+          "npm create vite@latest",
+          "Создать проект"
+        ]
+      ]
+    },
+    {
+      "type": "truefalse",
+      "topic": "Модули",
+      "prompt": "import забирает функцию, которую выложили через export.",
+      "answer": true,
+      "explain": "Как с витрины."
+    }
+  ]
+}

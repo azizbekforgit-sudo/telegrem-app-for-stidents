@@ -1,0 +1,298 @@
+{
+  "title": "Lesson 11. Forms and pseudo-classes",
+  "description": "Form tags, label, :hover, :focus, :nth-child",
+  "learn": {
+    "intro": "Hi! Lesson 11 — **forms and pseudo-classes**. Login, search, comment — they're all forms. We'll make them interactive without JavaScript. Let's go!",
+    "sections": [
+      {
+        "title": "Basic form tags",
+        "slides": [
+          {
+            "emoji": "📝",
+            "text": "A form is built from tags:",
+            "code": "<form>\n  <input type=\"text\" placeholder=\"Name\">\n  <input type=\"email\" placeholder=\"Email\">\n  <input type=\"password\" placeholder=\"Password\">\n  <textarea placeholder=\"Message\"></textarea>\n  <button type=\"submit\">Send</button>\n</form>"
+          },
+          {
+            "text": "There are also `<input type=\"checkbox\">` (a tick), `<input type=\"radio\">` (pick one) and `<select>` with a list of `<option>`."
+          },
+          {
+            "quote": true,
+            "text": "The browser checks `type=\"email\"` itself: if it isn't an email, the form won't send."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Form tags",
+            "prompt": "Which type gives a field that checks for an email?",
+            "options": [
+              "email",
+              "text",
+              "mail",
+              "check"
+            ],
+            "answer": 0,
+            "explain": "type=\"email\" checks that an email was entered."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Form tags",
+            "prompt": "<textarea> fits a multi-line message.",
+            "answer": true,
+            "explain": "textarea is a multi-line field."
+          }
+        ]
+      },
+      {
+        "title": "label and for",
+        "slides": [
+          {
+            "emoji": "🏷️",
+            "text": "We label the field:",
+            "code": "<label for=\"name\">Ваше имя</label>\n<input type=\"text\" id=\"name\">"
+          },
+          {
+            "text": "Why: clicking the label text puts the cursor in the field, and screen readers for visually impaired people read the field correctly."
+          },
+          {
+            "quote": true,
+            "text": "The label's `for` must match the input's `id`."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "label",
+            "prompt": "What does linking label for=\"name\" and input id=\"name\" give?",
+            "options": [
+              "Clicking the caption puts the cursor in the field",
+              "The field turns red",
+              "The form sends itself",
+              "The field disappears"
+            ],
+            "answer": 0,
+            "explain": "It is more convenient and accessible."
+          }
+        ]
+      },
+      {
+        "title": ":hover and :focus",
+        "slides": [
+          {
+            "emoji": "🖱️",
+            "text": "`:hover` — a style while the cursor is over an element:",
+            "code": "button:hover {\n  background: #6d28d9;\n}"
+          },
+          {
+            "text": "`:focus` — a style when the field is selected, i.e. the cursor is inside:",
+            "code": "input:focus {\n  border-color: #7c3aed;\n  outline: none;\n}"
+          }
+        ],
+        "check": [
+          {
+            "type": "match",
+            "topic": ":hover and :focus",
+            "prompt": "Match the pseudo-class and when it works",
+            "pairs": [
+              [
+                ":hover",
+                "The cursor is over the element"
+              ],
+              [
+                ":focus",
+                "The field is selected"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": ":nth-child, :first-child, :last-child",
+        "slides": [
+          {
+            "emoji": "🔢",
+            "text": "`:nth-child()` picks an element by its number among siblings (counting from 1):",
+            "code": "li:nth-child(2) { color: red; }      /* 2 */\nli:nth-child(odd) { background: #eee; }  /* 1, 3, 5 */"
+          },
+          {
+            "text": "First and last:",
+            "code": "li:first-child { font-weight: bold; }\nli:last-child { border-bottom: none; }"
+          },
+          {
+            "quote": true,
+            "text": "Handy for: tables with alternating rows and cards in different colors. Homework: add a subscribe form to your landing from lesson 10."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "nth-child",
+            "prompt": "Which of 6 items turn red?",
+            "code": "li:nth-child(odd) { color: red; }",
+            "options": [
+              "1, 3, 5",
+              "2, 4, 6",
+              "1, 2, 3",
+              "3, 4, 5"
+            ],
+            "answer": 0,
+            "explain": "odd means 1, 3, 5."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "Form tags",
+      "prompt": "Which tag creates a multi-line message field?",
+      "options": [
+        "<textarea>",
+        "<input>",
+        "<select>",
+        "<label>"
+      ],
+      "answer": 0,
+      "explain": "textarea is a multi-line field."
+    },
+    {
+      "type": "choice",
+      "topic": "Form tags",
+      "prompt": "What happens if you type a non-email into a type=\"email\" field?",
+      "options": [
+        "The form won't send",
+        "The browser fixes it",
+        "The site crashes",
+        "Nothing"
+      ],
+      "answer": 0,
+      "explain": "The browser checks type=\"email\" itself."
+    },
+    {
+      "type": "input",
+      "topic": "Form tags",
+      "prompt": "Which tag makes the form submit button? (no brackets)",
+      "answer": [
+        "button",
+        "<button>"
+      ],
+      "explain": "button with type=\"submit\"."
+    },
+    {
+      "type": "choice",
+      "topic": "label",
+      "prompt": "What must match on a label and an input?",
+      "options": [
+        "label's for and input's id",
+        "The color",
+        "The size",
+        "Nothing"
+      ],
+      "answer": 0,
+      "explain": "They are linked through for and id."
+    },
+    {
+      "type": "truefalse",
+      "topic": "label",
+      "prompt": "Clicking the label text puts the cursor in the linked field.",
+      "answer": true,
+      "explain": "That is one of the reasons to use label."
+    },
+    {
+      "type": "choice",
+      "topic": ":hover and :focus",
+      "prompt": "When does button:hover work?",
+      "options": [
+        "While the cursor is over the button",
+        "When the button is pressed and released",
+        "When the page loads",
+        "Never"
+      ],
+      "answer": 0,
+      "explain": ":hover — while the cursor is over the element."
+    },
+    {
+      "type": "choice",
+      "topic": ":hover and :focus",
+      "prompt": "Which pseudo-class works when the cursor is inside an input?",
+      "options": [
+        ":focus",
+        ":hover",
+        ":first-child",
+        ":odd"
+      ],
+      "answer": 0,
+      "explain": ":focus — the field is selected."
+    },
+    {
+      "type": "order",
+      "topic": ":hover and :focus",
+      "prompt": "Build the selector for a focused field",
+      "tokens": [
+        "input",
+        ":focus",
+        "{",
+        "border-color: #7c3aed;",
+        "}"
+      ],
+      "extra": [
+        "hover"
+      ],
+      "explain": "Selector + pseudo-class + style block."
+    },
+    {
+      "type": "choice",
+      "topic": "nth-child",
+      "prompt": "What does li:nth-child(2) select?",
+      "options": [
+        "Only the second item",
+        "All except the second",
+        "The first two",
+        "The last"
+      ],
+      "answer": 0,
+      "explain": "Numbering starts at 1."
+    },
+    {
+      "type": "choice",
+      "topic": "nth-child",
+      "prompt": "Which of 6 items turn red?",
+      "code": "li:nth-child(odd) { color: red; }",
+      "options": [
+        "1, 3, 5",
+        "2, 4, 6",
+        "1, 2, 3",
+        "Все"
+      ],
+      "answer": 0,
+      "explain": "odd means odd numbers."
+    },
+    {
+      "type": "match",
+      "topic": "first and last",
+      "prompt": "Match the selector and the element",
+      "pairs": [
+        [
+          ":first-child",
+          "The first element"
+        ],
+        [
+          ":last-child",
+          "The last element"
+        ],
+        [
+          ":nth-child(even)",
+          "Even elements"
+        ]
+      ]
+    },
+    {
+      "type": "truefalse",
+      "topic": "first and last",
+      "prompt": "li:last-child { border-bottom: none; } removes the line from the last item.",
+      "answer": true,
+      "explain": "A typical use of :last-child."
+    }
+  ]
+}

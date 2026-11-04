@@ -1,0 +1,301 @@
+{
+  "title": "Lesson 10. Mini project — a landing page",
+  "description": "Building a page from scratch: flex, grid, semantics and responsiveness",
+  "learn": {
+    "intro": "Hi! Lesson 10 — a **mini project**. We'll build a full landing page from everything we know. Let's go!",
+    "sections": [
+      {
+        "title": "What we are building",
+        "slides": [
+          {
+            "emoji": "🏗️",
+            "text": "Today we build a full page from scratch. We use everything: box model, flexbox, grid and responsive design."
+          },
+          {
+            "text": "The landing layout:\n— a header with a menu\n— a hero block with a heading and a button\n— 3 advantages\n— cards or reviews\n— a footer"
+          },
+          {
+            "quote": true,
+            "text": "We build **block by block**, not the whole page at once."
+          }
+        ],
+        "check": [
+          {
+            "type": "truefalse",
+            "topic": "Structure",
+            "prompt": "It is better to build a landing page block by block.",
+            "answer": true,
+            "explain": "This way it is easier not to get lost and to check the result."
+          },
+          {
+            "type": "choice",
+            "topic": "Structure",
+            "prompt": "Which of these is NOT part of the lesson's landing layout?",
+            "options": [
+              "A header with a menu",
+              "A footer",
+              "A database",
+              "A hero block"
+            ],
+            "answer": 2,
+            "explain": "A database is not page layout."
+          }
+        ]
+      },
+      {
+        "title": "Flex or grid?",
+        "slides": [
+          {
+            "emoji": "🧰",
+            "text": "Before each block ask yourself: which tool is needed here — **flex** or **grid**?"
+          },
+          {
+            "text": "`flex` — elements in one row or column, alignment (for example, the menu in the header).\n`grid` — a grid of rows and columns, cards in several rows."
+          },
+          {
+            "quote": true,
+            "text": "First we choose the tool, then we write the code."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Flex and grid",
+            "prompt": "What is better for a grid of cards in several rows?",
+            "options": [
+              "grid",
+              "flex",
+              "table",
+              "float"
+            ],
+            "answer": 0,
+            "explain": "grid is a grid of rows and columns."
+          },
+          {
+            "type": "choice",
+            "topic": "Flex and grid",
+            "prompt": "What is better for a one-row menu in the header?",
+            "options": [
+              "flex",
+              "grid",
+              "table",
+              "absolute"
+            ],
+            "answer": 0,
+            "explain": "flex — elements in one row and alignment."
+          }
+        ]
+      },
+      {
+        "title": "Reminders from earlier lessons",
+        "slides": [
+          {
+            "emoji": "📌",
+            "text": "The first line of CSS:",
+            "code": "* {\n  box-sizing: border-box;\n}"
+          },
+          {
+            "text": "`gap` — the space between elements, no extra margins.\nSemantic tags: `<header>`, `<section>`, `<footer>` instead of faceless `<div>`."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Semantics",
+            "prompt": "Which tag is better for the page footer?",
+            "options": [
+              "<footer>",
+              "<div>",
+              "<p>",
+              "<bottom>"
+            ],
+            "answer": 0,
+            "explain": "<footer> is the semantic footer tag."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Semantics",
+            "prompt": "gap sets the space between elements in flex and grid.",
+            "answer": true,
+            "explain": "So no extra margins are needed."
+          }
+        ]
+      },
+      {
+        "title": "Structure and responsiveness",
+        "slides": [
+          {
+            "emoji": "🧱",
+            "text": "Page structure:",
+            "code": "<header>...</header>\n<section class=\"hero\">...</section>\n<section class=\"features\">...</section>\n<section class=\"cards\">...</section>\n<footer>...</footer>"
+          },
+          {
+            "text": "At the end go through three breakpoints:",
+            "code": "@media (max-width: 1024px) { /* планшет */ }\n@media (max-width: 600px)  { /* телефон */ }"
+          },
+          {
+            "text": "Homework: finish the landing and add a hover effect to the buttons (more in the next lesson)."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Responsive",
+            "prompt": "What screen width is this rule for?",
+            "code": "@media (max-width: 1024px) { }",
+            "options": [
+              "A tablet",
+              "A phone",
+              "A monitor",
+              "A watch"
+            ],
+            "answer": 0,
+            "explain": "1024px is a tablet."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "truefalse",
+      "topic": "Structure",
+      "prompt": "It is better to build a landing page block by block, not all at once.",
+      "answer": true,
+      "explain": "It is easier to check every step."
+    },
+    {
+      "type": "choice",
+      "topic": "Structure",
+      "prompt": "What question do you ask before each block?",
+      "options": [
+        "Flex or grid?",
+        "Which color to choose?",
+        "How many lines of code?",
+        "Is JavaScript needed?"
+      ],
+      "answer": 0,
+      "explain": "First we choose the tool."
+    },
+    {
+      "type": "match",
+      "topic": "Flex and grid",
+      "prompt": "Match the situation and the tool",
+      "pairs": [
+        [
+          "Elements in one row, alignment",
+          "flex"
+        ],
+        [
+          "A grid of cards in several rows",
+          "grid"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "Flex and grid",
+      "prompt": "What is better for a row of 3 advantages?",
+      "options": [
+        "flex или grid",
+        "Only margin",
+        "Only float",
+        "A table"
+      ],
+      "answer": 0,
+      "explain": "Both flex and grid fit a row."
+    },
+    {
+      "type": "choice",
+      "topic": "Semantics",
+      "prompt": "Which tag is better for the site header?",
+      "options": [
+        "<header>",
+        "<div>",
+        "<top>",
+        "<head>"
+      ],
+      "answer": 0,
+      "explain": "<header> is the semantic header tag. <head> is something else entirely."
+    },
+    {
+      "type": "input",
+      "topic": "Semantics",
+      "prompt": "Which tag replaces a faceless <div> for the bottom of the page? (no brackets)",
+      "answer": [
+        "footer",
+        "<footer>"
+      ],
+      "explain": "footer is the semantic footer tag."
+    },
+    {
+      "type": "order",
+      "topic": "Structure",
+      "prompt": "Put the page blocks in order from top to bottom",
+      "tokens": [
+        "<header>",
+        "<section class=\"hero\">",
+        "<section class=\"features\">",
+        "<footer>"
+      ],
+      "extra": [
+        "<aside>"
+      ],
+      "explain": "Header → hero → features → footer."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Basic rules",
+      "prompt": "gap lets you avoid extra margins between elements.",
+      "answer": true,
+      "explain": "gap sets the space between elements."
+    },
+    {
+      "type": "choice",
+      "topic": "Basic rules",
+      "prompt": "Which rule goes on the first line of the project CSS?",
+      "options": [
+        "* { box-sizing: border-box; }",
+        "p { color: red; }",
+        "body { margin: 0; }",
+        "h1 { font-size: 40px; }"
+      ],
+      "answer": 0,
+      "explain": "With box-sizing: border-box sizes are predictable."
+    },
+    {
+      "type": "choice",
+      "topic": "Responsive",
+      "prompt": "What screen width is this rule for?",
+      "code": "@media (max-width: 600px) { }",
+      "options": [
+        "A phone",
+        "A tablet",
+        "A monitor",
+        "Any"
+      ],
+      "answer": 0,
+      "explain": "The 600px breakpoint is for phones."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Responsive",
+      "prompt": "At the end you should go through the 1024px and 600px breakpoints.",
+      "answer": true,
+      "explain": "So the page looks good on a tablet and a phone."
+    },
+    {
+      "type": "choice",
+      "topic": "Responsive",
+      "prompt": "What was the homework for lesson 10?",
+      "options": [
+        "Finish the landing and add hover to buttons",
+        "Write a game",
+        "Connect a database",
+        "Install React"
+      ],
+      "answer": 0,
+      "explain": "We cover hover in detail in the next lesson."
+    }
+  ]
+}

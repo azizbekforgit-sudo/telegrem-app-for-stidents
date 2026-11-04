@@ -1,0 +1,306 @@
+{
+  "title": "20-dars. Hodisalar",
+  "description": "addEventListener, hodisalar, e obyekti, delegatsiya, preventDefault",
+  "learn": {
+    "intro": "Salom! 20-dars — **hodisalar**. Haqiqiy sayt bosish, kiritish va ustiga olib borishga javob beradi. Ketdik!",
+    "sections": [
+      {
+        "title": "addEventListener",
+        "slides": [
+          {
+            "emoji": "⚡",
+            "text": "Avval elementlarni qo'lda o'zgartirardik. Lekin sayt foydalanuvchi harakatiga javob berishi kerak — bu **hodisa**."
+          },
+          {
+            "text": "Tugma bosildi — matn o'zgardi:",
+            "code": "const button = document.querySelector(\"button\");\nconst text = document.querySelector(\"p\");\n\nbutton.addEventListener(\"click\", function () {\n  text.textContent = \"Tugma bosildi!\";\n});"
+          },
+          {
+            "quote": true,
+            "text": "Tahlil: qaysi elementga — `button`; qaysi hodisa — `\"click\"`; nima qilish — ichidagi funksiya."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "addEventListener",
+            "prompt": "addEventListener ga ikkinchi argument sifatida nima beriladi?",
+            "options": [
+              "Nima qilish funksiyasi",
+              "Element nomi",
+              "Rang",
+              "Son"
+            ],
+            "answer": 0,
+            "explain": "Birinchisi — hodisa, ikkinchisi — funksiya."
+          }
+        ]
+      },
+      {
+        "title": "Ko'p uchraydigan hodisalar va e obyekti",
+        "slides": [
+          {
+            "emoji": "🖱️",
+            "text": "`click` — sichqoncha bosilishi\n`input` — maydonning har bir o'zgarishi\n`submit` — forma yuborilishi\n`mouseover` / `mouseout` — kursor kirdi / chiqdi"
+          },
+          {
+            "text": "Hodisa obyekti `e`:",
+            "code": "button.addEventListener(\"click\", function (e) {\n  console.log(e.target); // qaysi elementga bosildi\n});"
+          }
+        ],
+        "check": [
+          {
+            "type": "match",
+            "topic": "Hodisalar",
+            "prompt": "Hodisa va qachon ishlashini moslashtir",
+            "pairs": [
+              [
+                "click",
+                "Sichqoncha bosilishi"
+              ],
+              [
+                "input",
+                "Maydon o'zgarishi"
+              ],
+              [
+                "submit",
+                "Forma yuborilishi"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Delegatsiya va preventDefault",
+        "slides": [
+          {
+            "emoji": "🛡️",
+            "text": "Elementlar ko'p — har biriga ishlovchi osish noqulay, yangilari esa uni olmaydi. Yechim: **ota-elementga bitta ishlovchi** va `e.target` orqali tekshirish. Har bir eshikka qorovul o'rniga kirishda bitta qorovul kabi."
+          },
+          {
+            "text": "`li` ga bosish uni o'chiradi:",
+            "code": "const list = document.querySelector(\"ul\");\nlist.addEventListener(\"click\", function (e) {\n  if (e.target.tagName === \"LI\") {\n    e.target.remove();\n  }\n});"
+          },
+          {
+            "text": "Forma yuborilganda sahifa qayta yuklanadi. Bekor qilish — `e.preventDefault()`:",
+            "code": "form.addEventListener(\"submit\", function (e) {\n  e.preventDefault();\n  console.log(\"Forma qayta yuklanmasdan yuborildi\");\n});"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Delegatsiya",
+            "prompt": "Delegatsiya g'oyasi nimada?",
+            "options": [
+              "Ko'plar o'rniga ota-elementga bitta ishlovchi",
+              "Har bir elementga o'z ishlovchisi",
+              "Barcha elementlarni o'chirish",
+              "Hodisalarni o'chirish"
+            ],
+            "answer": 0,
+            "explain": "Ota-element bolalarga bosishlarni ushlaydi."
+          },
+          {
+            "type": "choice",
+            "topic": "preventDefault",
+            "prompt": "submit da e.preventDefault() nima uchun?",
+            "options": [
+              "Sahifa qayta yuklanmasligi uchun",
+              "Forma ikki marta yuborilishi uchun",
+              "Formani o'chirish uchun",
+              "Rangni o'zgartirish uchun"
+            ],
+            "answer": 0,
+            "explain": "Standart amalni bekor qiladi."
+          }
+        ]
+      },
+      {
+        "title": "Amaliyot: vazifalar ro'yxati",
+        "slides": [
+          {
+            "emoji": "✅",
+            "text": "Kiritish maydoni va «Qo'shish» tugmasi: bosilganda maydondagi matn bilan yangi `li` yaratiladi.",
+            "code": "const input = document.querySelector(\"input\");\nconst addBtn = document.querySelector(\"#add\");\nconst list = document.querySelector(\"ul\");\n\naddBtn.addEventListener(\"click\", function () {\n  const li = document.createElement(\"li\");\n  li.textContent = input.value;\n  list.append(li);\n  input.value = \"\";\n});"
+          },
+          {
+            "quote": true,
+            "text": "Uy vazifasi: bandga bosilganda u o'chadi. Butun ro'yxatga delegatsiyadan foydalan."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Amaliyot",
+            "prompt": "Qaysi metod yangi element yaratadi?",
+            "options": [
+              "document.createElement(\"li\")",
+              "document.newElement(\"li\")",
+              "list.make(\"li\")",
+              "createLi()"
+            ],
+            "answer": 0,
+            "explain": "createElement element yaratadi."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "addEventListener",
+      "prompt": "Bu kod nima qiladi?",
+      "code": "button.addEventListener(\"click\", function () {\n  text.textContent = \"OK\";\n});",
+      "options": [
+        "Bosilganda matnni o'zgartiradi",
+        "Tugmani o'chiradi",
+        "Sahifani qayta yuklaydi",
+        "Hech narsa"
+      ],
+      "answer": 0,
+      "explain": "click ishlovchisi textContent ni o'zgartiradi."
+    },
+    {
+      "type": "order",
+      "topic": "addEventListener",
+      "prompt": "Bosish ishlovchisi chaqiruvini yig'",
+      "tokens": [
+        "button",
+        ".addEventListener(",
+        "\"click\",",
+        "handler",
+        ");"
+      ],
+      "extra": [
+        "\"hover\","
+      ],
+      "explain": "Element, metod, hodisa, funksiya."
+    },
+    {
+      "type": "truefalse",
+      "topic": "addEventListener",
+      "prompt": "Hodisa — saytning foydalanuvchi harakatiga javobi.",
+      "answer": true,
+      "explain": "Bosish, matn kiritish, ustiga borish — bularning hammasi hodisa."
+    },
+    {
+      "type": "match",
+      "topic": "Hodisalar",
+      "prompt": "Hodisa va ma'noni moslashtir",
+      "pairs": [
+        [
+          "click",
+          "Sichqoncha bosilishi"
+        ],
+        [
+          "input",
+          "Maydonning har bir o'zgarishi"
+        ],
+        [
+          "submit",
+          "Forma yuborilishi"
+        ],
+        [
+          "mouseover",
+          "Kursor kirdi"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "e obyekti",
+      "prompt": "e.target nimani saqlaydi?",
+      "options": [
+        "Bosilgan element",
+        "Sahifa matni",
+        "Hodisa raqami",
+        "Sayt nomi"
+      ],
+      "answer": 0,
+      "explain": "target — hodisa nishoni."
+    },
+    {
+      "type": "choice",
+      "topic": "Delegatsiya",
+      "prompt": "Delegatsiya nima uchun kerak?",
+      "options": [
+        "Bitta ishlovchi yangi elementlar uchun ham ishlaydi",
+        "Sahifa uzoqroq yuklanishi uchun",
+        "Ro'yxatni yashirish uchun",
+        "JS ni o'chirish uchun"
+      ],
+      "answer": 0,
+      "explain": "Yangi elementlar avtomatik javob oladi."
+    },
+    {
+      "type": "choice",
+      "topic": "Delegatsiya",
+      "prompt": "Bandga bosish nima qiladi?",
+      "code": "list.addEventListener(\"click\", function (e) {\n  if (e.target.tagName === \"LI\") {\n    e.target.remove();\n  }\n});",
+      "options": [
+        "Shu bandni o'chiradi",
+        "Butun ro'yxatni o'chiradi",
+        "Band qo'shadi",
+        "Hech narsa"
+      ],
+      "answer": 0,
+      "explain": "tagName === \"LI\" tekshiruvi va remove()."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Delegatsiya",
+      "prompt": "Delegatsiyada ishlovchi ota-elementga osiladi.",
+      "answer": true,
+      "explain": "Ota-element bolalarga bosishlarni ushlaydi."
+    },
+    {
+      "type": "choice",
+      "topic": "preventDefault",
+      "prompt": "Forma yuborilganda preventDefault SIZ nima bo'ladi?",
+      "options": [
+        "Sahifa qayta yuklanadi",
+        "Forma o'chadi",
+        "Hech narsa",
+        "Sayt abadiy buziladi"
+      ],
+      "answer": 0,
+      "explain": "Bu standart xatti-harakat."
+    },
+    {
+      "type": "input",
+      "topic": "preventDefault",
+      "prompt": "Qaysi metod standart amalni bekor qiladi? (qavslarsiz va e.siz)",
+      "answer": [
+        "preventDefault"
+      ],
+      "explain": "e.preventDefault() standart amalni bekor qiladi."
+    },
+    {
+      "type": "choice",
+      "topic": "Amaliyot",
+      "prompt": "list.append(li) nima qiladi?",
+      "options": [
+        "li elementini ro'yxatga qo'shadi",
+        "li ni o'chiradi",
+        "li rangini o'zgartiradi",
+        "Ro'yxat yaratadi"
+      ],
+      "answer": 0,
+      "explain": "append — oxiriga qo'shish."
+    },
+    {
+      "type": "choice",
+      "topic": "Amaliyot",
+      "prompt": "Vazifa qo'shilgach input.value = \"\" nima uchun?",
+      "options": [
+        "Keyingi vazifa uchun maydonni tozalash",
+        "Vazifani o'chirish",
+        "Formani buzish",
+        "Hech nima uchun"
+      ],
+      "answer": 0,
+      "explain": "Maydon yana bo'sh va kiritishga tayyor."
+    }
+  ]
+}

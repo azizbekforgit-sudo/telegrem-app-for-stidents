@@ -1,5 +1,6 @@
 {
   "id": "lesson-14-conditions",
+  "order": 14,
   "title": "Урок 14. Условия",
   "emoji": "🔀",
   "description": "if / else, else if, && и ||, тернарный оператор",

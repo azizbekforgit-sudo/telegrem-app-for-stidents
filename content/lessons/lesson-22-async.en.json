@@ -1,0 +1,261 @@
+{
+  "title": "Lesson 22. async/await and error handling",
+  "description": "async, await, try/catch and a loading indicator",
+  "learn": {
+    "intro": "Hi! Lesson 22 — **async/await**. A .then().then() chain is hard to read. We'll learn to write asynchronous code line by line like normal code. Let's go!",
+    "sections": [
+      {
+        "title": "One request, two ways",
+        "slides": [
+          {
+            "emoji": "🔗",
+            "text": "With `.then`:",
+            "code": "fetch(url)\n  .then((response) => response.json())\n  .then((data) => console.log(data));"
+          },
+          {
+            "text": "With `async/await`:",
+            "code": "async function loadData() {\n  const response = await fetch(url);\n  const data = await response.json();\n  console.log(data);\n}\nloadData();"
+          },
+          {
+            "quote": true,
+            "text": "Both do the same thing, but the second reads **top to bottom**."
+          }
+        ],
+        "check": [
+          {
+            "type": "truefalse",
+            "topic": "async/await",
+            "prompt": "async/await and .then do the same thing but are written differently.",
+            "answer": true,
+            "explain": "The second reads like normal code."
+          }
+        ]
+      },
+      {
+        "title": "Keywords",
+        "slides": [
+          {
+            "emoji": "🔑",
+            "text": "`async` before a function — «this function can wait».\n`await` before a call — «stop on this line until the result arrives»."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "async/await",
+            "prompt": "What does await do?",
+            "options": [
+              "Waits for the result on this line",
+              "Deletes the function",
+              "Changes the color",
+              "Creates a loop"
+            ],
+            "answer": 0,
+            "explain": "await pauses until the result comes."
+          },
+          {
+            "type": "choice",
+            "topic": "async/await",
+            "prompt": "What goes before a function so it can use await?",
+            "options": [
+              "async",
+              "wait",
+              "later",
+              "defer"
+            ],
+            "answer": 0,
+            "explain": "async function name() { }."
+          }
+        ]
+      },
+      {
+        "title": "try / catch",
+        "slides": [
+          {
+            "emoji": "🛟",
+            "text": "`try` — we try to run it, `catch` — what to do on an error: the internet is gone or the server is down.",
+            "code": "async function loadData() {\n  try {\n    const response = await fetch(url);\n    const data = await response.json();\n    console.log(data);\n  } catch (error) {\n    console.log(\"Something went wrong:\", error);\n  }\n}"
+          },
+          {
+            "quote": true,
+            "text": "To test it: in DevTools open the **Network** tab and turn on **Offline**. The request fails and `catch` runs."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "try/catch",
+            "prompt": "When does the catch block run?",
+            "options": [
+              "When an error happened in try",
+              "Always",
+              "Never",
+              "Only on success"
+            ],
+            "answer": 0,
+            "explain": "catch catches errors from try."
+          }
+        ]
+      },
+      {
+        "title": "Loading indicator and practice",
+        "slides": [
+          {
+            "emoji": "⏳",
+            "text": "While waiting for data we show «Loading…», on an error a message:",
+            "code": "const status = document.querySelector(\"#status\");\n\nasync function loadData() {\n  status.textContent = \"Loading...\";\n  try {\n    const response = await fetch(url);\n    const data = await response.json();\n    status.textContent = \"\";\n  } catch (error) {\n    status.textContent = \"Loading error\";\n  }\n}"
+          },
+          {
+            "quote": true,
+            "text": "Practice: rewrite the fetch from the last lesson with `async/await` and `try/catch`. Homework: add a «Loading…» indicator and an error message to your API project."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Loading",
+            "prompt": "When should the «Loading...» label be cleared?",
+            "options": [
+              "When the data arrived",
+              "Never",
+              "Before the request",
+              "When the page is closed"
+            ],
+            "answer": 0,
+            "explain": "The data came — the indicator is no longer needed."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "async/await",
+      "prompt": "Which version reads top to bottom?",
+      "options": [
+        "async/await",
+        "A .then().then() chain",
+        "Both equally",
+        "Neither"
+      ],
+      "answer": 0,
+      "explain": "async/await is written like normal code."
+    },
+    {
+      "type": "truefalse",
+      "topic": "async/await",
+      "prompt": "async before a function means «this function can wait».",
+      "answer": true,
+      "explain": "So you can use await inside."
+    },
+    {
+      "type": "choice",
+      "topic": "async/await",
+      "prompt": "What does await before a call mean?",
+      "options": [
+        "Stop until the result arrives",
+        "Skip this line",
+        "Run twice",
+        "Delete the variable"
+      ],
+      "answer": 0,
+      "explain": "await waits on this line."
+    },
+    {
+      "type": "order",
+      "topic": "async/await",
+      "prompt": "Build the two request lines",
+      "tokens": [
+        "const response = await fetch(url);",
+        "const data = await response.json();"
+      ],
+      "extra": [
+        "const data = fetch(url).json();"
+      ],
+      "explain": "First fetch, then json()."
+    },
+    {
+      "type": "choice",
+      "topic": "async/await",
+      "prompt": "Where is the mistake?",
+      "code": "function loadData() {\n  const response = await fetch(url);\n}",
+      "options": [
+        "No async before the function",
+        "No brackets",
+        "No mistake",
+        "An extra return"
+      ],
+      "answer": 0,
+      "explain": "await works only in an async function."
+    },
+    {
+      "type": "choice",
+      "topic": "try/catch",
+      "prompt": "What does try do?",
+      "options": [
+        "Tries to run the code",
+        "Catches an error",
+        "Creates a function",
+        "Deletes code"
+      ],
+      "answer": 0,
+      "explain": "catch catches, try attempts."
+    },
+    {
+      "type": "truefalse",
+      "topic": "try/catch",
+      "prompt": "If everything went fine in try, the catch block runs too.",
+      "answer": false,
+      "explain": "catch is only for errors."
+    },
+    {
+      "type": "choice",
+      "topic": "try/catch",
+      "prompt": "How do you check that catch works?",
+      "options": [
+        "Network → Offline in DevTools",
+        "Restart the computer",
+        "Delete the code",
+        "No way"
+      ],
+      "answer": 0,
+      "explain": "Without internet the request fails."
+    },
+    {
+      "type": "input",
+      "topic": "try/catch",
+      "prompt": "Which word catches the error after try? (one word)",
+      "answer": [
+        "catch"
+      ],
+      "explain": "try { } catch (error) { }"
+    },
+    {
+      "type": "choice",
+      "topic": "Loading",
+      "prompt": "What do we show the user on a request error?",
+      "options": [
+        "An «Loading error» message",
+        "A blank screen with no explanation",
+        "Nothing",
+        "An ad"
+      ],
+      "answer": 0,
+      "explain": "The user needs to understand what happened."
+    },
+    {
+      "type": "choice",
+      "topic": "Loading",
+      "prompt": "Where do you put «Loading...» in an async function?",
+      "options": [
+        "Before the request",
+        "After catch",
+        "Outside the function",
+        "Nowhere"
+      ],
+      "answer": 0,
+      "explain": "First show the indicator, then request the data."
+    }
+  ]
+}

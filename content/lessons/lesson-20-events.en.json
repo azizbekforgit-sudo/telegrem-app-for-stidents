@@ -1,0 +1,306 @@
+{
+  "title": "Lesson 20. Events",
+  "description": "addEventListener, events, the e object, delegation, preventDefault",
+  "learn": {
+    "intro": "Hi! Lesson 20 — **events**. A real site reacts to clicks, typing and hovering. Let's go!",
+    "sections": [
+      {
+        "title": "addEventListener",
+        "slides": [
+          {
+            "emoji": "⚡",
+            "text": "Before we changed elements by hand. But a site must react to the user's actions — that is an **event**."
+          },
+          {
+            "text": "A button is clicked — the text changes:",
+            "code": "const button = document.querySelector(\"button\");\nconst text = document.querySelector(\"p\");\n\nbutton.addEventListener(\"click\", function () {\n  text.textContent = \"Button clicked!\";\n});"
+          },
+          {
+            "quote": true,
+            "text": "Breakdown: on which element — `button`; which event — `\"click\"`; what to do — the function inside."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "addEventListener",
+            "prompt": "What goes into addEventListener as the second argument?",
+            "options": [
+              "A function — what to do",
+              "The element name",
+              "A color",
+              "A number"
+            ],
+            "answer": 0,
+            "explain": "The first is the event, the second is the function."
+          }
+        ]
+      },
+      {
+        "title": "Common events and the e object",
+        "slides": [
+          {
+            "emoji": "🖱️",
+            "text": "`click` — a mouse click\n`input` — every change of a field\n`submit` — form sending\n`mouseover` / `mouseout` — the cursor entered / left"
+          },
+          {
+            "text": "The event object `e`:",
+            "code": "button.addEventListener(\"click\", function (e) {\n  console.log(e.target); // which element was clicked\n});"
+          }
+        ],
+        "check": [
+          {
+            "type": "match",
+            "topic": "Events",
+            "prompt": "Match the event and when it fires",
+            "pairs": [
+              [
+                "click",
+                "A mouse click"
+              ],
+              [
+                "input",
+                "A field change"
+              ],
+              [
+                "submit",
+                "Form sending"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Delegation and preventDefault",
+        "slides": [
+          {
+            "emoji": "🛡️",
+            "text": "There are many elements — attaching a handler to each is awkward, and new ones won't get it. The fix: **one handler on the parent** and a check through `e.target`. Like one guard at the entrance instead of a guard at every door."
+          },
+          {
+            "text": "Clicking an `li` removes it:",
+            "code": "const list = document.querySelector(\"ul\");\nlist.addEventListener(\"click\", function (e) {\n  if (e.target.tagName === \"LI\") {\n    e.target.remove();\n  }\n});"
+          },
+          {
+            "text": "When a form is submitted the page reloads. To cancel — `e.preventDefault()`:",
+            "code": "form.addEventListener(\"submit\", function (e) {\n  e.preventDefault();\n  console.log(\"The form was sent without reloading\");\n});"
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Delegation",
+            "prompt": "What is the idea of delegation?",
+            "options": [
+              "One handler on the parent instead of many",
+              "A handler per element",
+              "Delete all the elements",
+              "Turn off events"
+            ],
+            "answer": 0,
+            "explain": "The parent catches clicks on its children."
+          },
+          {
+            "type": "choice",
+            "topic": "preventDefault",
+            "prompt": "Why e.preventDefault() in submit?",
+            "options": [
+              "So the page doesn't reload",
+              "So the form sends twice",
+              "To delete the form",
+              "To change the color"
+            ],
+            "answer": 0,
+            "explain": "It cancels the default action."
+          }
+        ]
+      },
+      {
+        "title": "Practice: a to-do list",
+        "slides": [
+          {
+            "emoji": "✅",
+            "text": "An input and an «Add» button: a click creates a new `li` with the text from the field.",
+            "code": "const input = document.querySelector(\"input\");\nconst addBtn = document.querySelector(\"#add\");\nconst list = document.querySelector(\"ul\");\n\naddBtn.addEventListener(\"click\", function () {\n  const li = document.createElement(\"li\");\n  li.textContent = input.value;\n  list.append(li);\n  input.value = \"\";\n});"
+          },
+          {
+            "quote": true,
+            "text": "Homework: clicking an item removes it. Use delegation on the whole list."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Practice",
+            "prompt": "Which method creates a new element?",
+            "options": [
+              "document.createElement(\"li\")",
+              "document.newElement(\"li\")",
+              "list.make(\"li\")",
+              "createLi()"
+            ],
+            "answer": 0,
+            "explain": "createElement creates an element."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "addEventListener",
+      "prompt": "What does this code do?",
+      "code": "button.addEventListener(\"click\", function () {\n  text.textContent = \"OK\";\n});",
+      "options": [
+        "Changes the text on click",
+        "Deletes the button",
+        "Reloads the page",
+        "Nothing"
+      ],
+      "answer": 0,
+      "explain": "The click handler changes textContent."
+    },
+    {
+      "type": "order",
+      "topic": "addEventListener",
+      "prompt": "Build the click handler call",
+      "tokens": [
+        "button",
+        ".addEventListener(",
+        "\"click\",",
+        "handler",
+        ");"
+      ],
+      "extra": [
+        "\"hover\","
+      ],
+      "explain": "Element, method, event, function."
+    },
+    {
+      "type": "truefalse",
+      "topic": "addEventListener",
+      "prompt": "An event is the site's reaction to a user action.",
+      "answer": true,
+      "explain": "A click, typing, hovering — all events."
+    },
+    {
+      "type": "match",
+      "topic": "Events",
+      "prompt": "Match the event and meaning",
+      "pairs": [
+        [
+          "click",
+          "A mouse click"
+        ],
+        [
+          "input",
+          "Every field change"
+        ],
+        [
+          "submit",
+          "Form sending"
+        ],
+        [
+          "mouseover",
+          "The cursor entered"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "The e object",
+      "prompt": "What does e.target hold?",
+      "options": [
+        "The element that was clicked",
+        "The page text",
+        "The event number",
+        "The site name"
+      ],
+      "answer": 0,
+      "explain": "target is the event's target."
+    },
+    {
+      "type": "choice",
+      "topic": "Delegation",
+      "prompt": "Why is delegation needed?",
+      "options": [
+        "One handler also works for new elements",
+        "To make the page load longer",
+        "To hide the list",
+        "To turn JS off"
+      ],
+      "answer": 0,
+      "explain": "New elements react automatically."
+    },
+    {
+      "type": "choice",
+      "topic": "Delegation",
+      "prompt": "What will clicking an item do?",
+      "code": "list.addEventListener(\"click\", function (e) {\n  if (e.target.tagName === \"LI\") {\n    e.target.remove();\n  }\n});",
+      "options": [
+        "Remove that item",
+        "Remove the whole list",
+        "Add an item",
+        "Nothing"
+      ],
+      "answer": 0,
+      "explain": "A tagName === \"LI\" check and remove()."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Delegation",
+      "prompt": "With delegation the handler is attached to the parent.",
+      "answer": true,
+      "explain": "The parent catches clicks on its children."
+    },
+    {
+      "type": "choice",
+      "topic": "preventDefault",
+      "prompt": "What happens WITHOUT preventDefault on form submit?",
+      "options": [
+        "The page reloads",
+        "The form is deleted",
+        "Nothing",
+        "The site breaks forever"
+      ],
+      "answer": 0,
+      "explain": "That is the default behavior."
+    },
+    {
+      "type": "input",
+      "topic": "preventDefault",
+      "prompt": "Which method cancels the default action? (no brackets and no e.)",
+      "answer": [
+        "preventDefault"
+      ],
+      "explain": "e.preventDefault() cancels the default action."
+    },
+    {
+      "type": "choice",
+      "topic": "Practice",
+      "prompt": "What does list.append(li) do?",
+      "options": [
+        "Adds the li element to the list",
+        "Removes li",
+        "Changes the color of li",
+        "Creates a list"
+      ],
+      "answer": 0,
+      "explain": "append adds to the end."
+    },
+    {
+      "type": "choice",
+      "topic": "Practice",
+      "prompt": "Why input.value = \"\" after adding a task?",
+      "options": [
+        "To clear the field for the next task",
+        "To delete the task",
+        "To break the form",
+        "No reason"
+      ],
+      "answer": 0,
+      "explain": "The field is empty again and ready for input."
+    }
+  ]
+}

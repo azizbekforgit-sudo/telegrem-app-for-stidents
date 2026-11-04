@@ -1,0 +1,279 @@
+{
+  "title": "Lesson 25. React — components, JSX, props",
+  "description": "Components, JSX, differences from HTML, usage and props",
+  "learn": {
+    "intro": "Hi! Lesson 25 — **React**. Before, all the page code was in one big file. React builds a page from small pieces — components, like a Lego set. Let's go!",
+    "sections": [
+      {
+        "title": "A component and JSX",
+        "slides": [
+          {
+            "emoji": "🧱",
+            "text": "A **component** is an ordinary JS function that returns markup:",
+            "code": "function Button() {\n  return <button>Click</button>;\n}"
+          },
+          {
+            "text": "**JSX** is HTML right inside JS. The browser doesn't understand it itself; the build tool (Vite) converts it for us."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Component",
+            "prompt": "What is a component in React?",
+            "options": [
+              "A JS function that returns markup",
+              "A picture",
+              "A CSS file",
+              "A browser"
+            ],
+            "answer": 0,
+            "explain": "A component is a piece of the page."
+          }
+        ]
+      },
+      {
+        "title": "JSX vs HTML: differences",
+        "slides": [
+          {
+            "emoji": "⚠️",
+            "text": "In HTML it is `class=\"box\"`, in JSX `className=\"box\"`.\nIn HTML `<img src=\"a.jpg\">`, in JSX tags must be closed: `<img src=\"a.jpg\" />`."
+          },
+          {
+            "quote": true,
+            "text": "This is the most common beginner mistake in React."
+          }
+        ],
+        "check": [
+          {
+            "type": "match",
+            "topic": "JSX vs HTML",
+            "prompt": "Match HTML and JSX",
+            "pairs": [
+              [
+                "class=\"box\"",
+                "className=\"box\""
+              ],
+              [
+                "<img src=\"a.jpg\">",
+                "<img src=\"a.jpg\" />"
+              ]
+            ]
+          },
+          {
+            "type": "choice",
+            "topic": "JSX vs HTML",
+            "prompt": "How do you set a class correctly in JSX?",
+            "options": [
+              "className=\"box\"",
+              "class=\"box\"",
+              "klass=\"box\"",
+              "style=\"box\""
+            ],
+            "answer": 0,
+            "explain": "In JSX we write className instead of class."
+          }
+        ]
+      },
+      {
+        "title": "Using components and props",
+        "slides": [
+          {
+            "emoji": "🧩",
+            "text": "A component is used like an ordinary HTML tag:",
+            "code": "function App() {\n  return (\n    <div>\n      <Button />\n      <Button />\n    </div>\n  );\n}"
+          },
+          {
+            "text": "**Props** are data from outside, like function parameters from lesson 16:",
+            "code": "function Card({ title, price }) {\n  return <div>{title} — {price} sum</div>;\n}\n\nfunction App() {\n  return <Card title=\"Product 1\" price={100} />;\n}"
+          },
+          {
+            "quote": true,
+            "text": "`{ title, price }` is destructuring from lesson 18."
+          },
+          {
+            "text": "Practice: a `Card` component with a title, text and an image, three cards. Homework: split the landing into `Header`, `Hero`, `Features`, `Footer`, each in its own file."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Props",
+            "prompt": "What are props?",
+            "options": [
+              "Data passed to a component from outside",
+              "Styles",
+              "A file name",
+              "Errors"
+            ],
+            "answer": 0,
+            "explain": "Props are like function parameters."
+          },
+          {
+            "type": "choice",
+            "topic": "Props",
+            "prompt": "What will the component print?",
+            "code": "function Card({ title, price }) {\n  return <div>{title} — {price} сум</div>;\n}\n// <Card title=\"Товар 1\" price={100} />",
+            "options": [
+              "Product 1 — 100 sum",
+              "title — price sum",
+              "Nothing",
+              "An error"
+            ],
+            "answer": 0,
+            "explain": "The prop values are inserted."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "truefalse",
+      "topic": "Component",
+      "prompt": "A React component is an ordinary JS function that returns markup.",
+      "answer": true,
+      "explain": "Named with a capital letter."
+    },
+    {
+      "type": "choice",
+      "topic": "Component",
+      "prompt": "Why does React split a page into components?",
+      "options": [
+        "To build a page from small reusable pieces",
+        "To make the page red",
+        "To turn CSS off",
+        "No reason"
+      ],
+      "answer": 0,
+      "explain": "Like a Lego set."
+    },
+    {
+      "type": "choice",
+      "topic": "JSX",
+      "prompt": "What is JSX?",
+      "options": [
+        "HTML right inside JS",
+        "A new style language",
+        "A database",
+        "A browser"
+      ],
+      "answer": 0,
+      "explain": "Vite turns it into plain JS."
+    },
+    {
+      "type": "truefalse",
+      "topic": "JSX",
+      "prompt": "The browser understands JSX by itself without a bundler.",
+      "answer": false,
+      "explain": "You need a build tool, for example Vite."
+    },
+    {
+      "type": "choice",
+      "topic": "JSX vs HTML",
+      "prompt": "How is class written in JSX?",
+      "options": [
+        "className",
+        "class",
+        "klass",
+        "cssClass"
+      ],
+      "answer": 0,
+      "explain": "className is the most common beginner mistake."
+    },
+    {
+      "type": "choice",
+      "topic": "JSX vs HTML",
+      "prompt": "How do you write an image correctly in JSX?",
+      "options": [
+        "<img src=\"a.jpg\" />",
+        "<img src=\"a.jpg\">",
+        "<image a.jpg>",
+        "<img>a.jpg</img>"
+      ],
+      "answer": 0,
+      "explain": "In JSX tags must be closed."
+    },
+    {
+      "type": "match",
+      "topic": "JSX vs HTML",
+      "prompt": "Match HTML and JSX",
+      "pairs": [
+        [
+          "class=\"a\"",
+          "className=\"a\""
+        ],
+        [
+          "<br>",
+          "<br />"
+        ],
+        [
+          "<input>",
+          "<input />"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "Usage",
+      "prompt": "How do you use the Button component?",
+      "options": [
+        "<Button />",
+        "Button()",
+        "<button>",
+        "call Button"
+      ],
+      "answer": 0,
+      "explain": "Like a regular tag, but with a capital letter."
+    },
+    {
+      "type": "choice",
+      "topic": "Props",
+      "prompt": "How does a component receive data?",
+      "options": [
+        "Through props: function Card({ title })",
+        "Through CSS",
+        "Through alert",
+        "It doesn't"
+      ],
+      "answer": 0,
+      "explain": "A component's parameters are props."
+    },
+    {
+      "type": "choice",
+      "topic": "Props",
+      "prompt": "How do you pass data to the Card component?",
+      "options": [
+        "<Card title=\"...\" />",
+        "Card(title)",
+        "title -> Card",
+        "<Card>title"
+      ],
+      "answer": 0,
+      "explain": "Like tag attributes."
+    },
+    {
+      "type": "input",
+      "topic": "Props",
+      "prompt": "Which lesson is the destructuring in { title, price } from? (the number)",
+      "answer": [
+        "18"
+      ],
+      "explain": "Destructuring is lesson 18."
+    },
+    {
+      "type": "order",
+      "topic": "Component",
+      "prompt": "Build the Button component",
+      "tokens": [
+        "function Button() {",
+        "return <button>Click</button>;",
+        "}"
+      ],
+      "extra": [
+        "let Button ="
+      ],
+      "explain": "A function that returns JSX."
+    }
+  ]
+}

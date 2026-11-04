@@ -1,0 +1,288 @@
+{
+  "title": "Lesson 26. React — useState and a mini project",
+  "description": "State, a counter, an input, a to-do list",
+  "learn": {
+    "intro": "Hi! Lesson 26 — **useState**. Props come from outside and don't change. But a component sometimes needs to remember its own value: a counter, whether a list is open. That's what useState is for. Let's go!",
+    "sections": [
+      {
+        "title": "The useState syntax",
+        "slides": [
+          {
+            "emoji": "🎛️",
+            "text": "We create state:",
+            "code": "import { useState } from \"react\";\n\nconst [count, setCount] = useState(0);"
+          },
+          {
+            "text": "`count` — the current value.\n`setCount` — the function that changes the value.\n`useState(0)` — the starting value."
+          },
+          {
+            "quote": true,
+            "text": "You can't write `count = 5` directly. Only through `setCount`, otherwise React won't know the screen needs updating."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "useState",
+            "prompt": "What does setCount do?",
+            "options": [
+              "Changes the value and updates the screen",
+              "Deletes the component",
+              "Colors the button",
+              "Nothing"
+            ],
+            "answer": 0,
+            "explain": "Only through setCount does React update the screen."
+          },
+          {
+            "type": "truefalse",
+            "topic": "useState",
+            "prompt": "You can just write count = 5 and the screen will update.",
+            "answer": false,
+            "explain": "React won't know about the change."
+          }
+        ]
+      },
+      {
+        "title": "A counter",
+        "slides": [
+          {
+            "emoji": "➕",
+            "text": "Three buttons: +1, −1 and reset.",
+            "code": "function Counter() {\n  const [count, setCount] = useState(0);\n\n  return (\n    <div>\n      <p>{count}</p>\n      <button onClick={() => setCount(count + 1)}>+1</button>\n      <button onClick={() => setCount(count - 1)}>-1</button>\n      <button onClick={() => setCount(0)}>Reset</button>\n    </div>\n  );\n}"
+          },
+          {
+            "quote": true,
+            "text": "If `count` were an ordinary variable, the screen wouldn't update even though the value in memory changed. That's why `useState` is needed."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Counter",
+            "prompt": "What is count after two clicks on +1?",
+            "options": [
+              "2",
+              "1",
+              "0",
+              "3"
+            ],
+            "answer": 0,
+            "explain": "Start 0, +1 twice makes 2."
+          }
+        ]
+      },
+      {
+        "title": "An input field",
+        "slides": [
+          {
+            "emoji": "⌨️",
+            "text": "We bind the field to state:",
+            "code": "const [text, setText] = useState(\"\");\n\n<input value={text} onChange={(e) => setText(e.target.value)} />"
+          },
+          {
+            "quote": true,
+            "text": "`e.target.value` is the same idea as `e.target` from lesson 20."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Input",
+            "prompt": "What does e.target.value hold in onChange?",
+            "options": [
+              "The text currently in the field",
+              "The field number",
+              "The field color",
+              "Nothing"
+            ],
+            "answer": 0,
+            "explain": "value is the current text."
+          }
+        ]
+      },
+      {
+        "title": "A to-do list and homework",
+        "slides": [
+          {
+            "emoji": "📋",
+            "text": "An array state. We **spread** the old array into a new one with `...`:",
+            "code": "const [todos, setTodos] = useState([]);\n\nfunction addTodo(newTodo) {\n  setTodos([...todos, newTodo]);\n}"
+          },
+          {
+            "quote": true,
+            "text": "React must receive a **new** array, not a modified old one."
+          },
+          {
+            "text": "Practice: a counter (+1, −1, reset) and a list that shows and hides with `useState` using `true` / `false`. The final homework of the block: rewrite the to-do list in React with `useState` — adding and deleting tasks, without a single `addEventListener`, and push the project to GitHub."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "List",
+            "prompt": "How do you correctly add a task to an array state?",
+            "options": [
+              "setTodos([...todos, newTodo])",
+              "todos.push(newTodo)",
+              "todos = newTodo",
+              "setTodos(newTodo.length)"
+            ],
+            "answer": 0,
+            "explain": "We create a new array."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "useState",
+      "prompt": "What does count hold in const [count, setCount] = useState(0)?",
+      "options": [
+        "The current value",
+        "The change function",
+        "Always the starting value",
+        "A name"
+      ],
+      "answer": 0,
+      "explain": "count is the value, setCount is the function."
+    },
+    {
+      "type": "match",
+      "topic": "useState",
+      "prompt": "Match the part and meaning",
+      "pairs": [
+        [
+          "count",
+          "The current value"
+        ],
+        [
+          "setCount",
+          "The function that changes it"
+        ],
+        [
+          "useState(0)",
+          "The starting value"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "useState",
+      "prompt": "Why can't you write count = 5?",
+      "options": [
+        "React won't know the screen must update",
+        "It is too slow",
+        "It is against the law",
+        "You can, no problem"
+      ],
+      "answer": 0,
+      "explain": "Change only through setCount."
+    },
+    {
+      "type": "input",
+      "topic": "Counter",
+      "prompt": "What is count after two +1 and one -1 (start 0)?",
+      "answer": [
+        "1"
+      ],
+      "explain": "0 + 1 + 1 - 1 = 1."
+    },
+    {
+      "type": "choice",
+      "topic": "Counter",
+      "prompt": "Which button resets the counter to 0?",
+      "options": [
+        "<button onClick={() => setCount(0)}>",
+        "<button onClick={count = 0}>",
+        "<button reset>",
+        "<button onClick={setCount}>"
+      ],
+      "answer": 0,
+      "explain": "setCount(0) sets 0."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Counter",
+      "prompt": "If count is an ordinary variable, the screen won't update.",
+      "answer": true,
+      "explain": "That is why useState is needed."
+    },
+    {
+      "type": "order",
+      "topic": "Input",
+      "prompt": "Build the field-to-state binding",
+      "tokens": [
+        "<input",
+        "value={text}",
+        "onChange={(e) => setText(e.target.value)}",
+        "/>"
+      ],
+      "extra": [
+        "onClick={text}"
+      ],
+      "explain": "value and onChange."
+    },
+    {
+      "type": "choice",
+      "topic": "Input",
+      "prompt": "What does onChange do on an input?",
+      "options": [
+        "Fires on every text change",
+        "Deletes the field",
+        "Sends the form",
+        "Nothing"
+      ],
+      "answer": 0,
+      "explain": "Inside we update the state."
+    },
+    {
+      "type": "choice",
+      "topic": "List",
+      "prompt": "What does ...todos do in setTodos([...todos, newTodo])?",
+      "options": [
+        "Spreads the old array into the new one",
+        "Deletes the array",
+        "Sorts the array",
+        "Copies the page"
+      ],
+      "answer": 0,
+      "explain": "Old tasks + the new one remain."
+    },
+    {
+      "type": "truefalse",
+      "topic": "List",
+      "prompt": "React must receive a new array, not a modified old one.",
+      "answer": true,
+      "explain": "Otherwise it won't notice changes."
+    },
+    {
+      "type": "choice",
+      "topic": "Practice",
+      "prompt": "How do you hide and show a list in React?",
+      "options": [
+        "useState with true / false",
+        "Through alert",
+        "By reloading the page",
+        "You can't"
+      ],
+      "answer": 0,
+      "explain": "A boolean state and conditional display."
+    },
+    {
+      "type": "choice",
+      "topic": "Practice",
+      "prompt": "What does the final homework of the block require?",
+      "options": [
+        "A to-do in React with useState and no addEventListener",
+        "Write it in jQuery",
+        "Nothing",
+        "Delete the project"
+      ],
+      "answer": 0,
+      "explain": "Adding and deleting tasks, then GitHub."
+    }
+  ]
+}
