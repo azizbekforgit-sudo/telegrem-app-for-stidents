@@ -475,7 +475,7 @@ function pathNodes(p, k, todo) {
   const node = (idx, step, inner, cls, attr, label) => `<div class="pnode ${isCur(step) && idx > 0 ? 'has-bubble' : ''}" style="transform:translateX(${OFFS[idx % OFFS.length]}px)">${isCur(step) ? `<div class="bubble">${step === 'learn' ? 'УЧИМСЯ' : p.exam ? 'ИТОГОВЫЙ ТЕСТ' : 'СТАРТ'}</div>` : ''}
     <button class="node ${cls} ${isCur(step) ? 'cur' : ''}" ${attr} aria-label="${esc(p.title)}">${inner}</button>${label}</div>`;
   if (p.hasLearn) {
-    out += node(k, 'learn', emo(p.learnDone ? '✅' : '📖'), p.learnDone ? 'learned' : 'learn', `data-learn="${p.pubId}"`, `<div class="lbl"><b>Обучалка</b><br>${plural(p.learnSections, 'раздел', 'раздела', 'разделов')}</div>`);
+    out += node(k, 'learn', emo(p.learnDone ? '✅' : '📖'), p.learnDone ? 'learned' : 'learn', `data-learn="${p.pubId}"`, `<div class="lbl"><b>${learnName(p)}</b><br>${plural(p.learnSections, 'раздел', 'раздела', 'разделов')}</div>`);
     k++;
   }
   const locked = p.hasLearn && !p.learnDone;
@@ -484,6 +484,9 @@ function pathNodes(p, k, todo) {
   out += node(k, 'test', locked ? ic('lock-keyhole', 'lg') : emo(p.best === 100 ? E.crown : p.emoji), cls, `data-pub="${p.pubId}"`, `${stars}<div class="lbl">${p.exam ? '<span class="pill gold sm">📝 тест</span><br>' : ''}<b>${esc(p.title)}</b>${p.best != null ? `<br>${p.best}%` : locked ? '<br>после обучалки' : ''}</div>`);
   return out;
 }
+
+// «Обучалка 11 урока» (переводится шаблоном)
+function learnName(p) { return p.order != null && p.order < 100 ? `Обучалка ${p.order} урока` : 'Обучалка'; }
 
 // Закрытый урок курса: учитель ещё не дал доступ
 function lockedNode(l, k) {
@@ -505,7 +508,7 @@ function feedItem(f) {
 
 function learnSheet(p) {
   openSheet(
-    `<div class="stack center"><div data-m>${me('teach', 130)}</div><h2>${emo('📖')} Обучалка: ${esc(p.title)}</h2>
+    `<div class="stack center"><div data-m>${me('teach', 130)}</div><h2>${emo('📖')} ${learnName(p)}</h2><p class="muted">${esc(p.title)}</p>
       <div class="say-box" data-say></div>
       <div class="tags" style="justify-content:center"><span class="pill accent">${plural(p.learnSections, 'раздел', 'раздела', 'разделов')}</span><span class="pill">после каждого — мини-проверка</span></div>
       <button class="btn block" data-go>${ic('play')}${p.learnDone ? 'Повторить обучалку' : 'Начать обучалку'}</button></div>`,
@@ -1592,7 +1595,7 @@ async function tabTests() {
   app.innerHTML = adminTop('Тесты') + `
     <div class="hero" style="margin-top:8px">${me('wow', 96)}<div class="grow"><div class="say"><b>Как появляются тесты:</b> пришли конспект урока Claude — он сделает тест в стиле Duolingo. Тест появится здесь черновиком. Ученики его не видят, пока ты не нажмёшь «Отправить».</div></div></div>
     <button class="btn block" data-grantmany style="margin-top:14px">${ic('users-group-rounded')}Выдать доступ ученикам</button>
-    <div class="stack" style="margin-top:16px">${o.lessons.map(lessonCardHtml).join('') || emptyState('sleepy', 'Тестов пока нет', 'Жду конспект — пришли его Claude.')}</div>
+    <div class="stack" style="margin-top:16px">${o.lessons.filter((l) => !l.course).map(lessonCardHtml).join('') || emptyState('sleepy', 'Тестов пока нет', 'Жду конспект — пришли его Claude.')}</div>
     ${o.hiddenLessons?.length ? `<button class="link small" data-hidden style="display:block;margin:18px auto 0">${ic('eye', 'sm')}Скрытые тесты (${o.hiddenLessons.length})</button>` : ''}`;
   bindAdminTop();
   $$('[data-preview]').forEach((b) => (b.onclick = () => startLesson({ lessonId: b.dataset.preview })));

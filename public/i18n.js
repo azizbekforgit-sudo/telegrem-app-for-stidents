@@ -259,6 +259,7 @@ const TOKENS = [
 ];
 
 const PATTERNS = [
+  [/^Обучалка (\d+) урока$/, 'Lesson $1 tutorial', "$1-dars o'quv qismi"],
   [/^Привет, (.+)!$/, 'Hi, $1!', 'Salom, $1!'],
   [/^(\d+) из (\d+) пройдено$/, '$1 of $2 done', "$2 tadan $1 tasi o'tildi"],
   [/^(\d+) из (\d+)$/, '$1 of $2', '$2 tadan $1'],

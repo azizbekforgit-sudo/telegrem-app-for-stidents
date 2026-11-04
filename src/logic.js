@@ -981,7 +981,7 @@ export function createLogic(store, { adminIds }) {
     const lessons = lessonsAll
       .filter((l) => !l.archived)
       .map((l) => ({
-        id: l.id, order: l.order ?? null, title: l.title, emoji: l.emoji, description: l.description, topics: l.topics, questions: l.questions.length,
+        id: l.id, order: l.order ?? null, course: Number.isFinite(l.order) && l.order < 100 && !l.personal, title: l.title, emoji: l.emoji, description: l.description, topics: l.topics, questions: l.questions.length,
         types: [...new Set(l.questions.map((q) => q.type))],
         sentTo: Object.values(S.pubs).filter((p) => p.lessonId === l.id && S.groups[p.groupId]).map((p) => {
           const s = pubStats(p.id);
