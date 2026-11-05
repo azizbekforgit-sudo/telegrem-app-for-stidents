@@ -299,13 +299,17 @@
       "explain": "A space between selectors means «inside»."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "Cascade and specificity",
-      "prompt": "Which is stronger, a class or a tag? Answer in one word.",
+      "prompt": "Complete the selector strength order",
+      "text": "ID > ___ > tag",
       "answer": [
-        "класс",
-        "klass",
         "class"
+      ],
+      "extra": [
+        "attribute",
+        "style",
+        "colour"
       ],
       "explain": "The order: ID > class > tag."
     },

@@ -75,11 +75,17 @@
             "explain": "Shuning uchun chetlarda ortiqcha 20px yo'q."
           },
           {
-            "type": "input",
+            "type": "fill",
             "topic": "gap",
-            "prompt": "Faqat qatorlar orasidagi masofa xossasi qanday ataladi? (defis bilan)",
+            "prompt": "Qaysi xossa faqat qatorlar orasida oraliq beradi?",
+            "text": ".list {\n  ___: 20px;\n}",
             "answer": [
               "row-gap"
+            ],
+            "extra": [
+              "column-gap",
+              "margin",
+              "padding"
             ],
             "explain": "row-gap — qatorlar orasida, column-gap — ustunlar orasida."
           }
@@ -315,11 +321,17 @@
       "explain": "Hech narsani qayta hisoblash shart emas."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "Amaliyot",
-      "prompt": "flex: 1, flex: 1, flex: 2 ustunlarida jami nechta ulush? (son)",
+      "prompt": "flex: 1, flex: 1, flex: 2 ustunlarida jami nechta ulush?",
+      "text": "1 + 1 + 2 = ___",
       "answer": [
         "4"
+      ],
+      "extra": [
+        "3",
+        "2",
+        "5"
       ],
       "explain": "1 + 1 + 2 = 4."
     },

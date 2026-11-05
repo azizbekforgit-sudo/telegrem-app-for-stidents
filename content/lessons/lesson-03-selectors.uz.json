@@ -299,13 +299,17 @@
       "explain": "Selektorlar orasidagi probel «ichida» degani."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "Kaskad va spetsifiklik",
-      "prompt": "Qaysi biri kuchliroq, klass yoki teg? Bir so'z bilan yoz.",
+      "prompt": "Selektorlar kuch ierarxiyasini to'ldir",
+      "text": "ID > ___ > teg",
       "answer": [
-        "класс",
-        "klass",
-        "class"
+        "klass"
+      ],
+      "extra": [
+        "atribut",
+        "uslub",
+        "rang"
       ],
       "explain": "Ierarxiya: ID > klass > teg."
     },

@@ -227,11 +227,17 @@
       "explain": "2 bo'lakka qarshi 1."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "fr va repeat",
-      "prompt": "1fr 2fr 1fr ustunlarida jami nechta bo'lak? (son)",
+      "prompt": "1fr 2fr 1fr ustunlarida jami nechta bo'lak?",
+      "text": "1fr + 2fr + 1fr = ___fr",
       "answer": [
         "4"
+      ],
+      "extra": [
+        "3",
+        "2",
+        "6"
       ],
       "explain": "1 + 2 + 1 = 4."
     },

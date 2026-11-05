@@ -1,5 +1,6 @@
 {
   "id": "lesson-24-npm-vite",
+  "qrev": 2,
   "order": 24,
   "title": "Урок 24. npm, сборщики (Vite), модули",
   "emoji": "📦",
@@ -91,12 +92,17 @@
             "explain": "npm run dev — запуск сервера разработки."
           },
           {
-            "type": "input",
+            "type": "fill",
             "topic": "Запуск",
-            "prompt": "Как называется автообновление страницы при изменении кода? (две части, латиницей)",
+            "prompt": "Как называется автообновление страницы при изменении кода?",
+            "text": "___ reload",
             "answer": [
-              "hot reload",
-              "hotreload"
+              "hot"
+            ],
+            "extra": [
+              "cold",
+              "fast",
+              "auto"
             ],
             "explain": "Hot reload — страница обновляется сама."
           }

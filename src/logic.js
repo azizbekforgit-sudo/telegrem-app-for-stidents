@@ -216,6 +216,13 @@ export function createLogic(store, { adminIds }) {
       prev.tr = lesson.tr || prev.tr || null;
       prev.kind = lesson.kind || prev.kind || 'lesson';
       if (lesson.order !== undefined) prev.order = lesson.order == null ? null : Number(lesson.order);
+      // qrev: вопросы поправили на месте (тот же порядок и число) — заменяем, результаты остаются
+      if ((lesson.qrev || 0) > (prev.qrev || 0) && lesson.questions.length === prev.questions.length) {
+        prev.questions = lesson.questions;
+        prev.topics = [...new Set(lesson.questions.map((q) => q.topic).filter(Boolean))];
+        prev.qrev = lesson.qrev;
+        console.log(`[qrev] ${lesson.id} → ${lesson.qrev}`);
+      }
       store.save();
       return prev;
     }
@@ -228,6 +235,7 @@ export function createLogic(store, { adminIds }) {
       topics,
       questions: lesson.questions,
       kind: lesson.kind || 'lesson',
+      qrev: lesson.qrev || 0,
       order: lesson.order != null ? Number(lesson.order) : (prev?.order ?? null),
       archived: prev?.archived || false,
       archiveApplied: prev?.archiveApplied || false,
@@ -483,6 +491,7 @@ export function createLogic(store, { adminIds }) {
       case 'choice': return q.options[v] ?? '—';
       case 'truefalse': return v ? 'Верно' : 'Неверно';
       case 'order': return Array.isArray(v) ? v.join(' ') : '—';
+      case 'fill': return Array.isArray(v) ? v.join(', ') : String(v ?? '—');
       case 'match': return v && typeof v === 'object' ? q.pairs.map((p, i) => `${p[0]} → ${v[i] ?? '?'}`).join('; ') : '—';
       default: return String(v ?? '—');
     }

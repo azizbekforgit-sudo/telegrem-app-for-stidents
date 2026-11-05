@@ -182,11 +182,17 @@
       "explain": "Faqat setCount orqali o'zgartirish kerak."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "Hisoblagich",
-      "prompt": "Ikki +1 va bitta -1 dan keyin (boshi 0) count nimaga teng?",
+      "prompt": "Ikki marta +1 va bir marta -1 dan keyin count nechaga teng (boshida 0)?",
+      "text": "0 + 1 + 1 - 1 = ___",
       "answer": [
         "1"
+      ],
+      "extra": [
+        "2",
+        "0",
+        "3"
       ],
       "explain": "0 + 1 + 1 - 1 = 1."
     },

@@ -88,12 +88,17 @@
             "explain": "npm run dev — dasturlash serverini ishga tushirish."
           },
           {
-            "type": "input",
+            "type": "fill",
             "topic": "Ishga tushirish",
-            "prompt": "Kod o'zgarganda sahifaning avtomatik yangilanishi qanday ataladi? (ikki qism, lotincha)",
+            "prompt": "Kod o'zgarganda sahifaning avtomatik yangilanishi qanday ataladi?",
+            "text": "___ reload",
             "answer": [
-              "hot reload",
-              "hotreload"
+              "hot"
+            ],
+            "extra": [
+              "cold",
+              "fast",
+              "auto"
             ],
             "explain": "Hot reload — sahifa o'zi yangilanadi."
           }

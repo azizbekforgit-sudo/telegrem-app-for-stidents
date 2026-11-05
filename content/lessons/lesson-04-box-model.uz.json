@@ -7,91 +7,433 @@
       {
         "title": "Element — bu quti",
         "slides": [
-          { "emoji": "📦", "text": "Sahifadagi har bir element — **quti**. Sarlavha ham quti, matn ham quti, tugma ham quti." },
-          { "text": "Posilkani tasavvur qiling. Unda 4 ta qism bor:\n🎁 tovarning o'zi — **content** (matn yoki rasm)\n🧻 tovar atrofidagi o'rov — **padding** (ichkaridagi bo'sh joy)\n📦 qutining kartoni — **border** (chegara, ramka)\n↔️ boshqa qutilargacha masofa — **margin** (tashqaridagi bo'sh joy)" },
-          { "text": "**Content** — teg ichidagi narsa. Bu yerda content — «Salom!» so'zi:", "code": "<div class=\"box\">Salom!</div>" },
-          { "quote": true, "text": "Yodda tuting: ichkaridan tashqariga — content → padding → border → margin." }
+          {
+            "emoji": "📦",
+            "text": "Sahifadagi har bir element — **quti**. Sarlavha ham quti, matn ham quti, tugma ham quti."
+          },
+          {
+            "text": "Posilkani tasavvur qiling. Unda 4 ta qism bor:\n🎁 tovarning o'zi — **content** (matn yoki rasm)\n🧻 tovar atrofidagi o'rov — **padding** (ichkaridagi bo'sh joy)\n📦 qutining kartoni — **border** (chegara, ramka)\n↔️ boshqa qutilargacha masofa — **margin** (tashqaridagi bo'sh joy)"
+          },
+          {
+            "text": "**Content** — teg ichidagi narsa. Bu yerda content — «Salom!» so'zi:",
+            "code": "<div class=\"box\">Salom!</div>"
+          },
+          {
+            "quote": true,
+            "text": "Yodda tuting: ichkaridan tashqariga — content → padding → border → margin."
+          }
         ],
         "check": [
-          { "type": "order", "topic": "Quti qismlari", "prompt": "Quti qatlamlarini ichkaridan tashqariga qarab joylashtir", "tokens": ["content", "padding", "border", "margin"], "explain": "content → padding → border → margin." },
-          { "type": "truefalse", "topic": "Quti qismlari", "prompt": "Sahifadagi tugma ham quti.", "answer": true, "explain": "Har qanday element — quti." }
+          {
+            "type": "order",
+            "topic": "Quti qismlari",
+            "prompt": "Quti qatlamlarini ichkaridan tashqariga qarab joylashtir",
+            "tokens": [
+              "content",
+              "padding",
+              "border",
+              "margin"
+            ],
+            "explain": "content → padding → border → margin."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Quti qismlari",
+            "prompt": "Sahifadagi tugma ham quti.",
+            "answer": true,
+            "explain": "Har qanday element — quti."
+          }
         ]
       },
       {
         "title": "Padding — ichkaridagi o'rov",
         "slides": [
-          { "emoji": "🧻", "text": "**Padding** — **ichkaridagi** bo'sh joy, matn bilan chegara orasida. Tovarni qutiga solishdan oldin ko'pik bilan o'raymiz, shunda u qutining devoriga tegmaydi. Padding ham matnni chetdan uzoqlashtiradi." },
-          { "text": "Matn chetdan 20px ichkariga suriladi, ko'k fon kattaroq bo'ladi:", "code": ".box {\n  background: lightblue;\n  padding: 20px;\n}" },
-          { "quote": true, "text": "Padding — ICHKARIDA. Fon rangi padding'ga ham tarqaladi." }
+          {
+            "emoji": "🧻",
+            "text": "**Padding** — **ichkaridagi** bo'sh joy, matn bilan chegara orasida. Tovarni qutiga solishdan oldin ko'pik bilan o'raymiz, shunda u qutining devoriga tegmaydi. Padding ham matnni chetdan uzoqlashtiradi."
+          },
+          {
+            "text": "Matn chetdan 20px ichkariga suriladi, ko'k fon kattaroq bo'ladi:",
+            "code": ".box {\n  background: lightblue;\n  padding: 20px;\n}"
+          },
+          {
+            "quote": true,
+            "text": "Padding — ICHKARIDA. Fon rangi padding'ga ham tarqaladi."
+          }
         ],
         "check": [
-          { "type": "choice", "topic": "padding", "prompt": "Padding qayerda joylashgan?", "options": ["Matn va ramka orasida", "Qutining tashqarisida", "Ramkaning o'zida", "Ikki quti orasida"], "answer": 0, "explain": "padding — qutining ichidagi bo'sh joy." }
+          {
+            "type": "choice",
+            "topic": "padding",
+            "prompt": "Padding qayerda joylashgan?",
+            "options": [
+              "Matn va ramka orasida",
+              "Qutining tashqarisida",
+              "Ramkaning o'zida",
+              "Ikki quti orasida"
+            ],
+            "answer": 0,
+            "explain": "padding — qutining ichidagi bo'sh joy."
+          }
         ]
       },
       {
         "title": "Border — qutining kartoni",
         "slides": [
-          { "emoji": "🟫", "text": "**Border** — qutining chegarasi, ya'ni ramkasi. U padding'ning tashqarisida turadi.", "code": ".box {\n  background: lightblue;\n  padding: 20px;\n  border: 2px solid black;\n}" },
-          { "text": "`border: 2px solid black;` — 3 ta so'zdan iborat:\n`2px` — ramka qalinligi\n`solid` — ramka turi: oddiy chiziq (`dashed` — uzuq chiziq)\n`black` — ramka rangi" },
-          { "quote": true, "text": "Border — padding'ning atrofida, xuddi karton tovar o'rovining atrofida bo'lgani kabi." }
+          {
+            "emoji": "🟫",
+            "text": "**Border** — qutining chegarasi, ya'ni ramkasi. U padding'ning tashqarisida turadi.",
+            "code": ".box {\n  background: lightblue;\n  padding: 20px;\n  border: 2px solid black;\n}"
+          },
+          {
+            "text": "`border: 2px solid black;` — 3 ta so'zdan iborat:\n`2px` — ramka qalinligi\n`solid` — ramka turi: oddiy chiziq (`dashed` — uzuq chiziq)\n`black` — ramka rangi"
+          },
+          {
+            "quote": true,
+            "text": "Border — padding'ning atrofida, xuddi karton tovar o'rovining atrofida bo'lgani kabi."
+          }
         ],
         "check": [
-          { "type": "match", "topic": "border", "prompt": "border: 2px solid black qismi va uning ma'nosini moslashtir", "pairs": [["2px", "Qalinlik"], ["solid", "Chiziq turi"], ["black", "Rang"]] }
+          {
+            "type": "match",
+            "topic": "border",
+            "prompt": "border: 2px solid black qismi va uning ma'nosini moslashtir",
+            "pairs": [
+              [
+                "2px",
+                "Qalinlik"
+              ],
+              [
+                "solid",
+                "Chiziq turi"
+              ],
+              [
+                "black",
+                "Rang"
+              ]
+            ]
+          }
         ]
       },
       {
         "title": "Margin — tashqaridagi masofa",
         "slides": [
-          { "emoji": "↔️", "text": "**Margin** — **tashqaridagi** bo'sh joy: qutidan boshqa qutilargacha bo'lgan masofa. Omborda qutilar bir-biriga yopishib turmaydi, ular orasida joy qoldiriladi." },
-          { "text": "1-quti va 2-quti orasida 30px bo'sh joy paydo bo'ladi:", "code": ".first {\n  margin-bottom: 30px; /* pastdan 30px */\n}" },
-          { "text": "`margin-top` — tepadan, `margin-bottom` — pastdan, `margin-left` — chapdan, `margin-right` — o'ngdan, `margin` — hamma tomondan birdaniga." },
-          { "quote": true, "text": "Margin — TASHQARIDA. Fon rangi margin'ga tarqalmaydi, u har doim shaffof." }
+          {
+            "emoji": "↔️",
+            "text": "**Margin** — **tashqaridagi** bo'sh joy: qutidan boshqa qutilargacha bo'lgan masofa. Omborda qutilar bir-biriga yopishib turmaydi, ular orasida joy qoldiriladi."
+          },
+          {
+            "text": "1-quti va 2-quti orasida 30px bo'sh joy paydo bo'ladi:",
+            "code": ".first {\n  margin-bottom: 30px; /* pastdan 30px */\n}"
+          },
+          {
+            "text": "`margin-top` — tepadan, `margin-bottom` — pastdan, `margin-left` — chapdan, `margin-right` — o'ngdan, `margin` — hamma tomondan birdaniga."
+          },
+          {
+            "quote": true,
+            "text": "Margin — TASHQARIDA. Fon rangi margin'ga tarqalmaydi, u har doim shaffof."
+          }
         ],
         "check": [
-          { "type": "truefalse", "topic": "margin", "prompt": "Qutining foni margin'ni ham bo'yaydi.", "answer": false, "explain": "margin har doim shaffof, fon faqat content va padding'da bo'ladi." },
-          { "type": "choice", "topic": "margin", "prompt": "Qaysi xususiyat faqat chapdan chekinish beradi?", "options": ["margin-left", "margin-right", "padding-left", "margin"], "answer": 0, "explain": "margin-left — chapdan tashqi chekinish." }
+          {
+            "type": "truefalse",
+            "topic": "margin",
+            "prompt": "Qutining foni margin'ni ham bo'yaydi.",
+            "answer": false,
+            "explain": "margin har doim shaffof, fon faqat content va padding'da bo'ladi."
+          },
+          {
+            "type": "choice",
+            "topic": "margin",
+            "prompt": "Qaysi xususiyat faqat chapdan chekinish beradi?",
+            "options": [
+              "margin-left",
+              "margin-right",
+              "padding-left",
+              "margin"
+            ],
+            "answer": 0,
+            "explain": "margin-left — chapdan tashqi chekinish."
+          }
         ]
       },
       {
         "title": "Eng muhim qoida: box-sizing ⭐",
         "slides": [
-          { "emoji": "🤔", "text": "Qutiga `width: 200px` beramiz, keyin `padding: 20px` qo'shamiz. Kenglik necha bo'ladi? Ko'pchilik 200px deydi, lekin brauzer boshqacha hisoblaydi:\n20px + 200px + 20px = **240px**. Sahifa buziladi." },
-          { "emoji": "✅", "text": "Yechim — CSS faylning eng birinchi qatorida:", "code": "* {\n  box-sizing: border-box;\n}" },
-          { "text": "Endi `width: 200px` bo'lsa, quti 200px bo'lib qoladi: padding va border shu 200px'ning ichiga joylashadi. Tekshirish: **F12 → Elements → Computed** — u yerda haqiqiy o'lcham ko'rinadi." },
-          { "quote": true, "text": "Har bir loyihada CSS faylning birinchi qatori — * { box-sizing: border-box; }. Hamma vaqt!" }
+          {
+            "emoji": "🤔",
+            "text": "Qutiga `width: 200px` beramiz, keyin `padding: 20px` qo'shamiz. Kenglik necha bo'ladi? Ko'pchilik 200px deydi, lekin brauzer boshqacha hisoblaydi:\n20px + 200px + 20px = **240px**. Sahifa buziladi."
+          },
+          {
+            "emoji": "✅",
+            "text": "Yechim — CSS faylning eng birinchi qatorida:",
+            "code": "* {\n  box-sizing: border-box;\n}"
+          },
+          {
+            "text": "Endi `width: 200px` bo'lsa, quti 200px bo'lib qoladi: padding va border shu 200px'ning ichiga joylashadi. Tekshirish: **F12 → Elements → Computed** — u yerda haqiqiy o'lcham ko'rinadi."
+          },
+          {
+            "quote": true,
+            "text": "Har bir loyihada CSS faylning birinchi qatori — * { box-sizing: border-box; }. Hamma vaqt!"
+          }
         ],
         "check": [
-          { "type": "input", "topic": "box-sizing", "prompt": "box-sizing siz: width: 200px + padding: 20px. Quti kengligi necha px? (faqat son)", "answer": ["240", "240px"], "explain": "20 + 200 + 20 = 240." },
-          { "type": "choice", "topic": "box-sizing", "prompt": "Qutining haqiqiy o'lchamini qayerda tekshirish mumkin?", "options": ["F12 → Elements → Computed", "Ctrl + S", "index.html faylida", "Konsolda console.log bilan"], "answer": 0, "explain": "Computed bo'limida haqiqiy o'lchamlar ko'rinadi." }
+          {
+            "type": "fill",
+            "topic": "box-sizing",
+            "prompt": "box-sizing siz: width: 200px va padding: 20px. Quti kengligi qancha?",
+            "text": "20 + 200 + 20 = ___px",
+            "answer": [
+              "240"
+            ],
+            "extra": [
+              "220",
+              "200",
+              "260"
+            ],
+            "explain": "20 + 200 + 20 = 240."
+          },
+          {
+            "type": "choice",
+            "topic": "box-sizing",
+            "prompt": "Qutining haqiqiy o'lchamini qayerda tekshirish mumkin?",
+            "options": [
+              "F12 → Elements → Computed",
+              "Ctrl + S",
+              "index.html faylida",
+              "Konsolda console.log bilan"
+            ],
+            "answer": 0,
+            "explain": "Computed bo'limida haqiqiy o'lchamlar ko'rinadi."
+          }
         ]
       },
       {
         "title": "Amaliyot va uyga vazifa",
         "slides": [
-          { "emoji": "🧪", "text": "3 ta bir xil quti yasang: 1-qutiga `padding: 30px`, 2-qutiga `border: 5px solid red`, 3-qutiga `margin: 40px` bering. Qarang: ular qanday farq qiladi? Keyin CSS boshiga `* { box-sizing: border-box; }` yozing va yana qarang.", "code": ".box {\n  width: 200px;\n  background: lightblue;\n}\n.one   { padding: 30px; }\n.two   { border: 5px solid red; }\n.three { margin: 40px; }" },
-          { "emoji": "🏠", "text": "Uy vazifasi: bir qatorda 3 ta mahsulot kartochkasi, oralaridagi masofa bir xil. Har birida — nomi, narxi va tugma. Padding, border va margin bor, CSS boshida — `* { box-sizing: border-box; }`. Yordam: `.card { display: inline-block; width: 250px; }`." }
+          {
+            "emoji": "🧪",
+            "text": "3 ta bir xil quti yasang: 1-qutiga `padding: 30px`, 2-qutiga `border: 5px solid red`, 3-qutiga `margin: 40px` bering. Qarang: ular qanday farq qiladi? Keyin CSS boshiga `* { box-sizing: border-box; }` yozing va yana qarang.",
+            "code": ".box {\n  width: 200px;\n  background: lightblue;\n}\n.one   { padding: 30px; }\n.two   { border: 5px solid red; }\n.three { margin: 40px; }"
+          },
+          {
+            "emoji": "🏠",
+            "text": "Uy vazifasi: bir qatorda 3 ta mahsulot kartochkasi, oralaridagi masofa bir xil. Har birida — nomi, narxi va tugma. Padding, border va margin bor, CSS boshida — `* { box-sizing: border-box; }`. Yordam: `.card { display: inline-block; width: 250px; }`."
+          }
         ],
         "check": [
-          { "type": "choice", "topic": "Amaliyot", "prompt": "Kartochkalarni bir-biridan nima bilan uzoqlashtiramiz?", "options": ["margin", "padding", "border", "content"], "answer": 0, "explain": "Qutilar orasidagi masofa — bu margin." }
+          {
+            "type": "choice",
+            "topic": "Amaliyot",
+            "prompt": "Kartochkalarni bir-biridan nima bilan uzoqlashtiramiz?",
+            "options": [
+              "margin",
+              "padding",
+              "border",
+              "content"
+            ],
+            "answer": 0,
+            "explain": "Qutilar orasidagi masofa — bu margin."
+          }
         ]
       }
     ]
   },
   "questions": [
-    { "type": "truefalse", "topic": "Quti qismlari", "prompt": "Sahifadagi har bir element — bu quti.", "answer": true, "explain": "Sarlavha ham, matn ham, tugma ham." },
-    { "type": "match", "topic": "Quti qismlari", "prompt": "Posilka qismi va uning CSS'dagi nomini moslashtir", "pairs": [["Tovarning o'zi", "content"], ["Tovar o'rovi", "padding"], ["Qutining kartoni", "border"], ["Boshqa qutilargacha masofa", "margin"]] },
-    { "type": "choice", "topic": "Quti qismlari", "prompt": "Bu kodda content nima?", "code": "<div class=\"box\">Salom!</div>", "options": ["«Salom!» so'zi", "class=\"box\"", "div tegi", "Hech narsa"], "answer": 0, "explain": "content — teg ichidagi narsa." },
-    { "type": "order", "topic": "Quti qismlari", "prompt": "Qatlamlarni ichkaridan tashqariga qarab joylashtir", "tokens": ["content", "padding", "border", "margin"], "explain": "content → padding → border → margin." },
-    { "type": "choice", "topic": "padding", "prompt": "padding: 20px nima qiladi?", "code": ".box {\n  background: lightblue;\n  padding: 20px;\n}", "options": ["Matnni chetdan 20px ichkariga suradi", "Qutini qo'shnilardan uzoqlashtiradi", "20px ramka chizadi", "Matnni kichraytiradi"], "answer": 0, "explain": "padding — qutining ichidagi bo'sh joy." },
-    { "type": "truefalse", "topic": "padding", "prompt": "Fon rangi padding'ga ham tarqaladi.", "answer": true, "explain": "padding qutining ichida, shuning uchun u ham bo'yaladi." },
-    { "type": "choice", "topic": "border", "prompt": "border: 2px solid black da solid nimani bildiradi?", "options": ["Oddiy chiziq", "Uzuq chiziq", "Ramka rangi", "Ramka qalinligi"], "answer": 0, "explain": "solid — oddiy chiziq, dashed — uzuq chiziq." },
-    { "type": "input", "topic": "border", "prompt": "Qaysi so'z ramkani uzuq chiziqli qiladi? border: 2px ___ black;", "answer": ["dashed"], "explain": "dashed — uzuq chiziq." },
-    { "type": "choice", "topic": "margin", "prompt": "Qutilar orasida nima paydo bo'ladi?", "code": "<div class=\"box first\">1</div>\n<div class=\"box\">2</div>\n\n.first { margin-bottom: 30px; }", "options": ["30px bo'sh joy", "30px ramka", "Hech narsa", "Qutilar yopishib qoladi"], "answer": 0, "explain": "margin-bottom — pastdan tashqi chekinish." },
-    { "type": "match", "topic": "margin", "prompt": "padding va margin ni solishtir", "pairs": [["padding", "Qutining ichida"], ["margin", "Qutining tashqarisida"]] },
-    { "type": "truefalse", "topic": "margin", "prompt": "margin har doim shaffof.", "answer": true, "explain": "Fon margin'ga tarqalmaydi." },
-    { "type": "choice", "topic": "box-sizing", "prompt": "box-sizing: border-box siz quti kengligi qancha?", "code": ".box {\n  width: 200px;\n  padding: 20px;\n}", "options": ["240px", "200px", "220px", "180px"], "answer": 0, "explain": "20 + 200 + 20 = 240px." },
-    { "type": "choice", "topic": "box-sizing", "prompt": "* { box-sizing: border-box; } qoidasi bilan-chi?", "code": "* { box-sizing: border-box; }\n.box {\n  width: 200px;\n  padding: 20px;\n}", "options": ["200px", "240px", "160px", "220px"], "answer": 0, "explain": "border-box bilan padding va border width ichiga joylashadi." },
-    { "type": "choice", "topic": "box-sizing", "prompt": "* { box-sizing: border-box; } qayerga yoziladi?", "options": ["CSS faylning eng birinchi qatoriga", "HTML oxiriga", "Har bir quti ichiga", "Faqat tegning style'iga"], "answer": 0, "explain": "Bu har bir loyihadagi birinchi qoida." },
-    { "type": "choice", "topic": "Amaliyot", "prompt": "Kartochkalar orasida bir xil masofa kerak va matn chetga yopishmasin. Nima ishlatamiz?", "options": ["Kartochkalar orasida margin, ichida padding", "Kartochkalar orasida padding, ichida margin", "Faqat border", "Faqat width"], "answer": 0, "explain": "margin — tashqarida, padding — ichkarida." }
+    {
+      "type": "truefalse",
+      "topic": "Quti qismlari",
+      "prompt": "Sahifadagi har bir element — bu quti.",
+      "answer": true,
+      "explain": "Sarlavha ham, matn ham, tugma ham."
+    },
+    {
+      "type": "match",
+      "topic": "Quti qismlari",
+      "prompt": "Posilka qismi va uning CSS'dagi nomini moslashtir",
+      "pairs": [
+        [
+          "Tovarning o'zi",
+          "content"
+        ],
+        [
+          "Tovar o'rovi",
+          "padding"
+        ],
+        [
+          "Qutining kartoni",
+          "border"
+        ],
+        [
+          "Boshqa qutilargacha masofa",
+          "margin"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "Quti qismlari",
+      "prompt": "Bu kodda content nima?",
+      "code": "<div class=\"box\">Salom!</div>",
+      "options": [
+        "«Salom!» so'zi",
+        "class=\"box\"",
+        "div tegi",
+        "Hech narsa"
+      ],
+      "answer": 0,
+      "explain": "content — teg ichidagi narsa."
+    },
+    {
+      "type": "order",
+      "topic": "Quti qismlari",
+      "prompt": "Qatlamlarni ichkaridan tashqariga qarab joylashtir",
+      "tokens": [
+        "content",
+        "padding",
+        "border",
+        "margin"
+      ],
+      "explain": "content → padding → border → margin."
+    },
+    {
+      "type": "choice",
+      "topic": "padding",
+      "prompt": "padding: 20px nima qiladi?",
+      "code": ".box {\n  background: lightblue;\n  padding: 20px;\n}",
+      "options": [
+        "Matnni chetdan 20px ichkariga suradi",
+        "Qutini qo'shnilardan uzoqlashtiradi",
+        "20px ramka chizadi",
+        "Matnni kichraytiradi"
+      ],
+      "answer": 0,
+      "explain": "padding — qutining ichidagi bo'sh joy."
+    },
+    {
+      "type": "truefalse",
+      "topic": "padding",
+      "prompt": "Fon rangi padding'ga ham tarqaladi.",
+      "answer": true,
+      "explain": "padding qutining ichida, shuning uchun u ham bo'yaladi."
+    },
+    {
+      "type": "choice",
+      "topic": "border",
+      "prompt": "border: 2px solid black da solid nimani bildiradi?",
+      "options": [
+        "Oddiy chiziq",
+        "Uzuq chiziq",
+        "Ramka rangi",
+        "Ramka qalinligi"
+      ],
+      "answer": 0,
+      "explain": "solid — oddiy chiziq, dashed — uzuq chiziq."
+    },
+    {
+      "type": "fill",
+      "topic": "border",
+      "prompt": "Qaysi so'z ramkani shtrixli qiladi?",
+      "text": "border: 2px ___ black;",
+      "answer": [
+        "dashed"
+      ],
+      "extra": [
+        "solid",
+        "double",
+        "none"
+      ],
+      "explain": "dashed — uzuq chiziq."
+    },
+    {
+      "type": "choice",
+      "topic": "margin",
+      "prompt": "Qutilar orasida nima paydo bo'ladi?",
+      "code": "<div class=\"box first\">1</div>\n<div class=\"box\">2</div>\n\n.first { margin-bottom: 30px; }",
+      "options": [
+        "30px bo'sh joy",
+        "30px ramka",
+        "Hech narsa",
+        "Qutilar yopishib qoladi"
+      ],
+      "answer": 0,
+      "explain": "margin-bottom — pastdan tashqi chekinish."
+    },
+    {
+      "type": "match",
+      "topic": "margin",
+      "prompt": "padding va margin ni solishtir",
+      "pairs": [
+        [
+          "padding",
+          "Qutining ichida"
+        ],
+        [
+          "margin",
+          "Qutining tashqarisida"
+        ]
+      ]
+    },
+    {
+      "type": "truefalse",
+      "topic": "margin",
+      "prompt": "margin har doim shaffof.",
+      "answer": true,
+      "explain": "Fon margin'ga tarqalmaydi."
+    },
+    {
+      "type": "choice",
+      "topic": "box-sizing",
+      "prompt": "box-sizing: border-box siz quti kengligi qancha?",
+      "code": ".box {\n  width: 200px;\n  padding: 20px;\n}",
+      "options": [
+        "240px",
+        "200px",
+        "220px",
+        "180px"
+      ],
+      "answer": 0,
+      "explain": "20 + 200 + 20 = 240px."
+    },
+    {
+      "type": "choice",
+      "topic": "box-sizing",
+      "prompt": "* { box-sizing: border-box; } qoidasi bilan-chi?",
+      "code": "* { box-sizing: border-box; }\n.box {\n  width: 200px;\n  padding: 20px;\n}",
+      "options": [
+        "200px",
+        "240px",
+        "160px",
+        "220px"
+      ],
+      "answer": 0,
+      "explain": "border-box bilan padding va border width ichiga joylashadi."
+    },
+    {
+      "type": "choice",
+      "topic": "box-sizing",
+      "prompt": "* { box-sizing: border-box; } qayerga yoziladi?",
+      "options": [
+        "CSS faylning eng birinchi qatoriga",
+        "HTML oxiriga",
+        "Har bir quti ichiga",
+        "Faqat tegning style'iga"
+      ],
+      "answer": 0,
+      "explain": "Bu har bir loyihadagi birinchi qoida."
+    },
+    {
+      "type": "choice",
+      "topic": "Amaliyot",
+      "prompt": "Kartochkalar orasida bir xil masofa kerak va matn chetga yopishmasin. Nima ishlatamiz?",
+      "options": [
+        "Kartochkalar orasida margin, ichida padding",
+        "Kartochkalar orasida padding, ichida margin",
+        "Faqat border",
+        "Faqat width"
+      ],
+      "answer": 0,
+      "explain": "margin — tashqarida, padding — ichkarida."
+    }
   ]
 }

@@ -1,5 +1,6 @@
 {
   "id": "lesson-14-conditions",
+  "qrev": 2,
   "order": 14,
   "title": "Урок 14. Условия",
   "emoji": "🔀",
@@ -70,12 +71,17 @@
       "explain": "16 >= 18 — это false, поэтому срабатывает else."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "&& и ||",
-      "prompt": "Что выведет console.log(false || true)?",
-      "placeholder": "true или false",
+      "prompt": "Что выведет консоль? Вставь ответ.",
+      "text": "console.log(false || true); // ___",
       "answer": [
         "true"
+      ],
+      "extra": [
+        "false",
+        "undefined",
+        "null"
       ],
       "explain": "|| (ИЛИ) даёт true, если верно хотя бы одно из условий."
     },
@@ -115,15 +121,19 @@
       "explain": "Для && нужны оба условия. hasTime = false, значит всё условие false и срабатывает else."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "Тернарный оператор",
-      "prompt": "Что выведет консоль? Напиши слово.",
-      "code": "let age = 20;\nconsole.log(age >= 18 ? \"взрослый\" : \"ребёнок\");",
-      "placeholder": "Ответ",
+      "prompt": "Что выведет консоль? Вставь ответ.",
+      "text": "Консоль выведет: ___",
       "answer": [
-        "взрослый",
-        "\"взрослый\""
+        "взрослый"
       ],
+      "extra": [
+        "ребёнок",
+        "true",
+        "undefined"
+      ],
+      "code": "let age = 20;\nconsole.log(age >= 18 ? \"взрослый\" : \"ребёнок\");",
       "explain": "20 >= 18 — true, поэтому берётся значение после ?, то есть «взрослый»."
     },
     {
@@ -316,12 +326,17 @@
         ],
         "check": [
           {
-            "type": "input",
+            "type": "fill",
             "topic": "&& и ||",
-            "prompt": "Что выведет console.log(true && false)?",
-            "placeholder": "true или false",
+            "prompt": "Что выведет консоль? Вставь ответ.",
+            "text": "console.log(true && false); // ___",
             "answer": [
               "false"
+            ],
+            "extra": [
+              "true",
+              "undefined",
+              "null"
             ],
             "explain": "Для && нужны оба true. Одно false — и весь результат false."
           },
@@ -359,15 +374,19 @@
         ],
         "check": [
           {
-            "type": "input",
+            "type": "fill",
             "topic": "Тернарный оператор",
-            "prompt": "Что выведет код? Напиши слово.",
-            "code": "let age = 15;\nconsole.log(age >= 18 ? \"взрослый\" : \"ребёнок\");",
-            "placeholder": "Ответ",
+            "prompt": "Что выведет консоль? Вставь ответ.",
+            "text": "Консоль выведет: ___",
             "answer": [
-              "ребёнок",
-              "ребенок"
+              "ребёнок"
             ],
+            "extra": [
+              "взрослый",
+              "false",
+              "undefined"
+            ],
+            "code": "let age = 15;\nconsole.log(age >= 18 ? \"взрослый\" : \"ребёнок\");",
             "explain": "15 >= 18 — false, поэтому берётся значение после двоеточия."
           },
           {

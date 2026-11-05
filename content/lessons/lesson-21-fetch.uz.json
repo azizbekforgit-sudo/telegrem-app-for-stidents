@@ -209,12 +209,17 @@
       "explain": "So'rov → json → chiqarish → xato."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "then va catch",
-      "prompt": "Qaysi metod javobni JS obyektiga aylantiradi? (response. bilan, qavslarsiz)",
+      "prompt": "Qaysi metod javobni JS obyektiga aylantiradi?",
+      "text": "const data = await response.___();",
       "answer": [
-        "response.json",
         "json"
+      ],
+      "extra": [
+        "text",
+        "parse",
+        "object"
       ],
       "explain": "response.json() javobni obyektga aylantiradi."
     },

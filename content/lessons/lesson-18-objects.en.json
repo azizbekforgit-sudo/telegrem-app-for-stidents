@@ -7,89 +7,409 @@
       {
         "title": "What an object is",
         "slides": [
-          { "emoji": "📇", "text": "An array is a list without labels, like a nameless queue: first, second, third. An **object** is when every value has a name (a **key**). Like a contact card: name, number, photo." },
-          { "text": "Creating an object:", "code": "const user = { name: \"Anya\", age: 25, city: \"Almaty\" };" },
-          { "text": "On the left — the **key** (`name`, `age`, `city`). On the right — the **value** (`\"Anya\"`, `25`, `\"Almaty\"`). Between them — a colon `:`, pairs are separated by a comma `,`." },
-          { "quote": true, "text": "An object is a set of «key: value» pairs." }
+          {
+            "emoji": "📇",
+            "text": "An array is a list without labels, like a nameless queue: first, second, third. An **object** is when every value has a name (a **key**). Like a contact card: name, number, photo."
+          },
+          {
+            "text": "Creating an object:",
+            "code": "const user = { name: \"Anya\", age: 25, city: \"Almaty\" };"
+          },
+          {
+            "text": "On the left — the **key** (`name`, `age`, `city`). On the right — the **value** (`\"Anya\"`, `25`, `\"Almaty\"`). Between them — a colon `:`, pairs are separated by a comma `,`."
+          },
+          {
+            "quote": true,
+            "text": "An object is a set of «key: value» pairs."
+          }
         ],
         "check": [
-          { "type": "truefalse", "topic": "Creating objects", "prompt": "In an array every value is labeled with a key, like in an object.", "answer": false, "explain": "An array is a list without labels. Keys belong to objects." },
-          { "type": "choice", "topic": "Creating objects", "prompt": "What goes between a key and a value?", "options": [":", "=", ";", "."], "answer": 0, "explain": "A colon separates the key and the value: name: \"Anya\"." }
+          {
+            "type": "truefalse",
+            "topic": "Creating objects",
+            "prompt": "In an array every value is labeled with a key, like in an object.",
+            "answer": false,
+            "explain": "An array is a list without labels. Keys belong to objects."
+          },
+          {
+            "type": "choice",
+            "topic": "Creating objects",
+            "prompt": "What goes between a key and a value?",
+            "options": [
+              ":",
+              "=",
+              ";",
+              "."
+            ],
+            "answer": 0,
+            "explain": "A colon separates the key and the value: name: \"Anya\"."
+          }
         ]
       },
       {
         "title": "Accessing properties",
         "slides": [
-          { "emoji": "🎯", "text": "With a **dot** — when the key is written right in the code:", "code": "console.log(user.name); // Anya\nconsole.log(user.age);  // 25" },
-          { "text": "With **square brackets** — when the key name is stored in a variable:", "code": "const field = \"city\";\nconsole.log(user[field]); // Almaty\n// user.field — not like this: JS will look for a key named «field»" },
-          { "quote": true, "text": "The key is written right in the code — use a dot. The key is stored in a variable — use brackets." }
+          {
+            "emoji": "🎯",
+            "text": "With a **dot** — when the key is written right in the code:",
+            "code": "console.log(user.name); // Anya\nconsole.log(user.age);  // 25"
+          },
+          {
+            "text": "With **square brackets** — when the key name is stored in a variable:",
+            "code": "const field = \"city\";\nconsole.log(user[field]); // Almaty\n// user.field — not like this: JS will look for a key named «field»"
+          },
+          {
+            "quote": true,
+            "text": "The key is written right in the code — use a dot. The key is stored in a variable — use brackets."
+          }
         ],
         "check": [
-          { "type": "choice", "topic": "Accessing properties", "prompt": "const key = \"name\"; How do you get this field from user?", "options": ["user[key]", "user.key", "user(key)", "key.user"], "answer": 0, "explain": "The key is in a variable — so square brackets." }
+          {
+            "type": "choice",
+            "topic": "Accessing properties",
+            "prompt": "const key = \"name\"; How do you get this field from user?",
+            "options": [
+              "user[key]",
+              "user.key",
+              "user(key)",
+              "key.user"
+            ],
+            "answer": 0,
+            "explain": "The key is in a variable — so square brackets."
+          }
         ]
       },
       {
         "title": "Changing a property",
         "slides": [
-          { "emoji": "✏️", "text": "You can change a field's value — just assign a new one:", "code": "console.log(user.age); // 25\nuser.age = 26;\nconsole.log(user.age); // 26" },
-          { "text": "The same way you can **add** a new field that wasn't there before:", "code": "user.email = \"anya@mail.uz\";" }
+          {
+            "emoji": "✏️",
+            "text": "You can change a field's value — just assign a new one:",
+            "code": "console.log(user.age); // 25\nuser.age = 26;\nconsole.log(user.age); // 26"
+          },
+          {
+            "text": "The same way you can **add** a new field that wasn't there before:",
+            "code": "user.email = \"anya@mail.uz\";"
+          }
         ],
         "check": [
-          { "type": "input", "topic": "Changing properties", "prompt": "user.age was 25. What does console.log(user.age) show after user.age = 30?", "answer": ["30"], "explain": "The new value replaces the old one." }
+          {
+            "type": "fill",
+            "topic": "Changing properties",
+            "prompt": "What will the console print? Put in the answer.",
+            "text": "user.age = 25;\nuser.age = 30;\nconsole.log(user.age); // ___",
+            "answer": [
+              "30"
+            ],
+            "extra": [
+              "25",
+              "55",
+              "undefined"
+            ],
+            "explain": "The new value replaces the old one."
+          }
         ]
       },
       {
         "title": "An array of objects",
         "slides": [
-          { "emoji": "🗃️", "text": "Almost all data on websites and in APIs looks like this — **a list of cards**:", "code": "const users = [\n  { name: \"Anya\", age: 25 },\n  { name: \"Igor\", age: 30 },\n];" },
-          { "text": "We go through the list with `forEach`:", "code": "users.forEach((user) => {\n  console.log(user.name);\n});\n// Anya\n// Igor" },
-          { "quote": true, "text": "forEach takes one object at a time, and user.name gets the field you need." }
+          {
+            "emoji": "🗃️",
+            "text": "Almost all data on websites and in APIs looks like this — **a list of cards**:",
+            "code": "const users = [\n  { name: \"Anya\", age: 25 },\n  { name: \"Igor\", age: 30 },\n];"
+          },
+          {
+            "text": "We go through the list with `forEach`:",
+            "code": "users.forEach((user) => {\n  console.log(user.name);\n});\n// Anya\n// Igor"
+          },
+          {
+            "quote": true,
+            "text": "forEach takes one object at a time, and user.name gets the field you need."
+          }
         ],
         "check": [
-          { "type": "truefalse", "topic": "Arrays of objects", "prompt": "forEach over an array of objects gives one object on each round.", "answer": true, "explain": "One card per round." }
+          {
+            "type": "truefalse",
+            "topic": "Arrays of objects",
+            "prompt": "forEach over an array of objects gives one object on each round.",
+            "answer": true,
+            "explain": "One card per round."
+          }
         ]
       },
       {
         "title": "Destructuring — «unpacking a parcel»",
         "slides": [
-          { "emoji": "📦", "text": "**Before:** we get each field on its own line:", "code": "const name = user.name;\nconst age = user.age;\nconsole.log(name, age); // Anya 25" },
-          { "text": "**After:** we get the fields in one line:", "code": "const { name, age } = user;\nconsole.log(name, age); // Anya 25" },
-          { "text": "The names in the curly braces must **match the keys**. We didn't list `city` — so it just isn't taken." },
-          { "text": "You can unpack right in a function parameter:", "code": "users.forEach(({ name, age }) => {\n  console.log(name, age);\n});" }
+          {
+            "emoji": "📦",
+            "text": "**Before:** we get each field on its own line:",
+            "code": "const name = user.name;\nconst age = user.age;\nconsole.log(name, age); // Anya 25"
+          },
+          {
+            "text": "**After:** we get the fields in one line:",
+            "code": "const { name, age } = user;\nconsole.log(name, age); // Anya 25"
+          },
+          {
+            "text": "The names in the curly braces must **match the keys**. We didn't list `city` — so it just isn't taken."
+          },
+          {
+            "text": "You can unpack right in a function parameter:",
+            "code": "users.forEach(({ name, age }) => {\n  console.log(name, age);\n});"
+          }
         ],
         "check": [
-          { "type": "choice", "topic": "Destructuring", "prompt": "What does const { name } = user; do?", "options": ["Puts the name field into a variable", "Deletes the name field", "Creates a new object", "Changes the value of name"], "answer": 0, "explain": "Destructuring means «unpacking»: an object field goes into a variable." },
-          { "type": "truefalse", "topic": "Destructuring", "prompt": "A field you didn't write in the curly braces won't be taken.", "answer": true, "explain": "Only the listed keys are taken." }
+          {
+            "type": "choice",
+            "topic": "Destructuring",
+            "prompt": "What does const { name } = user; do?",
+            "options": [
+              "Puts the name field into a variable",
+              "Deletes the name field",
+              "Creates a new object",
+              "Changes the value of name"
+            ],
+            "answer": 0,
+            "explain": "Destructuring means «unpacking»: an object field goes into a variable."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Destructuring",
+            "prompt": "A field you didn't write in the curly braces won't be taken.",
+            "answer": true,
+            "explain": "Only the listed keys are taken."
+          }
         ]
       },
       {
         "title": "Practice and homework",
         "slides": [
-          { "emoji": "🛒", "text": "We print only the products in stock:", "code": "const products = [\n  { name: \"Phone\", price: 3000000, inStock: true },\n  { name: \"Laptop\", price: 8000000, inStock: false },\n];\n\nproducts.forEach((product) => {\n  const { name, price, inStock } = product;\n  if (inStock) {\n    console.log(name, price);\n  }\n});\n// Phone 3000000" },
-          { "emoji": "🏠", "text": "Homework: a «user profile» object with at least **5 fields** and a nested `address` object (`city`, `street`). Print everything using destructuring:", "code": "const { name, address } = profile;\nconst { city, street } = address;\nconsole.log(name, city, street);" },
-          { "quote": true, "text": "An object is a set of «key: value» pairs. Destructuring lets you quickly get the fields you need in one line." }
+          {
+            "emoji": "🛒",
+            "text": "We print only the products in stock:",
+            "code": "const products = [\n  { name: \"Phone\", price: 3000000, inStock: true },\n  { name: \"Laptop\", price: 8000000, inStock: false },\n];\n\nproducts.forEach((product) => {\n  const { name, price, inStock } = product;\n  if (inStock) {\n    console.log(name, price);\n  }\n});\n// Phone 3000000"
+          },
+          {
+            "emoji": "🏠",
+            "text": "Homework: a «user profile» object with at least **5 fields** and a nested `address` object (`city`, `street`). Print everything using destructuring:",
+            "code": "const { name, address } = profile;\nconst { city, street } = address;\nconsole.log(name, city, street);"
+          },
+          {
+            "quote": true,
+            "text": "An object is a set of «key: value» pairs. Destructuring lets you quickly get the fields you need in one line."
+          }
         ],
         "check": [
-          { "type": "choice", "topic": "Practice", "prompt": "What does if (inStock) check in the practice?", "options": ["The product is in stock", "The price is above zero", "The product has a name", "Nothing"], "answer": 0, "explain": "inStock: true — the product is in stock." }
+          {
+            "type": "choice",
+            "topic": "Practice",
+            "prompt": "What does if (inStock) check in the practice?",
+            "options": [
+              "The product is in stock",
+              "The price is above zero",
+              "The product has a name",
+              "Nothing"
+            ],
+            "answer": 0,
+            "explain": "inStock: true — the product is in stock."
+          }
         ]
       }
     ]
   },
   "questions": [
-    { "type": "truefalse", "topic": "Creating objects", "prompt": "In an object every value has a name — a key.", "answer": true, "explain": "Like the fields on a contact card." },
-    { "type": "match", "topic": "Creating objects", "prompt": "In the object { name: \"Anya\", age: 25 } match the part and its meaning", "pairs": [["name", "Key"], ["\"Anya\"", "Value"], [":", "Between key and value"], [",", "Between pairs"]] },
-    { "type": "choice", "topic": "Creating objects", "prompt": "Which one is a correct object?", "options": ["{ name: \"Anya\", age: 25 }", "{ name = \"Anya\"; age = 25 }", "[ name: \"Anya\" ]", "( name: \"Anya\" )"], "answer": 0, "explain": "Curly braces, a colon between key and value, a comma between pairs." },
-    { "type": "choice", "topic": "Accessing properties", "prompt": "What will the console show?", "code": "const user = { name: \"Anya\", age: 25, city: \"Almaty\" };\nconsole.log(user.age);", "options": ["25", "Anya", "undefined", "age"], "answer": 0, "explain": "user.age is the value of the age field." },
-    { "type": "choice", "topic": "Accessing properties", "prompt": "What will the console show?", "code": "const user = { name: \"Anya\", city: \"Almaty\" };\nconst field = \"city\";\nconsole.log(user[field]);", "options": ["Almaty", "city", "undefined", "field"], "answer": 0, "explain": "field holds \"city\", so user[field] is user.city." },
-    { "type": "truefalse", "topic": "Accessing properties", "prompt": "If the key name is stored in the variable field, you can write user.field.", "answer": false, "explain": "user.field looks for a key named «field». You need user[field]." },
-    { "type": "input", "topic": "Accessing properties", "prompt": "What will the console show?", "code": "const user = { name: \"Anya\", city: \"Almaty\" };\nconst field = \"city\";\nconsole.log(user.field);", "answer": ["undefined"], "explain": "There's no «field» key in the object — we get undefined." },
-    { "type": "choice", "topic": "Changing properties", "prompt": "What will the console show?", "code": "const user = { name: \"Anya\", age: 25 };\nuser.age = 26;\nconsole.log(user.age);", "options": ["26", "25", "undefined", "Error"], "answer": 0, "explain": "The new value replaced the old one." },
-    { "type": "truefalse", "topic": "Changing properties", "prompt": "The line user.email = \"anya@mail.uz\" adds a new field to the object.", "answer": true, "explain": "If the field wasn't there, it appears." },
-    { "type": "choice", "topic": "Arrays of objects", "prompt": "What will the console show?", "code": "const users = [\n  { name: \"Anya\", age: 25 },\n  { name: \"Igor\", age: 30 },\n];\nusers.forEach((user) => {\n  console.log(user.name);\n});", "options": ["Anya and Igor", "25 and 30", "[object Object]", "Error"], "answer": 0, "explain": "forEach takes each object, user.name is its name." },
-    { "type": "order", "topic": "Destructuring", "prompt": "Build the destructuring: get name and age from user", "tokens": ["const", "{ name, age }", "=", "user;"], "extra": ["[ ]", "user.name"], "explain": "const { name, age } = user;" },
-    { "type": "choice", "topic": "Destructuring", "prompt": "What will the console show?", "code": "const user = { name: \"Anya\", age: 25, city: \"Almaty\" };\nconst { name, city } = user;\nconsole.log(city);", "options": ["Almaty", "undefined", "city", "Anya"], "answer": 0, "explain": "city was taken from the object — it holds \"Almaty\"." },
-    { "type": "truefalse", "topic": "Destructuring", "prompt": "When destructuring, the names in the curly braces must match the object's keys.", "answer": true, "explain": "Otherwise JS won't find such a field." },
-    { "type": "choice", "topic": "Practice", "prompt": "Which products will the code print?", "code": "const products = [\n  { name: \"Phone\", inStock: true },\n  { name: \"Laptop\", inStock: false },\n  { name: \"Headphones\", inStock: true },\n  { name: \"Watch\", inStock: false },\n];\nproducts.forEach(({ name, inStock }) => {\n  if (inStock) console.log(name);\n});", "options": ["Phone and Headphones", "All 4 products", "Laptop and Watch", "Nothing"], "answer": 0, "explain": "Only products with inStock: true are printed." },
-    { "type": "choice", "topic": "Practice", "prompt": "What will the console show?", "code": "const profile = {\n  name: \"Anya\",\n  address: { city: \"Almaty\", street: \"Abay 10\" },\n};\nconst { name, address } = profile;\nconst { city, street } = address;\nconsole.log(street);", "options": ["Abay 10", "Almaty", "undefined", "address"], "answer": 0, "explain": "First we took address, then street from it." }
+    {
+      "type": "truefalse",
+      "topic": "Creating objects",
+      "prompt": "In an object every value has a name — a key.",
+      "answer": true,
+      "explain": "Like the fields on a contact card."
+    },
+    {
+      "type": "match",
+      "topic": "Creating objects",
+      "prompt": "In the object { name: \"Anya\", age: 25 } match the part and its meaning",
+      "pairs": [
+        [
+          "name",
+          "Key"
+        ],
+        [
+          "\"Anya\"",
+          "Value"
+        ],
+        [
+          ":",
+          "Between key and value"
+        ],
+        [
+          ",",
+          "Between pairs"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "Creating objects",
+      "prompt": "Which one is a correct object?",
+      "options": [
+        "{ name: \"Anya\", age: 25 }",
+        "{ name = \"Anya\"; age = 25 }",
+        "[ name: \"Anya\" ]",
+        "( name: \"Anya\" )"
+      ],
+      "answer": 0,
+      "explain": "Curly braces, a colon between key and value, a comma between pairs."
+    },
+    {
+      "type": "choice",
+      "topic": "Accessing properties",
+      "prompt": "What will the console show?",
+      "code": "const user = { name: \"Anya\", age: 25, city: \"Almaty\" };\nconsole.log(user.age);",
+      "options": [
+        "25",
+        "Anya",
+        "undefined",
+        "age"
+      ],
+      "answer": 0,
+      "explain": "user.age is the value of the age field."
+    },
+    {
+      "type": "choice",
+      "topic": "Accessing properties",
+      "prompt": "What will the console show?",
+      "code": "const user = { name: \"Anya\", city: \"Almaty\" };\nconst field = \"city\";\nconsole.log(user[field]);",
+      "options": [
+        "Almaty",
+        "city",
+        "undefined",
+        "field"
+      ],
+      "answer": 0,
+      "explain": "field holds \"city\", so user[field] is user.city."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Accessing properties",
+      "prompt": "If the key name is stored in the variable field, you can write user.field.",
+      "answer": false,
+      "explain": "user.field looks for a key named «field». You need user[field]."
+    },
+    {
+      "type": "fill",
+      "topic": "Accessing properties",
+      "prompt": "What will the console print? Put in the answer.",
+      "text": "The console prints: ___",
+      "answer": [
+        "undefined"
+      ],
+      "extra": [
+        "Almaty",
+        "city",
+        "null"
+      ],
+      "code": "const user = { name: \"Anya\", city: \"Almaty\" };\nconst field = \"city\";\nconsole.log(user.field);",
+      "explain": "There's no «field» key in the object — we get undefined."
+    },
+    {
+      "type": "choice",
+      "topic": "Changing properties",
+      "prompt": "What will the console show?",
+      "code": "const user = { name: \"Anya\", age: 25 };\nuser.age = 26;\nconsole.log(user.age);",
+      "options": [
+        "26",
+        "25",
+        "undefined",
+        "Error"
+      ],
+      "answer": 0,
+      "explain": "The new value replaced the old one."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Changing properties",
+      "prompt": "The line user.email = \"anya@mail.uz\" adds a new field to the object.",
+      "answer": true,
+      "explain": "If the field wasn't there, it appears."
+    },
+    {
+      "type": "choice",
+      "topic": "Arrays of objects",
+      "prompt": "What will the console show?",
+      "code": "const users = [\n  { name: \"Anya\", age: 25 },\n  { name: \"Igor\", age: 30 },\n];\nusers.forEach((user) => {\n  console.log(user.name);\n});",
+      "options": [
+        "Anya and Igor",
+        "25 and 30",
+        "[object Object]",
+        "Error"
+      ],
+      "answer": 0,
+      "explain": "forEach takes each object, user.name is its name."
+    },
+    {
+      "type": "order",
+      "topic": "Destructuring",
+      "prompt": "Build the destructuring: get name and age from user",
+      "tokens": [
+        "const",
+        "{ name, age }",
+        "=",
+        "user;"
+      ],
+      "extra": [
+        "[ ]",
+        "user.name"
+      ],
+      "explain": "const { name, age } = user;"
+    },
+    {
+      "type": "choice",
+      "topic": "Destructuring",
+      "prompt": "What will the console show?",
+      "code": "const user = { name: \"Anya\", age: 25, city: \"Almaty\" };\nconst { name, city } = user;\nconsole.log(city);",
+      "options": [
+        "Almaty",
+        "undefined",
+        "city",
+        "Anya"
+      ],
+      "answer": 0,
+      "explain": "city was taken from the object — it holds \"Almaty\"."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Destructuring",
+      "prompt": "When destructuring, the names in the curly braces must match the object's keys.",
+      "answer": true,
+      "explain": "Otherwise JS won't find such a field."
+    },
+    {
+      "type": "choice",
+      "topic": "Practice",
+      "prompt": "Which products will the code print?",
+      "code": "const products = [\n  { name: \"Phone\", inStock: true },\n  { name: \"Laptop\", inStock: false },\n  { name: \"Headphones\", inStock: true },\n  { name: \"Watch\", inStock: false },\n];\nproducts.forEach(({ name, inStock }) => {\n  if (inStock) console.log(name);\n});",
+      "options": [
+        "Phone and Headphones",
+        "All 4 products",
+        "Laptop and Watch",
+        "Nothing"
+      ],
+      "answer": 0,
+      "explain": "Only products with inStock: true are printed."
+    },
+    {
+      "type": "choice",
+      "topic": "Practice",
+      "prompt": "What will the console show?",
+      "code": "const profile = {\n  name: \"Anya\",\n  address: { city: \"Almaty\", street: \"Abay 10\" },\n};\nconst { name, address } = profile;\nconst { city, street } = address;\nconsole.log(street);",
+      "options": [
+        "Abay 10",
+        "Almaty",
+        "undefined",
+        "address"
+      ],
+      "answer": 0,
+      "explain": "First we took address, then street from it."
+    }
   ]
 }

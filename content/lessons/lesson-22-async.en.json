@@ -223,11 +223,17 @@
       "explain": "Without internet the request fails."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "try/catch",
-      "prompt": "Which word catches the error after try? (one word)",
+      "prompt": "Which word catches the error after try?",
+      "text": "try {\n  // …\n} ___ (error) {\n  console.log(error);\n}",
       "answer": [
         "catch"
+      ],
+      "extra": [
+        "finally",
+        "else",
+        "error"
       ],
       "explain": "try { } catch (error) { }"
     },

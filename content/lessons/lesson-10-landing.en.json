@@ -219,12 +219,18 @@
       "explain": "<header> is the semantic header tag. <head> is something else entirely."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "Semantics",
-      "prompt": "Which tag replaces a faceless <div> for the bottom of the page? (no brackets)",
+      "prompt": "Which tag replaces a faceless <div> for the footer?",
+      "text": "<___>© 2026 My site</___>",
       "answer": [
         "footer",
-        "<footer>"
+        "footer"
+      ],
+      "extra": [
+        "header",
+        "div",
+        "nav"
       ],
       "explain": "footer is the semantic footer tag."
     },

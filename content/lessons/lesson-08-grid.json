@@ -1,5 +1,6 @@
 {
   "id": "lesson-08-grid",
+  "qrev": 2,
   "order": 8,
   "title": "Урок 8. CSS Grid — основы",
   "emoji": "🔲",
@@ -230,11 +231,17 @@
       "explain": "2 куска против 1."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "fr и repeat",
-      "prompt": "Сколько всего кусков у колонок 1fr 2fr 1fr? (число)",
+      "prompt": "Сколько всего кусков у колонок 1fr 2fr 1fr?",
+      "text": "1fr + 2fr + 1fr = ___fr",
       "answer": [
         "4"
+      ],
+      "extra": [
+        "3",
+        "2",
+        "6"
       ],
       "explain": "1 + 2 + 1 = 4."
     },

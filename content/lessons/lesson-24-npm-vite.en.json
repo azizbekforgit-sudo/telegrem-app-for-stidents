@@ -88,12 +88,17 @@
             "explain": "npm run dev starts the dev server."
           },
           {
-            "type": "input",
+            "type": "fill",
             "topic": "Running",
-            "prompt": "What is the automatic page update on code change called? (two parts)",
+            "prompt": "What is the automatic page refresh on code change called?",
+            "text": "___ reload",
             "answer": [
-              "hot reload",
-              "hotreload"
+              "hot"
+            ],
+            "extra": [
+              "cold",
+              "fast",
+              "auto"
             ],
             "explain": "Hot reload — the page refreshes itself."
           }

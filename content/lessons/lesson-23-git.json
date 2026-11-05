@@ -1,5 +1,6 @@
 {
   "id": "lesson-23-git",
+  "qrev": 2,
   "order": 23,
   "title": "Урок 23. Git и GitHub",
   "emoji": "🌿",
@@ -129,11 +130,17 @@
         ],
         "check": [
           {
-            "type": "input",
+            "type": "fill",
             "topic": "Практика",
-            "prompt": "Какая команда отправляет коммиты на GitHub? (git и слово)",
+            "prompt": "Последний шаг: отправь коммиты на GitHub",
+            "text": "git add .\ngit commit -m \"…\"\ngit ___",
             "answer": [
-              "git push"
+              "push"
+            ],
+            "extra": [
+              "pull",
+              "clone",
+              "init"
             ],
             "explain": "git push — отправить на GitHub."
           }
@@ -256,11 +263,17 @@
       "explain": "Можно экспериментировать безопасно."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "Практика",
       "prompt": "Какая команда отправляет коммиты на GitHub?",
+      "text": "git ___",
       "answer": [
-        "git push"
+        "push"
+      ],
+      "extra": [
+        "pull",
+        "commit",
+        "add"
       ],
       "explain": "git push отправляет на GitHub."
     },

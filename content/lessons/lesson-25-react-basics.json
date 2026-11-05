@@ -1,5 +1,6 @@
 {
   "id": "lesson-25-react-basics",
+  "qrev": 2,
   "order": 25,
   "title": "Урок 25. React — компоненты, JSX, props",
   "emoji": "⚛️",
@@ -256,11 +257,17 @@
       "explain": "Как атрибуты тега."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "Props",
-      "prompt": "Из какого урока деструктуризация в { title, price }? (номер)",
+      "prompt": "Из какого урока мы знаем деструктуризацию { title, price }?",
+      "text": "Урок ___",
       "answer": [
         "18"
+      ],
+      "extra": [
+        "17",
+        "13",
+        "25"
       ],
       "explain": "Деструктуризация — урок 18."
     },

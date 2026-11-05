@@ -170,12 +170,18 @@
       "explain": "Brauzer type=\"email\" ni o'zi tekshiradi."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "Forma teglari",
-      "prompt": "Forma yuborish tugmasi qaysi teg bilan qilinadi? (qavslarsiz)",
+      "prompt": "Forma yuborish tugmasi qaysi teg bilan qilinadi?",
+      "text": "<___ type=\"submit\">Yuborish</___>",
       "answer": [
         "button",
-        "<button>"
+        "button"
+      ],
+      "extra": [
+        "input",
+        "form",
+        "label"
       ],
       "explain": "type=\"submit\" bilan button."
     },

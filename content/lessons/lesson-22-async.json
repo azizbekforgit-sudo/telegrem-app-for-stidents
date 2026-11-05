@@ -1,5 +1,6 @@
 {
   "id": "lesson-22-async",
+  "qrev": 2,
   "order": 22,
   "title": "Урок 22. async/await и обработка ошибок",
   "emoji": "⏳",
@@ -226,11 +227,17 @@
       "explain": "Без интернета запрос упадёт."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "try/catch",
-      "prompt": "Какое слово ловит ошибку после try? (одно слово)",
+      "prompt": "Какое слово ловит ошибку после try?",
+      "text": "try {\n  // …\n} ___ (error) {\n  console.log(error);\n}",
       "answer": [
         "catch"
+      ],
+      "extra": [
+        "finally",
+        "else",
+        "error"
       ],
       "explain": "try { } catch (error) { }"
     },

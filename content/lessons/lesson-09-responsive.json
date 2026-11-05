@@ -1,5 +1,6 @@
 {
   "id": "lesson-09-responsive",
+  "qrev": 2,
   "order": 9,
   "title": "Урок 9. Адаптивность, media queries",
   "emoji": "📱",
@@ -233,11 +234,18 @@
       "explain": "Так телефон не притворяется компьютером."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "meta viewport",
-      "prompt": "Где пишут meta viewport? (тег без скобок)",
+      "prompt": "Где пишут meta viewport?",
+      "text": "<___>\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n</___>",
       "answer": [
+        "head",
         "head"
+      ],
+      "extra": [
+        "body",
+        "footer",
+        "main"
       ],
       "explain": "Внутри <head>."
     },

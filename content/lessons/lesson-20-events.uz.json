@@ -268,11 +268,17 @@
       "explain": "Bu standart xatti-harakat."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "preventDefault",
-      "prompt": "Qaysi metod standart amalni bekor qiladi? (qavslarsiz va e.siz)",
+      "prompt": "Qaysi metod standart harakatni bekor qiladi?",
+      "text": "form.addEventListener(\"submit\", (e) => {\n  e.___();\n});",
       "answer": [
         "preventDefault"
+      ],
+      "extra": [
+        "stopPropagation",
+        "submit",
+        "reload"
       ],
       "explain": "e.preventDefault() standart amalni bekor qiladi."
     },

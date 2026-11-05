@@ -101,11 +101,17 @@
         ],
         "check": [
           {
-            "type": "input",
+            "type": "fill",
             "topic": "Arifmetika",
-            "prompt": "10 % 3 nimaga teng?",
+            "prompt": "Konsol nima chiqaradi? Javobni qo'y.",
+            "text": "console.log(10 % 3); // ___",
             "answer": [
               "1"
+            ],
+            "extra": [
+              "0",
+              "3",
+              "10"
             ],
             "explain": "10 = 3·3 + 1, qoldiq 1."
           }
@@ -231,11 +237,17 @@
       "explain": "true/false — boolean turi."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "Arifmetika",
-      "prompt": "10 % 3 nimaga teng?",
+      "prompt": "10 ni 3 ga bo'lgandagi qoldiq nechaga teng?",
+      "text": "10 % 3 = ___",
       "answer": [
         "1"
+      ],
+      "extra": [
+        "3",
+        "0",
+        "3.33"
       ],
       "explain": "10 ni 3 ga bo'lishdan qoldiq — 1."
     },

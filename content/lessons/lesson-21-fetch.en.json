@@ -209,12 +209,17 @@
       "explain": "Request → json → output → error."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "then and catch",
-      "prompt": "Which method turns the response into a JS object? (with response., no brackets)",
+      "prompt": "Which method turns the response into a JS object?",
+      "text": "const data = await response.___();",
       "answer": [
-        "response.json",
         "json"
+      ],
+      "extra": [
+        "text",
+        "parse",
+        "object"
       ],
       "explain": "response.json() turns the response into an object."
     },

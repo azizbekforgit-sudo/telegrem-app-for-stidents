@@ -227,11 +227,17 @@
       "explain": "2 parts against 1."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "fr and repeat",
-      "prompt": "How many parts in total do columns 1fr 2fr 1fr have? (a number)",
+      "prompt": "How many parts in total for columns 1fr 2fr 1fr?",
+      "text": "1fr + 2fr + 1fr = ___fr",
       "answer": [
         "4"
+      ],
+      "extra": [
+        "3",
+        "2",
+        "6"
       ],
       "explain": "1 + 2 + 1 = 4."
     },

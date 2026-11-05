@@ -75,11 +75,17 @@
             "explain": "So there is no extra 20px at the edges."
           },
           {
-            "type": "input",
+            "type": "fill",
             "topic": "gap",
-            "prompt": "What is the property for space only between rows? (hyphenated)",
+            "prompt": "Which property adds space only between rows?",
+            "text": ".list {\n  ___: 20px;\n}",
             "answer": [
               "row-gap"
+            ],
+            "extra": [
+              "column-gap",
+              "margin",
+              "padding"
             ],
             "explain": "row-gap is between rows, column-gap between columns."
           }
@@ -315,11 +321,17 @@
       "explain": "Nothing needs recalculating."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "Practice",
-      "prompt": "How many shares in total do columns flex: 1, flex: 1, flex: 2 have? (a number)",
+      "prompt": "How many shares in total for columns flex: 1, flex: 1, flex: 2?",
+      "text": "1 + 1 + 2 = ___",
       "answer": [
         "4"
+      ],
+      "extra": [
+        "3",
+        "2",
+        "5"
       ],
       "explain": "1 + 1 + 2 = 4."
     },

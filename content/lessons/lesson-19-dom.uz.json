@@ -166,11 +166,17 @@
       "explain": "querySelectorAll kerak."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "Elementlarni qidirish",
-      "prompt": "Selektor bo'yicha HAMMA elementlar qaysi metod bilan topiladi? (bitta so'z)",
+      "prompt": "Selektor bo'yicha BARCHA elementlar qaysi metod bilan topiladi?",
+      "text": "document.___(\".card\");",
       "answer": [
         "querySelectorAll"
+      ],
+      "extra": [
+        "querySelector",
+        "getElementById",
+        "findAll"
       ],
       "explain": "querySelectorAll — barcha mosi."
     },

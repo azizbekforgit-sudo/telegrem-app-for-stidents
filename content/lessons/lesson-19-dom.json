@@ -1,5 +1,6 @@
 {
   "id": "lesson-19-dom",
+  "qrev": 2,
   "order": 19,
   "title": "Урок 19. DOM",
   "emoji": "🌳",
@@ -169,11 +170,17 @@
       "explain": "Нужен querySelectorAll."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "Поиск элементов",
-      "prompt": "Каким методом находят ВСЕ элементы по селектору? (одно слово)",
+      "prompt": "Каким методом находят ВСЕ элементы по селектору?",
+      "text": "document.___(\".card\");",
       "answer": [
         "querySelectorAll"
+      ],
+      "extra": [
+        "querySelector",
+        "getElementById",
+        "findAll"
       ],
       "explain": "querySelectorAll — все подходящие."
     },

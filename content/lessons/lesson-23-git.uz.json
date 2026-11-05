@@ -126,11 +126,17 @@
         ],
         "check": [
           {
-            "type": "input",
+            "type": "fill",
             "topic": "Amaliyot",
-            "prompt": "Qaysi buyruq commitlarni GitHub ga yuboradi? (git va so'z)",
+            "prompt": "Oxirgi qadam: kommitlarni GitHubga yubor",
+            "text": "git add .\ngit commit -m \"…\"\ngit ___",
             "answer": [
-              "git push"
+              "push"
+            ],
+            "extra": [
+              "pull",
+              "clone",
+              "init"
             ],
             "explain": "git push — GitHub ga yuborish."
           }
@@ -253,11 +259,17 @@
       "explain": "Xavfsiz tajriba o'tkazish mumkin."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "Amaliyot",
-      "prompt": "Qaysi buyruq commitlarni GitHub ga yuboradi?",
+      "prompt": "Qaysi buyruq kommitlarni GitHubga yuboradi?",
+      "text": "git ___",
       "answer": [
-        "git push"
+        "push"
+      ],
+      "extra": [
+        "pull",
+        "commit",
+        "add"
       ],
       "explain": "git push GitHub ga yuboradi."
     },

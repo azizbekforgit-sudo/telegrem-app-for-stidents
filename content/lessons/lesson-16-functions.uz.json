@@ -7,93 +7,442 @@
       {
         "title": "E'lon qilish — retsept yozamiz",
         "slides": [
-          { "emoji": "🍳", "text": "Sen funksiyadan allaqachon foydalangansan: `console.log()` — kimdir biz uchun yozgan funksiya. Endi **o'zimiznikini** yozishni o'rganamiz." },
-          { "text": "Funksiyani e'lon qilamiz:", "code": "function greet(name) {\n  return \"Salom, \" + name;\n}" },
-          { "text": "`function` — «hozir retsept bo'ladi».\n`greet` — funksiya nomi, u bilan chaqiramiz.\n`(name)` — parametr, beriladigan masalliq.\n`{ ... }` — retsept qadamlari.\n`return` — funksiya qaytarib beradigan tayyor taom." },
-          { "quote": true, "text": "Faqat e'lonni ishga tushirsangiz — konsolda hech narsa chiqmaydi. Retseptni yozdik, lekin hali hech narsa pishirmadik." }
+          {
+            "emoji": "🍳",
+            "text": "Sen funksiyadan allaqachon foydalangansan: `console.log()` — kimdir biz uchun yozgan funksiya. Endi **o'zimiznikini** yozishni o'rganamiz."
+          },
+          {
+            "text": "Funksiyani e'lon qilamiz:",
+            "code": "function greet(name) {\n  return \"Salom, \" + name;\n}"
+          },
+          {
+            "text": "`function` — «hozir retsept bo'ladi».\n`greet` — funksiya nomi, u bilan chaqiramiz.\n`(name)` — parametr, beriladigan masalliq.\n`{ ... }` — retsept qadamlari.\n`return` — funksiya qaytarib beradigan tayyor taom."
+          },
+          {
+            "quote": true,
+            "text": "Faqat e'lonni ishga tushirsangiz — konsolda hech narsa chiqmaydi. Retseptni yozdik, lekin hali hech narsa pishirmadik."
+          }
         ],
         "check": [
-          { "type": "truefalse", "topic": "E'lon va chaqirish", "prompt": "return so'zi — funksiya nomi.", "answer": false, "explain": "Nomi — greet. return natijani qaytaradi." },
-          { "type": "choice", "topic": "E'lon va chaqirish", "prompt": "function greet(name) dagi name nima?", "options": ["Parametr — «masalliq»", "Funksiya nomi", "Funksiya natijasi", "Funksiyani chaqirish"], "answer": 0, "explain": "E'lon qavslarida parametrlar yoziladi." }
+          {
+            "type": "truefalse",
+            "topic": "E'lon va chaqirish",
+            "prompt": "return so'zi — funksiya nomi.",
+            "answer": false,
+            "explain": "Nomi — greet. return natijani qaytaradi."
+          },
+          {
+            "type": "choice",
+            "topic": "E'lon va chaqirish",
+            "prompt": "function greet(name) dagi name nima?",
+            "options": [
+              "Parametr — «masalliq»",
+              "Funksiya nomi",
+              "Funksiya natijasi",
+              "Funksiyani chaqirish"
+            ],
+            "answer": 0,
+            "explain": "E'lon qavslarida parametrlar yoziladi."
+          }
         ]
       },
       {
         "title": "Chaqirish — retsept bo'yicha pishiramiz",
         "slides": [
-          { "emoji": "👩‍🍳", "text": "Funksiya ishlashi uchun uni **chaqirish** kerak — nomi va qavslarni yozamiz:", "code": "console.log(greet(\"Anya\")); // Salom, Anya\nconsole.log(greet(\"Aziz\")); // Salom, Aziz" },
-          { "text": "**E'lon** — retsept yozamiz, bir marta: `function greet(name) { ... }`.\n**Chaqirish** — retsept bo'yicha pishiramiz, xohlagancha: `greet(\"Anya\")`." },
-          { "quote": true, "text": "function so'zi va figurali qavslar bor — bu e'lon. Faqat nom va oddiy qavslar — bu chaqirish." }
+          {
+            "emoji": "👩‍🍳",
+            "text": "Funksiya ishlashi uchun uni **chaqirish** kerak — nomi va qavslarni yozamiz:",
+            "code": "console.log(greet(\"Anya\")); // Salom, Anya\nconsole.log(greet(\"Aziz\")); // Salom, Aziz"
+          },
+          {
+            "text": "**E'lon** — retsept yozamiz, bir marta: `function greet(name) { ... }`.\n**Chaqirish** — retsept bo'yicha pishiramiz, xohlagancha: `greet(\"Anya\")`."
+          },
+          {
+            "quote": true,
+            "text": "function so'zi va figurali qavslar bor — bu e'lon. Faqat nom va oddiy qavslar — bu chaqirish."
+          }
         ],
         "check": [
-          { "type": "choice", "topic": "E'lon va chaqirish", "prompt": "Bitta funksiyani necha marta chaqirish mumkin?", "options": ["Xohlagancha", "Faqat bir marta", "Ikki marta", "Hech qachon"], "answer": 0, "explain": "Retsept bir marta yoziladi, u bo'yicha esa xohlagancha pishiriladi." },
-          { "type": "choice", "topic": "E'lon va chaqirish", "prompt": "Konsol nima chiqaradi?", "code": "function greet(name) {\n  return \"Salom, \" + name;\n}\nconsole.log(greet(\"Ali\"));", "options": ["Salom, Ali", "Salom, name", "Ali", "Hech narsa"], "answer": 0, "explain": "name o'rniga \"Ali\" qo'yiladi." }
+          {
+            "type": "choice",
+            "topic": "E'lon va chaqirish",
+            "prompt": "Bitta funksiyani necha marta chaqirish mumkin?",
+            "options": [
+              "Xohlagancha",
+              "Faqat bir marta",
+              "Ikki marta",
+              "Hech qachon"
+            ],
+            "answer": 0,
+            "explain": "Retsept bir marta yoziladi, u bo'yicha esa xohlagancha pishiriladi."
+          },
+          {
+            "type": "choice",
+            "topic": "E'lon va chaqirish",
+            "prompt": "Konsol nima chiqaradi?",
+            "code": "function greet(name) {\n  return \"Salom, \" + name;\n}\nconsole.log(greet(\"Ali\"));",
+            "options": [
+              "Salom, Ali",
+              "Salom, name",
+              "Ali",
+              "Hech narsa"
+            ],
+            "answer": 0,
+            "explain": "name o'rniga \"Ali\" qo'yiladi."
+          }
         ]
       },
       {
         "title": "Parametrlar, argumentlar va return",
         "slides": [
-          { "text": "**Parametr** — retseptdagi bo'sh joy: «___ go'sht oling». E'londa yoziladi.\n**Argument** — haqiqatda solingan narsa: «500 gramm mol go'shti». Chaqirishda yoziladi.", "code": "function greet(name) {   // name — PARAMETR\n  return \"Salom, \" + name;\n}\ngreet(\"Anya\");           // \"Anya\" — ARGUMENT" },
-          { "text": "Parametrlar bir nechta bo'lishi mumkin — vergul bilan:", "code": "function introduce(name, age) {\n  return `Mening ismim ${name}, men ${age} yoshdaman`;\n}\nconsole.log(introduce(\"Aziz\", 16));\n// Mening ismim Aziz, men 16 yoshdaman" },
-          { "emoji": "🍽️", "text": "`return` — natijani qaytarish. Usiz funksiya hech narsa bermaydi:", "code": "function greetNoReturn(name) {\n  \"Salom, \" + name; // return yo'q\n}\nconsole.log(greetNoReturn(\"Anya\")); // undefined" },
-          { "quote": true, "text": "Retsept nimadir qildi, lekin taomni bermadi — shuning uchun undefined." }
+          {
+            "text": "**Parametr** — retseptdagi bo'sh joy: «___ go'sht oling». E'londa yoziladi.\n**Argument** — haqiqatda solingan narsa: «500 gramm mol go'shti». Chaqirishda yoziladi.",
+            "code": "function greet(name) {   // name — PARAMETR\n  return \"Salom, \" + name;\n}\ngreet(\"Anya\");           // \"Anya\" — ARGUMENT"
+          },
+          {
+            "text": "Parametrlar bir nechta bo'lishi mumkin — vergul bilan:",
+            "code": "function introduce(name, age) {\n  return `Mening ismim ${name}, men ${age} yoshdaman`;\n}\nconsole.log(introduce(\"Aziz\", 16));\n// Mening ismim Aziz, men 16 yoshdaman"
+          },
+          {
+            "emoji": "🍽️",
+            "text": "`return` — natijani qaytarish. Usiz funksiya hech narsa bermaydi:",
+            "code": "function greetNoReturn(name) {\n  \"Salom, \" + name; // return yo'q\n}\nconsole.log(greetNoReturn(\"Anya\")); // undefined"
+          },
+          {
+            "quote": true,
+            "text": "Retsept nimadir qildi, lekin taomni bermadi — shuning uchun undefined."
+          }
         ],
         "check": [
-          { "type": "match", "topic": "Parametrlar va return", "prompt": "So'z va uning ma'nosini moslashtir", "pairs": [["Parametr", "Funksiya nimani kutadi (e'londa)"], ["Argument", "Nima berildi (chaqirishda)"], ["return", "Natijani qaytarish"]] },
-          { "type": "truefalse", "topic": "Parametrlar va return", "prompt": "Funksiyada vergul bilan bir nechta parametr bo'lishi mumkin.", "answer": true, "explain": "Masalan: function introduce(name, age)." }
+          {
+            "type": "match",
+            "topic": "Parametrlar va return",
+            "prompt": "So'z va uning ma'nosini moslashtir",
+            "pairs": [
+              [
+                "Parametr",
+                "Funksiya nimani kutadi (e'londa)"
+              ],
+              [
+                "Argument",
+                "Nima berildi (chaqirishda)"
+              ],
+              [
+                "return",
+                "Natijani qaytarish"
+              ]
+            ]
+          },
+          {
+            "type": "truefalse",
+            "topic": "Parametrlar va return",
+            "prompt": "Funksiyada vergul bilan bir nechta parametr bo'lishi mumkin.",
+            "answer": true,
+            "explain": "Masalan: function introduce(name, age)."
+          }
         ]
       },
       {
         "title": "Strelkali funksiyalar",
         "slides": [
-          { "emoji": "🏹", "text": "Bu yangi mavzu emas — o'sha funksiya, faqat **qisqaroq** yozilgan. Zamonaviy kodda u juda ko'p uchraydi." },
-          { "text": "Uchta yozuv bir xil ishni qiladi:", "code": "// 1. oddiy\nfunction greet(name) {\n  return \"Salom, \" + name;\n}\n\n// 2. strelkali\nconst greet = (name) => {\n  return \"Salom, \" + name;\n};\n\n// 3. strelkali, qisqa\nconst greet = name => \"Salom, \" + name;" },
-          { "text": "Qanday qisqartiriladi:\nparametr bitta — uning atrofidagi qavslarni olib tashlash mumkin;\nichida faqat return — `{ }` va `return` so'zini olib tashlaymiz;\nparametrlar ikki va undan ko'p — qavslar qoladi: `(a, b) => a + b`." },
-          { "quote": true, "text": "Uchala variantni konsolga birdaniga qo'ysangiz — «has already been declared» xatosi chiqadi: greet nomi band. Bittadan sinab, sahifani yangilang (F5)." }
+          {
+            "emoji": "🏹",
+            "text": "Bu yangi mavzu emas — o'sha funksiya, faqat **qisqaroq** yozilgan. Zamonaviy kodda u juda ko'p uchraydi."
+          },
+          {
+            "text": "Uchta yozuv bir xil ishni qiladi:",
+            "code": "// 1. oddiy\nfunction greet(name) {\n  return \"Salom, \" + name;\n}\n\n// 2. strelkali\nconst greet = (name) => {\n  return \"Salom, \" + name;\n};\n\n// 3. strelkali, qisqa\nconst greet = name => \"Salom, \" + name;"
+          },
+          {
+            "text": "Qanday qisqartiriladi:\nparametr bitta — uning atrofidagi qavslarni olib tashlash mumkin;\nichida faqat return — `{ }` va `return` so'zini olib tashlaymiz;\nparametrlar ikki va undan ko'p — qavslar qoladi: `(a, b) => a + b`."
+          },
+          {
+            "quote": true,
+            "text": "Uchala variantni konsolga birdaniga qo'ysangiz — «has already been declared» xatosi chiqadi: greet nomi band. Bittadan sinab, sahifani yangilang (F5)."
+          }
         ],
         "check": [
-          { "type": "choice", "topic": "Strelkali funksiyalar", "prompt": "Bu funksiyani qanday qisqartirish mumkin?", "code": "const double = (x) => {\n  return x * 2;\n};", "options": ["const double = x => x * 2;", "const double = x => { x * 2 };", "double => x * 2;", "function x => 2;"], "answer": 0, "explain": "Bitta parametr — qavssiz, faqat return — { } va return siz." }
+          {
+            "type": "choice",
+            "topic": "Strelkali funksiyalar",
+            "prompt": "Bu funksiyani qanday qisqartirish mumkin?",
+            "code": "const double = (x) => {\n  return x * 2;\n};",
+            "options": [
+              "const double = x => x * 2;",
+              "const double = x => { x * 2 };",
+              "double => x * 2;",
+              "function x => 2;"
+            ],
+            "answer": 0,
+            "explain": "Bitta parametr — qavssiz, faqat return — { } va return siz."
+          }
         ]
       },
       {
         "title": "Funksiyalar nima uchun kerak",
         "slides": [
-          { "emoji": "♻️", "text": "Asosiy g'oya — **kodni takrorlamaslik**. Funksiyasiz bir narsa uch marta yoziladi, matnni esa uch joyda o'zgartirish kerak. 100 kishi bo'lsa-chi?" },
-          { "text": "Funksiya bilan retsept bir marta yoziladi:", "code": "function welcome(name) {\n  return `Salom, ${name}! Darsga xush kelibsan.`;\n}\nconsole.log(welcome(\"Aziz\"));\nconsole.log(welcome(\"Ali\"));" },
-          { "text": "Funksiya + 15-darsdagi sikl — va hatto 100 kishi bilan salomlashish mumkin:", "code": "const names = [\"Aziz\", \"Ali\", \"Malika\"];\nfor (const name of names) {\n  console.log(welcome(name));\n}" },
-          { "quote": true, "text": "Endi matn bir joyda: funksiyada o'zgartirdik — hamma joyda o'zgardi." }
+          {
+            "emoji": "♻️",
+            "text": "Asosiy g'oya — **kodni takrorlamaslik**. Funksiyasiz bir narsa uch marta yoziladi, matnni esa uch joyda o'zgartirish kerak. 100 kishi bo'lsa-chi?"
+          },
+          {
+            "text": "Funksiya bilan retsept bir marta yoziladi:",
+            "code": "function welcome(name) {\n  return `Salom, ${name}! Darsga xush kelibsan.`;\n}\nconsole.log(welcome(\"Aziz\"));\nconsole.log(welcome(\"Ali\"));"
+          },
+          {
+            "text": "Funksiya + 15-darsdagi sikl — va hatto 100 kishi bilan salomlashish mumkin:",
+            "code": "const names = [\"Aziz\", \"Ali\", \"Malika\"];\nfor (const name of names) {\n  console.log(welcome(name));\n}"
+          },
+          {
+            "quote": true,
+            "text": "Endi matn bir joyda: funksiyada o'zgartirdik — hamma joyda o'zgardi."
+          }
         ],
         "check": [
-          { "type": "truefalse", "topic": "Funksiyalar nima uchun", "prompt": "welcome ichidagi matn o'zgartirilsa, u barcha chaqiruvlarda o'zgaradi.", "answer": true, "explain": "Retsept bitta — barcha chaqiruvlar u bo'yicha pishiradi." }
+          {
+            "type": "truefalse",
+            "topic": "Funksiyalar nima uchun",
+            "prompt": "welcome ichidagi matn o'zgartirilsa, u barcha chaqiruvlarda o'zgaradi.",
+            "answer": true,
+            "explain": "Retsept bitta — barcha chaqiruvlar u bo'yicha pishiradi."
+          }
         ]
       },
       {
         "title": "Amaliyot va uyga vazifa",
         "slides": [
-          { "emoji": "➕", "text": "Yig'indi funksiyasi — ikki son oladi va ularning yig'indisini qaytaradi:", "code": "function sum(a, b) {\n  return a + b;\n}\nconsole.log(sum(2, 3));  // 5\nconsole.log(sum(-5, 5)); // 0\n\n// strelkali funksiya bilan:\nconst sum = (a, b) => a + b;" },
-          { "quote": true, "text": "Tuzoq: sum(\"2\", 3) 5 emas, \"23\" qaytaradi. Matn va son qo'shilsa, yopishib qoladi — 13-darsni eslaysizmi?" },
-          { "emoji": "🏠", "text": "Uyga vazifa: `isEven(number)` funksiyasi juft son uchun `true`, toq son uchun `false` qaytarsin. Kod `script.js` da, natija `return` orqali, kamida 3 marta chaqir. Maslahat: `%` operatori. Bonus — bir qatorli strelkali funksiya bilan." }
+          {
+            "emoji": "➕",
+            "text": "Yig'indi funksiyasi — ikki son oladi va ularning yig'indisini qaytaradi:",
+            "code": "function sum(a, b) {\n  return a + b;\n}\nconsole.log(sum(2, 3));  // 5\nconsole.log(sum(-5, 5)); // 0\n\n// strelkali funksiya bilan:\nconst sum = (a, b) => a + b;"
+          },
+          {
+            "quote": true,
+            "text": "Tuzoq: sum(\"2\", 3) 5 emas, \"23\" qaytaradi. Matn va son qo'shilsa, yopishib qoladi — 13-darsni eslaysizmi?"
+          },
+          {
+            "emoji": "🏠",
+            "text": "Uyga vazifa: `isEven(number)` funksiyasi juft son uchun `true`, toq son uchun `false` qaytarsin. Kod `script.js` da, natija `return` orqali, kamida 3 marta chaqir. Maslahat: `%` operatori. Bonus — bir qatorli strelkali funksiya bilan."
+          }
         ],
         "check": [
-          { "type": "input", "topic": "Amaliyot", "prompt": "sum(10, 20) nima qaytaradi?", "answer": ["30"], "explain": "10 + 20 = 30." }
+          {
+            "type": "fill",
+            "topic": "Amaliyot",
+            "prompt": "sum(10, 20) nima qaytaradi?",
+            "text": "sum(10, 20) → ___",
+            "answer": [
+              "30"
+            ],
+            "extra": [
+              "1020",
+              "10",
+              "20"
+            ],
+            "explain": "10 + 20 = 30."
+          }
         ]
       }
     ]
   },
   "questions": [
-    { "type": "truefalse", "topic": "E'lon va chaqirish", "prompt": "console.log() — bu ham funksiya.", "answer": true, "explain": "Uni biz uchun yozishgan, biz esa uni chaqiramiz." },
-    { "type": "match", "topic": "E'lon va chaqirish", "prompt": "Funksiya qismi va uning ma'nosini moslashtir", "pairs": [["function", "«Hozir retsept bo'ladi»"], ["greet", "Funksiya nomi"], ["(name)", "Parametr"], ["return", "Funksiya nima qaytaradi"]] },
-    { "type": "choice", "topic": "E'lon va chaqirish", "prompt": "Faqat shu kod ishga tushirilsa, konsolda nima chiqadi?", "code": "function greet(name) {\n  return \"Salom, \" + name;\n}", "options": ["Hech narsa", "Salom, name", "Salom, undefined", "Xato"], "answer": 0, "explain": "Bu faqat e'lon — retsept yozildi, lekin chaqirilmadi." },
-    { "type": "choice", "topic": "E'lon va chaqirish", "prompt": "Qaysi qator funksiyani chaqirish?", "options": ["greet(\"Anya\")", "function greet(name) { }", "return name;", "const name = \"Anya\";"], "answer": 0, "explain": "Chaqirish — nom va oddiy qavslar, function so'zisiz." },
-    { "type": "choice", "topic": "Parametrlar va return", "prompt": "greet(\"Anya\") chaqiruvida \"Anya\" satri — bu…", "options": ["Argument", "Parametr", "Funksiya nomi", "return"], "answer": 0, "explain": "Argument — chaqirishda berilgan narsa." },
-    { "type": "choice", "topic": "Parametrlar va return", "prompt": "Konsol nima chiqaradi?", "code": "function introduce(name, age) {\n  return `Mening ismim ${name}, men ${age} yoshdaman`;\n}\nconsole.log(introduce(\"Ali\", 15));", "options": ["Mening ismim Ali, men 15 yoshdaman", "Mening ismim name, men age yoshdaman", "Mening ismim 15, men Ali yoshdaman", "undefined"], "answer": 0, "explain": "Argumentlar tartib bo'yicha qo'yiladi: name = \"Ali\", age = 15." },
-    { "type": "input", "topic": "Parametrlar va return", "prompt": "Konsol nima chiqaradi?", "code": "function greetNoReturn(name) {\n  \"Salom, \" + name;\n}\nconsole.log(greetNoReturn(\"Anya\"));", "answer": ["undefined"], "explain": "return yo'q — funksiya hech narsa qaytarmaydi." },
-    { "type": "truefalse", "topic": "Parametrlar va return", "prompt": "return siz ham funksiya natijani qaytaradi.", "answer": false, "explain": "return siz natija — undefined." },
-    { "type": "choice", "topic": "Strelkali funksiyalar", "prompt": "Qaysi yozuv strelkali funksiya?", "options": ["const greet = name => \"Salom, \" + name;", "function greet(name) { }", "greet(\"Anya\")", "return => name"], "answer": 0, "explain": "Strelkali funksiya => orqali yoziladi." },
-    { "type": "order", "topic": "Strelkali funksiyalar", "prompt": "Yig'indining qisqa strelkali funksiyasini yig'", "tokens": ["const sum =", "(a, b)", "=>", "a + b;"], "extra": ["return", "function"], "explain": "const sum = (a, b) => a + b;" },
-    { "type": "truefalse", "topic": "Strelkali funksiyalar", "prompt": "Parametrlar ikkita bo'lsa, qavslarni olib tashlash mumkin: a, b => a + b", "answer": false, "explain": "Qavslar faqat bitta parametrda olib tashlanadi. To'g'risi: (a, b) => a + b." },
-    { "type": "choice", "topic": "Funksiyalar nima uchun", "prompt": "Funksiyalarning asosiy g'oyasi nima?", "options": ["Kodni takrorlamaslik", "Kodni uzunroq qilish", "Barcha sikllarni almashtirish", "Sahifani chizish"], "answer": 0, "explain": "Retseptni bir marta yozib, xohlagancha ishlatamiz." },
-    { "type": "choice", "topic": "Amaliyot", "prompt": "sum(\"2\", 3) nima qaytaradi?", "code": "function sum(a, b) {\n  return a + b;\n}", "options": ["\"23\"", "5", "\"5\"", "Xato"], "answer": 0, "explain": "Matn va son qo'shilsa, satrga yopishadi." },
-    { "type": "input", "topic": "Amaliyot", "prompt": "sum(-5, 5) nima qaytaradi?", "answer": ["0"], "explain": "-5 + 5 = 0." },
-    { "type": "choice", "topic": "Amaliyot", "prompt": "Juft sonlar uchun true bo'lishi uchun isEven(number) nima qaytarishi kerak?", "options": ["number % 2 === 0", "number % 2 === 1", "number / 2", "number === 2"], "answer": 0, "explain": "Juft sonni 2 ga bo'lgandagi qoldiq 0." }
+    {
+      "type": "truefalse",
+      "topic": "E'lon va chaqirish",
+      "prompt": "console.log() — bu ham funksiya.",
+      "answer": true,
+      "explain": "Uni biz uchun yozishgan, biz esa uni chaqiramiz."
+    },
+    {
+      "type": "match",
+      "topic": "E'lon va chaqirish",
+      "prompt": "Funksiya qismi va uning ma'nosini moslashtir",
+      "pairs": [
+        [
+          "function",
+          "«Hozir retsept bo'ladi»"
+        ],
+        [
+          "greet",
+          "Funksiya nomi"
+        ],
+        [
+          "(name)",
+          "Parametr"
+        ],
+        [
+          "return",
+          "Funksiya nima qaytaradi"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "E'lon va chaqirish",
+      "prompt": "Faqat shu kod ishga tushirilsa, konsolda nima chiqadi?",
+      "code": "function greet(name) {\n  return \"Salom, \" + name;\n}",
+      "options": [
+        "Hech narsa",
+        "Salom, name",
+        "Salom, undefined",
+        "Xato"
+      ],
+      "answer": 0,
+      "explain": "Bu faqat e'lon — retsept yozildi, lekin chaqirilmadi."
+    },
+    {
+      "type": "choice",
+      "topic": "E'lon va chaqirish",
+      "prompt": "Qaysi qator funksiyani chaqirish?",
+      "options": [
+        "greet(\"Anya\")",
+        "function greet(name) { }",
+        "return name;",
+        "const name = \"Anya\";"
+      ],
+      "answer": 0,
+      "explain": "Chaqirish — nom va oddiy qavslar, function so'zisiz."
+    },
+    {
+      "type": "choice",
+      "topic": "Parametrlar va return",
+      "prompt": "greet(\"Anya\") chaqiruvida \"Anya\" satri — bu…",
+      "options": [
+        "Argument",
+        "Parametr",
+        "Funksiya nomi",
+        "return"
+      ],
+      "answer": 0,
+      "explain": "Argument — chaqirishda berilgan narsa."
+    },
+    {
+      "type": "choice",
+      "topic": "Parametrlar va return",
+      "prompt": "Konsol nima chiqaradi?",
+      "code": "function introduce(name, age) {\n  return `Mening ismim ${name}, men ${age} yoshdaman`;\n}\nconsole.log(introduce(\"Ali\", 15));",
+      "options": [
+        "Mening ismim Ali, men 15 yoshdaman",
+        "Mening ismim name, men age yoshdaman",
+        "Mening ismim 15, men Ali yoshdaman",
+        "undefined"
+      ],
+      "answer": 0,
+      "explain": "Argumentlar tartib bo'yicha qo'yiladi: name = \"Ali\", age = 15."
+    },
+    {
+      "type": "fill",
+      "topic": "Parametrlar va return",
+      "prompt": "Konsol nima chiqaradi? Javobni qo'y.",
+      "text": "Konsol chiqaradi: ___",
+      "answer": [
+        "undefined"
+      ],
+      "extra": [
+        "null",
+        "Salom, Anya",
+        "Error"
+      ],
+      "code": "function greetNoReturn(name) {\n  \"Salom, \" + name;\n}\nconsole.log(greetNoReturn(\"Anya\"));",
+      "explain": "return yo'q — funksiya hech narsa qaytarmaydi."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Parametrlar va return",
+      "prompt": "return siz ham funksiya natijani qaytaradi.",
+      "answer": false,
+      "explain": "return siz natija — undefined."
+    },
+    {
+      "type": "choice",
+      "topic": "Strelkali funksiyalar",
+      "prompt": "Qaysi yozuv strelkali funksiya?",
+      "options": [
+        "const greet = name => \"Salom, \" + name;",
+        "function greet(name) { }",
+        "greet(\"Anya\")",
+        "return => name"
+      ],
+      "answer": 0,
+      "explain": "Strelkali funksiya => orqali yoziladi."
+    },
+    {
+      "type": "order",
+      "topic": "Strelkali funksiyalar",
+      "prompt": "Yig'indining qisqa strelkali funksiyasini yig'",
+      "tokens": [
+        "const sum =",
+        "(a, b)",
+        "=>",
+        "a + b;"
+      ],
+      "extra": [
+        "return",
+        "function"
+      ],
+      "explain": "const sum = (a, b) => a + b;"
+    },
+    {
+      "type": "truefalse",
+      "topic": "Strelkali funksiyalar",
+      "prompt": "Parametrlar ikkita bo'lsa, qavslarni olib tashlash mumkin: a, b => a + b",
+      "answer": false,
+      "explain": "Qavslar faqat bitta parametrda olib tashlanadi. To'g'risi: (a, b) => a + b."
+    },
+    {
+      "type": "choice",
+      "topic": "Funksiyalar nima uchun",
+      "prompt": "Funksiyalarning asosiy g'oyasi nima?",
+      "options": [
+        "Kodni takrorlamaslik",
+        "Kodni uzunroq qilish",
+        "Barcha sikllarni almashtirish",
+        "Sahifani chizish"
+      ],
+      "answer": 0,
+      "explain": "Retseptni bir marta yozib, xohlagancha ishlatamiz."
+    },
+    {
+      "type": "choice",
+      "topic": "Amaliyot",
+      "prompt": "sum(\"2\", 3) nima qaytaradi?",
+      "code": "function sum(a, b) {\n  return a + b;\n}",
+      "options": [
+        "\"23\"",
+        "5",
+        "\"5\"",
+        "Xato"
+      ],
+      "answer": 0,
+      "explain": "Matn va son qo'shilsa, satrga yopishadi."
+    },
+    {
+      "type": "fill",
+      "topic": "Amaliyot",
+      "prompt": "sum(-5, 5) nima qaytaradi?",
+      "text": "sum(-5, 5) → ___",
+      "answer": [
+        "0"
+      ],
+      "extra": [
+        "10",
+        "-10",
+        "-5"
+      ],
+      "explain": "-5 + 5 = 0."
+    },
+    {
+      "type": "choice",
+      "topic": "Amaliyot",
+      "prompt": "Juft sonlar uchun true bo'lishi uchun isEven(number) nima qaytarishi kerak?",
+      "options": [
+        "number % 2 === 0",
+        "number % 2 === 1",
+        "number / 2",
+        "number === 2"
+      ],
+      "answer": 0,
+      "explain": "Juft sonni 2 ga bo'lgandagi qoldiq 0."
+    }
   ]
 }

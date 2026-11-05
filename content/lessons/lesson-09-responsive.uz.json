@@ -230,11 +230,18 @@
       "explain": "Shunda telefon o'zini kompyuter qilib ko'rsatmaydi."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "meta viewport",
-      "prompt": "meta viewport qayerga yoziladi? (tegni qavslarsiz)",
+      "prompt": "meta viewport qayerda yoziladi?",
+      "text": "<___>\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n</___>",
       "answer": [
+        "head",
         "head"
+      ],
+      "extra": [
+        "body",
+        "footer",
+        "main"
       ],
       "explain": "<head> ichiga."
     },

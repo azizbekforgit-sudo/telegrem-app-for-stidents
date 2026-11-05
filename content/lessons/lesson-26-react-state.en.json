@@ -182,11 +182,17 @@
       "explain": "Change only through setCount."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "Counter",
-      "prompt": "What is count after two +1 and one -1 (start 0)?",
+      "prompt": "What is count after two +1 and one -1 (starting at 0)?",
+      "text": "0 + 1 + 1 - 1 = ___",
       "answer": [
         "1"
+      ],
+      "extra": [
+        "2",
+        "0",
+        "3"
       ],
       "explain": "0 + 1 + 1 - 1 = 1."
     },

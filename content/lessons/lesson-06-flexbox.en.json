@@ -282,11 +282,17 @@
       "explain": "align-items works across the main axis."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "align-items",
-      "prompt": "Which property moves items along the main axis? (one hyphenated word)",
+      "prompt": "Which property moves items along the main axis?",
+      "text": ".menu {\n  display: flex;\n  ___: space-between;\n}",
       "answer": [
         "justify-content"
+      ],
+      "extra": [
+        "align-items",
+        "flex-direction",
+        "gap"
       ],
       "explain": "justify means «just along»."
     },

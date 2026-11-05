@@ -253,11 +253,17 @@
       "explain": "Like tag attributes."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "Props",
-      "prompt": "Which lesson is the destructuring in { title, price } from? (the number)",
+      "prompt": "Which lesson taught us destructuring like { title, price }?",
+      "text": "Lesson ___",
       "answer": [
         "18"
+      ],
+      "extra": [
+        "17",
+        "13",
+        "25"
       ],
       "explain": "Destructuring is lesson 18."
     },

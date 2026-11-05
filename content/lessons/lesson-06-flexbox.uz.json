@@ -282,11 +282,17 @@
       "explain": "align-items — asosiy o'qqa ko'ndalang."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "align-items",
-      "prompt": "Qaysi xossa elementlarni asosiy o'q bo'ylab suradi? (defisli bitta so'z)",
+      "prompt": "Qaysi xossa elementlarni asosiy o'q bo'ylab suradi?",
+      "text": ".menu {\n  display: flex;\n  ___: space-between;\n}",
       "answer": [
         "justify-content"
+      ],
+      "extra": [
+        "align-items",
+        "flex-direction",
+        "gap"
       ],
       "explain": "justify — «just along»."
     },

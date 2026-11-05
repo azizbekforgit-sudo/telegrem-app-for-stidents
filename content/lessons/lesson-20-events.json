@@ -1,5 +1,6 @@
 {
   "id": "lesson-20-events",
+  "qrev": 2,
   "order": 20,
   "title": "Урок 20. События",
   "emoji": "⚡",
@@ -271,11 +272,17 @@
       "explain": "Это поведение по умолчанию."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "preventDefault",
-      "prompt": "Какой метод отменяет действие по умолчанию? (без скобок и e.)",
+      "prompt": "Какой метод отменяет действие по умолчанию?",
+      "text": "form.addEventListener(\"submit\", (e) => {\n  e.___();\n});",
       "answer": [
         "preventDefault"
+      ],
+      "extra": [
+        "stopPropagation",
+        "submit",
+        "reload"
       ],
       "explain": "e.preventDefault() отменяет действие по умолчанию."
     },

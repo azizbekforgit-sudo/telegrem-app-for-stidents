@@ -1107,6 +1107,21 @@ function mountAnswer(area, q, P, setReady, onEnter) {
       setReady(picked.length > 0);
     };
     draw();
+  } else if (q.type === 'fill') {
+    // текст с пропусками ___: нажимаешь плитку — она встаёт в первый пустой пропуск, нажимаешь на пропуск — плитка возвращается
+    const parts = String(q.text).split('___');
+    const slots = Array(parts.length - 1).fill(null);
+    const mono = looksLikeCode(q.text) || /[{};<>()=]/.test(q.text);
+    const draw = () => {
+      const used = new Set(slots.filter((x) => x != null));
+      area.innerHTML = `<div class="fill-text ${mono ? 'mono' : ''}">${parts.map((p, k) => esc(p) + (k < slots.length ? (slots[k] != null ? `<button class="chip-w gap-on" data-g="${k}">${esc(q.bank[slots[k]])}</button>` : `<span class="gap ${slots.indexOf(null) === k ? 'next' : ''}"></span>`) : '')).join('')}</div>
+        <div class="bank">${q.bank.map((t, bi) => `<button class="chip-w ${used.has(bi) ? 'ghost' : ''}" data-b="${bi}">${esc(t)}</button>`).join('')}</div>`;
+      $$('[data-b]', area).forEach((b) => (b.onclick = () => { const bi = Number(b.dataset.b); const k = slots.indexOf(null); if (P.answered || used.has(bi) || k < 0) return; haptic('light'); slots[k] = bi; draw(); }));
+      $$('[data-g]', area).forEach((b) => (b.onclick = () => { if (P.answered) return; slots[Number(b.dataset.g)] = null; draw(); }));
+      P.value = slots.map((bi) => (bi == null ? '' : q.bank[bi]));
+      setReady(slots.every((x) => x != null));
+    };
+    draw();
   } else if (q.type === 'match') {
     const pairs = {};
     let selL = 0;
@@ -1136,7 +1151,7 @@ function mountAnswer(area, q, P, setReady, onEnter) {
   }
 }
 
-const KIND = { choice: 'Выбери ответ', truefalse: 'Верно или нет?', input: 'Напиши ответ', order: 'Собери ответ', match: 'Найди пары' };
+const KIND = { choice: 'Выбери ответ', truefalse: 'Верно или нет?', input: 'Напиши ответ', order: 'Собери ответ', match: 'Найди пары', fill: 'Вставь пропущенное' };
 
 async function startLesson(target) {
   let data;
@@ -1615,7 +1630,7 @@ async function viewStudent(uid) {
   if (asg) asg.onclick = async () => { if (!S.overview) await loadOverview(); assignSheet(uid); };
 }
 
-const TYPE_LABEL = { choice: 'выбор', truefalse: 'верно/неверно', input: 'ввод', order: 'порядок', match: 'пары' };
+const TYPE_LABEL = { choice: 'выбор', truefalse: 'верно/неверно', input: 'ввод', order: 'порядок', match: 'пары', fill: 'пропуски' };
 
 async function tabTests() {
   const o = await loadOverview();

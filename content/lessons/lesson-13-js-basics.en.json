@@ -101,11 +101,17 @@
         ],
         "check": [
           {
-            "type": "input",
+            "type": "fill",
             "topic": "Arithmetic",
-            "prompt": "What is 10 % 3?",
+            "prompt": "What will the console print? Put in the answer.",
+            "text": "console.log(10 % 3); // ___",
             "answer": [
               "1"
+            ],
+            "extra": [
+              "0",
+              "3",
+              "10"
             ],
             "explain": "10 = 3·3 + 1, remainder 1."
           }
@@ -231,11 +237,17 @@
       "explain": "true/false is the boolean type."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "Arithmetic",
-      "prompt": "What is 10 % 3?",
+      "prompt": "What is the remainder of 10 divided by 3?",
+      "text": "10 % 3 = ___",
       "answer": [
         "1"
+      ],
+      "extra": [
+        "3",
+        "0",
+        "3.33"
       ],
       "explain": "The remainder of 10 divided by 3 is 1."
     },

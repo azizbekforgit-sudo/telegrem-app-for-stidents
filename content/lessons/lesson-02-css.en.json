@@ -7,89 +7,432 @@
       {
         "title": "What a tag is",
         "slides": [
-          { "emoji": "🏷️", "text": "A **tag** is a command in HTML. It tells the browser what goes here: a heading, text, an image, a button. It's written in angle brackets `< >`." },
-          { "text": "Most tags are **paired**: an opening one and a closing one. The closing one has `/`. The text in between is what you see on screen.", "code": "<p>This is a paragraph (text)</p>" },
-          { "text": "Common tags:\n`<h1>` … `<h6>` — headings (h1 is the biggest)\n`<p>` — paragraph\n`<a>` — link\n`<img>` — image (no closing tag)\n`<button>` — button" }
+          {
+            "emoji": "🏷️",
+            "text": "A **tag** is a command in HTML. It tells the browser what goes here: a heading, text, an image, a button. It's written in angle brackets `< >`."
+          },
+          {
+            "text": "Most tags are **paired**: an opening one and a closing one. The closing one has `/`. The text in between is what you see on screen.",
+            "code": "<p>This is a paragraph (text)</p>"
+          },
+          {
+            "text": "Common tags:\n`<h1>` … `<h6>` — headings (h1 is the biggest)\n`<p>` — paragraph\n`<a>` — link\n`<img>` — image (no closing tag)\n`<button>` — button"
+          }
         ],
         "check": [
-          { "type": "choice", "topic": "Tags", "prompt": "Which of these tags is a closing tag?", "options": ["</p>", "<p>", "<img>", "<h1>"], "answer": 0, "explain": "A closing tag has /." },
-          { "type": "truefalse", "topic": "Tags", "prompt": "The <img> tag has a closing tag </img>.", "answer": false, "explain": "<img> is an exception: it has no closing tag." }
+          {
+            "type": "choice",
+            "topic": "Tags",
+            "prompt": "Which of these tags is a closing tag?",
+            "options": [
+              "</p>",
+              "<p>",
+              "<img>",
+              "<h1>"
+            ],
+            "answer": 0,
+            "explain": "A closing tag has /."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Tags",
+            "prompt": "The <img> tag has a closing tag </img>.",
+            "answer": false,
+            "explain": "<img> is an exception: it has no closing tag."
+          }
         ]
       },
       {
         "title": "What CSS is",
         "slides": [
-          { "emoji": "💄", "text": "**CSS** is the language for how a page looks: color, size, font, layout. **HTML** says **what** is on the page, and **CSS** says **how** it looks (red, big, centered)." },
-          { "emoji": "🚪", "text": "Two rooms and a door:\nroom 1 — `index.html`, the site's content;\nroom 2 — `style.css`, the site's decorations;\nthe **door** — the `<link>` tag, it connects the rooms." },
-          { "quote": true, "text": "No door — HTML knows nothing about CSS, and the decorations don't work." }
+          {
+            "emoji": "💄",
+            "text": "**CSS** is the language for how a page looks: color, size, font, layout. **HTML** says **what** is on the page, and **CSS** says **how** it looks (red, big, centered)."
+          },
+          {
+            "emoji": "🚪",
+            "text": "Two rooms and a door:\nroom 1 — `index.html`, the site's content;\nroom 2 — `style.css`, the site's decorations;\nthe **door** — the `<link>` tag, it connects the rooms."
+          },
+          {
+            "quote": true,
+            "text": "No door — HTML knows nothing about CSS, and the decorations don't work."
+          }
         ],
         "check": [
-          { "type": "match", "topic": "Linking CSS", "prompt": "Match the part and its role", "pairs": [["index.html", "The content room"], ["style.css", "The decorations room"], ["<link>", "The door between them"]] }
+          {
+            "type": "match",
+            "topic": "Linking CSS",
+            "prompt": "Match the part and its role",
+            "pairs": [
+              [
+                "index.html",
+                "The content room"
+              ],
+              [
+                "style.css",
+                "The decorations room"
+              ],
+              [
+                "<link>",
+                "The door between them"
+              ]
+            ]
+          }
         ]
       },
       {
         "title": "Creating and linking style.css",
         "slides": [
-          { "emoji": "📄", "text": "Step 1. In VS Code open the project folder, click **New File** in the Explorer panel and name the file `style.css`. It must be in **the same folder** as index.html. No spaces or capital letters in the name." },
-          { "text": "Step 2. Put in the door — inside `<head>`:", "code": "<head>\n  <meta charset=\"UTF-8\">\n  <title>My site</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>" },
-          { "text": "`rel=\"stylesheet\"` means «this is a stylesheet». `href=\"style.css\"` is which file we connect to — where the door opens." },
-          { "quote": true, "text": "Check: write p { color: red; } in style.css, save it (Ctrl + S) and refresh the browser (F5). If the text is red, the door works." }
+          {
+            "emoji": "📄",
+            "text": "Step 1. In VS Code open the project folder, click **New File** in the Explorer panel and name the file `style.css`. It must be in **the same folder** as index.html. No spaces or capital letters in the name."
+          },
+          {
+            "text": "Step 2. Put in the door — inside `<head>`:",
+            "code": "<head>\n  <meta charset=\"UTF-8\">\n  <title>My site</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>"
+          },
+          {
+            "text": "`rel=\"stylesheet\"` means «this is a stylesheet». `href=\"style.css\"` is which file we connect to — where the door opens."
+          },
+          {
+            "quote": true,
+            "text": "Check: write p { color: red; } in style.css, save it (Ctrl + S) and refresh the browser (F5). If the text is red, the door works."
+          }
         ],
         "check": [
-          { "type": "choice", "topic": "Linking CSS", "prompt": "Where does the <link> tag for CSS go?", "options": ["Inside <head>", "Inside <body>", "In style.css", "After </html>"], "answer": 0, "explain": "<link> goes in head." },
-          { "type": "truefalse", "topic": "Linking CSS", "prompt": "«My Style.css» is a good name for a CSS file.", "answer": false, "explain": "No spaces or capital letters in the name: style.css." }
+          {
+            "type": "choice",
+            "topic": "Linking CSS",
+            "prompt": "Where does the <link> tag for CSS go?",
+            "options": [
+              "Inside <head>",
+              "Inside <body>",
+              "In style.css",
+              "After </html>"
+            ],
+            "answer": 0,
+            "explain": "<link> goes in head."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Linking CSS",
+            "prompt": "«My Style.css» is a good name for a CSS file.",
+            "answer": false,
+            "explain": "No spaces or capital letters in the name: style.css."
+          }
         ]
       },
       {
         "title": "How CSS is written",
         "slides": [
-          { "text": "First we say **who** we style, then **how**. Today we call elements by their tag name:", "code": "p {\n  color: blue;\n}" },
-          { "text": "`p` — the **selector**, who we style (all `<p>`)\n`{ }` — the styling goes inside\n`color` — the **property**, what we change\n`blue` — the **value**, what we make it\n`;` — at the end of each line" },
-          { "quote": true, "text": "In a selector, the tag has no < >: p, not <p>. A colon goes between property and value. Every line ends with ; — forget it, and the next line may not work." }
+          {
+            "text": "First we say **who** we style, then **how**. Today we call elements by their tag name:",
+            "code": "p {\n  color: blue;\n}"
+          },
+          {
+            "text": "`p` — the **selector**, who we style (all `<p>`)\n`{ }` — the styling goes inside\n`color` — the **property**, what we change\n`blue` — the **value**, what we make it\n`;` — at the end of each line"
+          },
+          {
+            "quote": true,
+            "text": "In a selector, the tag has no < >: p, not <p>. A colon goes between property and value. Every line ends with ; — forget it, and the next line may not work."
+          }
         ],
         "check": [
-          { "type": "choice", "topic": "CSS syntax", "prompt": "What is p called in the rule p { color: blue; }?", "options": ["Selector", "Property", "Value", "Attribute"], "answer": 0, "explain": "The selector says who we style." },
-          { "type": "choice", "topic": "CSS syntax", "prompt": "Which one is correct?", "options": ["p { color: red; }", "<p> { color: red; }", "p { color = red; }", "p ( color: red )"], "answer": 0, "explain": "Tag without < >, a colon, a semicolon." }
+          {
+            "type": "choice",
+            "topic": "CSS syntax",
+            "prompt": "What is p called in the rule p { color: blue; }?",
+            "options": [
+              "Selector",
+              "Property",
+              "Value",
+              "Attribute"
+            ],
+            "answer": 0,
+            "explain": "The selector says who we style."
+          },
+          {
+            "type": "choice",
+            "topic": "CSS syntax",
+            "prompt": "Which one is correct?",
+            "options": [
+              "p { color: red; }",
+              "<p> { color: red; }",
+              "p { color = red; }",
+              "p ( color: red )"
+            ],
+            "answer": 0,
+            "explain": "Tag without < >, a colon, a semicolon."
+          }
         ]
       },
       {
         "title": "Properties: width, height, font-size, color",
         "slides": [
-          { "emoji": "📐", "text": "`width` — width, `height` — height, `font-size` — letter size, `color` — text color. **px** (pixel) is the smallest dot on the screen. Colors can be written as a word (`red`) or a code (`#ff0000`).", "code": "p {\n  width: 300px;\n  height: 100px;\n  font-size: 24px;\n  color: green;\n  background-color: yellow;\n}" },
-          { "quote": true, "text": "To see that width and height work, add background-color. Without a background, you can't see the block's edges." }
+          {
+            "emoji": "📐",
+            "text": "`width` — width, `height` — height, `font-size` — letter size, `color` — text color. **px** (pixel) is the smallest dot on the screen. Colors can be written as a word (`red`) or a code (`#ff0000`).",
+            "code": "p {\n  width: 300px;\n  height: 100px;\n  font-size: 24px;\n  color: green;\n  background-color: yellow;\n}"
+          },
+          {
+            "quote": true,
+            "text": "To see that width and height work, add background-color. Without a background, you can't see the block's edges."
+          }
         ],
         "check": [
-          { "type": "input", "topic": "Properties", "prompt": "Which property changes the size of letters?", "answer": ["font-size"], "explain": "font-size is the font size." }
+          {
+            "type": "fill",
+            "topic": "Properties",
+            "prompt": "Which property changes the size of letters?",
+            "text": "p {\n  ___: 24px;\n}",
+            "answer": [
+              "font-size"
+            ],
+            "extra": [
+              "color",
+              "font-family",
+              "background"
+            ],
+            "explain": "font-size is the font size."
+          }
         ]
       },
       {
         "title": "All p at once and why style wins",
         "slides": [
-          { "text": "One rule for all: `p { color: blue; }` changes **all** paragraphs at once, however many there are. But the 5th one has its own style:", "code": "<p>Paragraph 4</p>\n<p style=\"color: red;\">Paragraph 5</p>\n<p>Paragraph 6</p>\n\np { color: blue; }" },
-          { "text": "Result: all paragraphs are **blue**, and the 5th is **red**. The browser's rule: **a more precise and closer instruction wins**. style is written right in the tag and applies only to it." },
-          { "quote": true, "text": "The teacher told the whole class: «Write with a blue pen». Then told one student separately: «You write with a red one». That student follows the personal instruction, because it was said to them specifically." }
+          {
+            "text": "One rule for all: `p { color: blue; }` changes **all** paragraphs at once, however many there are. But the 5th one has its own style:",
+            "code": "<p>Paragraph 4</p>\n<p style=\"color: red;\">Paragraph 5</p>\n<p>Paragraph 6</p>\n\np { color: blue; }"
+          },
+          {
+            "text": "Result: all paragraphs are **blue**, and the 5th is **red**. The browser's rule: **a more precise and closer instruction wins**. style is written right in the tag and applies only to it."
+          },
+          {
+            "quote": true,
+            "text": "The teacher told the whole class: «Write with a blue pen». Then told one student separately: «You write with a red one». That student follows the personal instruction, because it was said to them specifically."
+          }
         ],
         "check": [
-          { "type": "truefalse", "topic": "style and cascade", "prompt": "A style attribute on one paragraph changes the color of all paragraphs.", "answer": false, "explain": "style affects only its own element." }
+          {
+            "type": "truefalse",
+            "topic": "style and cascade",
+            "prompt": "A style attribute on one paragraph changes the color of all paragraphs.",
+            "answer": false,
+            "explain": "style affects only its own element."
+          }
         ]
       }
     ]
   },
   "questions": [
-    { "type": "truefalse", "topic": "Tags", "prompt": "A tag is a command in HTML that tells the browser what goes here.", "answer": true, "explain": "A heading, text, an image, a button and so on." },
-    { "type": "match", "topic": "Tags", "prompt": "Match the tag and what it's for", "pairs": [["<h1>", "The biggest heading"], ["<p>", "A paragraph of text"], ["<a>", "A link"], ["<button>", "A button"]] },
-    { "type": "choice", "topic": "Tags", "prompt": "How is a closing tag different from an opening one?", "options": ["It has /", "It's in capital letters", "It has no < >", "It has #"], "answer": 0, "explain": "<p> is opening, </p> is closing." },
-    { "type": "choice", "topic": "Linking CSS", "prompt": "HTML says WHAT is on the page. What does CSS say?", "options": ["HOW it looks", "How a button works", "Where the server is", "How many pages the site has"], "answer": 0, "explain": "CSS handles appearance: color, size, font." },
-    { "type": "choice", "topic": "Linking CSS", "prompt": "What happens if you remove the <link> tag?", "options": ["Styles stop working", "All the text disappears", "The site turns red", "Nothing changes"], "answer": 0, "explain": "No door — HTML doesn't know about CSS." },
-    { "type": "order", "topic": "Linking CSS", "prompt": "Build the tag that links CSS", "tokens": ["<link", "rel=\"stylesheet\"", "href=\"style.css\">"], "extra": ["<style>", "src=\"style.css\""], "explain": "<link rel=\"stylesheet\" href=\"style.css\">" },
-    { "type": "choice", "topic": "Linking CSS", "prompt": "What does href=\"style.css\" mean?", "options": ["Which file we connect to", "That it's a stylesheet", "The tab name", "The page color"], "answer": 0, "explain": "«It's a stylesheet» is rel=\"stylesheet\"." },
-    { "type": "truefalse", "topic": "Linking CSS", "prompt": "style.css should be in the same folder as index.html.", "answer": true, "explain": "Then writing style.css in href is enough." },
-    { "type": "match", "topic": "CSS syntax", "prompt": "In the rule p { color: blue; } match the part and its name", "pairs": [["p", "Selector"], ["color", "Property"], ["blue", "Value"], [";", "End of line"]] },
-    { "type": "choice", "topic": "CSS syntax", "prompt": "Where is the mistake?", "code": "p {\n  color: red\n  font-size: 20px;\n}", "options": ["No ; after red", "No : after font-size", "The selector must be <p>", "No mistake"], "answer": 0, "explain": "Without ; the next line may not work." },
-    { "type": "choice", "topic": "Properties", "prompt": "What does width: 300px do?", "options": ["Sets the width to 300px", "Sets the height to 300px", "Makes letters 300px", "Moves the block 300px"], "answer": 0, "explain": "width is width, height is height." },
-    { "type": "choice", "topic": "Properties", "prompt": "Why add background-color when testing width and height?", "options": ["To see the block's edges", "width doesn't work without a background", "To make the text bigger", "The browser requires it"], "answer": 0, "explain": "Without a background you can't see that the size changed." },
-    { "type": "input", "topic": "Properties", "prompt": "What is the smallest dot on the screen used for sizes called? (two letters)", "answer": ["px", "pixel"], "explain": "px — pixel." },
-    { "type": "choice", "topic": "style and cascade", "prompt": "What color will the 5th paragraph be?", "code": "<p>Paragraph 4</p>\n<p style=\"color: red;\">Paragraph 5</p>\n<p>Paragraph 6</p>\n\np { color: blue; }", "options": ["Red", "Blue", "Black", "Half blue, half red"], "answer": 0, "explain": "style is right in the tag — a personal instruction beats the general rule." },
-    { "type": "choice", "topic": "style and cascade", "prompt": "CSS isn't working. What do you check first?", "options": ["Is the file saved, is the name in <link> right, are the ; there", "Reinstall the browser", "Buy a new computer", "Delete index.html"], "answer": 0, "explain": "Ctrl + S, the file name in link and semicolons are the most common causes." }
+    {
+      "type": "truefalse",
+      "topic": "Tags",
+      "prompt": "A tag is a command in HTML that tells the browser what goes here.",
+      "answer": true,
+      "explain": "A heading, text, an image, a button and so on."
+    },
+    {
+      "type": "match",
+      "topic": "Tags",
+      "prompt": "Match the tag and what it's for",
+      "pairs": [
+        [
+          "<h1>",
+          "The biggest heading"
+        ],
+        [
+          "<p>",
+          "A paragraph of text"
+        ],
+        [
+          "<a>",
+          "A link"
+        ],
+        [
+          "<button>",
+          "A button"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "Tags",
+      "prompt": "How is a closing tag different from an opening one?",
+      "options": [
+        "It has /",
+        "It's in capital letters",
+        "It has no < >",
+        "It has #"
+      ],
+      "answer": 0,
+      "explain": "<p> is opening, </p> is closing."
+    },
+    {
+      "type": "choice",
+      "topic": "Linking CSS",
+      "prompt": "HTML says WHAT is on the page. What does CSS say?",
+      "options": [
+        "HOW it looks",
+        "How a button works",
+        "Where the server is",
+        "How many pages the site has"
+      ],
+      "answer": 0,
+      "explain": "CSS handles appearance: color, size, font."
+    },
+    {
+      "type": "choice",
+      "topic": "Linking CSS",
+      "prompt": "What happens if you remove the <link> tag?",
+      "options": [
+        "Styles stop working",
+        "All the text disappears",
+        "The site turns red",
+        "Nothing changes"
+      ],
+      "answer": 0,
+      "explain": "No door — HTML doesn't know about CSS."
+    },
+    {
+      "type": "order",
+      "topic": "Linking CSS",
+      "prompt": "Build the tag that links CSS",
+      "tokens": [
+        "<link",
+        "rel=\"stylesheet\"",
+        "href=\"style.css\">"
+      ],
+      "extra": [
+        "<style>",
+        "src=\"style.css\""
+      ],
+      "explain": "<link rel=\"stylesheet\" href=\"style.css\">"
+    },
+    {
+      "type": "choice",
+      "topic": "Linking CSS",
+      "prompt": "What does href=\"style.css\" mean?",
+      "options": [
+        "Which file we connect to",
+        "That it's a stylesheet",
+        "The tab name",
+        "The page color"
+      ],
+      "answer": 0,
+      "explain": "«It's a stylesheet» is rel=\"stylesheet\"."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Linking CSS",
+      "prompt": "style.css should be in the same folder as index.html.",
+      "answer": true,
+      "explain": "Then writing style.css in href is enough."
+    },
+    {
+      "type": "match",
+      "topic": "CSS syntax",
+      "prompt": "In the rule p { color: blue; } match the part and its name",
+      "pairs": [
+        [
+          "p",
+          "Selector"
+        ],
+        [
+          "color",
+          "Property"
+        ],
+        [
+          "blue",
+          "Value"
+        ],
+        [
+          ";",
+          "End of line"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "CSS syntax",
+      "prompt": "Where is the mistake?",
+      "code": "p {\n  color: red\n  font-size: 20px;\n}",
+      "options": [
+        "No ; after red",
+        "No : after font-size",
+        "The selector must be <p>",
+        "No mistake"
+      ],
+      "answer": 0,
+      "explain": "Without ; the next line may not work."
+    },
+    {
+      "type": "choice",
+      "topic": "Properties",
+      "prompt": "What does width: 300px do?",
+      "options": [
+        "Sets the width to 300px",
+        "Sets the height to 300px",
+        "Makes letters 300px",
+        "Moves the block 300px"
+      ],
+      "answer": 0,
+      "explain": "width is width, height is height."
+    },
+    {
+      "type": "choice",
+      "topic": "Properties",
+      "prompt": "Why add background-color when testing width and height?",
+      "options": [
+        "To see the block's edges",
+        "width doesn't work without a background",
+        "To make the text bigger",
+        "The browser requires it"
+      ],
+      "answer": 0,
+      "explain": "Without a background you can't see that the size changed."
+    },
+    {
+      "type": "fill",
+      "topic": "Properties",
+      "prompt": "The smallest dot on the screen is a pixel. Put in its unit.",
+      "text": "width: 200___;",
+      "answer": [
+        "px"
+      ],
+      "extra": [
+        "cm",
+        "mm",
+        "kg"
+      ],
+      "explain": "px — pixel."
+    },
+    {
+      "type": "choice",
+      "topic": "style and cascade",
+      "prompt": "What color will the 5th paragraph be?",
+      "code": "<p>Paragraph 4</p>\n<p style=\"color: red;\">Paragraph 5</p>\n<p>Paragraph 6</p>\n\np { color: blue; }",
+      "options": [
+        "Red",
+        "Blue",
+        "Black",
+        "Half blue, half red"
+      ],
+      "answer": 0,
+      "explain": "style is right in the tag — a personal instruction beats the general rule."
+    },
+    {
+      "type": "choice",
+      "topic": "style and cascade",
+      "prompt": "CSS isn't working. What do you check first?",
+      "options": [
+        "Is the file saved, is the name in <link> right, are the ; there",
+        "Reinstall the browser",
+        "Buy a new computer",
+        "Delete index.html"
+      ],
+      "answer": 0,
+      "explain": "Ctrl + S, the file name in link and semicolons are the most common causes."
+    }
   ]
 }

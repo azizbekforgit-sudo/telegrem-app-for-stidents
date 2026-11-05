@@ -1,5 +1,6 @@
 {
   "id": "lesson-21-fetch",
+  "qrev": 2,
   "order": 21,
   "title": "Урок 21. Fetch API и JSON",
   "emoji": "🌐",
@@ -212,12 +213,17 @@
       "explain": "Запрос → json → вывод → ошибка."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "then и catch",
-      "prompt": "Какой метод превращает ответ в объект JS? (с response., без скобок)",
+      "prompt": "Какой метод превращает ответ в объект JS?",
+      "text": "const data = await response.___();",
       "answer": [
-        "response.json",
         "json"
+      ],
+      "extra": [
+        "text",
+        "parse",
+        "object"
       ],
       "explain": "response.json() превращает ответ в объект."
     },

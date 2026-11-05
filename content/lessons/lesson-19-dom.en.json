@@ -166,11 +166,17 @@
       "explain": "You need querySelectorAll."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "Finding elements",
-      "prompt": "Which method finds ALL elements by selector? (one word)",
+      "prompt": "Which method finds ALL elements by a selector?",
+      "text": "document.___(\".card\");",
       "answer": [
         "querySelectorAll"
+      ],
+      "extra": [
+        "querySelector",
+        "getElementById",
+        "findAll"
       ],
       "explain": "querySelectorAll — all matches."
     },

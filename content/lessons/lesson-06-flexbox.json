@@ -1,5 +1,6 @@
 {
   "id": "lesson-06-flexbox",
+  "qrev": 2,
   "order": 6,
   "title": "Урок 6. Flexbox — основы",
   "emoji": "📐",
@@ -285,11 +286,17 @@
       "explain": "align-items — поперёк главной оси."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "align-items",
-      "prompt": "Какое свойство двигает элементы вдоль главной оси? (одно слово с дефисом)",
+      "prompt": "Какое свойство двигает элементы вдоль главной оси?",
+      "text": ".menu {\n  display: flex;\n  ___: space-between;\n}",
       "answer": [
         "justify-content"
+      ],
+      "extra": [
+        "align-items",
+        "flex-direction",
+        "gap"
       ],
       "explain": "justify — «just along»."
     },

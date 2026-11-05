@@ -230,11 +230,18 @@
       "explain": "So the phone doesn't pretend to be a computer."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "meta viewport",
-      "prompt": "Where is meta viewport written? (the tag without brackets)",
+      "prompt": "Where do you put the meta viewport?",
+      "text": "<___>\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n</___>",
       "answer": [
+        "head",
         "head"
+      ],
+      "extra": [
+        "body",
+        "footer",
+        "main"
       ],
       "explain": "Inside <head>."
     },

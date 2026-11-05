@@ -170,12 +170,18 @@
       "explain": "The browser checks type=\"email\" itself."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "Form tags",
-      "prompt": "Which tag makes the form submit button? (no brackets)",
+      "prompt": "Which tag makes the form submit button?",
+      "text": "<___ type=\"submit\">Send</___>",
       "answer": [
         "button",
-        "<button>"
+        "button"
+      ],
+      "extra": [
+        "input",
+        "form",
+        "label"
       ],
       "explain": "button with type=\"submit\"."
     },

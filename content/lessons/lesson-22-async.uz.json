@@ -223,11 +223,17 @@
       "explain": "Internetsiz so'rov yiqiladi."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "try/catch",
-      "prompt": "try dan keyin xatoni qaysi so'z ushlaydi? (bitta so'z)",
+      "prompt": "try dan keyin xatoni qaysi so'z ushlaydi?",
+      "text": "try {\n  // …\n} ___ (error) {\n  console.log(error);\n}",
       "answer": [
         "catch"
+      ],
+      "extra": [
+        "finally",
+        "else",
+        "error"
       ],
       "explain": "try { } catch (error) { }"
     },

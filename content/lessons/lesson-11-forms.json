@@ -1,5 +1,6 @@
 {
   "id": "lesson-11-forms",
+  "qrev": 2,
   "order": 11,
   "title": "Урок 11. Формы и псевдоклассы",
   "emoji": "📝",
@@ -173,12 +174,18 @@
       "explain": "Браузер сам проверяет type=\"email\"."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "Теги формы",
-      "prompt": "Каким тегом делают кнопку отправки формы? (без скобок)",
+      "prompt": "Каким тегом делают кнопку отправки формы?",
+      "text": "<___ type=\"submit\">Отправить</___>",
       "answer": [
         "button",
-        "<button>"
+        "button"
+      ],
+      "extra": [
+        "input",
+        "form",
+        "label"
       ],
       "explain": "button с type=\"submit\"."
     },

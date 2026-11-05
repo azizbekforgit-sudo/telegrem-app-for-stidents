@@ -268,11 +268,17 @@
       "explain": "That is the default behavior."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "preventDefault",
-      "prompt": "Which method cancels the default action? (no brackets and no e.)",
+      "prompt": "Which method cancels the default action?",
+      "text": "form.addEventListener(\"submit\", (e) => {\n  e.___();\n});",
       "answer": [
         "preventDefault"
+      ],
+      "extra": [
+        "stopPropagation",
+        "submit",
+        "reload"
       ],
       "explain": "e.preventDefault() cancels the default action."
     },

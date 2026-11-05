@@ -7,107 +7,479 @@
       {
         "title": "Arrays and indexes",
         "slides": [
-          { "emoji": "🧺", "text": "One variable holds one value. But what if you need a list of 100 products? You won't create 100 variables! That's what **arrays** are for — a list in square brackets, elements separated by commas." },
-          { "text": "Every element has a number — an **index**:", "code": "const fruits = [\"apple\", \"banana\", \"pear\"];\n//  index:        0         1        2\nconsole.log(fruits[0]); // apple\nconsole.log(fruits[1]); // banana" },
-          { "text": "If there's no such number, JavaScript doesn't complain — it just finds nothing: `fruits[10]` → `undefined`. You can replace an element: `fruits[0] = \"kiwi\";` — `const` forbids replacing the whole array, but you can change what's inside." },
-          { "quote": true, "text": "Indexing starts at ZERO. The first element is [0], not [1]. This is the most common beginner mistake." }
+          {
+            "emoji": "🧺",
+            "text": "One variable holds one value. But what if you need a list of 100 products? You won't create 100 variables! That's what **arrays** are for — a list in square brackets, elements separated by commas."
+          },
+          {
+            "text": "Every element has a number — an **index**:",
+            "code": "const fruits = [\"apple\", \"banana\", \"pear\"];\n//  index:        0         1        2\nconsole.log(fruits[0]); // apple\nconsole.log(fruits[1]); // banana"
+          },
+          {
+            "text": "If there's no such number, JavaScript doesn't complain — it just finds nothing: `fruits[10]` → `undefined`. You can replace an element: `fruits[0] = \"kiwi\";` — `const` forbids replacing the whole array, but you can change what's inside."
+          },
+          {
+            "quote": true,
+            "text": "Indexing starts at ZERO. The first element is [0], not [1]. This is the most common beginner mistake."
+          }
         ],
         "check": [
-          { "type": "choice", "topic": "Indexes and length", "prompt": "What does fruits[1] print if fruits = [\"apple\", \"banana\", \"pear\"]?", "options": ["banana", "apple", "pear", "undefined"], "answer": 0, "explain": "Counting starts at zero: [0] is apple, [1] is banana." },
-          { "type": "truefalse", "topic": "Indexes and length", "prompt": "fruits[10] on a 3-element array throws an error.", "answer": false, "explain": "No error — you get undefined." }
+          {
+            "type": "choice",
+            "topic": "Indexes and length",
+            "prompt": "What does fruits[1] print if fruits = [\"apple\", \"banana\", \"pear\"]?",
+            "options": [
+              "banana",
+              "apple",
+              "pear",
+              "undefined"
+            ],
+            "answer": 0,
+            "explain": "Counting starts at zero: [0] is apple, [1] is banana."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Indexes and length",
+            "prompt": "fruits[10] on a 3-element array throws an error.",
+            "answer": false,
+            "explain": "No error — you get undefined."
+          }
         ]
       },
       {
         "title": ".length — the array's length",
         "slides": [
-          { "emoji": "📏", "text": "`.length` is how many elements the array has. It's written **without parentheses**: it's not an action, just a number.", "code": "console.log(fruits.length); // 3" },
-          { "quote": true, "text": "There are 3 elements, but the last one's index is 2, because counting starts at zero. The last one is always fruits[fruits.length - 1]." }
+          {
+            "emoji": "📏",
+            "text": "`.length` is how many elements the array has. It's written **without parentheses**: it's not an action, just a number.",
+            "code": "console.log(fruits.length); // 3"
+          },
+          {
+            "quote": true,
+            "text": "There are 3 elements, but the last one's index is 2, because counting starts at zero. The last one is always fruits[fruits.length - 1]."
+          }
         ],
         "check": [
-          { "type": "input", "topic": "Indexes and length", "prompt": "An array has 5 elements. What is the index of the last one?", "answer": ["4"], "explain": "length - 1 = 4." }
+          {
+            "type": "fill",
+            "topic": "Indexes and length",
+            "prompt": "An array has 5 items. What is the index of the last one?",
+            "text": "const arr = [10, 20, 30, 40, 50];\nconsole.log(arr[___]); // 50",
+            "answer": [
+              "4"
+            ],
+            "extra": [
+              "5",
+              "3",
+              "0"
+            ],
+            "explain": "length - 1 = 4."
+          }
         ]
       },
       {
         "title": ".push() and .pop()",
         "slides": [
-          { "emoji": "🛒", "text": "`push` pushes to the end, like putting a product in a cart. `pop` takes out the last one. **Both change the array itself.**", "code": "const fruits = [\"apple\", \"banana\", \"pear\"];\nfruits.push(\"kiwi\");\n// [\"apple\", \"banana\", \"pear\", \"kiwi\"] — length 4\nfruits.pop();\n// [\"apple\", \"banana\", \"pear\"] — length 3" },
-          { "text": "Bonus: `pop()` also **returns** what it removed:", "code": "const last = fruits.pop();\nconsole.log(last); // pear" }
+          {
+            "emoji": "🛒",
+            "text": "`push` pushes to the end, like putting a product in a cart. `pop` takes out the last one. **Both change the array itself.**",
+            "code": "const fruits = [\"apple\", \"banana\", \"pear\"];\nfruits.push(\"kiwi\");\n// [\"apple\", \"banana\", \"pear\", \"kiwi\"] — length 4\nfruits.pop();\n// [\"apple\", \"banana\", \"pear\"] — length 3"
+          },
+          {
+            "text": "Bonus: `pop()` also **returns** what it removed:",
+            "code": "const last = fruits.pop();\nconsole.log(last); // pear"
+          }
         ],
         "check": [
-          { "type": "choice", "topic": "push and pop", "prompt": "Which method adds an element to the end of an array?", "options": ["push", "pop", "length", "find"], "answer": 0, "explain": "push pushes to the end." }
+          {
+            "type": "choice",
+            "topic": "push and pop",
+            "prompt": "Which method adds an element to the end of an array?",
+            "options": [
+              "push",
+              "pop",
+              "length",
+              "find"
+            ],
+            "answer": 0,
+            "explain": "push pushes to the end."
+          }
         ]
       },
       {
         "title": ".forEach() — for each one",
         "slides": [
-          { "emoji": "🔁", "text": "`forEach` means «for each». We give it a function, and it calls it for every element in turn. Arrow functions come in handy here!", "code": "fruits.forEach((fruit) => {\n  console.log(fruit);\n});\n// apple\n// banana\n// pear" },
-          { "text": "`fruit` is a parameter: each round it holds the next fruit. You can name it anything. It's the same as `for...of` from lesson 15, just as an array method." },
-          { "text": "The second parameter is the **index**:", "code": "fruits.forEach((fruit, index) => {\n  console.log(index, fruit);\n});\n// 0 apple\n// 1 banana\n// 2 pear" }
+          {
+            "emoji": "🔁",
+            "text": "`forEach` means «for each». We give it a function, and it calls it for every element in turn. Arrow functions come in handy here!",
+            "code": "fruits.forEach((fruit) => {\n  console.log(fruit);\n});\n// apple\n// banana\n// pear"
+          },
+          {
+            "text": "`fruit` is a parameter: each round it holds the next fruit. You can name it anything. It's the same as `for...of` from lesson 15, just as an array method."
+          },
+          {
+            "text": "The second parameter is the **index**:",
+            "code": "fruits.forEach((fruit, index) => {\n  console.log(index, fruit);\n});\n// 0 apple\n// 1 banana\n// 2 pear"
+          }
         ],
         "check": [
-          { "type": "choice", "topic": "forEach and map", "prompt": "What goes into the second parameter of forEach((fruit, index) => …)?", "options": ["The element's number (index)", "The array's length", "The next element", "The whole array"], "answer": 0, "explain": "The second parameter is the index, starting at zero." }
+          {
+            "type": "choice",
+            "topic": "forEach and map",
+            "prompt": "What goes into the second parameter of forEach((fruit, index) => …)?",
+            "options": [
+              "The element's number (index)",
+              "The array's length",
+              "The next element",
+              "The whole array"
+            ],
+            "answer": 0,
+            "explain": "The second parameter is the index, starting at zero."
+          }
         ]
       },
       {
         "title": ".map() — a new array",
         "slides": [
-          { "emoji": "🏷️", "text": "`map` applies an action to every element and collects the results into a **NEW** array. The old one doesn't change. Prices with a 10% discount:", "code": "const prices = [1000, 2500, 500];\nconst salePrices = prices.map((price) => price * 0.9);\n\nconsole.log(prices);     // [1000, 2500, 500]\nconsole.log(salePrices); // [900, 2250, 450]" },
-          { "text": "Proof of the difference: `forEach` returns nothing.", "code": "const x = prices.forEach((p) => p * 0.9);\nconsole.log(x); // undefined" },
-          { "quote": true, "text": "forEach — does. map — does and gives back a new array." }
+          {
+            "emoji": "🏷️",
+            "text": "`map` applies an action to every element and collects the results into a **NEW** array. The old one doesn't change. Prices with a 10% discount:",
+            "code": "const prices = [1000, 2500, 500];\nconst salePrices = prices.map((price) => price * 0.9);\n\nconsole.log(prices);     // [1000, 2500, 500]\nconsole.log(salePrices); // [900, 2250, 450]"
+          },
+          {
+            "text": "Proof of the difference: `forEach` returns nothing.",
+            "code": "const x = prices.forEach((p) => p * 0.9);\nconsole.log(x); // undefined"
+          },
+          {
+            "quote": true,
+            "text": "forEach — does. map — does and gives back a new array."
+          }
         ],
         "check": [
-          { "type": "truefalse", "topic": "forEach and map", "prompt": "After prices.map(...) the old prices array changes.", "answer": false, "explain": "map creates a new array, the old one stays the same." }
+          {
+            "type": "truefalse",
+            "topic": "forEach and map",
+            "prompt": "After prices.map(...) the old prices array changes.",
+            "answer": false,
+            "explain": "map creates a new array, the old one stays the same."
+          }
         ]
       },
       {
         "title": ".filter() — like a sieve",
         "slides": [
-          { "emoji": "🥅", "text": "`filter` is like a sieve: it lets through only the elements for which the condition is **true**. It also returns a new array.", "code": "function isEven(number) {\n  return number % 2 === 0;\n}\n\nconst numbers = [1, 2, 3, 4, 5, 6];\nconst evens = numbers.filter((n) => isEven(n));\nconsole.log(evens); // [2, 4, 6]" },
-          { "text": "Remember `isEven` from the homework? It returns true or false — exactly what filter needs. You can even pass it by name: `numbers.filter(isEven)`." }
+          {
+            "emoji": "🥅",
+            "text": "`filter` is like a sieve: it lets through only the elements for which the condition is **true**. It also returns a new array.",
+            "code": "function isEven(number) {\n  return number % 2 === 0;\n}\n\nconst numbers = [1, 2, 3, 4, 5, 6];\nconst evens = numbers.filter((n) => isEven(n));\nconsole.log(evens); // [2, 4, 6]"
+          },
+          {
+            "text": "Remember `isEven` from the homework? It returns true or false — exactly what filter needs. You can even pass it by name: `numbers.filter(isEven)`."
+          }
         ],
         "check": [
-          { "type": "choice", "topic": "filter and find", "prompt": "What does [1, 2, 3, 4].filter((n) => n > 2) return?", "options": ["[3, 4]", "[1, 2]", "3", "true"], "answer": 0, "explain": "Only elements greater than 2 remain." }
+          {
+            "type": "choice",
+            "topic": "filter and find",
+            "prompt": "What does [1, 2, 3, 4].filter((n) => n > 2) return?",
+            "options": [
+              "[3, 4]",
+              "[1, 2]",
+              "3",
+              "true"
+            ],
+            "answer": 0,
+            "explain": "Only elements greater than 2 remain."
+          }
         ]
       },
       {
         "title": ".find() — the first match",
         "slides": [
-          { "emoji": "🔎", "text": "`find` looks for the **first** element matching a condition and returns **the element itself**, not an array. If nothing is found — `undefined`.", "code": "const products = [\n  { name: \"Phone\", price: 3000 },\n  { name: \"Headphones\", price: 800 },\n];\nconst found = products.find((p) => p.name === \"Headphones\");\nconsole.log(found.price); // 800" },
-          { "text": "Summary:\n`forEach` — does something for each, returns **nothing**\n`map` — changes each, **a new array of the same length**\n`filter` — keeps the matches, **a new array** (may be shorter)\n`find` — finds the first, **one element or undefined**" }
+          {
+            "emoji": "🔎",
+            "text": "`find` looks for the **first** element matching a condition and returns **the element itself**, not an array. If nothing is found — `undefined`.",
+            "code": "const products = [\n  { name: \"Phone\", price: 3000 },\n  { name: \"Headphones\", price: 800 },\n];\nconst found = products.find((p) => p.name === \"Headphones\");\nconsole.log(found.price); // 800"
+          },
+          {
+            "text": "Summary:\n`forEach` — does something for each, returns **nothing**\n`map` — changes each, **a new array of the same length**\n`filter` — keeps the matches, **a new array** (may be shorter)\n`find` — finds the first, **one element or undefined**"
+          }
         ],
         "check": [
-          { "type": "choice", "topic": "filter and find", "prompt": "What does find return if nothing is found?", "options": ["undefined", "[]", "0", "An error"], "answer": 0, "explain": "find returns undefined, while filter would return []." }
+          {
+            "type": "choice",
+            "topic": "filter and find",
+            "prompt": "What does find return if nothing is found?",
+            "options": [
+              "undefined",
+              "[]",
+              "0",
+              "An error"
+            ],
+            "answer": 0,
+            "explain": "find returns undefined, while filter would return []."
+          }
         ]
       },
       {
         "title": "Practice: a cart and homework",
         "slides": [
-          { "emoji": "🧾", "text": "We count the cart total. `total` is a wallet, empty at first; each round we put a price into it. It's `let` because the value changes.", "code": "const prices = [500, 1200, 300, 2500, 800, 1500];\nlet total = 0;\nfor (const price of prices) {\n  total = total + price;\n}\nconsole.log(`Total: ${total}`); // Total: 6800" },
-          { "text": "Only those over 1000 — with filter:", "code": "const expensive = prices.filter((price) => price > 1000);\nconsole.log(expensive); // [1200, 2500, 1500]" },
-          { "emoji": "🏠", "text": "Homework: an array of 5–6 favorite movies or games, printed with forEach in the format «1. Title». Hint: the index starts at zero, but you need to start at one." },
-          { "quote": true, "text": "The index starts at zero, and map and filter return a new array." }
+          {
+            "emoji": "🧾",
+            "text": "We count the cart total. `total` is a wallet, empty at first; each round we put a price into it. It's `let` because the value changes.",
+            "code": "const prices = [500, 1200, 300, 2500, 800, 1500];\nlet total = 0;\nfor (const price of prices) {\n  total = total + price;\n}\nconsole.log(`Total: ${total}`); // Total: 6800"
+          },
+          {
+            "text": "Only those over 1000 — with filter:",
+            "code": "const expensive = prices.filter((price) => price > 1000);\nconsole.log(expensive); // [1200, 2500, 1500]"
+          },
+          {
+            "emoji": "🏠",
+            "text": "Homework: an array of 5–6 favorite movies or games, printed with forEach in the format «1. Title». Hint: the index starts at zero, but you need to start at one."
+          },
+          {
+            "quote": true,
+            "text": "The index starts at zero, and map and filter return a new array."
+          }
         ],
         "check": [
-          { "type": "choice", "topic": "Practice", "prompt": "In the homework the numbering started at «0.». What was forgotten?", "options": ["Adding 1 to index", "Writing push", "Using length", "Removing forEach"], "answer": 0, "explain": "You need ${index + 1}." }
+          {
+            "type": "choice",
+            "topic": "Practice",
+            "prompt": "In the homework the numbering started at «0.». What was forgotten?",
+            "options": [
+              "Adding 1 to index",
+              "Writing push",
+              "Using length",
+              "Removing forEach"
+            ],
+            "answer": 0,
+            "explain": "You need ${index + 1}."
+          }
         ]
       }
     ]
   },
   "questions": [
-    { "type": "truefalse", "topic": "Indexes and length", "prompt": "The first element of an array is fruits[0].", "answer": true, "explain": "Indexing starts at zero." },
-    { "type": "choice", "topic": "Indexes and length", "prompt": "What will the console show?", "code": "const fruits = [\"apple\", \"banana\", \"pear\"];\nconsole.log(fruits[2]);", "options": ["pear", "banana", "apple", "undefined"], "answer": 0, "explain": "[0] is apple, [1] is banana, [2] is pear." },
-    { "type": "input", "topic": "Indexes and length", "prompt": "What does fruits[10] print on a 3-element array?", "answer": ["undefined"], "explain": "There's no such index — undefined." },
-    { "type": "choice", "topic": "Indexes and length", "prompt": "How do you get the last element of any array?", "options": ["arr[arr.length - 1]", "arr[arr.length]", "arr[last]", "arr.length"], "answer": 0, "explain": "Counting starts at zero, so the last index is length - 1." },
-    { "type": "choice", "topic": "push and pop", "prompt": "What does console.log(fruits.length) print?", "code": "const fruits = [\"apple\", \"banana\", \"pear\"];\nfruits.push(\"kiwi\");\nconsole.log(fruits.length);", "options": ["4", "3", "5", "kiwi"], "answer": 0, "explain": "push added an element: it was 3, now it's 4." },
-    { "type": "choice", "topic": "push and pop", "prompt": "What will the variable last hold?", "code": "const fruits = [\"apple\", \"banana\", \"pear\"];\nconst last = fruits.pop();", "options": ["pear", "apple", "undefined", "2"], "answer": 0, "explain": "pop removes the last element and returns it." },
-    { "type": "match", "topic": "push and pop", "prompt": "Match the method and what it does", "pairs": [["push", "Add to the end"], ["pop", "Remove the last one"], ["length", "How many elements"]] },
-    { "type": "choice", "topic": "forEach and map", "prompt": "What will the console show?", "code": "const prices = [1000, 2500, 500];\nconst sale = prices.map((p) => p * 0.9);\nconsole.log(sale);", "options": ["[900, 2250, 450]", "[1000, 2500, 500]", "undefined", "3"], "answer": 0, "explain": "map applied a 10% discount to each price." },
-    { "type": "input", "topic": "forEach and map", "prompt": "What does console.log(x) print?", "code": "const x = [1, 2, 3].forEach((n) => n * 2);\nconsole.log(x);", "answer": ["undefined"], "explain": "forEach returns nothing." },
-    { "type": "choice", "topic": "forEach and map", "prompt": "What will this code print?", "code": "[\"a\", \"b\"].forEach((item, index) => {\n  console.log(index, item);\n});", "options": ["0 a and 1 b", "1 a and 2 b", "a 0 and b 1", "Error"], "answer": 0, "explain": "The second parameter is the index, starting at zero." },
-    { "type": "choice", "topic": "filter and find", "prompt": "What will the console show?", "code": "const numbers = [1, 2, 3, 4, 5, 6];\nconsole.log(numbers.filter((n) => n % 2 === 0));", "options": ["[2, 4, 6]", "[1, 3, 5]", "2", "true"], "answer": 0, "explain": "filter kept only the even numbers." },
-    { "type": "choice", "topic": "filter and find", "prompt": "What will the console show?", "code": "const products = [\n  { name: \"Phone\", price: 3000 },\n  { name: \"Headphones\", price: 800 },\n];\nconst found = products.find((p) => p.name === \"Headphones\");\nconsole.log(found.price);", "options": ["800", "3000", "undefined", "Headphones"], "answer": 0, "explain": "find returned the headphones object, its price is 800." },
-    { "type": "match", "topic": "filter and find", "prompt": "Match the method and what it returns", "pairs": [["forEach", "Nothing"], ["map", "A new array of the same length"], ["filter", "A new array, maybe shorter"], ["find", "One element or undefined"]] },
-    { "type": "choice", "topic": "Practice", "prompt": "What is total?", "code": "const prices = [500, 1200, 300];\nlet total = 0;\nfor (const price of prices) {\n  total = total + price;\n}\nconsole.log(total);", "options": ["2000", "500", "300", "0"], "answer": 0, "explain": "500 + 1200 + 300 = 2000." },
-    { "type": "order", "topic": "Practice", "prompt": "Build the output of a movie numbered from one", "code": "movies.forEach((movie, index) => {\n  console.log( ... );\n});", "tokens": ["`${index + 1}.", "${movie}`"], "extra": ["${index}.", "push"], "explain": "`${index + 1}. ${movie}` — numbering from one." }
+    {
+      "type": "truefalse",
+      "topic": "Indexes and length",
+      "prompt": "The first element of an array is fruits[0].",
+      "answer": true,
+      "explain": "Indexing starts at zero."
+    },
+    {
+      "type": "choice",
+      "topic": "Indexes and length",
+      "prompt": "What will the console show?",
+      "code": "const fruits = [\"apple\", \"banana\", \"pear\"];\nconsole.log(fruits[2]);",
+      "options": [
+        "pear",
+        "banana",
+        "apple",
+        "undefined"
+      ],
+      "answer": 0,
+      "explain": "[0] is apple, [1] is banana, [2] is pear."
+    },
+    {
+      "type": "fill",
+      "topic": "Indexes and length",
+      "prompt": "What does fruits[10] print on a 3-element array?",
+      "text": "const fruits = [\"🍎\", \"🍌\", \"🍐\"];\nconsole.log(fruits[10]); // ___",
+      "answer": [
+        "undefined"
+      ],
+      "extra": [
+        "null",
+        "\"🍐\"",
+        "Error"
+      ],
+      "explain": "There's no such index — undefined."
+    },
+    {
+      "type": "choice",
+      "topic": "Indexes and length",
+      "prompt": "How do you get the last element of any array?",
+      "options": [
+        "arr[arr.length - 1]",
+        "arr[arr.length]",
+        "arr[last]",
+        "arr.length"
+      ],
+      "answer": 0,
+      "explain": "Counting starts at zero, so the last index is length - 1."
+    },
+    {
+      "type": "choice",
+      "topic": "push and pop",
+      "prompt": "What does console.log(fruits.length) print?",
+      "code": "const fruits = [\"apple\", \"banana\", \"pear\"];\nfruits.push(\"kiwi\");\nconsole.log(fruits.length);",
+      "options": [
+        "4",
+        "3",
+        "5",
+        "kiwi"
+      ],
+      "answer": 0,
+      "explain": "push added an element: it was 3, now it's 4."
+    },
+    {
+      "type": "choice",
+      "topic": "push and pop",
+      "prompt": "What will the variable last hold?",
+      "code": "const fruits = [\"apple\", \"banana\", \"pear\"];\nconst last = fruits.pop();",
+      "options": [
+        "pear",
+        "apple",
+        "undefined",
+        "2"
+      ],
+      "answer": 0,
+      "explain": "pop removes the last element and returns it."
+    },
+    {
+      "type": "match",
+      "topic": "push and pop",
+      "prompt": "Match the method and what it does",
+      "pairs": [
+        [
+          "push",
+          "Add to the end"
+        ],
+        [
+          "pop",
+          "Remove the last one"
+        ],
+        [
+          "length",
+          "How many elements"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "forEach and map",
+      "prompt": "What will the console show?",
+      "code": "const prices = [1000, 2500, 500];\nconst sale = prices.map((p) => p * 0.9);\nconsole.log(sale);",
+      "options": [
+        "[900, 2250, 450]",
+        "[1000, 2500, 500]",
+        "undefined",
+        "3"
+      ],
+      "answer": 0,
+      "explain": "map applied a 10% discount to each price."
+    },
+    {
+      "type": "fill",
+      "topic": "forEach and map",
+      "prompt": "What will the console print? Put in the answer.",
+      "text": "The console prints: ___",
+      "answer": [
+        "undefined"
+      ],
+      "extra": [
+        "[2, 4, 6]",
+        "[1, 2, 3]",
+        "null"
+      ],
+      "code": "const x = [1, 2, 3].forEach((n) => n * 2);\nconsole.log(x);",
+      "explain": "forEach returns nothing."
+    },
+    {
+      "type": "choice",
+      "topic": "forEach and map",
+      "prompt": "What will this code print?",
+      "code": "[\"a\", \"b\"].forEach((item, index) => {\n  console.log(index, item);\n});",
+      "options": [
+        "0 a and 1 b",
+        "1 a and 2 b",
+        "a 0 and b 1",
+        "Error"
+      ],
+      "answer": 0,
+      "explain": "The second parameter is the index, starting at zero."
+    },
+    {
+      "type": "choice",
+      "topic": "filter and find",
+      "prompt": "What will the console show?",
+      "code": "const numbers = [1, 2, 3, 4, 5, 6];\nconsole.log(numbers.filter((n) => n % 2 === 0));",
+      "options": [
+        "[2, 4, 6]",
+        "[1, 3, 5]",
+        "2",
+        "true"
+      ],
+      "answer": 0,
+      "explain": "filter kept only the even numbers."
+    },
+    {
+      "type": "choice",
+      "topic": "filter and find",
+      "prompt": "What will the console show?",
+      "code": "const products = [\n  { name: \"Phone\", price: 3000 },\n  { name: \"Headphones\", price: 800 },\n];\nconst found = products.find((p) => p.name === \"Headphones\");\nconsole.log(found.price);",
+      "options": [
+        "800",
+        "3000",
+        "undefined",
+        "Headphones"
+      ],
+      "answer": 0,
+      "explain": "find returned the headphones object, its price is 800."
+    },
+    {
+      "type": "match",
+      "topic": "filter and find",
+      "prompt": "Match the method and what it returns",
+      "pairs": [
+        [
+          "forEach",
+          "Nothing"
+        ],
+        [
+          "map",
+          "A new array of the same length"
+        ],
+        [
+          "filter",
+          "A new array, maybe shorter"
+        ],
+        [
+          "find",
+          "One element or undefined"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "Practice",
+      "prompt": "What is total?",
+      "code": "const prices = [500, 1200, 300];\nlet total = 0;\nfor (const price of prices) {\n  total = total + price;\n}\nconsole.log(total);",
+      "options": [
+        "2000",
+        "500",
+        "300",
+        "0"
+      ],
+      "answer": 0,
+      "explain": "500 + 1200 + 300 = 2000."
+    },
+    {
+      "type": "order",
+      "topic": "Practice",
+      "prompt": "Build the output of a movie numbered from one",
+      "code": "movies.forEach((movie, index) => {\n  console.log( ... );\n});",
+      "tokens": [
+        "`${index + 1}.",
+        "${movie}`"
+      ],
+      "extra": [
+        "${index}.",
+        "push"
+      ],
+      "explain": "`${index + 1}. ${movie}` — numbering from one."
+    }
   ]
 }

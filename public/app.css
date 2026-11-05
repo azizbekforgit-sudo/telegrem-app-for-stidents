@@ -292,6 +292,11 @@ pre.code .k { color: #ff8fd0; } pre.code .s { color: #a5f08a; } pre.code .n { co
 .answer-line { min-height: 64px; display: flex; flex-wrap: wrap; gap: 8px; padding: 8px 0; align-content: flex-start; margin-bottom: 24px; border-bottom: 2px dashed var(--line); }
 .bank { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
 .chip-w { font-variant-ligatures: none; padding: 10px 14px; border: 2px solid var(--line); border-radius: 14px; box-shadow: 0 4px 0 var(--line); font-weight: 800; font-size: 16px; background: var(--card); font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; }
+.fill-text { font-size: 19px; font-weight: 700; line-height: 2.3; white-space: pre-wrap; margin-bottom: 22px; padding: 6px 2px; }
+.fill-text.mono { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; font-size: 15px; line-height: 2.4; background: var(--track); border-radius: 16px; padding: 12px 14px; }
+.fill-text .gap { display: inline-block; min-width: 70px; height: 34px; vertical-align: middle; margin: 0 3px; border-radius: 10px; border: 2px dashed var(--line); background: var(--card); }
+.fill-text .gap.next { border-color: var(--accent); }
+.fill-text .chip-w.gap-on { padding: 4px 10px; font-size: 15px; vertical-align: middle; margin: 0 3px; border-color: var(--accent); box-shadow: 0 3px 0 var(--accent-d); }
 .chip-w.ghost { background: var(--track); border-color: var(--track); box-shadow: none; color: transparent; }
 .match { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .match .col { display: grid; gap: 10px; align-content: start; }

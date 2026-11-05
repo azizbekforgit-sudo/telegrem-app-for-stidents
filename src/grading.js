@@ -2,13 +2,23 @@
 //
 //   choice    { prompt, options: [..], answer: <индекс> }
 //   truefalse { prompt, answer: true|false }
-//   input     { prompt, answer: ["вариант", "другой вариант"] }   — ввод с клавиатуры
+//   input     { prompt, answer: ["вариант", "другой вариант"] }   — ввод с клавиатуры (больше не используем)
+//   fill      { prompt, text: "… ___ …", answer: ["для 1-го пропуска", …], extra: [..лишние плитки..] } — вставить плитки в пропуски
 //   order     { prompt, tokens: [..в правильном порядке..], extra: [..лишние..] }
 //   match     { prompt, pairs: [[левое, правое], ...] }
 //
 // У любого вопроса может быть topic (тема для радар-диаграммы), explain (пояснение) и hint.
 
-export const QUESTION_TYPES = ['choice', 'truefalse', 'input', 'order', 'match'];
+export const QUESTION_TYPES = ['choice', 'truefalse', 'input', 'order', 'match', 'fill'];
+
+// Сколько пропусков ___ в тексте вопроса fill
+export function gapCount(text) {
+  return (String(text || '').match(/___/g) || []).length;
+}
+function fillText(text, words) {
+  let k = 0;
+  return String(text).replace(/___/g, () => words[k++] ?? '___');
+}
 
 export function normalize(s) {
   return String(s ?? '')
@@ -54,6 +64,8 @@ export function publicQuestion(q, seedKey) {
       return { ...base, placeholder: q.placeholder || 'Введи ответ' };
     case 'order':
       return { ...base, bank: shuffle([...q.tokens, ...(q.extra || [])], seed) };
+    case 'fill':
+      return { ...base, text: q.text, bank: shuffle([...q.answer, ...(q.extra || [])], seed) };
     case 'match':
       return { ...base, left: q.pairs.map((p) => p[0]), right: shuffle(q.pairs.map((p) => p[1]), seed) };
     default:
@@ -75,6 +87,12 @@ export function checkAnswer(q, answer) {
     case 'order': {
       const got = Array.isArray(answer) ? answer.map(normalize).join(' ') : '';
       return { correct: got === q.tokens.map(normalize).join(' '), correctText: q.tokens.join(' ') };
+    }
+    case 'fill': {
+      // answer: ["плитка в 1-м пропуске", …]
+      const got = Array.isArray(answer) ? answer : [];
+      const ok = q.answer.length === got.length && q.answer.every((w, i) => normalize(w) === normalize(got[i]));
+      return { correct: ok, correctText: q.answer.length === 1 ? q.answer[0] : fillText(q.text, q.answer).replace(/\s*\n\s*/g, ' ') };
     }
     case 'match': {
       // answer: { "<индекс левого>": "<текст правого>" }
@@ -100,6 +118,7 @@ export function validateTranslation(base, t) {
       if (q.type === 'choice' && (q.options?.length !== o.options?.length || q.answer !== o.answer)) errs.push(`${where} ${i + 1}: options/answer не совпадают`);
       if (q.type === 'truefalse' && q.answer !== o.answer) errs.push(`${where} ${i + 1}: answer не совпадает`);
       if (q.type === 'match' && q.pairs?.length !== o.pairs?.length) errs.push(`${where} ${i + 1}: другое число пар`);
+      if (q.type === 'fill' && (q.answer?.length !== o.answer?.length || gapCount(o.text) !== o.answer?.length)) errs.push(`${where} ${i + 1}: пропуски не совпадают`);
     });
   };
   same(base.questions, t.questions, 'вопрос');
@@ -125,6 +144,7 @@ export function validateLesson(l) {
     if (q.type === 'input' && !q.answer) errs.push(`${p}: нет answer`);
     if (q.type === 'order' && (!Array.isArray(q.tokens) || q.tokens.length < 2)) errs.push(`${p}: tokens`);
     if (q.type === 'match' && (!Array.isArray(q.pairs) || q.pairs.length < 2)) errs.push(`${p}: pairs`);
+    if (q.type === 'fill' && (!Array.isArray(q.answer) || !q.answer.length || gapCount(q.text) !== q.answer.length)) errs.push(`${p}: в text должно быть столько ___, сколько слов в answer`);
   };
   (l.questions || []).forEach((q, i) => checkQ(q, `вопрос ${i + 1}`));
   if (l.learn) {

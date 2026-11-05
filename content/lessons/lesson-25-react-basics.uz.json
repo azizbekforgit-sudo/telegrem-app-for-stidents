@@ -253,11 +253,17 @@
       "explain": "Teg atributlari kabi."
     },
     {
-      "type": "input",
+      "type": "fill",
       "topic": "Props",
-      "prompt": "{ title, price } dagi destrukturizatsiya qaysi darsdan? (raqam)",
+      "prompt": "{ title, price } destrukturizatsiyasini qaysi darsdan bilamiz?",
+      "text": "___-dars",
       "answer": [
         "18"
+      ],
+      "extra": [
+        "17",
+        "13",
+        "25"
       ],
       "explain": "Destrukturizatsiya — 18-dars."
     },
