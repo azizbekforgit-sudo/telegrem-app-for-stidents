@@ -19,7 +19,7 @@ export const MASCOTS = {
   hog: { name: 'Шустрик', about: 'Быстрый ёжик. Решает на ходу и не ждёт никого', color: '#1bb5a2' },
   bot: { name: 'Бит', about: 'Робот-помощник. Проверяет ответы быстрее калькулятора', color: '#5b8def' },
   ugo: { name: 'Уголёк', about: 'Чёрный котик. Замечает ошибки даже в темноте', color: '#ff9a1f' },
-  plu: { name: 'Плюх', about: 'Акулёнок-моряк. Ныряет в задачу и всплывает с ответом', color: '#2a9fba' },
+  plu: { name: 'Шарки', about: 'Акулёнок-программист. Ныряет в код и всплывает с ответом', color: '#2a9fba' },
 };
 
 let uid = 0;
@@ -415,8 +415,8 @@ BODIES.bot = function bot(id) {
   return { pal: { blush: '#ff6fa8', tongue: '#ff6fa8' }, back: antenna + ears + feet, body: body + shine(64, 52, 16, 7) + screen + lights, f, a, fill: '#e8f1fb', st, b: { cx: 100, top: 30 } };
 };
 
-// Плюх — свой акулёнок в плоском «стикерном» стиле: толстый тёмный контур, ровные пастельные цвета, без бликов.
-// Свои детали: плавник на макушке, жабры, хвостик, красный морской платочек, пузырьки.
+// Шарки — свой акулёнок-программист в плоском «стикерном» стиле: толстый тёмный контур, ровные пастельные цвета.
+// Свои детали: плавник на макушке, жабры, хвостик, наушники на шее с огоньком, значок </> на пузике, пузырьки.
 BODIES.plu = function plu(id) {
   const st = '#26303f';
   const W = 5.5;
@@ -428,8 +428,12 @@ BODIES.plu = function plu(id) {
   const body = `<path d="M100 44 C150 44 170 74 170 114 C170 156 142 178 100 178 C58 178 30 156 30 114 C30 74 50 44 100 44Z" fill="${fill}" stroke="${st}" stroke-width="${W}"/>`;
   const belly = `<path d="M54 140 C66 126 134 126 146 140 C146 160 128 172 100 172 C72 172 54 160 54 140Z" fill="#ffffff"/>`;
   const gills = [0, 1, 2].map((i) => `<path d="M${150 - i * 7} ${98 + i * 2} q4 9 0 18" stroke="${st}" stroke-width="3.4" fill="none" stroke-linecap="round"/>`).join('');
-  const scarf = `<path d="M62 132 Q100 146 138 132 L132 143 Q100 157 68 143 Z" fill="#ff6b6b" stroke="${st}" stroke-width="4" stroke-linejoin="round"/>
-    <path d="M91 147 L100 168 L110 147 Z" fill="#ff6b6b" stroke="${st}" stroke-width="4" stroke-linejoin="round"/>`;
+  // наушники на шее и значок </> на пузике
+  const scarf = `<path d="M60 128 Q100 150 140 128" stroke="${st}" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M60 128 Q100 150 140 128" stroke="#3c4658" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <rect x="48" y="118" width="20" height="26" rx="9" fill="#3c4658" stroke="${st}" stroke-width="4"/><circle cx="58" cy="131" r="3.4" fill="#5df2b0"/>
+    <rect x="132" y="118" width="20" height="26" rx="9" fill="#3c4658" stroke="${st}" stroke-width="4"/><circle cx="142" cy="131" r="3.4" fill="#5df2b0"/>
+    <g transform="translate(100 160)" stroke="${st}" stroke-width="3.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M-12 -6 L-18 0 L-12 6"/><path d="M12 -6 L18 0 L12 6"/><path d="M3 -8 L-3 8"/></g>`;
   const bubbles = `<g class="fx-float" stroke="${st}" stroke-width="3" fill="#dff6fb"><circle cx="40" cy="44" r="7.5"/><circle cx="27" cy="25" r="4.8"/><circle cx="46" cy="14" r="3.2"/></g>`;
   const feet = `<ellipse cx="76" cy="180" rx="16" ry="9" fill="${dark}" stroke="${st}" stroke-width="${W}"/><ellipse cx="124" cy="180" rx="16" ry="9" fill="${dark}" stroke="${st}" stroke-width="${W}"/>`;
   const f = { x: 100, y: 98, ex: 30, ey: 96, my: 120, s: 0.95, blurId: id + 'k', idleMouth: 'smile', ink: st };
