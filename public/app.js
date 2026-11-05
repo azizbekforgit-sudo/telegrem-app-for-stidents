@@ -794,7 +794,7 @@ function loseShow(el) {
     const m = document.createElement('div');
     m.className = 'lose-m';
     at(2700, () => {
-      m.innerHTML = `<div class="lose-say" data-noi18n></div><div class="lose-body">${me('talk', 150)}</div>`;
+      m.innerHTML = `<div class="lose-say" data-noi18n></div><div class="lose-body">${me('angry', 150)}</div>`;
       stage.appendChild(m);
     });
     at(3200, () => speak($('.lose-say', m), 'Ну я же тебе говорил…', $('.lose-body .mascot', m)));

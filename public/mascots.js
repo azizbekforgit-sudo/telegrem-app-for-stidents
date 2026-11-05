@@ -16,7 +16,6 @@ export const MASCOTS = {
   ano: { name: 'Ано', about: 'Хакер в маске. Взламывает любые задачи — честно', color: '#2b2a33' },
   zip: { name: 'Зип', about: 'Супербыстрый. Решает тесты быстрее молнии', color: '#e8322f' },
   fox: { name: 'Рыжик', about: 'Хитрый лис в галстуке. Находит подвох в любом вопросе', color: '#f07b2a' },
-  hog: { name: 'Шустрик', about: 'Быстрый ёжик. Решает на ходу и не ждёт никого', color: '#1bb5a2' },
   bot: { name: 'Бит', about: 'Робот-помощник. Проверяет ответы быстрее калькулятора', color: '#5b8def' },
   ugo: { name: 'Уголёк', about: 'Чёрный котик. Замечает ошибки даже в темноте', color: '#ff9a1f' },
   plu: { name: 'Шарки', about: 'Акулёнок-программист. Ныряет в код и всплывает с ответом', color: '#8fb3ec' },
@@ -382,25 +381,6 @@ BODIES.fox = function fox(id) {
   return { pal: { blush: '#ff9a7a', tongue: '#ff8aa8' }, back: tail + ears, body: body + shine(68, 66, 17, 9) + muzzle + shirt, nose, f, a, fill: '#ff9a4d', st, b: { cx: 100, top: 22 } };
 };
 
-BODIES.hog = function hog(id) {
-  const st = '#0f8579';
-  const fill = `url(#${id}b)`;
-  const quills = [-178, -152, -126, -100, -74, -48, -22, 4, 28, 152, 178].map((deg) => {
-    const r = (d) => (d * Math.PI) / 180;
-    const pt = (rad, d) => `${(100 + rad * Math.cos(r(d))).toFixed(1)} ${(104 + rad * Math.sin(r(d))).toFixed(1)}`;
-    return `<path d="M${pt(66, deg - 13)} L${pt(106, deg)} L${pt(66, deg + 13)}Z" fill="#12968a" stroke="${st}" stroke-width="2.6" stroke-linejoin="round"/>`;
-  }).join('');
-  const ears = `<circle cx="62" cy="52" r="13" fill="${fill}" stroke="${st}" stroke-width="3"/><circle cx="138" cy="52" r="13" fill="${fill}" stroke="${st}" stroke-width="3"/><circle cx="62" cy="53" r="6.5" fill="#ffd9c2"/><circle cx="138" cy="53" r="6.5" fill="#ffd9c2"/>`;
-  const body = `<path d="M100 42 C146 42 166 72 166 110 C166 154 140 178 100 178 C60 178 34 154 34 110 C34 72 54 42 100 42Z" fill="${fill}" stroke="${st}" stroke-width="3"/>`;
-  const patch = `<path d="M100 88 C126 84 152 96 152 120 C152 146 128 162 100 162 C72 162 48 146 48 120 C48 96 74 84 100 88Z" fill="#ffe9c9"/>`;
-  const band = `<path d="M40 80 Q100 60 160 80 L157 91 Q100 73 43 91Z" fill="#ffd23d" stroke="#e8a000" stroke-width="2.4" stroke-linejoin="round"/><path transform="translate(100 74)" d="M2 -9 L-5 2 L-1 2 L-3 9 L5 -3 L1 -3 L4 -9Z" fill="#fff"/>`;
-  const nose = `<ellipse cx="100" cy="121" rx="6.5" ry="4.8" fill="#2b2b33"/><circle cx="98" cy="119.5" r="1.4" fill="#fff" opacity=".8"/>`;
-  const feet = `<ellipse cx="72" cy="180" rx="21" ry="11" fill="#ffd23d" stroke="#e8a000" stroke-width="3"/><rect x="62" y="170" width="20" height="5" rx="2.5" fill="#fff"/><ellipse cx="128" cy="180" rx="21" ry="11" fill="#ffd23d" stroke="#e8a000" stroke-width="3"/><rect x="118" y="170" width="20" height="5" rx="2.5" fill="#fff"/>`;
-  const f = { x: 100, y: 108, ex: 25, ey: 106, my: 138, s: 0.9, blurId: id + 'k' };
-  const a = { l: [40, 152], r: [160, 152], chin: [86, 150] };
-  return { pal: { blush: '#ff9cae', tongue: '#ff8aa8' }, back: quills + ears + feet, body: body + shine(66, 62, 16, 8) + patch, top: band, nose, f, a, fill: '#9ff3e6', st, b: { cx: 100, top: 26 } };
-};
-
 BODIES.bot = function bot(id) {
   const st = '#6f88a3';
   const fill = `url(#${id}b)`;
@@ -415,7 +395,7 @@ BODIES.bot = function bot(id) {
   return { pal: { blush: '#ff6fa8', tongue: '#ff6fa8' }, back: antenna + ears + feet, body: body + shine(64, 52, 16, 7) + screen + lights, f, a, fill: '#e8f1fb', st, b: { cx: 100, top: 30 } };
 };
 
-const GRAD = { mimi: ['#ffffff', '#f3e6ef'], kapi: ['#e6aa74', '#c07b48'], dino: ['#8ff0b4', '#45c27b'], axi: ['#ffd6e6', '#ff9cc4'], boo: ['#56505f', '#17141c'], ano: ['#4a4952', '#141319'], zip: ['#ff6b5e', '#c41e1e'], ugo: ['#3a3842', '#0a0a0d'], fox: ['#ffa458', '#e8661a'], hog: ['#7ff0e0', '#14a896'], bot: ['#f3f8ff', '#a9bfd8'] };
+const GRAD = { mimi: ['#ffffff', '#f3e6ef'], kapi: ['#e6aa74', '#c07b48'], dino: ['#8ff0b4', '#45c27b'], axi: ['#ffd6e6', '#ff9cc4'], boo: ['#56505f', '#17141c'], ano: ['#4a4952', '#141319'], zip: ['#ff6b5e', '#c41e1e'], ugo: ['#3a3842', '#0a0a0d'], fox: ['#ffa458', '#e8661a'], bot: ['#f3f8ff', '#a9bfd8'] };
 
 // Маскоты из готовых картинок учителя (рисунок не меняем): одна картинка на эмоцию в public/m/<id>/<эмоция>.webp.
 // Анимации те же, что у остальных (класс m-body), а «говорит» — лёгкое покачивание (CSS .raster).
@@ -423,7 +403,7 @@ const RASTER = { plu: true };
 
 export function mascot(id = 'mimi', emo = 'happy', size = 120, cls = '', crop = false) {
   if (RASTER[id] && MASCOTS[id]) {
-    if (!FACE[emo]) emo = 'happy';
+    if (!FACE[emo] && emo !== 'angry') emo = 'happy';
     const box = crop ? '20 20 160 160' : '0 0 200 200';
     return `<svg class="mascot raster m-${emo} ${cls}" width="${size}" height="${size}" viewBox="${box}" role="img" aria-label="${MASCOTS[id].name}">
     <ellipse cx="100" cy="190" rx="54" ry="6" fill="#3b2a35" opacity=".12"/>
@@ -431,6 +411,7 @@ export function mascot(id = 'mimi', emo = 'happy', size = 120, cls = '', crop = 
   </svg>`;
   }
   if (!BODIES[id]) id = 'mimi';
+  if (emo === 'angry') emo = 'talk'; // злой позы у нарисованных кодом нет — просто говорит
   if (!FACE[emo]) emo = 'happy';
   const uidStr = 'z' + ++uid;
   const B = BODIES[id](uidStr, emo);
