@@ -215,7 +215,7 @@ export function createLogic(store, { adminIds }) {
       prev.personal = lesson.personal || prev.personal || null;
       prev.tr = lesson.tr || prev.tr || null;
       prev.kind = lesson.kind || prev.kind || 'lesson';
-      if (lesson.order != null) prev.order = Number(lesson.order);
+      if (lesson.order !== undefined) prev.order = lesson.order == null ? null : Number(lesson.order);
       store.save();
       return prev;
     }
@@ -302,14 +302,14 @@ export function createLogic(store, { adminIds }) {
     return { byUser, given: Object.values(byUser).reduce((n, a) => n + a.length, 0), already };
   }
   // Один раз: каждому, у кого уже есть доступ к уроку N, открываем все уроки с 1 по N. Эти уроки без очков (ученик их уже проходил)
-  function migrateAccess() {
+  function migrateAccess(key = 'access-v1') {
     S.migrations ||= {};
-    if (S.migrations['access-v1']) return null;
+    if (S.migrations[key]) return null;
     const report = [];
     const course = Object.values(S.lessons).filter((l) => Number.isFinite(l.order) && l.order < 100 && !l.personal && !l.archived).sort((a, b) => a.order - b.order);
     for (const u of students()) {
       const mine = pubsForUser(u.id);
-      const orders = mine.map((p) => S.lessons[p.lessonId]?.order).filter((o) => Number.isFinite(o) && o < 100);
+      const orders = mine.map((p) => S.lessons[p.lessonId]?.order ?? (p.lessonId === 'lessons-01-03-html-css' ? 3 : undefined)).filter((o) => Number.isFinite(o) && o < 100);
       if (!orders.length) continue;
       const max = Math.max(...orders);
       const have = new Set(mine.map((p) => p.lessonId));
@@ -321,7 +321,7 @@ export function createLogic(store, { adminIds }) {
       }
       report.push({ user: { id: u.id, name: name(u) }, had: [...new Set(orders)].sort((a, b) => a - b), opened });
     }
-    S.migrations['access-v1'] = Date.now();
+    S.migrations[key] = Date.now();
     store.save();
     return report;
   }

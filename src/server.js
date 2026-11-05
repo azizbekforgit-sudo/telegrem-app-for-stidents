@@ -70,10 +70,11 @@ if (fs.existsSync(bonusFile)) {
 }
 
 // Один раз открываем всё до самого дальнего урока, к которому у ученика уже есть доступ
-const accessReport = logic.migrateAccess();
-if (accessReport) {
-  for (const r of accessReport) console.log('[access-migrate] ' + JSON.stringify(r));
-  console.log(`[access-migrate-end] учеников: ${accessReport.length}`);
+for (const key of ['access-v1', 'access-v2']) {
+  const accessReport = logic.migrateAccess(key);
+  if (!accessReport) continue;
+  for (const r of accessReport) console.log(`[access-migrate] ${key} ` + JSON.stringify(r));
+  console.log(`[access-migrate-end] ${key} учеников: ${accessReport.length}`);
 }
 
 // Скрыть из списка учителя старые тесты (content/archive.json: ["id", …]); срабатывает один раз для каждого

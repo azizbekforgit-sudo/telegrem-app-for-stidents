@@ -1,6 +1,6 @@
 {
   "id": "lessons-01-03-html-css",
-  "order": 3,
+  "order": null,
   "title": "Уроки 1–3. HTML и основы CSS",
   "emoji": "🎨",
   "description": "Структура HTML, подключение CSS, селекторы, каскад и специфичность",

@@ -1,0 +1,364 @@
+{
+  "title": "3-dars. CSS-selektorlar, kaskad va spetsifiklik",
+  "description": "Teg, klass va ID selektorlari, ichma-ich joylashuv, kaskad va spetsifiklik",
+  "learn": {
+    "intro": "Salom! 3-dars — **CSS-selektorlar**. HTML — sahifaning skeleti, CSS esa kiyim. Lekin kerakli elementni kiyintirish uchun brauzerga aynan qaysi element ekanini aniq ko'rsatish kerak. Buning uchun selektorlar kerak. Ketdik!",
+    "sections": [
+      {
+        "title": "Teg bo'yicha selektor",
+        "slides": [
+          {
+            "emoji": "🎯",
+            "text": "Xonada 30 kishi o'tirganini tasavvur qil. «Qalpoq kiy!» deb qichqirsang, kimga aytilgani noma'lum. **Selektor** — manzilni aniq ko'rsatish usuli."
+          },
+          {
+            "text": "Eng oddiy selektor — **teg** bo'yicha. U sahifadagi shunday elementlarning **hammasini** bo'yaydi:",
+            "code": "p {\n  color: red;\n}"
+          },
+          {
+            "text": "Afzalligi: ko'p elementni tez bezaymiz. Kamchiligi: kerak bo'lmaganlarini ham bo'yab qo'yish oson."
+          }
+        ],
+        "check": [
+          {
+            "type": "truefalse",
+            "topic": "Teg bo'yicha selektor",
+            "prompt": "p { color: red; } qoidasi sahifadagi barcha paragraflarni bo'yaydi.",
+            "answer": true,
+            "explain": "Teg selektori shunday teglarning hammasiga, qayerda turishidan qat'i nazar, ta'sir qiladi."
+          }
+        ]
+      },
+      {
+        "title": "Klass bo'yicha selektor",
+        "slides": [
+          {
+            "emoji": "🏷️",
+            "text": "Klass — istalgan tegga taqib qo'yish mumkin bo'lgan «nishon». Bir xil klassli elementlar teglari har xil bo'lsa ham bir xil ko'rinadi."
+          },
+          {
+            "text": "HTMLda klass `class=\"nom\"` atributida yoziladi, CSSda esa unga **nuqta** orqali murojaat qilinadi:",
+            "code": "<div class=\"card\">div</div>\n<p class=\"card\">p</p>\n\n.card {\n  background: lightyellow;\n  padding: 10px;\n}"
+          },
+          {
+            "text": "Agar uslub faqat shu klassli ma'lum bir tegga kerak bo'lsa, `div.card { }` deb yoz: bu faqat `card` klassli `div`."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Klass",
+            "prompt": "CSSda card klassiga qanday murojaat qilinadi?",
+            "options": [
+              ".card",
+              "#card",
+              "card",
+              "*card"
+            ],
+            "answer": 0,
+            "explain": "CSSda klass nuqta bilan yoziladi: .card."
+          }
+        ]
+      },
+      {
+        "title": "ID bo'yicha selektor",
+        "slides": [
+          {
+            "emoji": "🪪",
+            "text": "ID — shaxsiy pasportga o'xshaydi: u **noyob** va sahifada faqat **bir marta** uchraydi. CSSda u panjara belgisi bilan yoziladi:",
+            "code": "#header {\n  background: navy;\n}"
+          },
+          {
+            "quote": true,
+            "text": "Haqiqiy loyihalarda ID uslub uchun ishlatilmaydi! U JavaScript va yakor havolalar uchun kerak."
+          },
+          {
+            "text": "Sababi: ID ning ustuvorligi (spetsifikligi) juda yuqori. Uning uslubini keyin `!important` kabi zararli usullarsiz o'zgartirish qiyin. **CSS uchun doim ID o'rniga klass ol.**"
+          }
+        ],
+        "check": [
+          {
+            "type": "truefalse",
+            "topic": "ID",
+            "prompt": "ID sahifada faqat bir marta uchrashi kerak.",
+            "answer": true,
+            "explain": "ID pasport kabi noyob."
+          },
+          {
+            "type": "choice",
+            "topic": "ID",
+            "prompt": "Nega ID ni uslub uchun tavsiya etmaydilar?",
+            "options": [
+              "Uning ustuvorligi juda yuqori, keyin o'zgartirish qiyin",
+              "U faqat eski brauzerlarda ishlaydi",
+              "Uni HTMLda ishlatib bo'lmaydi",
+              "U butun sahifani bo'yaydi"
+            ],
+            "answer": 0,
+            "explain": "Yuqori spetsifiklik tufayli ID uslubini o'zgartirish qiyin."
+          }
+        ]
+      },
+      {
+        "title": "Ichma-ich joylashuv",
+        "slides": [
+          {
+            "emoji": "🪆",
+            "text": "Selektorni elementning **qayerda** turishini ko'rsatib aniqlashtirish mumkin. `.card p` yozuvi: «card klassli element **ichidagi** paragraf» degani.",
+            "code": "<div class=\"card\">\n  <p>Внутри</p>\n</div>\n<p>Снаружи</p>\n\n.card p {\n  color: green;\n}"
+          },
+          {
+            "text": "Faqat birinchi paragraf yashil bo'ladi. Kartochkadan tashqaridagi ikkinchisi umuman o'zgarmaydi."
+          },
+          {
+            "text": "Agar oddiygina `p { color: green; }` yozsang, sahifadagi **hamma** paragraflar yashil bo'ladi. Farqi shundaki, elementning qayerdaligini ko'rsatdik."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Ichma-ich joylashuv",
+            "prompt": ".card p selektori nimani tanlaydi?",
+            "options": [
+              "card klassli element ichidagi paragraflar",
+              "Sahifadagi barcha paragraflar",
+              "Faqat p klassli elementlar",
+              "Paragraf ichidagi card elementi"
+            ],
+            "answer": 0,
+            "explain": "Probel orqali «ota ichidagi avlod» yoziladi."
+          }
+        ]
+      },
+      {
+        "title": "Kaskad va spetsifiklik",
+        "slides": [
+          {
+            "emoji": "⚖️",
+            "text": "Bitta elementga ikkita qoida ta'sir qilib, «tortishsa» nima bo'ladi? **Kuchliroq (aniqroq)** qoida g'olib chiqadi."
+          },
+          {
+            "quote": true,
+            "text": "Kuch ierarxiyasi: **ID > klass > teg**. Manzil qanchalik aniq ko'rsatilsa, ustuvorlik shunchalik yuqori."
+          },
+          {
+            "text": "Misol: bu yerda `.card p` (klass + teg) g'olib chiqadi, shuning uchun matn **qizil** bo'ladi:",
+            "code": "p {\n  color: blue;\n}\n.card p {\n  color: red;\n}"
+          },
+          {
+            "text": "Ikki selektorning kuchi bir xil bo'lsa, faylda **pastroqda (keyin)** yozilgan qoida g'olib chiqadi."
+          },
+          {
+            "text": "`!important` — «favqulodda tugma»: kuchsiz selektorda ham g'alaba qozonadi. Lekin uni ishlatish tavsiya etilmaydi, keyin u bilan ishlash juda qiyin."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Kaskad va spetsifiklik",
+            "prompt": "p { color: blue; } va .card p { color: red; } bo'lsa, matn qanday rang oladi?",
+            "options": [
+              "Qizil",
+              "Ko'k",
+              "Binafsha",
+              "Brauzerga bog'liq"
+            ],
+            "answer": 0,
+            "explain": ".card p oddiy p dan aniqroq."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Kaskad va spetsifiklik",
+            "prompt": "Selektorlar kuchi teng bo'lsa, faylda pastroqda yozilgan qoida g'olib chiqadi.",
+            "answer": true,
+            "explain": "Bu kaskaddagi tartib qoidasi."
+          }
+        ]
+      },
+      {
+        "title": "Amaliyot",
+        "slides": [
+          {
+            "emoji": "🧪",
+            "text": "Amaliyot: uchta kartochka, ikkinchisining sarlavhasida `highlight` klassi bor.",
+            "code": "<div class=\"card\"><h2>1</h2></div>\n<div class=\"card\"><h2 class=\"highlight\">2</h2></div>\n<div class=\"card\"><h2>3</h2></div>"
+          },
+          {
+            "text": "1-qadam: `h2 { }` barcha sarlavhalarni bir rangga bo'yaydi. 2-qadam: `.highlight { }` ikkinchisiga boshqa rang beradi, chunki **klass tegdan kuchli**."
+          },
+          {
+            "text": "Uy vazifasi: sahifangga kamida 3 ta klass (`.title`, `.subtitle`, `.box`) qo'sh va har biriga o'z matn rangi yoki fonini ber. Xohlasang teg va klass «to'qnashuvi»ni yarat va izohda kim g'olib chiqqani va nega ekanini yoz."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Amaliyot",
+            "prompt": "Nega highlight klassli sarlavha boshqa h2 lardan farqli rang oladi?",
+            "options": [
+              "Klass tegdan kuchli",
+              "Teg klassdan kuchli",
+              "Chunki u ketma-ketlikda ikkinchi",
+              "Bu brauzer xatosi"
+            ],
+            "answer": 0,
+            "explain": "Klass tegdan kuchli, shuning uchun .highlight h2 ni bosib ketadi."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "Teg bo'yicha selektor",
+      "prompt": "h2 { color: blue; } qoidasi nimani bo'yaydi?",
+      "options": [
+        "Sahifadagi barcha h2 sarlavhalar",
+        "Faqat birinchi h2",
+        "h2 klassli elementlar",
+        "h2 id li element"
+      ],
+      "answer": 0,
+      "explain": "Teg selektori shunday teglarning hammasiga ta'sir qiladi."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Klass",
+      "prompt": "Klassni turli teglarga qo'yish mumkin, hammasi bir xil ko'rinadi.",
+      "answer": true,
+      "explain": "Klass — istalgan teg uchun «nishon»."
+    },
+    {
+      "type": "choice",
+      "topic": "Klass",
+      "prompt": "Qaysi selektor faqat card klassli div ni tanlaydi?",
+      "options": [
+        "div.card",
+        ".card div",
+        "div card",
+        "#card"
+      ],
+      "answer": 0,
+      "explain": "div.card probelsiz: teg va klass birga."
+    },
+    {
+      "type": "match",
+      "topic": "Amaliyot",
+      "prompt": "Selektor va u nimani tanlashini moslashtir",
+      "pairs": [
+        [
+          "p",
+          "Barcha paragraflar"
+        ],
+        [
+          ".card",
+          "card klassli elementlar"
+        ],
+        [
+          "#header",
+          "Bitta noyob element"
+        ],
+        [
+          ".card p",
+          "card ichidagi paragraflar"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "ID",
+      "prompt": "CSSda id=\"header\" li elementga qanday murojaat qilinadi?",
+      "options": [
+        "#header",
+        ".header",
+        "header#",
+        "@header"
+      ],
+      "answer": 0,
+      "explain": "ID CSSda panjara belgisi bilan yoziladi."
+    },
+    {
+      "type": "truefalse",
+      "topic": "ID",
+      "prompt": "Haqiqiy loyihalarda uslub uchun klassdan ko'ra ID ni ishlatgan ma'qul.",
+      "answer": false,
+      "explain": "Aksincha: CSS uchun klass ol, ID ni JavaScript va yakorlar uchun qoldir."
+    },
+    {
+      "type": "choice",
+      "topic": "Ichma-ich joylashuv",
+      "prompt": ".card p { color: green; } qaysi paragrafga ta'sir qiladi?",
+      "options": [
+        "Faqat .card ichidagisiga",
+        "Sahifadagi barcha paragraflarga",
+        "Faqat .card tashqarisidagisiga",
+        "Hech qaysisiga"
+      ],
+      "answer": 0,
+      "explain": "Selektorlar orasidagi probel «ichida» degani."
+    },
+    {
+      "type": "input",
+      "topic": "Kaskad va spetsifiklik",
+      "prompt": "Qaysi biri kuchliroq, klass yoki teg? Bir so'z bilan yoz.",
+      "answer": [
+        "класс",
+        "klass",
+        "class"
+      ],
+      "explain": "Ierarxiya: ID > klass > teg."
+    },
+    {
+      "type": "order",
+      "topic": "Kaskad va spetsifiklik",
+      "prompt": "Kuch bo'yicha joylashtir: eng kuchsizdan eng kuchlisigacha",
+      "tokens": [
+        "teg",
+        "klass",
+        "ID"
+      ],
+      "extra": [],
+      "explain": "ID > klass > teg, ya'ni pastdan yuqoriga: teg, klass, ID."
+    },
+    {
+      "type": "choice",
+      "topic": "Kaskad va spetsifiklik",
+      "prompt": "Ikki selektor bir xil kuchli. Qaysi qoida g'olib chiqadi?",
+      "options": [
+        "Faylda pastroqda yozilgani",
+        "Yuqorida yozilgani",
+        "Albatta birinchisi",
+        "Brauzer tasodifiy tanlaydi"
+      ],
+      "answer": 0,
+      "explain": "Spetsifiklik teng bo'lsa, keyingi qoida g'olib chiqadi."
+    },
+    {
+      "type": "choice",
+      "topic": "Kaskad va spetsifiklik",
+      "prompt": "!important nima qiladi va nega uni ko'p ishlatmaslik kerak?",
+      "options": [
+        "Ierarxiyani buzadi, keyin u bilan ishlash qiyin",
+        "Sahifa yuklanishini tezlashtiradi",
+        "Rangni yorqinroq qiladi",
+        "Qoidani o'chiradi"
+      ],
+      "answer": 0,
+      "explain": "Bu «favqulodda tugma»: hammani yengadi, lekin muammo tug'diradi."
+    },
+    {
+      "type": "choice",
+      "topic": "Amaliyot",
+      "prompt": "h2 { color: blue; } va .highlight { color: red; } uchun umumiy <h2 class=\"highlight\"> element bor. U qanday rangda bo'ladi?",
+      "options": [
+        "Qizil",
+        "Ko'k",
+        "Ko'k va qizil aralashmasi",
+        "Qora"
+      ],
+      "answer": 0,
+      "explain": "Klass tegdan kuchli, shuning uchun qizil g'olib chiqadi."
+    }
+  ]
+}

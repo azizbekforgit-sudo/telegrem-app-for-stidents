@@ -1,0 +1,364 @@
+{
+  "title": "Lesson 3. CSS selectors, the cascade and specificity",
+  "description": "Tag, class and ID selectors, nesting, the cascade and specificity",
+  "learn": {
+    "intro": "Hi! Lesson 3 is about **CSS selectors**. HTML is the skeleton of the page and CSS is the clothes. But to dress the right element you must show the browser exactly which one. That is what selectors are for. Let's go!",
+    "sections": [
+      {
+        "title": "The tag selector",
+        "slides": [
+          {
+            "emoji": "🎯",
+            "text": "Imagine a room with 30 people. If you shout «put on a hat!», nobody knows who you mean. A **selector** is a way to point at exactly the right person."
+          },
+          {
+            "text": "The simplest selector is by **tag**. It styles **all** such elements on the page:",
+            "code": "p {\n  color: red;\n}"
+          },
+          {
+            "text": "Plus: you style many elements quickly. Minus: it is easy to style ones you did not want to."
+          }
+        ],
+        "check": [
+          {
+            "type": "truefalse",
+            "topic": "Tag selector",
+            "prompt": "The rule p { color: red; } styles all paragraphs on the page.",
+            "answer": true,
+            "explain": "A tag selector affects all such tags, wherever they are."
+          }
+        ]
+      },
+      {
+        "title": "The class selector",
+        "slides": [
+          {
+            "emoji": "🏷️",
+            "text": "A class is a «badge» you can pin on any tag. All elements with the same class look the same, even if their tags differ."
+          },
+          {
+            "text": "In HTML a class goes in the `class=\"name\"` attribute, and in CSS you reach it with a **dot**:",
+            "code": "<div class=\"card\">div</div>\n<p class=\"card\">p</p>\n\n.card {\n  background: lightyellow;\n  padding: 10px;\n}"
+          },
+          {
+            "text": "If the style is only for one tag with that class, write `div.card { }`: only a `div` with the class `card`."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Class",
+            "prompt": "How do you target the class card in CSS?",
+            "options": [
+              ".card",
+              "#card",
+              "card",
+              "*card"
+            ],
+            "answer": 0,
+            "explain": "In CSS a class is written with a dot: .card."
+          }
+        ]
+      },
+      {
+        "title": "The ID selector",
+        "slides": [
+          {
+            "emoji": "🪪",
+            "text": "An ID is like a personal passport: it is **unique** and appears on a page only **once**. In CSS you write it with a hash:",
+            "code": "#header {\n  background: navy;\n}"
+          },
+          {
+            "quote": true,
+            "text": "In real projects IDs are not used for styling! They are for JavaScript and anchor links."
+          },
+          {
+            "text": "The reason: an ID has a very high priority (specificity). Its style is hard to override later without bad tricks like `!important`. **For CSS always use classes instead of IDs.**"
+          }
+        ],
+        "check": [
+          {
+            "type": "truefalse",
+            "topic": "ID",
+            "prompt": "An ID must appear only once on a page.",
+            "answer": true,
+            "explain": "An ID is unique, like a passport."
+          },
+          {
+            "type": "choice",
+            "topic": "ID",
+            "prompt": "Why is an ID not recommended for styling?",
+            "options": [
+              "It has a very high priority and is hard to override later",
+              "It only works in old browsers",
+              "It cannot be used in HTML",
+              "It styles the whole page"
+            ],
+            "answer": 0,
+            "explain": "Because of the high specificity, an ID style is hard to override."
+          }
+        ]
+      },
+      {
+        "title": "Nesting",
+        "slides": [
+          {
+            "emoji": "🪆",
+            "text": "You can narrow a selector by saying **where** the element is. `.card p` means: «a paragraph **inside** an element with the class card».",
+            "code": "<div class=\"card\">\n  <p>Внутри</p>\n</div>\n<p>Снаружи</p>\n\n.card p {\n  color: green;\n}"
+          },
+          {
+            "text": "Only the first paragraph turns green. The second one, outside the card, does not change at all."
+          },
+          {
+            "text": "And if you just write `p { color: green; }`, **all** paragraphs of the page turn green. The difference is that we said where the element is."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Nesting",
+            "prompt": "What does the selector .card p select?",
+            "options": [
+              "Paragraphs inside an element with the class card",
+              "All paragraphs on the page",
+              "Only elements with the class p",
+              "The card element inside a paragraph"
+            ],
+            "answer": 0,
+            "explain": "A space means «a descendant inside a parent»."
+          }
+        ]
+      },
+      {
+        "title": "The cascade and specificity",
+        "slides": [
+          {
+            "emoji": "⚖️",
+            "text": "What if two rules apply to one element and they «argue»? The **stronger (more precise)** rule wins."
+          },
+          {
+            "quote": true,
+            "text": "The strength order: **ID > class > tag**. The more precise the target, the higher the priority."
+          },
+          {
+            "text": "Example: here `.card p` (class + tag) wins, so the text is **red**:",
+            "code": "p {\n  color: blue;\n}\n.card p {\n  color: red;\n}"
+          },
+          {
+            "text": "If two selectors have the same strength, the rule written **lower (later)** in the file wins."
+          },
+          {
+            "text": "`!important` is an «emergency button»: it wins even on a weak selector. But using it is not recommended, it is very hard to manage later."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Cascade and specificity",
+            "prompt": "What colour will the text get with p { color: blue; } and .card p { color: red; }?",
+            "options": [
+              "Red",
+              "Blue",
+              "Purple",
+              "Depends on the browser"
+            ],
+            "answer": 0,
+            "explain": ".card p is more precise than plain p."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Cascade and specificity",
+            "prompt": "With equal selector strength, the rule written lower in the file wins.",
+            "answer": true,
+            "explain": "This is the order rule of the cascade."
+          }
+        ]
+      },
+      {
+        "title": "Practice",
+        "slides": [
+          {
+            "emoji": "🧪",
+            "text": "Practice: three cards, the second one has a heading with the class `highlight`.",
+            "code": "<div class=\"card\"><h2>1</h2></div>\n<div class=\"card\"><h2 class=\"highlight\">2</h2></div>\n<div class=\"card\"><h2>3</h2></div>"
+          },
+          {
+            "text": "Step 1: `h2 { }` paints all headings one colour. Step 2: `.highlight { }` gives the second one another colour, because a **class beats a tag**."
+          },
+          {
+            "text": "Homework: add at least 3 classes to your page (`.title`, `.subtitle`, `.box`) and give each its own text or background colour. Optionally create a tag-vs-class «conflict» and write in a comment who won and why."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Practice",
+            "prompt": "Why does the heading with the class highlight get a different colour from the other h2s?",
+            "options": [
+              "A class is stronger than a tag",
+              "A tag is stronger than a class",
+              "Because it is second in order",
+              "It is a browser bug"
+            ],
+            "answer": 0,
+            "explain": "A class beats a tag, so .highlight overrides h2."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "Tag selector",
+      "prompt": "What does the rule h2 { color: blue; } style?",
+      "options": [
+        "All h2 headings on the page",
+        "Only the first h2",
+        "Elements with the class h2",
+        "The element with the id h2"
+      ],
+      "answer": 0,
+      "explain": "A tag selector affects all such tags."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Class",
+      "prompt": "A class can be put on different tags and they will all look the same.",
+      "answer": true,
+      "explain": "A class is a «badge» for any tag."
+    },
+    {
+      "type": "choice",
+      "topic": "Class",
+      "prompt": "Which selector selects only a div with the class card?",
+      "options": [
+        "div.card",
+        ".card div",
+        "div card",
+        "#card"
+      ],
+      "answer": 0,
+      "explain": "div.card with no space: tag and class together."
+    },
+    {
+      "type": "match",
+      "topic": "Practice",
+      "prompt": "Match the selector and what it selects",
+      "pairs": [
+        [
+          "p",
+          "All paragraphs"
+        ],
+        [
+          ".card",
+          "Elements with the class card"
+        ],
+        [
+          "#header",
+          "One unique element"
+        ],
+        [
+          ".card p",
+          "Paragraphs inside card"
+        ]
+      ]
+    },
+    {
+      "type": "choice",
+      "topic": "ID",
+      "prompt": "How do you target the element with id=\"header\" in CSS?",
+      "options": [
+        "#header",
+        ".header",
+        "header#",
+        "@header"
+      ],
+      "answer": 0,
+      "explain": "An ID is written with a hash in CSS."
+    },
+    {
+      "type": "truefalse",
+      "topic": "ID",
+      "prompt": "For styling in real projects it is better to use IDs rather than classes.",
+      "answer": false,
+      "explain": "The opposite: use classes for CSS and leave IDs for JavaScript and anchors."
+    },
+    {
+      "type": "choice",
+      "topic": "Nesting",
+      "prompt": "Which paragraph will .card p { color: green; } affect?",
+      "options": [
+        "Only the one inside .card",
+        "All paragraphs on the page",
+        "Only the one outside .card",
+        "None of them"
+      ],
+      "answer": 0,
+      "explain": "A space between selectors means «inside»."
+    },
+    {
+      "type": "input",
+      "topic": "Cascade and specificity",
+      "prompt": "Which is stronger, a class or a tag? Answer in one word.",
+      "answer": [
+        "класс",
+        "klass",
+        "class"
+      ],
+      "explain": "The order: ID > class > tag."
+    },
+    {
+      "type": "order",
+      "topic": "Cascade and specificity",
+      "prompt": "Order by strength: from the weakest to the strongest",
+      "tokens": [
+        "tag",
+        "class",
+        "ID"
+      ],
+      "extra": [],
+      "explain": "ID > class > tag, so from the bottom up: tag, class, ID."
+    },
+    {
+      "type": "choice",
+      "topic": "Cascade and specificity",
+      "prompt": "Two selectors are equally strong. Which rule wins?",
+      "options": [
+        "The one written lower in the file",
+        "The one written higher",
+        "Always the first one",
+        "The browser picks at random"
+      ],
+      "answer": 0,
+      "explain": "With equal specificity the later rule wins."
+    },
+    {
+      "type": "choice",
+      "topic": "Cascade and specificity",
+      "prompt": "What does !important do and why should it be avoided?",
+      "options": [
+        "It breaks the hierarchy and is hard to manage later",
+        "It makes the page load faster",
+        "It makes the colour brighter",
+        "It deletes the rule"
+      ],
+      "answer": 0,
+      "explain": "It is an «emergency button»: it beats everything but causes trouble."
+    },
+    {
+      "type": "choice",
+      "topic": "Practice",
+      "prompt": "h2 { color: blue; } and .highlight { color: red; } share <h2 class=\"highlight\">. What colour will it be?",
+      "options": [
+        "Red",
+        "Blue",
+        "A mix of blue and red",
+        "Black"
+      ],
+      "answer": 0,
+      "explain": "A class beats a tag, so red wins."
+    }
+  ]
+}
