@@ -19,7 +19,7 @@ export const MASCOTS = {
   hog: { name: 'Шустрик', about: 'Быстрый ёжик. Решает на ходу и не ждёт никого', color: '#1bb5a2' },
   bot: { name: 'Бит', about: 'Робот-помощник. Проверяет ответы быстрее калькулятора', color: '#5b8def' },
   ugo: { name: 'Уголёк', about: 'Чёрный котик. Замечает ошибки даже в темноте', color: '#ff9a1f' },
-  plu: { name: 'Шарки', about: 'Китовая акула-программист. Ныряет в код и всплывает с ответом', color: '#4f7fb3' },
+  plu: { name: 'Шарки', about: 'Акулёнок-программист. Ныряет в код и всплывает с ответом', color: '#8fb3ec' },
 };
 
 let uid = 0;
@@ -415,31 +415,21 @@ BODIES.bot = function bot(id) {
   return { pal: { blush: '#ff6fa8', tongue: '#ff6fa8' }, back: antenna + ears + feet, body: body + shine(64, 52, 16, 7) + screen + lights, f, a, fill: '#e8f1fb', st, b: { cx: 100, top: 30 } };
 };
 
-// Шарки — своя китовая акула-программист. Свой силуэт (не шарик): широкое плоское тело, глаза широко по бокам,
-// белые пятнышки и полоски на тёмной спине, светлое пузико волной, хвост полумесяцем сзади, широкие плавники-лапки.
-// Плоский «стикерный» стиль: толстый тёмный контур, ровные цвета, без бликов.
-BODIES.plu = function plu(id) {
-  const st = '#1f2a3a';
-  const W = 5.5;
-  const fill = '#4f7fb3';
-  const belly = '#e9f3fa';
-  const tail = `<path d="M160 120 C172 104 176 82 172 60 C186 72 194 92 190 112 C196 120 196 132 188 140 C180 132 170 128 160 132 Z" fill="${fill}" stroke="${st}" stroke-width="${W}" stroke-linejoin="round"/>`;
-  const fin = `<path d="M70 82 C74 64 86 54 98 52 C94 62 94 72 98 80 Z" fill="${fill}" stroke="${st}" stroke-width="${W}" stroke-linejoin="round"/>`;
-  const body = `<path d="M18 132 C18 98 50 78 100 78 C150 78 182 98 182 132 C182 162 154 178 100 178 C46 178 18 162 18 132Z" fill="${fill}" stroke="${st}" stroke-width="${W}"/>`;
-  const under = `<path d="M30 150 C48 140 62 150 78 142 C92 136 108 136 122 142 C138 150 152 140 170 150 C162 168 136 174 100 174 C64 174 38 168 30 150Z" fill="${belly}"/>`;
-  const spots = [[58, 96, 3.4], [80, 90, 2.6], [120, 90, 2.6], [142, 96, 3.4], [44, 112, 2.4], [156, 112, 2.4], [100, 88, 3], [66, 104, 2], [134, 104, 2]]
-    .map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#f4fbff"/>`).join('');
-  const stripes = `<path d="M36 120 q4 8 0 16 M30 124 q3 6 0 12" stroke="${st}" stroke-width="3" fill="none" stroke-linecap="round" opacity=".55"/>
-    <path d="M164 120 q-4 8 0 16 M170 124 q-3 6 0 12" stroke="${st}" stroke-width="3" fill="none" stroke-linecap="round" opacity=".55"/>`;
-  const outline = `<path d="M18 132 C18 98 50 78 100 78 C150 78 182 98 182 132 C182 162 154 178 100 178 C46 178 18 162 18 132Z" fill="none" stroke="${st}" stroke-width="${W}"/>`;
-  const f = { x: 100, y: 118, ex: 44, ey: 116, my: 138, s: 0.92, blurId: id + 'k', idleMouth: 'smile', ink: st };
-  const a = { l: [24, 156], r: [176, 156], chin: [84, 150] };
-  return { pal: { blush: '#ff9db0', tongue: '#ff7f9a' }, sw: 5, back: tail + fin, body: body + under + spots + stripes + outline, f, a, fill, st, b: { cx: 100, top: 52 } };
-};
+const GRAD = { mimi: ['#ffffff', '#f3e6ef'], kapi: ['#e6aa74', '#c07b48'], dino: ['#8ff0b4', '#45c27b'], axi: ['#ffd6e6', '#ff9cc4'], boo: ['#56505f', '#17141c'], ano: ['#4a4952', '#141319'], zip: ['#ff6b5e', '#c41e1e'], ugo: ['#3a3842', '#0a0a0d'], fox: ['#ffa458', '#e8661a'], hog: ['#7ff0e0', '#14a896'], bot: ['#f3f8ff', '#a9bfd8'] };
 
-const GRAD = { mimi: ['#ffffff', '#f3e6ef'], kapi: ['#e6aa74', '#c07b48'], dino: ['#8ff0b4', '#45c27b'], axi: ['#ffd6e6', '#ff9cc4'], boo: ['#56505f', '#17141c'], ano: ['#4a4952', '#141319'], zip: ['#ff6b5e', '#c41e1e'], ugo: ['#3a3842', '#0a0a0d'], fox: ['#ffa458', '#e8661a'], hog: ['#7ff0e0', '#14a896'], bot: ['#f3f8ff', '#a9bfd8'], plu: ['#4f7fb3', '#4f7fb3'] };
+// Маскоты из готовых картинок учителя (рисунок не меняем): одна картинка на эмоцию в public/m/<id>/<эмоция>.webp.
+// Анимации те же, что у остальных (класс m-body), а «говорит» — лёгкое покачивание (CSS .raster).
+const RASTER = { plu: true };
 
 export function mascot(id = 'mimi', emo = 'happy', size = 120, cls = '', crop = false) {
+  if (RASTER[id] && MASCOTS[id]) {
+    if (!FACE[emo]) emo = 'happy';
+    const box = crop ? '20 20 160 160' : '0 0 200 200';
+    return `<svg class="mascot raster m-${emo} ${cls}" width="${size}" height="${size}" viewBox="${box}" role="img" aria-label="${MASCOTS[id].name}">
+    <ellipse cx="100" cy="190" rx="54" ry="6" fill="#3b2a35" opacity=".12"/>
+    <g class="m-body">${emo === 'talk' ? `<image class="r-rest" href="/m/${id}/happy.webp" x="4" y="2" width="192" height="192" preserveAspectRatio="xMidYMax meet"/>` : ''}<image class="r-main" href="/m/${id}/${emo}.webp" x="4" y="2" width="192" height="192" preserveAspectRatio="xMidYMax meet"/></g>
+  </svg>`;
+  }
   if (!BODIES[id]) id = 'mimi';
   if (!FACE[emo]) emo = 'happy';
   const uidStr = 'z' + ++uid;

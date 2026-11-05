@@ -551,6 +551,13 @@ code { background: var(--card-2); padding: 1px 6px; border-radius: 7px; font-siz
 .m-talk .m-body { animation: nod 0.72s ease-in-out infinite; }
 .m-teach .m-body { animation: nod 0.9s ease-in-out infinite; }
 .mascot.quiet .m-body { animation: breathe 3.2s ease-in-out infinite; }
+/* маскоты-картинки (Шарки): «говорит» — пружинит, замолчал — обычная поза */
+.mascot.raster .r-rest { opacity: 0; }
+.mascot.raster.quiet .r-rest { opacity: 1; }
+.mascot.raster.quiet .r-main.r-main { opacity: 1; }
+.mascot.raster.m-talk.quiet .r-main { opacity: 0; }
+.mascot.raster.m-talk:not(.quiet) .r-main, .mascot.raster.m-teach:not(.quiet) .r-main { transform-origin: 100px 190px; animation: rTalk 0.3s ease-in-out infinite alternate; }
+@keyframes rTalk { from { transform: scale(1, 1); } to { transform: scale(1.03, 0.96); } }
 .m-teach .wand { transform-origin: 160px 130px; animation: wave 1.4s ease-in-out infinite; }
 @keyframes nod { 50% { transform: translateY(-3px) rotate(-1.5deg); } }
 @keyframes wave { 50% { transform: rotate(-10deg); } }
