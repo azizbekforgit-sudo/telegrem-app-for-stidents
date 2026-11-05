@@ -266,13 +266,126 @@ const loseSfx = {
   },
   sob: (bus) => { [0, 0.35, 0.7].forEach((at, i) => synth(520 - i * 30, at, 0.28, { type: 'triangle', to: 380 - i * 30, vol: 0.05, bus })); },
   drop: (bus) => synth(700, 0, 1.1, { type: 'triangle', to: 110, vol: 0.08, bus }),
-  // грустная песенка на экране результатов
-  song: () => {
-    const N = { A3: 220, B3: 247, C4: 262, D4: 294, E4: 330, F4: 349, G4: 392, A4: 440, B4: 494, C5: 523 };
-    let t = 0.2;
-    [['A4', 0.45], ['C5', 0.45], ['B4', 0.45], ['A4', 0.45], ['G4', 0.45], ['E4', 0.9], ['F4', 0.45], ['E4', 0.45], ['D4', 0.45], ['C4', 0.45], ['B3', 0.45], ['A3', 1.4]]
-      .forEach(([n, d]) => { synth(N[n], t, d * 0.95, { type: 'triangle', vol: 0.07 }); t += d; });
-    [[110, 0.2, 1.8], [87.3, 2.0, 1.8], [82.4, 3.8, 1.8], [110, 5.6, 1.6]].forEach(([f, at, d]) => synth(f, at, d, { type: 'sine', vol: 0.08 }));
+};
+
+// Песня поражения: медленное пианино + струнные + реверб (своя мелодия, ля минор).
+// Играет с первой секунды сцены и дальше на экране результатов. loseSong.stop() плавно гасит.
+const loseSong = {
+  out: null,
+  play() {
+    const a = audio();
+    if (!a) return;
+    this.stop(0);
+    try {
+      const master = a.createGain();
+      master.gain.value = 0.9;
+      master.connect(a.destination);
+      // реверб: импульс из затухающего шума
+      const len = Math.floor(a.sampleRate * 3.2);
+      const ir = a.createBuffer(2, len, a.sampleRate);
+      for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.6); }
+      const rev = a.createConvolver();
+      rev.buffer = ir;
+      const wet = a.createGain();
+      wet.gain.value = 0.55;
+      rev.connect(wet).connect(master);
+      const dry = a.createGain();
+      dry.gain.value = 0.75;
+      dry.connect(master);
+      const send = (node) => { node.connect(dry); node.connect(rev); };
+      this.out = master;
+      const t0 = a.currentTime + 0.05;
+      const B = 0.78; // одна доля
+      const hz = (n) => 440 * Math.pow(2, n / 12); // n — полутоны от A4
+      // клавиша пианино: основной тон + обертоны, мягкая атака, длинное затухание
+      const piano = (n, at, dur, vol = 0.16) => {
+        const t = t0 + at * B;
+        const g = a.createGain();
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(vol, t + 0.012);
+        g.gain.exponentialRampToValueAtTime(vol * 0.35, t + 0.5);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + Math.max(1.6, dur * B + 1.2));
+        const lp = a.createBiquadFilter();
+        lp.type = 'lowpass';
+        lp.frequency.setValueAtTime(3200, t);
+        lp.frequency.exponentialRampToValueAtTime(900, t + 1.5);
+        g.connect(lp);
+        send(lp);
+        [[1, 'triangle', 1], [2, 'sine', 0.35], [3, 'sine', 0.12]].forEach(([k, type, v]) => {
+          const o = a.createOscillator();
+          const og = a.createGain();
+          o.type = type;
+          o.frequency.value = hz(n) * k;
+          o.detune.value = (Math.random() - 0.5) * 6;
+          og.gain.value = v;
+          o.connect(og).connect(g);
+          o.start(t);
+          o.stop(t + dur * B + 1.4);
+        });
+      };
+      // струнные: аккорд, медленно нарастает и уходит
+      const strings = (notes, at, beats, vol = 0.035) => {
+        const t = t0 + at * B, end = t + beats * B;
+        const g = a.createGain();
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.linearRampToValueAtTime(vol, t + 0.9);
+        g.gain.setValueAtTime(vol, end - 0.3);
+        g.gain.linearRampToValueAtTime(0.0001, end + 0.8);
+        const lp = a.createBiquadFilter();
+        lp.type = 'lowpass';
+        lp.frequency.value = 1100;
+        g.connect(lp);
+        send(lp);
+        notes.forEach((n) => [-7, 7].forEach((det) => {
+          const o = a.createOscillator();
+          o.type = 'sawtooth';
+          o.frequency.value = hz(n);
+          o.detune.value = det;
+          const l = a.createOscillator();
+          const lg = a.createGain();
+          l.frequency.value = 5;
+          lg.gain.value = 3;
+          l.connect(lg).connect(o.detune);
+          o.connect(g);
+          o.start(t); l.start(t);
+          o.stop(end + 0.9); l.stop(end + 0.9);
+        }));
+      };
+      // аккорды по тактам (4 доли): Am – F – C – E – Am, бас октавой ниже
+      const bars = [
+        { s: [-12, -9, -5], bass: -24 },   // Am
+        { s: [-16, -12, -9], bass: -28 },  // F
+        { s: [-21, -17, -14], bass: -33 }, // C (вниз)
+        { s: [-17, -13, -10], bass: -29 }, // E (с соль-диезом — «надрыв»)
+        { s: [-12, -9, -5], bass: -24 },   // Am
+      ];
+      bars.forEach((b, i) => {
+        strings(b.s, i * 4, i === 4 ? 6 : 4);
+        piano(b.bass, i * 4, 4, 0.12);
+        piano(b.bass + 12, i * 4 + 2, 2, 0.06);
+      });
+      // мелодия: [полутоны от A4, начало в долях, длительность в долях]
+      [
+        [0, 0, 0.5], [3, 0.5, 0.5], [7, 1, 2], [5, 3, 0.5], [3, 3.5, 0.5],
+        [3, 4, 1], [0, 5, 1], [-4, 6, 2],
+        [-5, 8, 0.5], [-2, 8.5, 0.5], [3, 9, 2], [2, 11, 0.5], [0, 11.5, 0.5],
+        [2, 12, 1.5], [-1, 13.5, 0.5], [2, 14, 1], [5, 15, 1],
+        [3, 16, 1.5], [2, 17.5, 0.5], [0, 18, 4],
+      ].forEach(([n, at, d]) => piano(n, at, d));
+      // последний аккорд пианино
+      [-12, -9, -5].forEach((n) => piano(n, 18, 4, 0.07));
+    } catch { /* без звука */ }
+  },
+  stop(fade = 0.6) {
+    const a = actx;
+    const out = this.out;
+    this.out = null;
+    if (!a || !out) return;
+    try {
+      out.gain.cancelScheduledValues(a.currentTime);
+      out.gain.setTargetAtTime(0.0001, a.currentTime, Math.max(0.01, fade / 3));
+      setTimeout(() => { try { out.disconnect(); } catch { /* */ } }, fade * 1000 + 300);
+    } catch { /* */ }
   },
 };
 
@@ -283,9 +396,9 @@ function loseShow(el) {
     const a = audio();
     let bus = null;
     try { bus = a.createGain(); bus.connect(a.destination); } catch { bus = null; }
-    loseSfx.sting(bus);
+    loseSong.play();
     haptic('error');
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { setTimeout(resolve, 1800); return; }
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { setTimeout(resolve, 600); return; }
     const timers = [];
     const at = (ms, fn) => timers.push(setTimeout(fn, ms));
     const tint = document.createElement('div');
@@ -305,12 +418,12 @@ function loseShow(el) {
       resolve();
     };
     function skip(e) { e.preventDefault(); e.stopPropagation(); end(); }
-    at(500, () => document.addEventListener('pointerdown', skip, true));
+    at(300, () => document.addEventListener('pointerdown', skip, true));
 
     const W = innerWidth, H = innerHeight;
     const cx = W * (0.38 + Math.random() * 0.24), cy = H * (0.32 + Math.random() * 0.2);
     // 2. трещина
-    at(1400, () => {
+    at(450, () => {
       loseSfx.crack(bus);
       haptic('heavy');
       const pts = [[0, 0], [W, 0], [W, H], [0, H]];
@@ -353,7 +466,7 @@ function loseShow(el) {
       requestAnimationFrame(() => $$('.shard', stage).forEach((s) => { s.style.transform = `translate(${(s.dataset.mx - cx) * 0.018}px,${(s.dataset.my - cy) * 0.018}px)`; }));
     });
     // 3. всё падает в пустоту
-    at(2400, () => {
+    at(1150, () => {
       loseSfx.fall(bus);
       $('.crack', stage).classList.add('gone');
       tint.classList.add('void');
@@ -369,19 +482,19 @@ function loseShow(el) {
     // 4. выходит маскот
     const m = document.createElement('div');
     m.className = 'lose-m';
-    at(4200, () => {
+    at(2700, () => {
       m.innerHTML = `<div class="lose-say" data-noi18n></div><div class="lose-body">${me('talk', 150)}</div>`;
       stage.appendChild(m);
     });
-    at(4800, () => speak($('.lose-say', m), 'Ну я же тебе говорил…', $('.lose-body .mascot', m)));
-    at(6500, () => {
+    at(3200, () => speak($('.lose-say', m), 'Ну я же тебе говорил…', $('.lose-body .mascot', m)));
+    at(4700, () => {
       $('.lose-body', m).innerHTML = `${me('sad', 150)}<i class="tear l"></i><i class="tear r"></i>`;
       m.classList.add('grief');
       loseSfx.sob(bus);
     });
     // 5. и он тоже падает
-    at(8300, () => { m.classList.add('fall'); loseSfx.drop(bus); });
-    at(9500, end);
+    at(6600, () => { m.classList.add('fall'); loseSfx.drop(bus); });
+    at(7700, end);
   });
 }
 
@@ -1487,9 +1600,8 @@ async function startLesson(target) {
       ${r.streak ? `<p class="muted">${emo(E.fire, { anim: true })} Серия: ${plural(r.streak, 'день', 'дня', 'дней')} подряд</p>` : ''}
     </div></div>
     <div class="pfoot"><div class="in"><button class="btn block" data-done>Продолжить</button></div></div>`;
-    $('[data-done]', el).onclick = () => { el.remove(); if (S.view) tg?.BackButton?.show(); route().catch(fail); };
+    $('[data-done]', el).onclick = () => { loseSong.stop(); el.remove(); if (S.view) tg?.BackButton?.show(); route().catch(fail); };
     if (lost) {
-      loseSfx.song();
       setTimeout(() => $('[data-losehint]', el)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 1600);
     }
   }
