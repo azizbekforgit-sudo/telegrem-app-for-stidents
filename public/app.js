@@ -272,7 +272,8 @@ const loseSfx = {
 // Играет с первой секунды сцены и дальше на экране результатов. loseSong.stop() плавно гасит.
 const loseSong = {
   out: null,
-  play() {
+  play(el = null) {
+    this.el = el;
     const a = audio();
     if (!a) return;
     this.stop(0);
@@ -294,7 +295,7 @@ const loseSong = {
       dry.connect(master);
       const send = (node) => { node.connect(dry); node.connect(rev); };
       this.out = master;
-      const t0 = a.currentTime + 0.05;
+      let t0 = a.currentTime + 0.05;
       const B = 0.78; // одна доля
       const hz = (n) => 440 * Math.pow(2, n / 12); // n — полутоны от A4
       // клавиша пианино: основной тон + обертоны, мягкая атака, длинное затухание
@@ -359,6 +360,7 @@ const loseSong = {
         { s: [-17, -13, -10], bass: -29 }, // E (с соль-диезом — «надрыв»)
         { s: [-12, -9, -5], bass: -24 },   // Am
       ];
+      const sched = () => {
       bars.forEach((b, i) => {
         strings(b.s, i * 4, i === 4 ? 6 : 4);
         piano(b.bass, i * 4, 4, 0.12);
@@ -374,9 +376,21 @@ const loseSong = {
       ].forEach(([n, at, d]) => piano(n, at, d));
       // последний аккорд пианино
       [-12, -9, -5].forEach((n) => piano(n, 18, 4, 0.07));
+      };
+      sched();
+      // по кругу, пока ученик не нажмёт «Продолжить» (или экран не закрыли)
+      const loopMs = 22 * B * 1000;
+      const loop = () => {
+        if (this.out !== master || (this.el && !this.el.isConnected)) { if (this.out === master) this.stop(); return; }
+        t0 = a.currentTime + 0.25;
+        sched();
+        this.timer = setTimeout(loop, loopMs);
+      };
+      this.timer = setTimeout(loop, loopMs - 250);
     } catch { /* без звука */ }
   },
   stop(fade = 0.6) {
+    clearTimeout(this.timer);
     const a = actx;
     const out = this.out;
     this.out = null;
@@ -396,7 +410,7 @@ function loseShow(el) {
     const a = audio();
     let bus = null;
     try { bus = a.createGain(); bus.connect(a.destination); } catch { bus = null; }
-    loseSong.play();
+    loseSong.play(el);
     haptic('error');
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) { setTimeout(resolve, 600); return; }
     const timers = [];
