@@ -268,8 +268,8 @@ const loseSfx = {
   drop: (bus) => synth(700, 0, 1.1, { type: 'triangle', to: 110, vol: 0.08, bus }),
 };
 
-// Песня поражения: медленное пианино + струнные + реверб (своя мелодия, ля минор).
-// Играет с первой секунды сцены и дальше на экране результатов. loseSong.stop() плавно гасит.
+// Песня поражения (своя мелодия, ля минор): удар оркестра в момент трещины → хор «ааа» и пианино →
+// нарастание струнных с барабанами → одинокое пианино в конце. Играет по кругу, пока ученик не нажмёт «Продолжить».
 const loseSong = {
   out: null,
   play(el = null) {
@@ -279,114 +279,201 @@ const loseSong = {
     this.stop(0);
     try {
       const master = a.createGain();
-      master.gain.value = 0.9;
-      master.connect(a.destination);
-      // реверб: импульс из затухающего шума
-      const len = Math.floor(a.sampleRate * 3.2);
+      master.gain.value = 0.6;
+      // мягкий компрессор, чтобы удар не хрипел
+      const comp = a.createDynamicsCompressor();
+      comp.threshold.value = -18;
+      comp.ratio.value = 4;
+      master.connect(comp).connect(a.destination);
+      // реверб: большой зал
+      const len = Math.floor(a.sampleRate * 3.8);
       const ir = a.createBuffer(2, len, a.sampleRate);
-      for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.6); }
+      for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.3); }
       const rev = a.createConvolver();
       rev.buffer = ir;
       const wet = a.createGain();
-      wet.gain.value = 0.55;
+      wet.gain.value = 0.6;
       rev.connect(wet).connect(master);
       const dry = a.createGain();
-      dry.gain.value = 0.75;
+      dry.gain.value = 0.7;
       dry.connect(master);
       const send = (node) => { node.connect(dry); node.connect(rev); };
       this.out = master;
-      let t0 = a.currentTime + 0.05;
-      const B = 0.78; // одна доля
+      const B = 0.8; // одна доля, сек
+      let t0 = a.currentTime + 0.45; // первый удар совпадает с трещиной
+      const T = (beat) => t0 + beat * B;
       const hz = (n) => 440 * Math.pow(2, n / 12); // n — полутоны от A4
-      // клавиша пианино: основной тон + обертоны, мягкая атака, длинное затухание
-      const piano = (n, at, dur, vol = 0.16) => {
-        const t = t0 + at * B;
+      const osc = (type, f, t, end, det = 0) => { const o = a.createOscillator(); o.type = type; o.frequency.value = f; o.detune.value = det; o.start(t); o.stop(end); return o; };
+
+      const piano = (n, at, dur, vol = 0.15) => {
+        const t = T(at);
         const g = a.createGain();
         g.gain.setValueAtTime(0.0001, t);
         g.gain.exponentialRampToValueAtTime(vol, t + 0.012);
         g.gain.exponentialRampToValueAtTime(vol * 0.35, t + 0.5);
-        g.gain.exponentialRampToValueAtTime(0.0001, t + Math.max(1.6, dur * B + 1.2));
+        g.gain.exponentialRampToValueAtTime(0.0001, t + Math.max(1.8, dur * B + 1.4));
         const lp = a.createBiquadFilter();
         lp.type = 'lowpass';
-        lp.frequency.setValueAtTime(3200, t);
-        lp.frequency.exponentialRampToValueAtTime(900, t + 1.5);
+        lp.frequency.setValueAtTime(3400, t);
+        lp.frequency.exponentialRampToValueAtTime(900, t + 1.6);
         g.connect(lp);
         send(lp);
         [[1, 'triangle', 1], [2, 'sine', 0.35], [3, 'sine', 0.12]].forEach(([k, type, v]) => {
-          const o = a.createOscillator();
           const og = a.createGain();
-          o.type = type;
-          o.frequency.value = hz(n) * k;
-          o.detune.value = (Math.random() - 0.5) * 6;
           og.gain.value = v;
-          o.connect(og).connect(g);
-          o.start(t);
-          o.stop(t + dur * B + 1.4);
+          osc(type, hz(n) * k, t, t + dur * B + 1.6, (Math.random() - 0.5) * 6).connect(og).connect(g);
         });
       };
-      // струнные: аккорд, медленно нарастает и уходит
-      const strings = (notes, at, beats, vol = 0.035) => {
-        const t = t0 + at * B, end = t + beats * B;
+      // струнные; swell — медленное нарастание через весь аккорд
+      const strings = (notes, at, beats, vol = 0.03, swell = false) => {
+        const t = T(at), end = T(at + beats);
         const g = a.createGain();
         g.gain.setValueAtTime(0.0001, t);
-        g.gain.linearRampToValueAtTime(vol, t + 0.9);
-        g.gain.setValueAtTime(vol, end - 0.3);
-        g.gain.linearRampToValueAtTime(0.0001, end + 0.8);
+        if (swell) g.gain.linearRampToValueAtTime(vol, end - 0.1);
+        else { g.gain.linearRampToValueAtTime(vol, t + 0.8); g.gain.setValueAtTime(vol, end - 0.2); }
+        g.gain.linearRampToValueAtTime(0.0001, end + 0.9);
         const lp = a.createBiquadFilter();
         lp.type = 'lowpass';
-        lp.frequency.value = 1100;
+        lp.frequency.value = swell ? 1800 : 1100;
         g.connect(lp);
         send(lp);
-        notes.forEach((n) => [-7, 7].forEach((det) => {
-          const o = a.createOscillator();
-          o.type = 'sawtooth';
-          o.frequency.value = hz(n);
-          o.detune.value = det;
-          const l = a.createOscillator();
+        notes.forEach((n) => [-8, 8].forEach((det) => {
+          const o = osc('sawtooth', hz(n), t, end + 1, det);
+          const l = osc('sine', 5, t, end + 1);
           const lg = a.createGain();
-          l.frequency.value = 5;
-          lg.gain.value = 3;
+          lg.gain.value = 4;
           l.connect(lg).connect(o.detune);
           o.connect(g);
-          o.start(t); l.start(t);
-          o.stop(end + 0.9); l.stop(end + 0.9);
         }));
       };
-      // аккорды по тактам (4 доли): Am – F – C – E – Am, бас октавой ниже
-      const bars = [
-        { s: [-12, -9, -5], bass: -24 },   // Am
-        { s: [-16, -12, -9], bass: -28 },  // F
-        { s: [-21, -17, -14], bass: -33 }, // C (вниз)
-        { s: [-17, -13, -10], bass: -29 }, // E (с соль-диезом — «надрыв»)
-        { s: [-12, -9, -5], bass: -24 },   // Am
-      ];
-      const sched = () => {
-      bars.forEach((b, i) => {
-        strings(b.s, i * 4, i === 4 ? 6 : 4);
-        piano(b.bass, i * 4, 4, 0.12);
-        piano(b.bass + 12, i * 4 + 2, 2, 0.06);
-      });
-      // мелодия: [полутоны от A4, начало в долях, длительность в долях]
-      [
-        [0, 0, 0.5], [3, 0.5, 0.5], [7, 1, 2], [5, 3, 0.5], [3, 3.5, 0.5],
-        [3, 4, 1], [0, 5, 1], [-4, 6, 2],
-        [-5, 8, 0.5], [-2, 8.5, 0.5], [3, 9, 2], [2, 11, 0.5], [0, 11.5, 0.5],
-        [2, 12, 1.5], [-1, 13.5, 0.5], [2, 14, 1], [5, 15, 1],
-        [3, 16, 1.5], [2, 17.5, 0.5], [0, 18, 4],
-      ].forEach(([n, at, d]) => piano(n, at, d));
-      // последний аккорд пианино
-      [-12, -9, -5].forEach((n) => piano(n, 18, 4, 0.07));
+      // хор «ааа»: пилы через две форманты гласной «а»
+      const choir = (notes, at, beats, vol = 0.05) => {
+        const t = T(at), end = T(at + beats);
+        const g = a.createGain();
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.linearRampToValueAtTime(vol, t + 1.1);
+        g.gain.setValueAtTime(vol, end - 0.3);
+        g.gain.linearRampToValueAtTime(0.0001, end + 1.2);
+        send(g);
+        const mix = a.createGain();
+        [[730, 7, 1], [1150, 9, 0.6], [2600, 10, 0.15]].forEach(([f, q, v]) => {
+          const bp = a.createBiquadFilter();
+          bp.type = 'bandpass';
+          bp.frequency.value = f;
+          bp.Q.value = q;
+          const bg = a.createGain();
+          bg.gain.value = v * 6;
+          mix.connect(bp).connect(bg).connect(g);
+        });
+        notes.forEach((n) => [-10, 0, 10].forEach((det) => {
+          const o = osc('sawtooth', hz(n), t, end + 1.3, det);
+          const l = osc('sine', 4.6 + Math.random(), t, end + 1.3);
+          const lg = a.createGain();
+          lg.gain.value = 6;
+          l.connect(lg).connect(o.detune);
+          o.connect(mix);
+        }));
       };
-      sched();
+      // барабан (литавра)
+      const drum = (at, vol = 0.5) => {
+        const t = T(at);
+        const g = a.createGain();
+        g.gain.setValueAtTime(vol, t);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 1.2);
+        g.connect(master);
+        g.connect(rev);
+        const o = osc('sine', 90, t, t + 1.3);
+        o.frequency.exponentialRampToValueAtTime(42, t + 0.5);
+        o.connect(g);
+        noise(t - a.currentTime, 0.15, { type: 'lowpass', f: 900, vol: vol * 0.5, bus: master });
+      };
+      // удар всего оркестра: низ + медь + тарелка
+      const hit = (at, chord, bass) => {
+        const t = T(at);
+        drum(at, 0.9);
+        const sub = a.createGain();
+        sub.gain.setValueAtTime(0.32, t);
+        sub.gain.exponentialRampToValueAtTime(0.0001, t + 2.5);
+        sub.connect(master);
+        const so = osc('sine', hz(bass), t, t + 2.6);
+        so.frequency.exponentialRampToValueAtTime(hz(bass) * 0.7, t + 2.4);
+        so.connect(sub);
+        const g = a.createGain();
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(0.16, t + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 2.6);
+        const lp = a.createBiquadFilter();
+        lp.type = 'lowpass';
+        lp.frequency.setValueAtTime(3500, t);
+        lp.frequency.exponentialRampToValueAtTime(500, t + 2);
+        g.connect(lp);
+        send(lp);
+        chord.forEach((n) => [-12, 0].forEach((oct) => [-6, 6].forEach((det) => osc('sawtooth', hz(n + oct), t, t + 2.7, det).connect(g))));
+        noise(t - a.currentTime, 2.4, { type: 'highpass', f: 5000, vol: 0.14, bus: master });
+      };
+      // тарелка наоборот: шипение растёт к следующему удару
+      const riser = (at, beats) => {
+        const t = T(at);
+        const dur = beats * B;
+        const g = a.createGain();
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(0.13, t + dur);
+        g.gain.linearRampToValueAtTime(0.0001, t + dur + 0.05);
+        g.connect(master);
+        const buf = a.createBuffer(1, Math.ceil(a.sampleRate * dur), a.sampleRate);
+        const d = buf.getChannelData(0);
+        for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+        const src = a.createBufferSource();
+        src.buffer = buf;
+        const hp = a.createBiquadFilter();
+        hp.type = 'highpass';
+        hp.frequency.value = 4000;
+        src.connect(hp).connect(g);
+        src.start(t);
+      };
+
+      const Am = [-12, -9, -5], F = [-16, -12, -9], Dm = [-19, -16, -12], E = [-17, -13, -10], G = [-14, -10, -7], Em = [-17, -14, -10];
+      const BASS = { Am: -24, F: -28, Dm: -31, E: -29, G: -26, Em: -29 };
+      const sched = (first) => {
+        if (first) hit(0, Am, BASS.Am);
+        // часть 1: хор и пианино
+        [['Am', Am], ['F', F], ['Dm', Dm], ['E', E]].forEach(([k, c], i) => {
+          choir(c, i * 4, 4, 0.045);
+          strings(c, i * 4, 4, 0.018);
+          piano(BASS[k], i * 4, 4, 0.11);
+        });
+        [[7, 0, 1.5], [5, 1.5, 0.5], [3, 2, 1], [0, 3, 1],
+          [0, 4, 1.5], [-2, 5.5, 0.5], [0, 6, 1], [3, 7, 1],
+          [5, 8, 1.5], [3, 9.5, 0.5], [2, 10, 1], [0, 11, 1],
+          [-1, 12, 2], [2, 14, 1], [-1, 15, 1]].forEach(([n, at, d]) => piano(n, at, d));
+        // часть 2: струнные нарастают, барабаны, мелодия выше и с октавой
+        [['F', F], ['G', G], ['Em', Em], ['E', E]].forEach(([k, c], i) => {
+          strings(c.map((n) => n + 12), 16 + i * 4, 4, 0.03 + i * 0.008, true);
+          choir(c, 16 + i * 4, 4, 0.05);
+          piano(BASS[k], 16 + i * 4, 4, 0.13);
+          drum(16 + i * 4, 0.35 + i * 0.1);
+        });
+        [29, 30, 31, 31.5].forEach((b, i) => drum(b, 0.3 + i * 0.12));
+        riser(28, 4);
+        [[12, 16, 1.5], [10, 17.5, 0.5], [8, 18, 2],
+          [7, 20, 1], [10, 21, 1], [14, 22, 2],
+          [12, 24, 1.5], [10, 25.5, 0.5], [7, 26, 2],
+          [7, 28, 1], [11, 29, 1], [14, 30, 1.5], [11, 31.5, 0.5]].forEach(([n, at, d]) => { piano(n, at, d, 0.17); piano(n - 12, at, d, 0.08); });
+        // конец: удар и одинокое пианино
+        hit(32, Am, BASS.Am);
+        [[12, 32.5, 1], [7, 33.5, 1], [3, 34.5, 1], [0, 35.5, 3]].forEach(([n, at, d]) => piano(n, at, d, 0.12));
+        Am.forEach((n) => piano(n, 35.5, 3, 0.05));
+      };
+      sched(true);
       // по кругу, пока ученик не нажмёт «Продолжить» (или экран не закрыли)
-      const loopMs = 22 * B * 1000;
+      const loopBeats = 40;
       const loop = () => {
         if (this.out !== master || (this.el && !this.el.isConnected)) { if (this.out === master) this.stop(); return; }
         t0 = a.currentTime + 0.25;
-        sched();
-        this.timer = setTimeout(loop, loopMs);
+        sched(false);
+        this.timer = setTimeout(loop, loopBeats * B * 1000);
       };
-      this.timer = setTimeout(loop, loopMs - 250);
+      this.timer = setTimeout(loop, loopBeats * B * 1000 + 200);
     } catch { /* без звука */ }
   },
   stop(fade = 0.6) {
