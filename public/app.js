@@ -268,10 +268,9 @@ const loseSfx = {
   drop: (bus) => synth(700, 0, 1.1, { type: 'triangle', to: 110, vol: 0.08, bus }),
 };
 
-// Песня поражения (своя мелодия). Начало — «сдувающийся» проигрыш: медь спускается вниз,
-// последний звук и вся музыка проседают по высоте, как будто кончилась батарейка (совпадает с падением осколков).
-// Дальше — тихая грустная шкатулка: расстроенная, медленная, все мотивы идут вниз (вздохи), бас спускается A–G–F–E.
-// Играет по кругу, пока ученик не нажмёт «Продолжить».
+// Песня поражения (своя мелодия, соль минор, 136 bpm с «половинным» грувом):
+// барабаны (бочка, хлопок на 3, хэты), упругий бас, мягкий пэд и синтезаторная мелодия.
+// Стартует ударом тарелки вместе с трещиной и играет по кругу (8 тактов), пока ученик не нажмёт «Продолжить».
 const loseSong = {
   out: null,
   play(el = null) {
@@ -281,164 +280,174 @@ const loseSong = {
     this.stop(0);
     try {
       const master = a.createGain();
-      master.gain.value = 1.3;
+      master.gain.value = 0.8;
       const comp = a.createDynamicsCompressor();
-      comp.threshold.value = -18;
+      comp.threshold.value = -16;
       comp.ratio.value = 4;
       master.connect(comp).connect(a.destination);
-      const len = Math.floor(a.sampleRate * 3.4);
+      const len = Math.floor(a.sampleRate * 2.2);
       const ir = a.createBuffer(2, len, a.sampleRate);
-      for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.5); }
+      for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3); }
       const rev = a.createConvolver();
       rev.buffer = ir;
       const wet = a.createGain();
-      wet.gain.value = 0.65;
+      wet.gain.value = 0.35;
       rev.connect(wet).connect(master);
-      const dry = a.createGain();
-      dry.gain.value = 0.7;
-      dry.connect(master);
-      const send = (node) => { node.connect(dry); node.connect(rev); };
+      // эхо для мелодии (на 3/8 доли)
+      const BEAT = 60 / 136;
+      const delay = a.createDelay(1);
+      delay.delayTime.value = BEAT * 0.75;
+      const fb = a.createGain();
+      fb.gain.value = 0.3;
+      const dlp = a.createBiquadFilter();
+      dlp.type = 'lowpass';
+      dlp.frequency.value = 2200;
+      delay.connect(dlp).connect(fb).connect(delay);
+      const dOut = a.createGain();
+      dOut.gain.value = 0.35;
+      dlp.connect(dOut).connect(master);
       this.out = master;
-      const hz = (n) => 440 * Math.pow(2, n / 12); // n — полутоны от A4
+      const mhz = (m) => 440 * Math.pow(2, (m - 69) / 12);
       const osc = (type, f, t, end, det = 0) => { const o = a.createOscillator(); o.type = type; o.frequency.value = f; o.detune.value = det; o.start(t); o.stop(end); return o; };
-      const now = a.currentTime;
-
-      // ── 1. проигрыш: «ва… ва… ва… ваааау» медью, всё проседает ──
-      const brass = (n, t, dur, vol, bendTo = null) => {
+      const noiseBuf = (() => { const b = a.createBuffer(1, a.sampleRate, a.sampleRate); const d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; return b; })();
+      const hiss = (t, dur, type, f, vol, q = 1, toRev = false) => {
+        const s = a.createBufferSource();
+        s.buffer = noiseBuf;
+        const fl = a.createBiquadFilter();
+        fl.type = type;
+        fl.frequency.value = f;
+        fl.Q.value = q;
         const g = a.createGain();
-        g.gain.setValueAtTime(0.0001, t);
-        g.gain.exponentialRampToValueAtTime(vol, t + 0.04);
-        g.gain.setValueAtTime(vol, t + dur * 0.6);
+        g.gain.setValueAtTime(vol, t);
         g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-        const lp = a.createBiquadFilter();
-        lp.type = 'lowpass';
-        lp.Q.value = 6;
-        // «уа»: фильтр открывается и закрывается, как сурдина у трубы
-        lp.frequency.setValueAtTime(500, t);
-        lp.frequency.exponentialRampToValueAtTime(1800, t + 0.12);
-        lp.frequency.exponentialRampToValueAtTime(bendTo ? 250 : 700, t + dur);
-        g.connect(lp);
-        send(lp);
-        [-9, 0, 9].forEach((det) => {
-          const o = osc('sawtooth', hz(n), t, t + dur + 0.05, det);
-          if (bendTo != null) o.frequency.setTargetAtTime(hz(bendTo), t + 0.35, dur / 3);
-          const l = osc('sine', 6, t, t + dur + 0.05);
-          const lg = a.createGain();
-          lg.gain.value = bendTo != null ? 25 : 8;
-          l.connect(lg).connect(o.detune);
-          o.connect(g);
-        });
+        s.connect(fl).connect(g).connect(master);
+        if (toRev) g.connect(rev);
+        s.start(t, Math.random() * 0.5, dur + 0.02);
       };
-      const s0 = now + 0.02;
-      brass(-2, s0, 0.36, 0.12);          // G4
-      brass(-3, s0 + 0.38, 0.36, 0.12);   // F#4
-      brass(-4, s0 + 0.76, 0.36, 0.12);   // F4
-      brass(-5, s0 + 1.14, 2.2, 0.13, -17); // E4 → сползает вниз на октаву
-      // аккорд под ним тоже «сдувается»
-      {
-        const t = s0 + 1.14;
-        const g = a.createGain();
-        g.gain.setValueAtTime(0.0001, t);
-        g.gain.exponentialRampToValueAtTime(0.07, t + 0.05);
-        g.gain.exponentialRampToValueAtTime(0.0001, t + 2.4);
-        const lp = a.createBiquadFilter();
-        lp.type = 'lowpass';
-        lp.frequency.setValueAtTime(1500, t);
-        lp.frequency.exponentialRampToValueAtTime(200, t + 2.3);
-        g.connect(lp);
-        send(lp);
-        [-24, -12, -9, -5].forEach((n) => {
-          const o = osc('sawtooth', hz(n), t, t + 2.5);
-          o.detune.setValueAtTime(0, t + 0.3);
-          o.detune.linearRampToValueAtTime(-900, t + 2.3);
-          o.connect(g);
-        });
-      }
+      let t0 = a.currentTime + 0.45; // первый удар совпадает с трещиной
+      const T = (beat) => t0 + beat * BEAT;
 
-      // ── 2. грустная шкатулка по кругу ──
-      const B = 0.9;
-      let t0 = now + 3.6;
-      const T = (beat) => t0 + beat * B;
-      // музыкальная шкатулка: чистый тон + звонкий обертон, чуть расстроена
-      const box = (n, at, vol = 0.11) => {
+      const kick = (at, vol = 0.9) => {
         const t = T(at);
         const g = a.createGain();
-        g.gain.setValueAtTime(0.0001, t);
-        g.gain.exponentialRampToValueAtTime(vol, t + 0.006);
-        g.gain.exponentialRampToValueAtTime(0.0001, t + 2.4);
-        send(g);
-        const det = -14 + Math.random() * 10;
-        osc('sine', hz(n), t, t + 2.5, det).connect(g);
-        const hg = a.createGain();
-        hg.gain.setValueAtTime(0.35, t);
-        hg.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
-        osc('sine', hz(n) * 4.2, t, t + 0.7, det).connect(hg).connect(g);
+        g.gain.setValueAtTime(vol, t);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
+        g.connect(master);
+        const o = osc('sine', 150, t, t + 0.4);
+        o.frequency.exponentialRampToValueAtTime(45, t + 0.12);
+        o.connect(g);
       };
-      // низкое мягкое пианино для баса
-      const low = (n, at, beats, vol = 0.12) => {
+      const clap = (at, vol = 0.5) => {
         const t = T(at);
+        [0, 0.012, 0.024].forEach((d) => hiss(t + d, 0.18, 'bandpass', 1500, vol, 1.2, true));
+        const g = a.createGain();
+        g.gain.setValueAtTime(0.25, t);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
+        g.connect(master);
+        osc('triangle', 190, t, t + 0.15).connect(g);
+      };
+      const hat = (at, open = false, vol = 0.12) => hiss(T(at), open ? 0.25 : 0.045, 'highpass', 7500, vol);
+      const crash = (at) => hiss(T(at), 2.2, 'highpass', 5000, 0.28, 0.7, true);
+
+      const bass = (m, at, beats, vol = 0.22) => {
+        const t = T(at);
+        const end = t + beats * BEAT * 0.9;
         const g = a.createGain();
         g.gain.setValueAtTime(0.0001, t);
-        g.gain.exponentialRampToValueAtTime(vol, t + 0.02);
-        g.gain.exponentialRampToValueAtTime(0.0001, t + beats * B + 1);
+        g.gain.exponentialRampToValueAtTime(vol, t + 0.01);
+        g.gain.exponentialRampToValueAtTime(vol * 0.5, t + 0.15);
+        g.gain.exponentialRampToValueAtTime(0.0001, end + 0.05);
         const lp = a.createBiquadFilter();
         lp.type = 'lowpass';
-        lp.frequency.value = 700;
-        g.connect(lp);
-        send(lp);
-        osc('triangle', hz(n), t, t + beats * B + 1.1).connect(g);
-        osc('sine', hz(n) * 2, t, t + beats * B + 1.1).connect(g);
+        lp.Q.value = 4;
+        lp.frequency.setValueAtTime(1200, t);
+        lp.frequency.exponentialRampToValueAtTime(220, t + 0.25);
+        g.connect(lp).connect(master);
+        osc('sawtooth', mhz(m), t, end + 0.1).connect(g);
+        osc('sine', mhz(m) / 2, t, end + 0.1).connect(g);
       };
-      // тихий хор «ууу»
-      const ooh = (notes, at, beats, vol = 0.03) => {
+      const pad = (notes, at, beats, vol = 0.03) => {
         const t = T(at), end = T(at + beats);
         const g = a.createGain();
         g.gain.setValueAtTime(0.0001, t);
-        g.gain.linearRampToValueAtTime(vol, t + 1.4);
-        g.gain.setValueAtTime(vol, end - 0.4);
-        g.gain.linearRampToValueAtTime(0.0001, end + 1);
-        send(g);
-        const mix = a.createGain();
-        [[380, 8, 1], [800, 10, 0.4]].forEach(([f, q, v]) => {
-          const bp = a.createBiquadFilter();
-          bp.type = 'bandpass';
-          bp.frequency.value = f;
-          bp.Q.value = q;
-          const bg = a.createGain();
-          bg.gain.value = v * 7;
-          mix.connect(bp).connect(bg).connect(g);
-        });
-        notes.forEach((n) => [-8, 8].forEach((det) => {
-          const o = osc('sawtooth', hz(n), t, end + 1.1, det);
-          const l = osc('sine', 4.5, t, end + 1.1);
-          const lg = a.createGain();
-          lg.gain.value = 5;
-          l.connect(lg).connect(o.detune);
-          o.connect(mix);
-        }));
+        g.gain.linearRampToValueAtTime(vol, t + 0.3);
+        g.gain.setValueAtTime(vol, end - 0.15);
+        g.gain.linearRampToValueAtTime(0.0001, end + 0.25);
+        const lp = a.createBiquadFilter();
+        lp.type = 'lowpass';
+        lp.frequency.value = 1000;
+        g.connect(lp);
+        lp.connect(master);
+        lp.connect(rev);
+        notes.forEach((m) => [-10, 10].forEach((det) => osc('sawtooth', mhz(m), t, end + 0.3, det).connect(g)));
       };
-      const sched = () => {
-        // бас спускается: A – G – F – E (по 4 доли)
-        [[-24, [-12, -9, -5]], [-26, [-14, -10, -7]], [-28, [-16, -12, -9]], [-29, [-17, -13, -10]]].forEach(([b, chord], i) => {
-          low(b, i * 4, 4);
-          low(b + 12, i * 4 + 2, 2, 0.05);
-          ooh(chord, i * 4, 4);
-        });
-        // мелодия: только вниз, «вздохи» по две ноты, с паузами
-        [[7, 0], [5, 1], [3, 2], [2, 2.5],
-          [5, 4], [3, 5], [2, 6], [0, 6.5],
-          [3, 8], [2, 9], [0, 10], [-2, 10.5],
-          [2, 12], [-1, 13], [-5, 14.5]].forEach(([n, at]) => box(n + 12, at));
+      const lead = (m, at, beats, vol = 0.075) => {
+        const t = T(at);
+        const end = t + beats * BEAT;
+        const g = a.createGain();
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(vol, t + 0.01);
+        g.gain.exponentialRampToValueAtTime(vol * 0.55, t + 0.18);
+        g.gain.setValueAtTime(vol * 0.55, Math.max(t + 0.18, end - 0.06));
+        g.gain.exponentialRampToValueAtTime(0.0001, end + 0.12);
+        const lp = a.createBiquadFilter();
+        lp.type = 'lowpass';
+        lp.frequency.setValueAtTime(3200, t);
+        lp.frequency.exponentialRampToValueAtTime(1400, t + 0.3);
+        g.connect(lp);
+        lp.connect(master);
+        lp.connect(delay);
+        lp.connect(rev);
+        const o = osc('square', mhz(m), t, end + 0.2);
+        const l = osc('sine', 5.5, t, end + 0.2);
+        const lg = a.createGain();
+        lg.gain.value = beats >= 1 ? 9 : 0;
+        l.connect(lg).connect(o.detune);
+        o.connect(g);
+        osc('triangle', mhz(m) * 2, t, end + 0.2, 4).connect(g);
       };
-      sched();
-      const loopMs = 16 * B * 1000;
+
+      // 8 тактов: Gm – Eb – Bb – F – Gm – Eb – Cm – D
+      const CH = [
+        { pad: [55, 58, 62], b: 43 }, { pad: [55, 58, 63], b: 39 }, { pad: [53, 58, 62], b: 46 }, { pad: [53, 57, 60], b: 41 },
+        { pad: [55, 58, 62], b: 43 }, { pad: [55, 58, 63], b: 39 }, { pad: [55, 60, 63], b: 36 }, { pad: [54, 57, 62], b: 38 },
+      ];
+      // мелодия: [midi, доля в такте, длительность в долях]
+      const MEL = [
+        [[74, 0, 0.5], [70, 0.5, 0.5], [67, 1, 1], [69, 2, 0.5], [70, 2.5, 0.5], [69, 3, 1]],
+        [[67, 0, 1], [65, 1, 0.5], [67, 1.5, 0.5], [70, 2, 2]],
+        [[77, 0, 0.5], [74, 0.5, 0.5], [70, 1, 1], [72, 2, 0.5], [74, 2.5, 0.5], [72, 3, 1]],
+        [[69, 0, 2], [65, 2, 1], [69, 3, 0.5], [72, 3.5, 0.5]],
+        [[70, 0, 0.5], [69, 0.5, 0.5], [67, 1, 1], [74, 2, 1], [70, 3, 1]],
+        [[67, 0, 0.5], [70, 0.5, 0.5], [75, 1, 1.5], [74, 2.5, 0.5], [72, 3, 1]],
+        [[75, 0, 1], [74, 1, 0.5], [72, 1.5, 0.5], [70, 2, 1], [67, 3, 1]],
+        [[66, 0, 1], [69, 1, 1], [74, 2, 1.5]],
+      ];
+      const sched = (first) => {
+        if (first) crash(0);
+        CH.forEach((c, bar) => {
+          const o = bar * 4;
+          pad(c.pad, o, 4);
+          // бас: 1, «и» 2, 3, «и» 4
+          [[0, 1], [1.5, 0.5], [2, 1], [3.5, 0.5]].forEach(([at, d]) => bass(c.b, o + at, d));
+          // барабаны: половинный грув — бочка на 1 и «и» 2, хлопок на 3
+          kick(o);
+          kick(o + 1.5, 0.7);
+          clap(o + 2);
+          for (let k = 0; k < 8; k++) hat(o + k * 0.5, k === 7, k % 2 ? 0.08 : 0.12);
+          if (bar === 7) { clap(o + 3.5, 0.3); clap(o + 3.75, 0.35); }
+          MEL[bar].forEach(([m, at, d]) => lead(m, o + at, d));
+        });
+      };
+      sched(true);
+      const loopBeats = 32;
       const loop = () => {
         if (this.out !== master || (this.el && !this.el.isConnected)) { if (this.out === master) this.stop(); return; }
-        t0 = a.currentTime + 0.25;
-        sched();
-        this.timer = setTimeout(loop, loopMs);
+        t0 += loopBeats * BEAT; // ровно встык, без паузы
+        sched(false);
+        this.timer = setTimeout(loop, loopBeats * BEAT * 1000);
       };
-      this.timer = setTimeout(loop, (t0 - a.currentTime) * 1000 + loopMs - 250);
+      this.timer = setTimeout(loop, (t0 - a.currentTime) * 1000 + loopBeats * BEAT * 1000 - 600);
     } catch { /* без звука */ }
   },
   stop(fade = 0.6) {
