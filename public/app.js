@@ -455,6 +455,251 @@ const loseSong = {
   },
 };
 
+// ───────── победа (80% и выше) ─────────
+// Своя фанфара: барабанная дробь → удар оркестра (медь, литавра, тарелка, взлёт струнных) →
+// мотив меди C–E–G–A–G–C с хором на последнем аккорде → дальше бодрый победный грув по кругу,
+// пока ученик не нажмёт «Продолжить». winSong.ding(i) — звон звезды.
+const winSong = {
+  out: null,
+  bus: null,
+  play(el = null) {
+    this.el = el;
+    const a = audio();
+    if (!a) return;
+    this.stop(0);
+    try {
+      const master = a.createGain();
+      master.gain.value = 0.62;
+      const comp = a.createDynamicsCompressor();
+      comp.threshold.value = -16;
+      comp.ratio.value = 4;
+      master.connect(comp).connect(a.destination);
+      const len = Math.floor(a.sampleRate * 2.6);
+      const ir = a.createBuffer(2, len, a.sampleRate);
+      for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.6); }
+      const rev = a.createConvolver();
+      rev.buffer = ir;
+      const wet = a.createGain();
+      wet.gain.value = 0.4;
+      rev.connect(wet).connect(master);
+      const send = (node) => { node.connect(master); node.connect(rev); };
+      this.out = master;
+      this.send = send;
+      const mhz = (m) => 440 * Math.pow(2, (m - 69) / 12);
+      const osc = (type, f, t, end, det = 0) => { const o = a.createOscillator(); o.type = type; o.frequency.value = f; o.detune.value = det; o.start(t); o.stop(end); return o; };
+      const nb = (() => { const b = a.createBuffer(1, a.sampleRate, a.sampleRate); const d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; return b; })();
+      const hiss = (t, dur, type, f, vol, q = 1, toRev = false) => {
+        const s = a.createBufferSource();
+        s.buffer = nb;
+        const fl = a.createBiquadFilter();
+        fl.type = type;
+        fl.frequency.value = f;
+        fl.Q.value = q;
+        const g = a.createGain();
+        g.gain.setValueAtTime(vol, t);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        s.connect(fl).connect(g).connect(master);
+        if (toRev) g.connect(rev);
+        s.start(t, Math.random() * 0.4, dur + 0.02);
+      };
+      // медь: аккорд из пил, фильтр «раскрывается» как у трубы
+      const brass = (notes, t, dur, vol = 0.07) => {
+        const g = a.createGain();
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(vol, t + 0.04);
+        g.gain.setValueAtTime(vol * 0.8, t + Math.max(0.05, dur - 0.08));
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.25);
+        const lp = a.createBiquadFilter();
+        lp.type = 'lowpass';
+        lp.Q.value = 2;
+        lp.frequency.setValueAtTime(700, t);
+        lp.frequency.exponentialRampToValueAtTime(4200, t + 0.07);
+        lp.frequency.exponentialRampToValueAtTime(2200, t + 0.35);
+        g.connect(lp);
+        send(lp);
+        notes.forEach((m) => [-7, 0, 7].forEach((det) => {
+          const o = osc('sawtooth', mhz(m), t, t + dur + 0.3, det);
+          if (dur > 0.5) { const l = osc('sine', 5.5, t + 0.3, t + dur + 0.3); const lg = a.createGain(); lg.gain.value = 6; l.connect(lg).connect(o.detune); }
+          o.connect(g);
+        }));
+      };
+      const timp = (t, m, vol = 0.8) => {
+        const g = a.createGain();
+        g.gain.setValueAtTime(vol, t);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 1.6);
+        send(g);
+        const o = osc('sine', mhz(m) * 1.06, t, t + 1.7);
+        o.frequency.exponentialRampToValueAtTime(mhz(m), t + 0.15);
+        o.connect(g);
+        hiss(t, 0.12, 'lowpass', 600, vol * 0.6);
+      };
+      const crash = (t, vol = 0.3) => hiss(t, 2.4, 'highpass', 5000, vol, 0.7, true);
+      const roll = (t, dur) => { for (let x = 0; x < dur; x += 0.035) hiss(t + x, 0.06, 'bandpass', 2200, 0.05 + 0.3 * (x / dur), 1.4); };
+      const glock = (m, t, vol = 0.09) => {
+        const g = a.createGain();
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(vol, t + 0.004);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 1.3);
+        send(g);
+        [[1, 1], [2.76, 0.35], [5.4, 0.12]].forEach(([k, v]) => { const og = a.createGain(); og.gain.value = v; osc('sine', mhz(m) * k, t, t + 1.35).connect(og).connect(g); });
+      };
+      const choir = (notes, t, dur, vol = 0.05) => {
+        const g = a.createGain();
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.linearRampToValueAtTime(vol, t + 0.25);
+        g.gain.setValueAtTime(vol, t + dur - 0.3);
+        g.gain.linearRampToValueAtTime(0.0001, t + dur + 0.6);
+        send(g);
+        const mix = a.createGain();
+        [[730, 7, 1], [1150, 9, 0.6], [2700, 10, 0.2]].forEach(([f, q, v]) => { const bp = a.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = f; bp.Q.value = q; const bg = a.createGain(); bg.gain.value = v * 6; mix.connect(bp).connect(bg).connect(g); });
+        notes.forEach((m) => [-9, 0, 9].forEach((det) => { const o = osc('sawtooth', mhz(m), t, t + dur + 0.7, det); const l = osc('sine', 5, t, t + dur + 0.7); const lg = a.createGain(); lg.gain.value = 5; l.connect(lg).connect(o.detune); o.connect(mix); }));
+      };
+      const pluck = (m, t, dur, vol = 0.05, type = 'sawtooth') => {
+        const g = a.createGain();
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(vol, t + 0.008);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        const lp = a.createBiquadFilter();
+        lp.type = 'lowpass';
+        lp.frequency.setValueAtTime(3000, t);
+        lp.frequency.exponentialRampToValueAtTime(500, t + dur);
+        g.connect(lp);
+        send(lp);
+        osc(type, mhz(m), t, t + dur + 0.05).connect(g);
+      };
+      this.glock = glock;
+
+      // ── фанфара ──
+      const s = a.currentTime + 0.02;
+      roll(s, 0.7);
+      const H = s + 0.7; // удар — вместе со вспышкой и кубком
+      timp(H, 36);
+      timp(H, 48, 0.4);
+      crash(H, 0.35);
+      brass([48, 55, 60, 64], H, 0.55, 0.08);
+      [60, 62, 64, 65, 67, 69, 71, 72].forEach((m, i) => pluck(m, H + 0.08 + i * 0.06, 0.25, 0.04)); // взлёт струнных
+      // мотив: C5 E5 G5 | A5 G5 | C6 — под ним F, G, C
+      const M = H + 0.62;
+      brass([53, 57, 60], M, 0.42, 0.05);
+      [[72, 0, 0.14], [76, 0.15, 0.14], [79, 0.3, 0.14]].forEach(([m, d, l]) => brass([m], M + d, l, 0.08));
+      brass([55, 59, 62], M + 0.46, 0.5, 0.05);
+      brass([81], M + 0.46, 0.26, 0.09);
+      brass([79], M + 0.74, 0.22, 0.09);
+      timp(M + 0.46, 43, 0.5);
+      const F = M + 1.0; // финальный аккорд
+      brass([48, 55, 60, 64, 67, 72], F, 1.7, 0.075);
+      brass([84], F, 1.7, 0.08);
+      choir([60, 64, 67, 72], F, 1.8, 0.045);
+      timp(F, 36, 0.9);
+      crash(F, 0.3);
+      for (let i = 0; i < 6; i++) glock([84, 88, 91, 96, 91, 96][i], F + 0.1 + i * 0.09, 0.05);
+
+      // ── бодрый победный грув по кругу (124 bpm, C – Am – F – G) ──
+      const BEAT = 60 / 124;
+      let t0 = F + 2.0;
+      const T = (b) => t0 + b * BEAT;
+      const CH = [{ c: [60, 64, 67], b: 36 }, { c: [57, 60, 64], b: 33 }, { c: [57, 60, 65], b: 29 }, { c: [59, 62, 67], b: 31 }];
+      const MEL = [
+        [[76, 0, 0.5], [79, 0.5, 0.5], [84, 1, 1], [83, 2, 0.5], [79, 2.5, 0.5], [76, 3, 1]],
+        [[76, 0, 0.5], [72, 0.5, 0.5], [76, 1, 1], [81, 2, 1.5], [79, 3.5, 0.5]],
+        [[77, 0, 0.5], [81, 0.5, 0.5], [84, 1, 1], [86, 2, 0.5], [84, 2.5, 0.5], [81, 3, 1]],
+        [[83, 0, 1], [79, 1, 0.5], [83, 1.5, 0.5], [86, 2, 2]],
+      ];
+      const kick = (t) => { const g = a.createGain(); g.gain.setValueAtTime(0.75, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.3); g.connect(master); const o = osc('sine', 140, t, t + 0.32); o.frequency.exponentialRampToValueAtTime(48, t + 0.1); o.connect(g); };
+      const snare = (t) => { hiss(t, 0.16, 'bandpass', 1900, 0.3, 1, true); const g = a.createGain(); g.gain.setValueAtTime(0.18, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.1); g.connect(master); osc('triangle', 200, t, t + 0.12).connect(g); };
+      const sched = () => {
+        CH.forEach((ch, bar) => {
+          const o = bar * 4;
+          for (let k = 0; k < 4; k++) kick(T(o + k));
+          snare(T(o + 1));
+          snare(T(o + 3));
+          for (let k = 0; k < 8; k++) hiss(T(o + k * 0.5), 0.04, 'highpass', 8000, k % 2 ? 0.1 : 0.06);
+          for (let k = 0; k < 8; k++) pluck(ch.b + (k % 2 ? 12 : 0), T(o + k * 0.5), 0.22, 0.09, 'sawtooth');
+          [1.5, 3.5].forEach((b) => brass(ch.c.map((m) => m + 12), T(o + b), 0.18, 0.04));
+          MEL[bar].forEach(([m, b, d]) => { glock(m, T(o + b), 0.07); pluck(m - 12, T(o + b), d * BEAT, 0.035, 'square'); });
+        });
+      };
+      sched();
+      const loopBeats = 16;
+      const loop = () => {
+        if (this.out !== master || (this.el && !this.el.isConnected)) { if (this.out === master) this.stop(); return; }
+        t0 += loopBeats * BEAT;
+        sched();
+        this.timer = setTimeout(loop, loopBeats * BEAT * 1000);
+      };
+      this.timer = setTimeout(loop, (t0 - a.currentTime) * 1000 + loopBeats * BEAT * 1000 - 600);
+    } catch { /* без звука */ }
+  },
+  // звон звезды (i = 0, 1, 2 — всё выше)
+  ding(i) {
+    const a = actx;
+    if (!a || !this.glock) return;
+    try { const t = a.currentTime; [[91, 0], [96, 0.06]].forEach(([m, d]) => this.glock(m + i * 2, t + d, 0.12)); } catch { /* */ }
+  },
+  stop(fade = 0.6) {
+    clearTimeout(this.timer);
+    const a = actx;
+    const out = this.out;
+    this.out = null;
+    if (!a || !out) return;
+    try {
+      out.gain.cancelScheduledValues(a.currentTime);
+      out.gain.setTargetAtTime(0.0001, a.currentTime, Math.max(0.01, fade / 3));
+      setTimeout(() => { try { out.disconnect(); } catch { /* */ } }, fade * 1000 + 300);
+    } catch { /* */ }
+  },
+};
+
+// Сцена победы: золотой свет и лучи → удар, вспышка, кубок падает сверху с волной → «ПОБЕДА!» →
+// проценты набегают → звёзды по одной → маскот выпрыгивает: «Я в тебя верил!». Нажатие пропускает.
+function winShow(el, pct) {
+  return new Promise((resolve) => {
+    winSong.play(el);
+    haptic('success');
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { setTimeout(resolve, 600); return; }
+    const timers = [];
+    const at = (ms, fn) => timers.push(setTimeout(fn, ms));
+    const stars = pct === 100 ? 3 : 2;
+    const stage = document.createElement('div');
+    stage.className = 'win-stage';
+    stage.dataset.noi18n = '1';
+    stage.innerHTML = `<div class="win-rays"></div><div class="win-glow"></div>
+      <div class="win-trophy">${emo(E.trophy, { anim: true })}</div><div class="win-ring"></div>
+      <div class="win-title">${esc(tr('ПОБЕДА!'))}</div>
+      <div class="win-pct"><b>0</b>%</div>
+      <div class="win-stars">${[0, 1, 2].map((i) => `<span class="ws ${i < stars ? 'on' : ''}">${emo(E.star)}</span>`).join('')}</div>
+      <div class="win-m"><div class="win-say"></div><div class="win-body">${me('cheer', 140)}</div></div>
+      <div class="win-flash"></div>`;
+    document.body.appendChild(stage);
+    requestAnimationFrame(() => stage.classList.add('s1'));
+    let ended = false;
+    const end = () => {
+      if (ended) return;
+      ended = true;
+      timers.forEach(clearTimeout);
+      document.removeEventListener('pointerdown', skip, true);
+      stage.classList.add('out');
+      setTimeout(() => stage.remove(), 350);
+      resolve();
+    };
+    function skip(e) { e.preventDefault(); e.stopPropagation(); end(); }
+    at(400, () => document.addEventListener('pointerdown', skip, true));
+    at(700, () => { stage.classList.add('s2'); haptic('heavy'); confetti(); });
+    at(1300, () => stage.classList.add('s3'));
+    at(1700, () => {
+      const b = $('.win-pct b', stage);
+      const t0 = performance.now();
+      const step = (now) => { const k = Math.min(1, (now - t0) / 900); b.textContent = Math.round(pct * (1 - Math.pow(1 - k, 3))); if (k < 1 && !ended) requestAnimationFrame(step); };
+      requestAnimationFrame(step);
+      stage.classList.add('s4');
+    });
+    [0, 1, 2].forEach((i) => at(2700 + i * 320, () => { $$('.ws', stage)[i].classList.add('pop'); if (i < stars) { winSong.ding(i); haptic('light'); } }));
+    at(3900, () => { stage.classList.add('s5'); confetti(); });
+    at(4300, () => speak($('.win-say', stage), 'Я в тебя верил!', $('.win-body .mascot', stage)));
+    at(6600, end);
+  });
+}
+
 // Сцена проигрыша: красный свет, трещина как у зеркала, всё падает в пустоту, маскот «ну я же тебе говорил» и тоже падает.
 // Нажатие в любом месте пропускает сцену.
 function loseShow(el) {
@@ -1638,12 +1883,15 @@ async function startLesson(target) {
     try { tg?.disableClosingConfirmation?.(); } catch { /* */ }
     const lost = !data.mistakes && r.pct < 60;
     if (lost) await loseShow(el);
+    const won = !data.mistakes && r.pct >= 80;
+    if (won) await winShow(el, r.pct);
     const look = data.mistakes ? (r.correct === r.total ? { emo: 'love', icon: E.muscle, title: 'Все ошибки исправлены!' } : { emo: r.correct ? 'cheer' : 'sad', icon: E.muscle, title: `Исправлено ${r.correct} из ${r.total}` })
       : r.pct === 100 ? { emo: 'love', icon: E.hundred, title: 'Идеально!' }
       : r.pct >= 80 ? { emo: 'cheer', icon: E.party, title: 'Урок пройден!' }
         : r.pct >= 50 ? { emo: 'peace', icon: E.clap, title: 'Неплохо!' }
           : { emo: 'sad', icon: E.muscle, title: 'В следующий раз получится' };
-    if (r.pct >= 80) { sfx.win(); setTimeout(confetti, 250); }
+    if (won) setTimeout(confetti, 200);
+    else if (r.pct >= 80) { sfx.win(); setTimeout(confetti, 250); }
     if (!lost) haptic(r.pct >= 50 ? 'success' : 'warning');
     const mins = Math.floor(r.durationSec / 60), secs = r.durationSec % 60;
     el.innerHTML = `<div class="pbody"><div class="result">
@@ -1666,7 +1914,7 @@ async function startLesson(target) {
       ${r.streak ? `<p class="muted">${emo(E.fire, { anim: true })} Серия: ${plural(r.streak, 'день', 'дня', 'дней')} подряд</p>` : ''}
     </div></div>
     <div class="pfoot"><div class="in"><button class="btn block" data-done>Продолжить</button></div></div>`;
-    $('[data-done]', el).onclick = () => { loseSong.stop(); el.remove(); if (S.view) tg?.BackButton?.show(); route().catch(fail); };
+    $('[data-done]', el).onclick = () => { loseSong.stop(); winSong.stop(); el.remove(); if (S.view) tg?.BackButton?.show(); route().catch(fail); };
     if (lost) {
       setTimeout(() => $('[data-losehint]', el)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 1600);
     }
