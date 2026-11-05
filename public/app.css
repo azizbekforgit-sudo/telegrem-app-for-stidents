@@ -402,6 +402,42 @@ code { background: var(--card-2); padding: 1px 6px; border-radius: 7px; font-siz
 @keyframes twinkle { 50% { opacity: 0.35; } }
 @keyframes floaty { 50% { transform: translateY(-6px); } }
 @keyframes dropfall { 0% { transform: translateY(-3px); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(8px); opacity: 0; } }
+/* ───── проигрыш (меньше 60%) ───── */
+.lose-tint { position: fixed; inset: 0; z-index: 90; pointer-events: none; opacity: 0; background: radial-gradient(circle at 50% 42%, rgba(255, 70, 90, 0.35), rgba(120, 0, 25, 0.8) 75%); animation: loseTint 0.8s ease forwards, losePulse 1.1s ease-in-out 0.8s infinite alternate; }
+.lose-tint.void { animation: none; opacity: 1; transition: background 1.2s ease; background: radial-gradient(circle at 50% 45%, rgba(40, 4, 14, 1), #000 75%); }
+@keyframes loseTint { to { opacity: 1; } }
+@keyframes losePulse { from { opacity: 1; } to { opacity: 0.72; } }
+.lose-stage { position: fixed; inset: 0; z-index: 91; overflow: hidden; background: radial-gradient(circle at 50% 45%, #2a0510, #050003 70%, #000); }
+.lose-stage .shard { position: absolute; inset: 0; will-change: transform; transition: transform 0.12s ease-out; }
+.lose-stage .shard > .player { position: absolute; z-index: auto; }
+.lose-stage .shard::after { content: ''; position: absolute; inset: 0; background: rgba(160, 0, 30, 0.38); }
+.lose-stage .crack { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+.lose-stage .crack .sh { stroke: rgba(0, 0, 0, 0.55); stroke-width: 4; }
+.lose-stage .crack .ln { stroke: rgba(255, 255, 255, 0.95); stroke-width: 1.6; stroke-dasharray: 2000; stroke-dashoffset: 2000; animation: crackDraw 0.22s ease-out forwards; }
+.lose-stage .crack circle { fill: rgba(255, 255, 255, 0.9); filter: blur(2px); }
+.lose-stage .crack.gone { opacity: 0; transition: opacity 0.25s; }
+@keyframes crackDraw { to { stroke-dashoffset: 0; } }
+.lose-stage .lose-flash { position: absolute; inset: 0; z-index: 6; background: #fff; pointer-events: none; animation: loseFlash 0.35s ease-out forwards; }
+@keyframes loseFlash { from { opacity: 0.85; } to { opacity: 0; } }
+.lose-stage.shake { animation: loseShake 0.45s cubic-bezier(.36,.07,.19,.97); }
+@keyframes loseShake { 10%, 90% { transform: translate(-2px, 1px); } 20%, 80% { transform: translate(5px, -3px); } 30%, 50%, 70% { transform: translate(-9px, 4px); } 40%, 60% { transform: translate(9px, -4px); } }
+.lose-m { position: absolute; left: 50%; top: 52%; z-index: 7; display: flex; flex-direction: column; align-items: center; gap: 12px; width: min(320px, 86vw); transform: translate(-50%, 70vh); animation: loseRise 0.7s cubic-bezier(.2, 1.3, .4, 1) forwards; }
+@keyframes loseRise { to { transform: translate(-50%, -50%); } }
+.lose-say { min-height: 52px; background: #fff; color: #2b1720; font-weight: 800; font-size: 19px; padding: 12px 18px; border-radius: 20px; position: relative; text-align: center; }
+.lose-say:empty { visibility: hidden; }
+.lose-say::after { content: ''; position: absolute; left: 50%; bottom: -9px; margin-left: -9px; border: 9px solid transparent; border-bottom: 0; border-top-color: #fff; }
+.lose-body { position: relative; }
+.lose-m.grief .lose-body { animation: loseSob 0.5s ease-in-out infinite alternate; }
+@keyframes loseSob { from { transform: translateY(0) rotate(-2deg); } to { transform: translateY(5px) rotate(2deg); } }
+.lose-body .tear { position: absolute; top: 44%; width: 10px; height: 14px; background: #6ec6ff; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; animation: loseTear 0.9s ease-in infinite; }
+.lose-body .tear.l { left: 33%; } .lose-body .tear.r { left: 60%; animation-delay: 0.45s; }
+@keyframes loseTear { from { transform: translateY(0); opacity: 1; } to { transform: translateY(60px); opacity: 0; } }
+.lose-m.fall { animation: loseFall 1.1s cubic-bezier(.5, 0, .9, .4) forwards; }
+@keyframes loseFall { from { transform: translate(-50%, -50%); opacity: 1; } 75% { opacity: 1; } to { transform: translate(-40%, 90vh) rotate(35deg) scale(0.7); opacity: 0; } }
+.lose-m.fall .lose-say { opacity: 0; transition: opacity 0.15s; }
+.lose-hint { font-weight: 900; font-size: 18px; color: var(--bad); margin: 6px 0 10px; animation: loseHint 1s ease-in-out infinite alternate; }
+@keyframes loseHint { from { transform: translateY(0); } to { transform: translateY(4px); } }
+.qlist.lost { border-color: var(--bad); box-shadow: 0 0 0 3px color-mix(in srgb, var(--bad) 25%, transparent); }
 .confetti { position: fixed; inset: 0; pointer-events: none; z-index: 70; }
 @media (prefers-reduced-motion: reduce) { *, .mascot .m-body { animation: none !important; transition: none !important; } }
 .emo.lg { width: 48px; height: 48px; }

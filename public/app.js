@@ -190,6 +190,201 @@ const sfx = {
   win: () => tone([523, 659, 784, 1047], 0.18, 'triangle', 0.11),
 };
 
+// ───────── проигрыш (меньше 60%): звуки ─────────
+function audio() {
+  try { actx ||= new (window.AudioContext || window.webkitAudioContext)(); actx.resume?.(); return actx; } catch { return null; }
+}
+function synth(freq, at, dur, { type = 'sawtooth', vol = 0.1, to = null, bus = null, lp = null, vib = 0 } = {}) {
+  const a = audio();
+  if (!a) return;
+  try {
+    const t = a.currentTime + at;
+    const o = a.createOscillator();
+    const g = a.createGain();
+    o.type = type;
+    o.frequency.setValueAtTime(freq, t);
+    if (to) o.frequency.exponentialRampToValueAtTime(to, t + dur);
+    if (vib) {
+      const l = a.createOscillator();
+      const lg = a.createGain();
+      l.frequency.value = 6;
+      lg.gain.value = vib;
+      l.connect(lg).connect(o.frequency);
+      l.start(t + dur * 0.3);
+      l.stop(t + dur + 0.05);
+    }
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + 0.03);
+    g.gain.setValueAtTime(vol, t + dur * 0.7);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g);
+    let out = g;
+    if (lp) { const f = a.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = lp; g.connect(f); out = f; }
+    out.connect(bus || a.destination);
+    o.start(t);
+    o.stop(t + dur + 0.05);
+  } catch { /* без звука */ }
+}
+function noise(at, dur, { type = 'bandpass', f = 1500, to = null, vol = 0.3, bus = null } = {}) {
+  const a = audio();
+  if (!a) return;
+  try {
+    const t = a.currentTime + at;
+    const buf = a.createBuffer(1, Math.ceil(a.sampleRate * dur), a.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    const src = a.createBufferSource();
+    src.buffer = buf;
+    const fl = a.createBiquadFilter();
+    fl.type = type;
+    fl.frequency.setValueAtTime(f, t);
+    if (to) fl.frequency.exponentialRampToValueAtTime(to, t + dur);
+    const g = a.createGain();
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    src.connect(fl).connect(g).connect(bus || a.destination);
+    src.start(t);
+  } catch { /* без звука */ }
+}
+const loseSfx = {
+  // «ва-ва-ва-ваааа» тромбоном
+  sting: (bus) => {
+    [[392, 0, 0.4], [370, 0.42, 0.4], [349, 0.84, 0.4]].forEach(([f, at, d]) => synth(f, at, d, { vol: 0.09, lp: 1300, bus }));
+    synth(330, 1.26, 1.3, { vol: 0.09, lp: 1300, to: 290, vib: 7, bus });
+  },
+  // треск разбитого стекла
+  crack: (bus) => {
+    noise(0, 0.12, { type: 'bandpass', f: 900, vol: 0.9, bus });
+    noise(0, 0.6, { type: 'highpass', f: 3500, vol: 0.45, bus });
+    synth(2600, 0, 0.07, { type: 'square', vol: 0.06, to: 180, bus });
+    for (let i = 0; i < 7; i++) synth(2600 + Math.random() * 2400, 0.08 + i * 0.06 + Math.random() * 0.04, 0.14, { type: 'triangle', vol: 0.035, bus });
+  },
+  // всё летит вниз
+  fall: (bus) => {
+    noise(0, 1.5, { type: 'lowpass', f: 2200, to: 120, vol: 0.28, bus });
+    synth(320, 0, 1.5, { type: 'sine', to: 50, vol: 0.09, bus });
+  },
+  sob: (bus) => { [0, 0.35, 0.7].forEach((at, i) => synth(520 - i * 30, at, 0.28, { type: 'triangle', to: 380 - i * 30, vol: 0.05, bus })); },
+  drop: (bus) => synth(700, 0, 1.1, { type: 'triangle', to: 110, vol: 0.08, bus }),
+  // грустная песенка на экране результатов
+  song: () => {
+    const N = { A3: 220, B3: 247, C4: 262, D4: 294, E4: 330, F4: 349, G4: 392, A4: 440, B4: 494, C5: 523 };
+    let t = 0.2;
+    [['A4', 0.45], ['C5', 0.45], ['B4', 0.45], ['A4', 0.45], ['G4', 0.45], ['E4', 0.9], ['F4', 0.45], ['E4', 0.45], ['D4', 0.45], ['C4', 0.45], ['B3', 0.45], ['A3', 1.4]]
+      .forEach(([n, d]) => { synth(N[n], t, d * 0.95, { type: 'triangle', vol: 0.07 }); t += d; });
+    [[110, 0.2, 1.8], [87.3, 2.0, 1.8], [82.4, 3.8, 1.8], [110, 5.6, 1.6]].forEach(([f, at, d]) => synth(f, at, d, { type: 'sine', vol: 0.08 }));
+  },
+};
+
+// Сцена проигрыша: красный свет, трещина как у зеркала, всё падает в пустоту, маскот «ну я же тебе говорил» и тоже падает.
+// Нажатие в любом месте пропускает сцену.
+function loseShow(el) {
+  return new Promise((resolve) => {
+    const a = audio();
+    let bus = null;
+    try { bus = a.createGain(); bus.connect(a.destination); } catch { bus = null; }
+    loseSfx.sting(bus);
+    haptic('error');
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { setTimeout(resolve, 1800); return; }
+    const timers = [];
+    const at = (ms, fn) => timers.push(setTimeout(fn, ms));
+    const tint = document.createElement('div');
+    tint.className = 'lose-tint';
+    document.body.appendChild(tint);
+    let stage = null;
+    let ended = false;
+    const end = () => {
+      if (ended) return;
+      ended = true;
+      timers.forEach(clearTimeout);
+      try { bus?.gain.setTargetAtTime(0.0001, a.currentTime, 0.05); } catch { /* */ }
+      document.removeEventListener('pointerdown', skip, true);
+      tint.remove();
+      stage?.remove();
+      el.style.visibility = '';
+      resolve();
+    };
+    function skip(e) { e.preventDefault(); e.stopPropagation(); end(); }
+    at(500, () => document.addEventListener('pointerdown', skip, true));
+
+    const W = innerWidth, H = innerHeight;
+    const cx = W * (0.38 + Math.random() * 0.24), cy = H * (0.32 + Math.random() * 0.2);
+    // 2. трещина
+    at(1400, () => {
+      loseSfx.crack(bus);
+      haptic('heavy');
+      const pts = [[0, 0], [W, 0], [W, H], [0, H]];
+      for (let i = 0; i < 9; i++) {
+        const ang = (i / 9) * Math.PI * 2 + Math.random() * 0.5;
+        const dx = Math.cos(ang), dy = Math.sin(ang);
+        const tx = dx > 0 ? (W - cx) / dx : dx < 0 ? -cx / dx : Infinity;
+        const ty = dy > 0 ? (H - cy) / dy : dy < 0 ? -cy / dy : Infinity;
+        const k = Math.min(tx, ty);
+        pts.push([cx + dx * k, cy + dy * k]);
+      }
+      pts.sort((p, q) => Math.atan2(p[1] - cy, p[0] - cx) - Math.atan2(q[1] - cy, q[0] - cx));
+      const ring = pts.map((p) => { const f = 0.22 + Math.random() * 0.22; return [cx + (p[0] - cx) * f, cy + (p[1] - cy) * f]; });
+      const polys = [];
+      pts.forEach((p, i) => {
+        const j = (i + 1) % pts.length;
+        polys.push([[cx, cy], ring[i], ring[j]]);
+        polys.push([ring[i], p, pts[j], ring[j]]);
+      });
+      stage = document.createElement('div');
+      stage.className = 'lose-stage';
+      const snap = el.cloneNode(true);
+      snap.style.visibility = '';
+      const P = (p) => `${p[0].toFixed(1)}px ${p[1].toFixed(1)}px`;
+      polys.forEach((poly) => {
+        const s = document.createElement('div');
+        s.className = 'shard';
+        s.style.clipPath = `polygon(${poly.map(P).join(',')})`;
+        s.dataset.mx = poly.reduce((n, p) => n + p[0], 0) / poly.length;
+        s.dataset.my = poly.reduce((n, p) => n + p[1], 0) / poly.length;
+        s.appendChild(snap.cloneNode(true));
+        stage.appendChild(s);
+      });
+      const L = (p, q) => `<line x1="${p[0].toFixed(1)}" y1="${p[1].toFixed(1)}" x2="${q[0].toFixed(1)}" y2="${q[1].toFixed(1)}"/>`;
+      const lines = pts.map((p) => L([cx, cy], p)).join('') + ring.map((p, i) => L(p, ring[(i + 1) % ring.length])).join('');
+      stage.insertAdjacentHTML('beforeend', `<svg class="crack" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"><g class="sh">${lines}</g><g class="ln">${lines}</g><circle cx="${cx}" cy="${cy}" r="10"/></svg><div class="lose-flash"></div>`);
+      document.body.appendChild(stage);
+      el.style.visibility = 'hidden';
+      stage.classList.add('shake');
+      requestAnimationFrame(() => $$('.shard', stage).forEach((s) => { s.style.transform = `translate(${(s.dataset.mx - cx) * 0.018}px,${(s.dataset.my - cy) * 0.018}px)`; }));
+    });
+    // 3. всё падает в пустоту
+    at(2400, () => {
+      loseSfx.fall(bus);
+      $('.crack', stage).classList.add('gone');
+      tint.classList.add('void');
+      $$('.shard', stage).forEach((s) => {
+        const d = Math.random() * 450;
+        const rot = (Math.random() - 0.5) * 80;
+        const dx = (s.dataset.mx - cx) * 0.25;
+        s.style.transition = `transform ${950 + Math.random() * 500}ms cubic-bezier(.5,0,.9,.4) ${d}ms, opacity 300ms ease ${d + 1000}ms`;
+        s.style.transform = `translate(${dx}px, ${H * 1.35}px) rotate(${rot}deg) scale(.85)`;
+        s.style.opacity = '0';
+      });
+    });
+    // 4. выходит маскот
+    const m = document.createElement('div');
+    m.className = 'lose-m';
+    at(4200, () => {
+      m.innerHTML = `<div class="lose-say" data-noi18n></div><div class="lose-body">${me('talk', 150)}</div>`;
+      stage.appendChild(m);
+    });
+    at(4800, () => speak($('.lose-say', m), 'Ну я же тебе говорил…', $('.lose-body .mascot', m)));
+    at(6500, () => {
+      $('.lose-body', m).innerHTML = `${me('sad', 150)}<i class="tear l"></i><i class="tear r"></i>`;
+      m.classList.add('grief');
+      loseSfx.sob(bus);
+    });
+    // 5. и он тоже падает
+    at(8300, () => { m.classList.add('fall'); loseSfx.drop(bus); });
+    at(9500, end);
+  });
+}
+
 // ───────── помощники UI ─────────
 function avatar(u, cls = '') {
   const p = u?.prefs;
@@ -1262,13 +1457,15 @@ async function startLesson(target) {
     let r;
     try { r = await api(`/attempts/${data.attemptId}/finish`, {}); } catch (e) { return fail(e); }
     try { tg?.disableClosingConfirmation?.(); } catch { /* */ }
+    const lost = !data.mistakes && r.pct < 60;
+    if (lost) await loseShow(el);
     const look = data.mistakes ? (r.correct === r.total ? { emo: 'love', icon: E.muscle, title: 'Все ошибки исправлены!' } : { emo: r.correct ? 'cheer' : 'sad', icon: E.muscle, title: `Исправлено ${r.correct} из ${r.total}` })
       : r.pct === 100 ? { emo: 'love', icon: E.hundred, title: 'Идеально!' }
       : r.pct >= 80 ? { emo: 'cheer', icon: E.party, title: 'Урок пройден!' }
         : r.pct >= 50 ? { emo: 'peace', icon: E.clap, title: 'Неплохо!' }
           : { emo: 'sad', icon: E.muscle, title: 'В следующий раз получится' };
     if (r.pct >= 80) { sfx.win(); setTimeout(confetti, 250); }
-    haptic(r.pct >= 50 ? 'success' : 'warning');
+    if (!lost) haptic(r.pct >= 50 ? 'success' : 'warning');
     const mins = Math.floor(r.durationSec / 60), secs = r.durationSec % 60;
     el.innerHTML = `<div class="pbody"><div class="result">
       <div style="position:relative;display:inline-block">${me(look.emo, 150)}<span style="position:absolute;right:-26px;top:4px">${emo(look.icon, { anim: true, cls: 'xl' })}</span></div>
@@ -1285,11 +1482,16 @@ async function startLesson(target) {
       ${r.group && r.group.avg != null ? `<div class="card" style="text-align:left;margin-bottom:12px"><div class="row between" style="margin-bottom:10px"><h3>${emo(E.swords)} Ты vs группа</h3>${r.group.rank ? `<span class="pill gold">#${r.group.rank} из ${r.group.done}</span>` : ''}</div>
         ${hbars([{ label: 'Твой результат', value: r.pct, color: 'var(--accent)' }, { label: `Среднее по группе (сдали ${r.group.done} из ${r.group.size})`, value: r.group.avg, color: 'var(--faint)' }])}</div>` : ''}
       ${r.topics.length ? `<div class="card" style="text-align:left;margin-bottom:12px"><h3 style="margin-bottom:12px">${emo(E.compass)} По темам</h3>${r.topics.length >= 3 ? radar(r.topics) : hbars(r.topics.map((t) => ({ label: t.topic, value: t.pct, right: `${t.correct}/${t.total}`, color: 'var(--accent)' })))}</div>` : ''}
-      <div class="card qlist" style="margin-bottom:12px"><h3 style="margin-bottom:6px">${emo(E.memo)} Ответы</h3>${r.questions.map((q) => `<div><span style="color:${q.correct ? 'var(--good)' : 'var(--bad)'}">${ic(q.correct ? 'check-circle' : 'close-circle', 'sm')}</span><span>${esc(q.prompt)}</span></div>`).join('')}</div>
+      ${lost ? `<div class="lose-hint" data-losehint>${emo('👇')} Посмотри на свои ошибки</div>` : ''}
+      <div class="card qlist ${lost ? 'lost' : ''}" style="margin-bottom:12px"><h3 style="margin-bottom:6px">${emo(E.memo)} Ответы</h3>${r.questions.map((q) => `<div><span style="color:${q.correct ? 'var(--good)' : 'var(--bad)'}">${ic(q.correct ? 'check-circle' : 'close-circle', 'sm')}</span><span>${esc(q.prompt)}</span></div>`).join('')}</div>
       ${r.streak ? `<p class="muted">${emo(E.fire, { anim: true })} Серия: ${plural(r.streak, 'день', 'дня', 'дней')} подряд</p>` : ''}
     </div></div>
     <div class="pfoot"><div class="in"><button class="btn block" data-done>Продолжить</button></div></div>`;
     $('[data-done]', el).onclick = () => { el.remove(); if (S.view) tg?.BackButton?.show(); route().catch(fail); };
+    if (lost) {
+      loseSfx.song();
+      setTimeout(() => $('[data-losehint]', el)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 1600);
+    }
   }
 
   render();
