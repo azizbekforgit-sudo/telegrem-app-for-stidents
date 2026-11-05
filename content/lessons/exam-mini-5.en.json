@@ -1,0 +1,75 @@
+{
+  "title": "Mini test: 5 questions",
+  "description": "A quick check: HTML, CSS and JavaScript",
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "HTML",
+      "prompt": "Which tag makes the main heading of the page?",
+      "options": [
+        "<h1>",
+        "<h6>",
+        "<head>",
+        "<p>"
+      ],
+      "answer": 0,
+      "explain": "<h1> is the first-level, most important heading."
+    },
+    {
+      "type": "truefalse",
+      "topic": "CSS",
+      "prompt": "In CSS a class is written with a dot: .card",
+      "answer": true,
+      "explain": "A class uses a dot, an ID uses a hash #."
+    },
+    {
+      "type": "fill",
+      "topic": "CSS",
+      "prompt": "Put the blocks in a row",
+      "text": ".menu {\n  display: ___;\n}",
+      "answer": [
+        "flex"
+      ],
+      "extra": [
+        "block",
+        "none",
+        "inline"
+      ],
+      "explain": "display: flex lines the items up in a row."
+    },
+    {
+      "type": "order",
+      "topic": "JavaScript",
+      "prompt": "Build the line that prints «Hello» to the console",
+      "tokens": [
+        "console",
+        ".log(",
+        "\"Hello\"",
+        ")"
+      ],
+      "extra": [
+        "print("
+      ],
+      "explain": "console.log(...) prints a value to the console."
+    },
+    {
+      "type": "match",
+      "topic": "JavaScript",
+      "prompt": "Match the value and its type",
+      "pairs": [
+        [
+          "42",
+          "number"
+        ],
+        [
+          "\"42\"",
+          "string"
+        ],
+        [
+          "true",
+          "boolean"
+        ]
+      ]
+    }
+  ]
+}

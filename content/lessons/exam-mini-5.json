@@ -1,0 +1,79 @@
+{
+  "id": "exam-mini-5",
+  "order": 100,
+  "kind": "exam",
+  "emoji": "⚡",
+  "title": "Мини-тест: 5 вопросов",
+  "description": "Быстрая проверка: HTML, CSS и JavaScript",
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "HTML",
+      "prompt": "Какой тег делает самый главный заголовок страницы?",
+      "options": [
+        "<h1>",
+        "<h6>",
+        "<head>",
+        "<p>"
+      ],
+      "answer": 0,
+      "explain": "<h1> — заголовок первого уровня, самый главный."
+    },
+    {
+      "type": "truefalse",
+      "topic": "CSS",
+      "prompt": "В CSS класс пишут через точку: .card",
+      "answer": true,
+      "explain": "Класс — через точку, ID — через решётку #."
+    },
+    {
+      "type": "fill",
+      "topic": "CSS",
+      "prompt": "Поставь блоки в ряд",
+      "text": ".menu {\n  display: ___;\n}",
+      "answer": [
+        "flex"
+      ],
+      "extra": [
+        "block",
+        "none",
+        "inline"
+      ],
+      "explain": "display: flex выстраивает элементы в ряд."
+    },
+    {
+      "type": "order",
+      "topic": "JavaScript",
+      "prompt": "Собери строку, которая выводит «Привет» в консоль",
+      "tokens": [
+        "console",
+        ".log(",
+        "\"Привет\"",
+        ")"
+      ],
+      "extra": [
+        "print("
+      ],
+      "explain": "console.log(...) выводит значение в консоль."
+    },
+    {
+      "type": "match",
+      "topic": "JavaScript",
+      "prompt": "Соедини значение и его тип",
+      "pairs": [
+        [
+          "42",
+          "число"
+        ],
+        [
+          "\"42\"",
+          "строка"
+        ],
+        [
+          "true",
+          "логическое"
+        ]
+      ]
+    }
+  ]
+}

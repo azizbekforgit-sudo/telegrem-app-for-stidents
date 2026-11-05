@@ -1,0 +1,75 @@
+{
+  "title": "Mini-test: 5 ta savol",
+  "description": "Tezkor tekshiruv: HTML, CSS va JavaScript",
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "HTML",
+      "prompt": "Sahifaning eng asosiy sarlavhasini qaysi teg qiladi?",
+      "options": [
+        "<h1>",
+        "<h6>",
+        "<head>",
+        "<p>"
+      ],
+      "answer": 0,
+      "explain": "<h1> — birinchi darajali, eng asosiy sarlavha."
+    },
+    {
+      "type": "truefalse",
+      "topic": "CSS",
+      "prompt": "CSSda klass nuqta bilan yoziladi: .card",
+      "answer": true,
+      "explain": "Klass — nuqta bilan, ID — panjara # bilan."
+    },
+    {
+      "type": "fill",
+      "topic": "CSS",
+      "prompt": "Bloklarni qatorga qo'y",
+      "text": ".menu {\n  display: ___;\n}",
+      "answer": [
+        "flex"
+      ],
+      "extra": [
+        "block",
+        "none",
+        "inline"
+      ],
+      "explain": "display: flex elementlarni qatorga tizadi."
+    },
+    {
+      "type": "order",
+      "topic": "JavaScript",
+      "prompt": "Konsolga «Salom» chiqaradigan qatorni yig'",
+      "tokens": [
+        "console",
+        ".log(",
+        "\"Salom\"",
+        ")"
+      ],
+      "extra": [
+        "print("
+      ],
+      "explain": "console.log(...) qiymatni konsolga chiqaradi."
+    },
+    {
+      "type": "match",
+      "topic": "JavaScript",
+      "prompt": "Qiymat va uning turini moslashtir",
+      "pairs": [
+        [
+          "42",
+          "son"
+        ],
+        [
+          "\"42\"",
+          "satr"
+        ],
+        [
+          "true",
+          "mantiqiy"
+        ]
+      ]
+    }
+  ]
+}
