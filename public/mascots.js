@@ -19,6 +19,7 @@ export const MASCOTS = {
   hog: { name: 'Шустрик', about: 'Быстрый ёжик. Решает на ходу и не ждёт никого', color: '#1bb5a2' },
   bot: { name: 'Бит', about: 'Робот-помощник. Проверяет ответы быстрее калькулятора', color: '#5b8def' },
   ugo: { name: 'Уголёк', about: 'Чёрный котик. Замечает ошибки даже в темноте', color: '#ff9a1f' },
+  plu: { name: 'Плюх', about: 'Акулёнок-моряк. Ныряет в задачу и всплывает с ответом', color: '#2a9fba' },
 };
 
 let uid = 0;
@@ -413,7 +414,29 @@ BODIES.bot = function bot(id) {
   return { pal: { blush: '#ff6fa8', tongue: '#ff6fa8' }, back: antenna + ears + feet, body: body + shine(64, 52, 16, 7) + screen + lights, f, a, fill: '#e8f1fb', st, b: { cx: 100, top: 30 } };
 };
 
-const GRAD = { mimi: ['#ffffff', '#f3e6ef'], kapi: ['#e6aa74', '#c07b48'], dino: ['#8ff0b4', '#45c27b'], axi: ['#ffd6e6', '#ff9cc4'], boo: ['#56505f', '#17141c'], ano: ['#4a4952', '#141319'], zip: ['#ff6b5e', '#c41e1e'], ugo: ['#3a3842', '#0a0a0d'], fox: ['#ffa458', '#e8661a'], hog: ['#7ff0e0', '#14a896'], bot: ['#f3f8ff', '#a9bfd8'] };
+// Плюх — свой акулёнок: бирюзовый, с плавником на макушке, жабрами, хвостиком и красным морским платочком.
+BODIES.plu = function plu(id) {
+  const st = '#167a92';
+  const fill = `url(#${id}b)`;
+  const fin = `<path d="M84 50 C88 30 104 14 122 12 C114 26 112 40 114 52 Z" fill="#2a9fba" stroke="${st}" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M100 30 C106 22 112 18 118 16" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".45" fill="none"/>`;
+  const tail = `<path d="M158 150 C176 150 190 140 196 124 C186 128 182 136 176 136 C186 128 190 116 188 104 C178 116 170 126 156 130 Z" fill="#2a9fba" stroke="${st}" stroke-width="3" stroke-linejoin="round"/>`;
+  const side = `<path d="M26 112 C14 108 8 118 10 128 C18 124 24 124 30 126 Z" fill="#2a9fba" stroke="${st}" stroke-width="3" stroke-linejoin="round"/>`;
+  const body = `<path d="M100 44 C150 44 170 74 170 114 C170 156 142 178 100 178 C58 178 30 156 30 114 C30 74 50 44 100 44Z" fill="${fill}" stroke="${st}" stroke-width="3"/>`;
+  const belly = `<path d="M52 140 C64 124 136 124 148 140 C148 162 128 174 100 174 C72 174 52 162 52 140Z" fill="#f4fbf7" opacity=".96"/>`;
+  const gills = [0, 1, 2].map((i) => `<path d="M${150 - i * 7} ${100 + i * 2} q4 9 0 18" stroke="${st}" stroke-width="3" fill="none" stroke-linecap="round" opacity=".6"/>`).join('');
+  const scarf = `<path d="M62 132 Q100 146 138 132 L132 142 Q100 156 68 142 Z" fill="#ef4b4b" stroke="#c42f2f" stroke-width="2.4" stroke-linejoin="round"/>
+    <path d="M92 146 L100 168 L110 146 Z" fill="#ef4b4b" stroke="#c42f2f" stroke-width="2.4" stroke-linejoin="round"/>
+    <path d="M74 138 Q100 148 126 138" stroke="#fff" stroke-width="2.4" fill="none" opacity=".8" stroke-dasharray="5 5"/>`;
+  const bubbles = `<g class="fx-float"><circle cx="40" cy="44" r="7" fill="#bff0ff" stroke="#7fd3ea" stroke-width="2" opacity=".9"/><circle cx="38" cy="41" r="2" fill="#fff"/>
+    <circle cx="28" cy="26" r="4.5" fill="#bff0ff" stroke="#7fd3ea" stroke-width="2" opacity=".9"/><circle cx="46" cy="16" r="3" fill="#bff0ff" stroke="#7fd3ea" stroke-width="1.6" opacity=".9"/></g>`;
+  const feet = `<ellipse cx="76" cy="180" rx="16" ry="9" fill="#2a9fba" stroke="${st}" stroke-width="3"/><ellipse cx="124" cy="180" rx="16" ry="9" fill="#2a9fba" stroke="${st}" stroke-width="3"/>`;
+  const f = { x: 100, y: 98, ex: 30, ey: 96, my: 120, s: 0.95, blurId: id + 'k', idleMouth: 'smile' };
+  const a = { l: [40, 150], r: [160, 150], chin: [86, 140] };
+  return { pal: { blush: '#ff8fa8', tongue: '#ff7f9a' }, back: fin + tail + side + feet + bubbles, body: body + belly + gills + shine(66, 66, 18, 9), top: scarf, f, a, fill: '#2a9fba', st, b: { cx: 100, top: 30 } };
+};
+
+const GRAD = { mimi: ['#ffffff', '#f3e6ef'], kapi: ['#e6aa74', '#c07b48'], dino: ['#8ff0b4', '#45c27b'], axi: ['#ffd6e6', '#ff9cc4'], boo: ['#56505f', '#17141c'], ano: ['#4a4952', '#141319'], zip: ['#ff6b5e', '#c41e1e'], ugo: ['#3a3842', '#0a0a0d'], fox: ['#ffa458', '#e8661a'], hog: ['#7ff0e0', '#14a896'], bot: ['#f3f8ff', '#a9bfd8'], plu: ['#7fe0ef', '#1f93b0'] };
 
 export function mascot(id = 'mimi', emo = 'happy', size = 120, cls = '', crop = false) {
   if (!BODIES[id]) id = 'mimi';
