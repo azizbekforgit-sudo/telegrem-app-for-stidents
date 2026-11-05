@@ -349,7 +349,7 @@ function confetti() {
 const S = { me: null, tab: null, view: null, overview: null, leagueGroup: null, groupTab: 'members' };
 const STUDENT_TABS = [['home', 'home-smile', 'Путь'], ['league', 'cup-star', 'Лига'], ['stats', 'chart-2', 'Прогресс'], ['profile', 'user-rounded', 'Профиль']];
 const PARENT_TABS = [['phome', 'home-smile', 'Главная'], ['league', 'cup-star', 'Лига'], ['kids', 'users-group-rounded', 'Ученики'], ['pprofile', 'user-rounded', 'Профиль']];
-const ADMIN_TABS = [['dash', 'widget-5', 'Панель'], ['groups', 'users-group-rounded', 'Группы'], ['tests', 'notebook-bookmark', 'Тесты'], ['bot', 'chat-round-dots', 'Бот']];
+const ADMIN_TABS = [['dash', 'widget-5', 'Панель'], ['path', 'home-smile', 'Путь'], ['groups', 'users-group-rounded', 'Группы'], ['tests', 'notebook-bookmark', 'Тесты'], ['bot', 'chat-round-dots', 'Бот']];
 
 function renderNav() {
   const tabs = S.me.isAdmin ? ADMIN_TABS : S.me.isParent ? PARENT_TABS : STUDENT_TABS;
@@ -381,7 +381,7 @@ async function route() {
   if (S.view?.type === 'group') return viewGroup(S.view.id);
   if (S.view?.type === 'student') return viewStudent(S.view.id);
   if (S.view?.type === 'league') return viewLeague();
-  const r = { home: tabHome, league: tabLeague, stats: tabStats, profile: tabProfile, dash: tabDash, groups: tabGroups, tests: tabTests, bot: tabBot, phome: tabParentHome, kids: tabKids, pprofile: tabParentProfile }[S.tab];
+  const r = { home: tabHome, league: tabLeague, stats: tabStats, profile: tabProfile, dash: tabDash, groups: tabGroups, path: tabTeacherPath, tests: tabTests, bot: tabBot, phome: tabParentHome, kids: tabKids, pprofile: tabParentProfile }[S.tab];
   await r();
 }
 async function refreshMe() {
@@ -487,6 +487,33 @@ function pathNodes(p, k, todo) {
 
 // «Обучалка 11 урока» (переводится шаблоном)
 function learnName(p) { return p.order != null && p.order < 100 ? `Обучалка ${p.order} урока` : 'Обучалка'; }
+
+// Путь глазами учителя: тот же вид, что у учеников, но всё открыто
+async function tabTeacherPath() {
+  const o = await loadOverview();
+  const list = [...o.lessons].sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+  let html = adminTop('Путь') + `<div class="hero" style="margin-top:8px">${me('talk', 96, 'quiet')}<div class="grow"><div class="say">Так Путь видят ученики. Для тебя все уроки открыты: нажми на кружок, чтобы пройти обучалку или тест.</div></div></div>`;
+  if (!list.length) html += emptyState('sleepy', 'Тестов пока нет', 'Жду конспект — пришли его Claude.');
+  else {
+    html += `<div class="unit"><div class="grow"><small>${list.length} уроков, все открыты</small><h2>${emo(E.books)}Курс</h2></div>${emo(E.books)}</div><div class="path">`;
+    let k = 0;
+    list.forEach((l) => {
+      const named = l.order != null && l.order < 100;
+      const node = (idx, inner, cls, attr, label) => `<div class="pnode" style="transform:translateX(${OFFS[idx % OFFS.length]}px)"><button class="node ${cls}" ${attr} aria-label="${esc(l.title)}">${inner}</button>${label}</div>`;
+      if (l.hasLearn) {
+        html += node(k, emo('📖'), 'learn', `data-tlearn="${esc(l.id)}"`, `<div class="lbl"><b>${named ? `Обучалка ${l.order} урока` : 'Обучалка'}</b><br>${plural(l.learnSections, 'раздел', 'раздела', 'разделов')}</div>`);
+        k++;
+      }
+      html += node(k, emo(l.emoji), l.exam ? 'exam' : '', `data-ttest="${esc(l.id)}"`, `<div class="lbl">${l.exam ? '<span class="pill gold sm">📝 тест</span><br>' : ''}<b>${esc(l.title)}</b><br>${plural(l.questions, 'вопрос', 'вопроса', 'вопросов')}</div>`);
+      k++;
+    });
+    html += '</div>';
+  }
+  app.innerHTML = html;
+  bindAdminTop();
+  $$('[data-tlearn]').forEach((b) => (b.onclick = () => { haptic('medium'); startLearn({ lessonId: b.dataset.tlearn }); }));
+  $$('[data-ttest]').forEach((b) => (b.onclick = () => { haptic('medium'); startLesson({ lessonId: b.dataset.ttest }); }));
+}
 
 // Закрытый урок курса: учитель ещё не дал доступ
 function lockedNode(l, k) {

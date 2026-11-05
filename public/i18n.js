@@ -20,6 +20,7 @@ const PHRASES = [
   ['К обучалке', 'To the lesson', "Darsga o'tish"], ['Начать', 'Start', 'Boshlash'],
   ['Работа над ошибками', 'Fix your mistakes', 'Xatolar ustida ishlash'],
   ['исправления. Ответишь верно — уйдут из списка.', 'to fix. Answer correctly and they leave the list.', "tuzatilishini kutmoqda. To'g'ri javob bersang, ro'yxatdan chiqadi."],
+  ['Так Путь видят ученики. Для тебя все уроки открыты: нажми на кружок, чтобы пройти обучалку или тест.', 'This is how students see the Path. Everything is open for you: tap a circle to try the tutorial or the test.', "Bu yo'lni o'quvchilar shunday ko'radi. Sen uchun hammasi ochiq: o'quv qismi yoki testni ko'rish uchun doirachaga bos."],
   ['Курс', 'Course', 'Kurs'], ['закрыто', 'locked', 'yopiq'], ['Закрыто', 'Locked', 'Yopiq'], ['отдельно от курса', 'outside the course', 'kursdan tashqari'], ['Другие тесты', 'Other tests', 'Boshqa testlar'],
   ['Этот урок пока закрыт. Когда учитель откроет доступ — он появится здесь, и я тебе напишу!', "This lesson is locked for now. When the teacher opens it, it will show up here and I'll message you!", "Bu dars hozircha yopiq. Ustoz ochganda shu yerda paydo bo'ladi va men senga yozaman!"],
   ['Выдать доступ ученикам', 'Give students access', 'O‘quvchilarga ruxsat berish'], ['Кому дать доступ?', 'Who gets access?', 'Kimga ruxsat beramiz?'],
@@ -259,6 +260,7 @@ const TOKENS = [
 ];
 
 const PATTERNS = [
+  [/^(\d+) уроков, все открыты$/, '$1 lessons, all open', "$1 ta dars, hammasi ochiq"],
   [/^Обучалка (\d+) урока$/, 'Lesson $1 tutorial', "$1-dars o'quv qismi"],
   [/^Привет, (.+)!$/, 'Hi, $1!', 'Salom, $1!'],
   [/^(\d+) из (\d+) пройдено$/, '$1 of $2 done', "$2 tadan $1 tasi o'tildi"],
