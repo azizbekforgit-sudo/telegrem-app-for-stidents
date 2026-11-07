@@ -2137,7 +2137,7 @@ async function viewGroup(gid) {
     body = !st.tests.length
       ? emptyState('sleepy', 'Тестов ещё не было', 'Отправь группе тест во вкладке «Тесты».')
       : `<p class="muted small" style="margin-top:14px">Нажми на тест, чтобы увидеть, кто и сколько раз его решал.</p>
-        <div class="stack" style="margin-top:10px">${st.tests.map((t) => `<button class="card tap row" data-gtest="${t.pubId}" style="gap:12px;width:100%;text-align:left;font:inherit;color:inherit">${emo(t.emoji, { cls: 'lg' })}<div class="grow"><b>${esc(t.title)}</b>
+        <div class="stack" style="margin-top:10px">${st.tests.map((t) => `<button class="card tap row" data-gtest="${esc(t.key)}" style="gap:12px;width:100%;text-align:left;font:inherit;color:inherit">${emo(t.emoji, { cls: 'lg' })}<div class="grow"><b>${esc(t.title)}</b>
           <div class="small muted">решили ${t.done}/${t.size} · ${ago(t.publishedAt)}</div></div>${pctPill(t.avg)}<span class="faint">${ic('alt-arrow-right')}</span></button>`).join('')}</div>`;
   } else if (S.groupTab === 'stats') {
     body = !st.tests.length
@@ -2179,7 +2179,9 @@ async function viewGroup(gid) {
 
 // Кто из учеников решал тест, сколько раз и сколько процентов набрал каждый раз
 async function testAttemptsSheet(pubId) {
-  const d = await api(`/admin/pubs/${pubId}/attempts`).catch(fail);
+  // ключ «группа|урок» — все доступы группы к уроку; иначе одна публикация
+  const [gid, lid] = String(pubId).split('|');
+  const d = await api(lid ? `/admin/groups/${gid}/lessons/${lid}/attempts` : `/admin/pubs/${pubId}/attempts`).catch(fail);
   if (!d) return;
   const pill = (p) => `<span class="pill ${p >= 80 ? 'good' : p >= 50 ? 'gold' : 'bad'}">${p}%</span>`;
   const row = (r) => `<div class="att-row"><div class="row" style="gap:10px">${avatar(r)}<div class="grow" style="min-width:0"><b class="ellipsis" style="display:block">${esc(r.name)}</b>

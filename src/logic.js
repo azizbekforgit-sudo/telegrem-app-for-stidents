@@ -884,13 +884,41 @@ export function createLogic(store, { adminIds }) {
     };
   }
 
-  function groupStats(gid) {
+  // Все уроки, к которым у учеников группы есть доступ: отправленные всей группе И выданные лично
+  // (через «Выдать доступ ученикам»). Личные задания от Claude сюда не входят.
+  function groupLessons(gid) {
     const g = S.groups[gid];
     if (!g) throw httpError(404, 'Группа не найдена');
-    const pubs = pubsForGroup(gid);
-    const ps = pubs.map((p) => pubStats(p.id));
+    const members = g.memberIds.filter((id) => !isAdmin(id) && S.users[id]);
+    const byLesson = new Map();
+    for (const uid of members) {
+      for (const p of pubsForUser(uid)) {
+        const l = S.lessons[p.lessonId];
+        if (!l || l.personal) continue;
+        if (p.groupId && p.groupId !== gid) continue;
+        let L = byLesson.get(p.lessonId);
+        if (!L) byLesson.set(p.lessonId, (L = { lessonId: p.lessonId, users: new Map(), publishedAt: p.publishedAt }));
+        L.publishedAt = Math.min(L.publishedAt, p.publishedAt);
+        if (!L.users.has(uid)) L.users.set(uid, []);
+        if (!L.users.get(uid).includes(p.id)) L.users.get(uid).push(p.id);
+      }
+    }
+    const bestOf = (uid, pubIds) => pubIds.map((pid) => best(uid, pid)).filter(Boolean).sort((x, y) => y.pct - x.pct)[0] || null;
+    const list = [...byLesson.values()].map((L) => {
+      const l = S.lessons[L.lessonId];
+      const bests = [...L.users].map(([uid, pids]) => [uid, bestOf(uid, pids)]);
+      const done = bests.filter(([, b]) => b);
+      return { ...L, title: l.title, emoji: l.emoji, order: l.order ?? null, bestOf, done: done.length, size: L.users.size,
+        avg: avg(done.map(([, b]) => b.pct)), notDone: bests.filter(([, b]) => !b).map(([uid]) => uid) };
+    }).sort((x, y) => (x.order ?? 999) - (y.order ?? 999) || x.publishedAt - y.publishedAt);
+    return { g, members, list };
+  }
+
+  function groupStats(gid) {
+    const { g, members, list } = groupLessons(gid);
+    const ps = pubsForGroup(gid).map((p) => pubStats(p.id));
     const lb = leaderboard(gid);
-    const heat = lb.rows.map((r) => ({ userId: r.userId, name: r.name, cells: pubs.map((p) => best(r.userId, p.id)?.pct ?? null), avg: r.avg, mistakes: mistakesOf(r.userId).length }));
+    const heat = lb.rows.map((r) => ({ userId: r.userId, name: r.name, cells: list.map((L) => (L.users.has(r.userId) ? L.bestOf(r.userId, L.users.get(r.userId))?.pct ?? null : null)), avg: r.avg, mistakes: mistakesOf(r.userId).length }));
     const hardest = ps
       .flatMap((s) => s.questions.map((q) => ({ ...q, test: s.title })))
       .filter((q) => q.total > 0 && q.pct < 100)
@@ -898,12 +926,29 @@ export function createLogic(store, { adminIds }) {
       .slice(0, 5);
     return {
       group: groupCard(g),
-      tests: ps.map((s) => ({ pubId: s.pubId, title: s.title, emoji: s.emoji, avg: s.avg, done: s.done.length, size: s.size, publishedAt: s.publishedAt, notDone: s.notDone.map((id) => name(S.users[id])) })),
+      members: members.length,
+      tests: list.map((L) => ({ key: `${gid}|${L.lessonId}`, lessonId: L.lessonId, title: L.title, emoji: L.emoji, avg: L.avg, done: L.done, size: L.size, publishedAt: L.publishedAt, notDone: L.notDone.map((id) => name(S.users[id])) })),
       heat,
       hardest,
       leaderboard: lb,
     };
   }
+  // Кто из группы решал урок и сколько раз — по всем его доступам (группе и лично)
+  function groupLessonAttempts(gid, lessonId) {
+    const { g, list } = groupLessons(gid);
+    const L = list.find((x) => x.lessonId === lessonId);
+    if (!L) throw httpError(404, 'Тест не найден');
+    const lesson = S.lessons[lessonId];
+    const rows = [...L.users].map(([uid, pids]) => {
+      const u = S.users[uid];
+      const attempts = pids.flatMap((pid) => finishedAttempts(uid, pid)).sort((a, b) => a.finishedAt - b.finishedAt).map((a, i) => ({ n: i + 1, ...scoreOf(a), at: a.finishedAt, practice: Boolean(a.practice), xp: a.xp || 0 }));
+      const b = L.bestOf(uid, pids);
+      const learnable = lesson?.learn && pids.some((pid) => !S.pubs[pid]?.noLearn);
+      return { userId: uid, name: name(u), username: u?.username || '', photoUrl: u?.photoUrl || null, prefs: u?.prefs || null, learnDone: learnable ? pids.some((pid) => learnDone(uid, pid)) : null, attempts, best: b ? b.pct : null };
+    }).sort((a, b) => (b.best ?? -1) - (a.best ?? -1) || a.name.localeCompare(b.name));
+    return { title: lesson?.title, emoji: lesson?.emoji, groupName: g.name, publishedAt: L.publishedAt, size: rows.length, started: rows.filter((r) => r.attempts.length).length, avg: avg(rows.filter((r) => r.best != null).map((r) => r.best)), rows };
+  }
+
 
   function groupCard(g) {
     const pubs = pubsForGroup(g.id);
@@ -1058,7 +1103,7 @@ export function createLogic(store, { adminIds }) {
   }
 
   return {
-    S, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
+    S, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
     upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,
