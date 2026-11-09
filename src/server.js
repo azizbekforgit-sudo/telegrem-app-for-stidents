@@ -71,6 +71,28 @@ if (fs.existsSync(bonusFile)) {
   }
 }
 
+// Время уроков из content/schedule.json: { id, groups: [{ match, slots }], students: [{ userId | username, slots, tzMin? }] }.
+// Каждый id применяется один раз; дальше учитель меняет время в приложении.
+const schedFile = path.join(root, 'content', 'schedule.json');
+if (fs.existsSync(schedFile)) {
+  const sc = JSON.parse(fs.readFileSync(schedFile, 'utf8'));
+  logic.S.migrations ||= {};
+  if (!logic.S.migrations['schedule:' + sc.id]) {
+    for (const g of sc.groups || []) {
+      const found = Object.values(logic.S.groups).filter((x) => x.name.toLowerCase().includes(g.match.toLowerCase()));
+      if (found.length !== 1) { console.error(`[schedule] группа «${g.match}»: найдено ${found.length} (${found.map((x) => x.name).join(', ')})`); continue; }
+      try { journal.setSchedule(found[0].id, g.slots); console.log(`[schedule] группа ${found[0].name}: ${JSON.stringify(g.slots)}`); } catch (e) { console.error(`[schedule] ${g.match}: ${e.message}`); }
+    }
+    for (const st of sc.students || []) {
+      const u = st.userId ? logic.S.users[st.userId] : logic.findUserByUsername(st.username || '');
+      if (!u) { console.error(`[schedule] ученик не найден: ${st.userId || '@' + st.username}`); continue; }
+      try { journal.setUserSchedule(u.id, st.slots, st.tzMin); console.log(`[schedule] ученик ${logic.name(u)} (${u.id}): ${JSON.stringify(st.slots)}${st.tzMin != null ? ' tz ' + st.tzMin : ''}`); } catch (e) { console.error(`[schedule] ${u.id}: ${e.message}`); }
+    }
+    logic.S.migrations['schedule:' + sc.id] = Date.now();
+    store.save();
+  }
+}
+
 // Один раз открываем всё до самого дальнего урока, к которому у ученика уже есть доступ
 for (const key of ['access-v1', 'access-v2']) {
   const accessReport = logic.migrateAccess(key);

@@ -37,22 +37,35 @@ export function createJournal({ logic, store }) {
   const members = (gid) => (S.groups[gid]?.memberIds || []).filter((id) => S.users[id] && !logic.isAdmin(id) && !logic.isParent(id));
 
   // ───────── расписание ─────────
-  function setSchedule(gid, slots) {
-    const g = S.groups[gid];
-    if (!g) throw httpError(404, 'Группа не найдена');
+  function cleanSlots(slots) {
     const clean = (Array.isArray(slots) ? slots : []).slice(0, 21).map((s) => ({ dow: Number(s.dow), start: String(s.start || ''), end: String(s.end || '') }));
     for (const s of clean) {
       if (!(s.dow >= 1 && s.dow <= 7) || !HM.test(s.start) || !HM.test(s.end) || toMin(s.end) <= toMin(s.start)) throw httpError(400, 'Проверь дни и время: начало раньше конца, формат 14:00');
     }
-    g.schedule = clean.sort((a, b) => a.dow - b.dow || toMin(a.start) - toMin(b.start));
+    return clean.sort((a, b) => a.dow - b.dow || toMin(a.start) - toMin(b.start));
+  }
+  function setSchedule(gid, slots) {
+    const g = S.groups[gid];
+    if (!g) throw httpError(404, 'Группа не найдена');
+    g.schedule = cleanSlots(slots);
     store.save();
     return g.schedule;
   }
+  // Личное время уроков ученика (если он занимается не со всей группой). tzMin — в каком часовом поясе
+  // показывать ему время в дневнике (например, 180 = Москва); спрашивает бот всё равно по Ташкенту.
+  function setUserSchedule(uid, slots, tzMin) {
+    const u = S.users[String(uid)];
+    if (!u) throw httpError(404, 'Ученик не найден');
+    u.schedule = cleanSlots(slots);
+    if (tzMin !== undefined) { if (tzMin == null) delete u.showTzMin; else u.showTzMin = Number(tzMin); }
+    store.save();
+    return u.schedule;
+  }
 
   // ───────── занятия и посещаемость ─────────
-  const findSession = (gid, date, start) => Object.values(S.classes).find((s) => s.groupId === gid && s.date === date && s.start === start);
-  function newSession(gid, date, start, end) {
-    const s = { id: store.nextId('s'), groupId: gid, date, start, end, members: members(gid), absent: [], status: 'asking', reasons: {}, notified: [], createdAt: Date.now(), markedAt: null };
+  const findSession = (gid, date, start, uid = null) => Object.values(S.classes).find((s) => s.groupId === gid && s.date === date && s.start === start && (s.userId || null) === uid);
+  function newSession(gid, date, start, end, uid = null) {
+    const s = { id: store.nextId('s'), groupId: gid, ...(uid ? { userId: uid } : {}), date, start, end, members: uid ? [uid] : members(gid), absent: [], status: 'asking', reasons: {}, notified: [], createdAt: Date.now(), markedAt: null };
     S.classes[s.id] = s;
     store.save();
     return s;
@@ -70,6 +83,17 @@ export function createJournal({ logic, store }) {
         if (findSession(g.id, today, sl.start)) continue;
         if (!members(g.id).length) continue;
         out.push(newSession(g.id, today, sl.start, sl.end));
+      }
+    }
+    // личное время учеников
+    for (const u of Object.values(S.users)) {
+      for (const sl of u.schedule || []) {
+        if (sl.dow !== dow || logic.isAdmin(u.id)) continue;
+        const ask = toMin(sl.start) + ASK_AFTER;
+        if (cur < ask || cur > toMin(sl.end) + 30) continue;
+        const gid = logic.userGroups(u.id)[0]?.id || null;
+        if (findSession(gid, today, sl.start, u.id)) continue;
+        out.push(newSession(gid, today, sl.start, sl.end, u.id));
       }
     }
     return out;
@@ -169,7 +193,7 @@ export function createJournal({ logic, store }) {
   // ───────── ответы для приложения ─────────
   const sessionOut = (s) => {
     const g = S.groups[s.groupId];
-    return { id: s.id, groupId: s.groupId, group: g ? { id: g.id, name: g.name, emoji: g.emoji } : null, date: s.date, start: s.start, end: s.end, status: s.status,
+    return { id: s.id, groupId: s.groupId, personal: s.userId ? nameOf(s.userId) : null, group: g ? { id: g.id, name: g.name, emoji: g.emoji } : null, date: s.date, start: s.start, end: s.end, status: s.status,
       members: s.members.filter((id) => S.users[id]).map((id) => ({ id, name: nameOf(id), absent: s.absent.includes(id), reason: s.reasons[id] || null })) };
   };
   // Журнал учителя: расписание, занятия и оценки
@@ -181,6 +205,7 @@ export function createJournal({ logic, store }) {
     for (const g of groups) {
       const done = Object.values(S.classes).filter((c) => c.groupId === g.id && c.status === 'done');
       g.lessons = done.length;
+      g.personal = members(g.id).filter((uid) => S.users[uid].schedule?.length).map((uid) => ({ id: uid, name: nameOf(uid), schedule: S.users[uid].schedule, tzMin: S.users[uid].showTzMin ?? null }));
       g.students = members(g.id).map((uid) => {
         const mine = done.filter((c) => c.members.includes(uid));
         const minus = mine.filter((c) => c.absent.includes(uid)).length;
@@ -203,9 +228,17 @@ export function createJournal({ logic, store }) {
     const lang = S.users[uid]?.prefs?.lang || null;
     const grades = Object.values(S.grades).filter((g) => g.userId === uid).sort((a, b) => a.at - b.at).map((g) => gradeOut(g, lang));
     const present = days.filter((d) => d.present).length;
-    const schedule = logic.userGroups(uid).flatMap((g) => (g.schedule || []).map((sl) => ({ ...sl, group: { name: g.name, emoji: g.emoji } })));
+    const tz = S.users[uid]?.showTzMin ?? TZ_MIN;
+    const shift = (hm) => { if (tz === TZ_MIN || !hm) return hm; const m = (toMin(hm) + tz - TZ_MIN + 1440) % 1440; return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`; };
+    const g0 = logic.userGroups(uid)[0];
+    const schedule = [
+      ...logic.userGroups(uid).flatMap((g) => (g.schedule || []).map((sl) => ({ ...sl, group: { name: g.name, emoji: g.emoji } }))),
+      ...(S.users[uid]?.schedule || []).map((sl) => ({ ...sl, group: { name: g0?.name || '', emoji: g0?.emoji || '📚' } })),
+    ].map((sl) => ({ ...sl, start: shift(sl.start), end: shift(sl.end) }));
+    for (const d of days) { d.start = shift(d.start); d.end = shift(d.end); }
     return {
       today: dateOf(local()),
+      tzMin: tz,
       days,
       grades,
       schedule,
@@ -219,5 +252,5 @@ export function createJournal({ logic, store }) {
   }
   const gradeXp = (uid) => Object.values(S.grades).filter((g) => g.userId === String(uid)).reduce((n, g) => n + g.xp, 0);
 
-  return { setSchedule, dueSessions, startSession, markAttendance, deleteSession, pendingSession, parseNames, setReason, addGrade, deleteGrade, adminJournal, diary, gradeXp, sessionOut, members, latin };
+  return { setSchedule, setUserSchedule, dueSessions, startSession, markAttendance, deleteSession, pendingSession, parseNames, setReason, addGrade, deleteGrade, adminJournal, diary, gradeXp, sessionOut, members, latin };
 }

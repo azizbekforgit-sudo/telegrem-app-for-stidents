@@ -207,7 +207,7 @@ export function createBot({ token, logic, journal, store, appUrl, adminIds }) {
 
   // ───────── журнал: посещаемость ─────────
   const fmtDate = (d) => d.split('-').reverse().slice(0, 2).join('.');
-  const sessTitle = (s) => { const g = S.groups[s.groupId]; return `${g?.emoji || '📚'} <b>${esc(g?.name || 'Группа')}</b> · ${fmtDate(s.date)} · ${s.start}${s.end && s.end !== s.start ? '–' + s.end : ''}`; };
+  const sessTitle = (s) => { const g = S.groups[s.groupId]; return `${s.userId ? `👤 <b>${esc(logic.name(S.users[s.userId]))}</b> · ` : ''}${g?.emoji || '📚'} <b>${esc(g?.name || 'Группа')}</b> · ${fmtDate(s.date)} · ${s.start}${s.end && s.end !== s.start ? '–' + s.end : ''}`; };
   // Клавиатура: каждый ученик — кнопка (✅ был / ❌ нет), внизу «Все пришли» и «Готово»
   function attendanceKb(s) {
     const kb = new InlineKeyboard();

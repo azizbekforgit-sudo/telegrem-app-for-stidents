@@ -2329,7 +2329,7 @@ function renderDiary(d, { path = [], self = false, who = null, root = app, onBac
   const mood = diaryMood(d, path);
   const lowPub = mood.low?.lesson ? path.find((p) => p.lessonId === mood.low.lesson.id) : null;
   const st = d.stats;
-  const next = nextLesson(d.schedule);
+  const next = nextLesson(d.schedule, d.tzMin);
   const draw = () => {
     const cal = monthCal(DIARY.y, DIARY.m, (ds) => {
       const x = byDay[ds];
@@ -2373,9 +2373,9 @@ function daySheet(ds, x) {
       <span class="pill ${l.present ? 'good' : 'bad'}">${l.present ? 'был' : 'не был'}</span></div>${l.reason ? `<p class="small" style="margin-top:8px">💬 ${esc(l.reason)}</p>` : ''}</div>`).join('')}
     ${x.grades.length ? `<div class="card grades-list">${x.grades.map(gradeRow).join('')}</div>` : ''}</div>`);
 }
-function nextLesson(schedule) {
+function nextLesson(schedule, tzMin = 300) {
   if (!schedule?.length) return null;
-  const now = new Date(Date.now() + 5 * 3600_000); // Ташкент
+  const now = new Date(Date.now() + (tzMin ?? 300) * 60_000); // часовой пояс ученика (по умолчанию Ташкент)
   const dow = ((now.getUTCDay() + 6) % 7) + 1, cur = now.getUTCHours() * 60 + now.getUTCMinutes();
   const toMin = (hm) => { const [h, m] = hm.split(':').map(Number); return h * 60 + m; };
   let best = null;
@@ -2405,7 +2405,8 @@ async function tabJournal() {
     return;
   }
   const L = curLang();
-  const sched = g.schedule.length ? g.schedule.map((s) => `${WEEKDAYS[L][s.dow - 1]} ${s.start}–${s.end}`).join(' · ') : '';
+  const slotsTxt = (sl) => sl.map((s) => `${WEEKDAYS[L][s.dow - 1]} ${s.start}–${s.end}`).join(' · ');
+  const sched = [g.schedule.length ? slotsTxt(g.schedule) : '', ...(g.personal || []).map((p) => `${p.name}: ${slotsTxt(p.schedule)}`)].filter(Boolean).join('\n');
   const sessions = j.sessions.filter((s) => s.groupId === g.id);
   const grades = j.grades.filter((x) => g.students.some((u) => u.id === x.userId));
   const byDay = {};
@@ -2425,7 +2426,7 @@ async function tabJournal() {
       <button class="iconbtn" data-gr="${esc(u.id)}" aria-label="Оценка">${ic('star', 'sm')}</button></div>`).join('');
   app.innerHTML = adminTop('Журнал') + chips + `
     <div class="card jr-head" style="margin-top:12px"><div class="row" style="gap:10px">${emo(g.emoji, { cls: 'lg' })}<div class="grow"><h2>${esc(g.name)}</h2>
-      <div class="small muted">${sched ? `<span data-noi18n>${esc(sched)}</span>` : 'Время уроков не задано'}</div></div>
+      <div class="small muted" style="white-space:pre-line">${sched ? `<span data-noi18n>${esc(sched)}</span>` : 'Время уроков не задано'}</div></div>
       <button class="btn ghost sm" data-time>${ic('clock-circle', 'sm')}Время</button></div>
       <div class="jr-sum"><span>${plural(g.lessons, 'урок', 'урока', 'уроков')}</span><span>${plural(g.students.length, 'ученик', 'ученика', 'учеников')}</span></div></div>
     <div class="card" style="margin-top:12px;padding:4px 10px"><div class="jr-legend"><span class="plus">＋ был</span><span class="minus">− не был</span><span>⭐ оценки</span></div>${roster || '<p class="muted center small" style="padding:12px">В группе пока нет учеников</p>'}</div>
@@ -2435,7 +2436,7 @@ async function tabJournal() {
     <div class="section-title"><h2>${emo('📅')} <span data-noi18n>${dmy(JR.day)}</span></h2></div>
     ${day.s.map(sessionCard).join('') || `<p class="muted small center" style="margin:6px 0 10px">${JR.day === j.today ? 'Сегодня уроков по расписанию нет — или ещё не начались.' : 'В этот день уроков не было.'}</p>`}
     ${day.g.length ? `<div class="card grades-list" style="margin-top:10px">${day.g.map((x) => `<div class="grow-row">${gradeChip(x.value)}<div class="grow"><b>${esc(x.name)}</b><div class="small muted">${x.lesson ? `${emo(x.lesson.emoji)} ${esc(x.lesson.title)} · ` : ''}+${x.xp} XP${x.comment ? ' · ' + esc(x.comment) : ''}</div></div><button class="iconbtn" data-delgrade="${x.id}" aria-label="Удалить">${ic('trash-bin-trash', 'sm')}</button></div>`).join('')}</div>` : ''}
-    ${g.schedule.length ? '' : `<div class="card hint-card" style="margin-top:12px">${me('think', 70, 'still')}<div class="grow small">Нажми <b>«Время»</b> и задай дни и часы уроков — и в начале каждого урока бот спросит тебя, кого нет.</div></div>`}`;
+    ${g.schedule.length || g.personal?.length ? '' : `<div class="card hint-card" style="margin-top:12px">${me('think', 70, 'still')}<div class="grow small">Нажми <b>«Время»</b> и задай дни и часы уроков — и в начале каждого урока бот спросит тебя, кого нет.</div></div>`}`;
   bindAdminTop();
   $$('[data-jg]').forEach((b) => (b.onclick = () => { JR.group = b.dataset.jg; haptic('light'); tabJournal().catch(fail); }));
   $('[data-time]').onclick = () => scheduleSheet(g.id, () => tabJournal());
@@ -2459,7 +2460,7 @@ async function markGroupLesson(g) {
 function sessionCard(s) {
   const abs = s.members.filter((m) => m.absent);
   return `<div class="card sess ${s.status === 'done' ? (abs.length ? 'bad' : 'good') : 'mark'}">
-    <div class="row" style="gap:10px">${emo(s.group?.emoji || '📚')}<div class="grow"><b>${esc(s.group?.name || '')}</b><div class="small muted"><span data-noi18n>${s.start}${s.end && s.end !== s.start ? '–' + s.end : ''}</span> · <span>${s.status === 'done' ? (abs.length ? `не было: ${abs.length} из ${s.members.length}` : 'все на месте') : 'ждёт отметки'}</span></div></div>
+    <div class="row" style="gap:10px">${emo(s.group?.emoji || '📚')}<div class="grow"><b>${s.personal ? '👤 ' + esc(s.personal) + ' · ' : ''}${esc(s.group?.name || '')}</b><div class="small muted"><span data-noi18n>${s.start}${s.end && s.end !== s.start ? '–' + s.end : ''}</span> · <span>${s.status === 'done' ? (abs.length ? `не было: ${abs.length} из ${s.members.length}` : 'все на месте') : 'ждёт отметки'}</span></div></div>
       <button class="iconbtn" data-delsess="${s.id}" aria-label="Удалить">${ic('trash-bin-trash', 'sm')}</button></div>
     <div class="att-chips">${s.members.map((m) => `<button class="achip ${s.status !== 'done' ? '' : m.absent ? 'bad' : 'good'}" data-att="${s.id}" data-u="${esc(m.id)}">${m.absent ? '❌' : s.status === 'done' ? '✅' : '•'} ${esc(m.name)}</button>`).join('')}</div>
     ${abs.filter((m) => m.reason).map((m) => `<p class="small reason">💬 <b>${esc(m.name)}:</b> ${esc(m.reason)}</p>`).join('')}
