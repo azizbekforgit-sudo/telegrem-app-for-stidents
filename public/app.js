@@ -966,9 +966,9 @@ function confetti() {
 
 // ───────── состояние и навигация ─────────
 const S = { me: null, tab: null, view: null, overview: null, leagueGroup: null, groupTab: 'members' };
-const STUDENT_TABS = [['home', 'home-smile', 'Путь'], ['league', 'cup-star', 'Лига'], ['stats', 'chart-2', 'Прогресс'], ['profile', 'user-rounded', 'Профиль']];
+const STUDENT_TABS = [['home', 'home-smile', 'Путь'], ['diary', 'calendar', 'Дневник'], ['league', 'cup-star', 'Лига'], ['stats', 'chart-2', 'Прогресс'], ['profile', 'user-rounded', 'Профиль']];
 const PARENT_TABS = [['phome', 'home-smile', 'Главная'], ['league', 'cup-star', 'Лига'], ['kids', 'users-group-rounded', 'Ученики'], ['pprofile', 'user-rounded', 'Профиль']];
-const ADMIN_TABS = [['dash', 'widget-5', 'Панель'], ['path', 'home-smile', 'Путь'], ['groups', 'users-group-rounded', 'Группы'], ['tests', 'notebook-bookmark', 'Тесты'], ['bot', 'chat-round-dots', 'Бот']];
+const ADMIN_TABS = [['dash', 'widget-5', 'Панель'], ['path', 'home-smile', 'Путь'], ['groups', 'users-group-rounded', 'Группы'], ['journal', 'calendar', 'Журнал'], ['tests', 'notebook-bookmark', 'Тесты'], ['bot', 'chat-round-dots', 'Бот']];
 
 function renderNav() {
   const tabs = S.me.isAdmin ? ADMIN_TABS : S.me.isParent ? PARENT_TABS : STUDENT_TABS;
@@ -1000,7 +1000,7 @@ async function route() {
   if (S.view?.type === 'group') return viewGroup(S.view.id);
   if (S.view?.type === 'student') return viewStudent(S.view.id);
   if (S.view?.type === 'league') return viewLeague();
-  const r = { home: tabHome, league: tabLeague, stats: tabStats, profile: tabProfile, dash: tabDash, groups: tabGroups, path: tabTeacherPath, tests: tabTests, bot: tabBot, phome: tabParentHome, kids: tabKids, pprofile: tabParentProfile }[S.tab];
+  const r = { home: tabHome, league: tabLeague, stats: tabStats, profile: tabProfile, dash: tabDash, groups: tabGroups, path: tabTeacherPath, journal: tabJournal, diary: tabDiary, tests: tabTests, bot: tabBot, phome: tabParentHome, kids: tabKids, pprofile: tabParentProfile }[S.tab];
   await r();
 }
 async function refreshMe() {
@@ -2234,11 +2234,22 @@ async function viewStudent(uid) {
       <p class="muted small">${u?.username ? '@' + esc(u.username) + ' · ' : ''}${st.groups.map((g) => esc(g.name)).join(', ') || 'без группы'}</p>
       <div class="tags" style="margin-top:6px">${st.achievements.filter((a) => a.got).map((a) => `<span title="${esc(a.title)}">${emo(a.icon)}</span>`).join('')}</div></div></div>
     ${statsHtml(st, { self: false })}
+    <div class="row" style="gap:8px;margin-top:14px"><button class="btn ghost grow" data-diary>${ic('calendar')}Дневник</button>${S.me.isParent ? '' : `<button class="btn grow" data-givegrade>${ic('star')}Оценка</button>`}</div>
     ${S.me.isParent ? '' : `<div class="card stack small" style="margin-top:16px"><b>${emo(E.laptop)} Вход на сайт</b><p class="muted">${st.siteLogin ? `Логин: <code data-noi18n>${esc(st.siteLogin)}</code>` : 'Входа пока нет'}</p>
       ${String(uid).startsWith('w') ? '' : `<button class="btn ghost block" data-relogin>${ic('lock-keyhole')}${st.siteLogin ? 'Новый пароль' : 'Создать вход'}</button>`}</div>
       <div style="margin-top:12px"><button class="btn ghost block" data-bonus>${emo('🎁')}Начислить баллы</button></div>
       <div style="margin-top:12px"><button class="btn ghost block" data-assign="${esc(uid)}">${ic('user-plus-rounded')}Добавить в группу</button></div>`}`;
   $('[data-back]').onclick = back;
+  $('[data-diary]').onclick = async () => {
+    try {
+      const d = await api((S.me.isParent ? '/parent/students/' : '/admin/students/') + uid + '/diary');
+      DIARY.y = null;
+      renderDiary(d, { who: u?.name || '', onBack: () => viewStudent(uid).catch(fail) });
+      window.scrollTo(0, 0);
+    } catch (e) { fail(e); }
+  };
+  const gg = $('[data-givegrade]');
+  if (gg) gg.onclick = () => gradeSheet({ userId: uid, after: () => viewStudent(uid) });
   const bb = $('[data-bonus]');
   if (bb) bb.onclick = () => openSheet(`<div class="stack"><h2>${emo('🎁')} Начислить баллы</h2><p class="muted small">${esc(u?.name || '')} получит XP в общую лигу и лигу группы. Чтобы снять баллы, введи число с минусом.</p>
       <input class="input" data-xp type="number" inputmode="numeric" placeholder="Например, 50">
@@ -2258,6 +2269,267 @@ async function viewStudent(uid) {
   };
   const asg = $('[data-assign]');
   if (asg) asg.onclick = async () => { if (!S.overview) await loadOverview(); assignSheet(uid); };
+}
+
+// ═══════════════ ЖУРНАЛ И ДНЕВНИК ═══════════════
+// Календарь месяца: cell(dateStr) → { cls, html } для каждого дня. Дни недели с понедельника.
+const WEEKDAYS = { ru: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'], uz: ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya'], en: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'] };
+const DOW_FULL = { ru: ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'], uz: ['Dushanba', 'Seshanba', 'Chorshanba', 'Payshanba', 'Juma', 'Shanba', 'Yakshanba'], en: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] };
+const curLang = () => (['uz', 'en'].includes(LOOK.lang) ? LOOK.lang : 'ru');
+const ymd = (y, m, d) => `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+const dmy = (s) => { const [y, m, d] = s.split('-'); return `${d}.${m}.${y}`; };
+const gradeColor = (v) => (v >= 9 ? 'var(--good)' : v >= 7 ? '#2fa8ff' : v >= 5 ? 'var(--gold)' : 'var(--bad)');
+const gradeChip = (v, cls = '') => `<span class="gchip ${cls}" style="background:${gradeColor(v)}">${v}</span>`;
+function monthName(y, m) {
+  const loc = { ru: 'ru-RU', uz: 'uz-Latn-UZ', en: 'en-US' }[curLang()];
+  try { const s = new Intl.DateTimeFormat(loc, { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(Date.UTC(y, m, 1))); return s[0].toUpperCase() + s.slice(1); } catch { return `${m + 1}.${y}`; }
+}
+function monthCal(y, m, cell, { today, selected } = {}) {
+  const first = (new Date(Date.UTC(y, m, 1)).getUTCDay() + 6) % 7;
+  const days = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+  let html = `<div class="cal" data-noi18n><div class="cal-h">${WEEKDAYS[curLang()].map((w) => `<b>${w}</b>`).join('')}</div><div class="cal-g">`;
+  for (let i = 0; i < first; i++) html += '<i></i>';
+  for (let d = 1; d <= days; d++) {
+    const ds = ymd(y, m, d);
+    const c = cell(ds) || {};
+    html += `<button class="cal-d ${c.cls || ''} ${ds === today ? 'today' : ''} ${ds === selected ? 'sel' : ''}" data-day="${ds}"><span>${d}</span>${c.html || ''}</button>`;
+  }
+  return html + '</div></div>';
+}
+const calNav = (y, m) => `<div class="cal-nav"><button class="iconbtn" data-cm="-1" aria-label="Назад">${ic('alt-arrow-left')}</button><b data-noi18n>${esc(monthName(y, m))}</b><button class="iconbtn" data-cm="1" aria-label="Вперёд">${ic('alt-arrow-right')}</button></div>`;
+
+// ───────── ДНЕВНИК (ученик, а ещё учитель и родитель на странице ученика) ─────────
+const DIARY = { y: null, m: null };
+async function tabDiary() {
+  const [d, m] = await Promise.all([api('/me/diary'), S.me?.path ? S.me : refreshMe()]);
+  renderDiary(d, { path: m.path || [], self: true });
+}
+function diaryMood(d, path) {
+  const last = d.grades[d.grades.length - 1];
+  const recent = last && Date.now() - last.at < 14 * 86400_000;
+  const lastDay = d.days[d.days.length - 1];
+  if (recent && last.value <= 5) {
+    const t = last.lesson?.title;
+    return { pose: 'sad', low: last, say: t ? `Оценка ${last.value} — это не приговор! Давай вместе повторим тему «${t}», и в следующий раз будет выше 💪` : `Оценка ${last.value} — это не приговор! Давай разберём, что не получилось, и в следующий раз будет выше 💪` };
+  }
+  if (recent && last.value >= 9) return { pose: 'love', say: `${last.value} из 10! Я тобой горжусь — так держать! 🏆` };
+  if (lastDay && !lastDay.present && Date.now() - Date.parse(lastDay.date) < 7 * 86400_000) return { pose: 'oops', say: 'Ты пропустил урок… Ничего, догоним! Загляни в «Путь» — там все темы.' };
+  if (recent && last.value <= 7) return { pose: 'think', say: `Неплохо — ${last.value} из 10. Ещё чуть-чуть, и будет отлично!` };
+  if (!d.days.length && !d.grades.length) return { pose: 'happy', say: 'Здесь будет твой дневник: дни уроков, посещаемость и оценки учителя.' };
+  return { pose: 'happy', say: 'Вот твой дневник: зелёные дни — ты был на уроке, красные — пропустил.' };
+}
+function renderDiary(d, { path = [], self = false, who = null, root = app, onBack = null } = {}) {
+  const [ty, tm] = d.today.split('-').map(Number);
+  if (DIARY.y == null) { DIARY.y = ty; DIARY.m = tm - 1; }
+  const byDay = {};
+  d.days.forEach((x) => (byDay[x.date] ||= { lessons: [], grades: [] }).lessons.push(x));
+  d.grades.forEach((g) => (byDay[g.date] ||= { lessons: [], grades: [] }).grades.push(g));
+  const mood = diaryMood(d, path);
+  const lowPub = mood.low?.lesson ? path.find((p) => p.lessonId === mood.low.lesson.id) : null;
+  const st = d.stats;
+  const next = nextLesson(d.schedule);
+  const draw = () => {
+    const cal = monthCal(DIARY.y, DIARY.m, (ds) => {
+      const x = byDay[ds];
+      if (!x) return null;
+      const miss = x.lessons.some((l) => !l.present), was = x.lessons.some((l) => l.present);
+      return { cls: miss ? 'bad' : was ? 'good' : 'mark', html: x.grades.length ? gradeChip(x.grades[x.grades.length - 1].value, 'mini') : '' };
+    }, { today: d.today });
+    const recent = d.grades.slice(-8).reverse();
+    root.innerHTML = (onBack ? `<div class="topbar"><button class="back" data-back>${ic('alt-arrow-left')}Назад</button></div>` : self ? topbar() : '') + `
+      ${who ? `<h1 style="margin-top:8px">${emo('📒')} Дневник: ${esc(who)}</h1>` : ''}
+      <div class="hero diary-hero">${self ? me(mood.pose === 'happy' ? 'talk' : mood.pose, 104, mood.pose === 'happy' ? 'quiet' : '') : me('teach', 96, 'quiet')}<div class="grow">${self ? `<h1>${emo('📒')} Дневник</h1>` : ''}
+        <div class="say" data-say>${esc(self ? mood.say : 'Посещаемость и оценки ученика')}</div>
+        ${self && mood.low ? (lowPub ? `<button class="btn" data-retry>${ic('refresh')}Повторить тему</button>` : `<button class="btn" data-gopath>${ic('play')}На «Путь»</button>`) : ''}</div></div>
+      <div class="tiles diary-tiles">
+        <div class="tile">${emo('✅')}<div><b>${st.attendance != null ? st.attendance + '%' : '—'}</b><span>посещаемость</span></div></div>
+        <div class="tile">${emo('⭐')}<div><b>${st.avgGrade ?? '—'}</b><span>средний балл</span></div></div>
+        <div class="tile">${emo('❌')}<div><b>${st.missed}</b><span>${plural(st.missed, 'пропуск', 'пропуска', 'пропусков').replace(/^\d+ /, '')}</span></div></div>
+        <div class="tile">${emo(E.bolt)}<div><b>${st.gradeXp}</b><span>XP за оценки</span></div></div>
+      </div>
+      ${next ? `<div class="card next-lesson">${ic('clock-circle')}<div class="grow"><small>Следующий урок</small><b data-noi18n>${esc(next.text)}</b></div>${emo(next.group.emoji || '📚')}</div>` : ''}
+      <div class="card" style="margin-top:12px">${calNav(DIARY.y, DIARY.m)}${cal}
+        <div class="cal-legend"><span><i class="good"></i>был</span><span><i class="bad"></i>не был</span><span>${gradeChip(8, 'mini')} оценка</span></div></div>
+      ${recent.length ? sectionTitle('⭐', 'Оценки') + `<div class="card grades-list">${recent.map(gradeRow).join('')}</div>` : ''}`;
+    if (self) speak($('[data-say]', root), mood.say, $('.hero .mascot', root));
+    $$('[data-cm]', root).forEach((b) => (b.onclick = () => { DIARY.m += Number(b.dataset.cm); if (DIARY.m < 0) { DIARY.m = 11; DIARY.y--; } if (DIARY.m > 11) { DIARY.m = 0; DIARY.y++; } haptic('light'); draw(); }));
+    $$('[data-day]', root).forEach((b) => (b.onclick = () => { const x = byDay[b.dataset.day]; if (x) { haptic('light'); daySheet(b.dataset.day, x); } }));
+    const rt = $('[data-retry]', root);
+    if (rt) rt.onclick = () => { haptic('medium'); lowPub.hasLearn ? learnSheet(lowPub) : lessonSheet(lowPub); };
+    const gp = $('[data-gopath]', root);
+    if (gp) gp.onclick = () => go('home');
+    const bk = $('[data-back]', root);
+    if (bk) bk.onclick = onBack;
+  };
+  draw();
+}
+const gradeRow = (g) => `<div class="grow-row">${gradeChip(g.value)}<div class="grow"><b>${g.lesson ? `${emo(g.lesson.emoji)} ${esc(g.lesson.title)}` : esc(tr('Оценка учителя'))}</b>
+  <div class="small muted">${dmy(g.date)} · +${g.xp} XP${g.comment ? ' · ' + esc(g.comment) : ''}</div></div></div>`;
+function daySheet(ds, x) {
+  openSheet(`<div class="stack"><h2>${emo('📅')} <span data-noi18n>${dmy(ds)}</span></h2>
+    ${x.lessons.map((l) => `<div class="card day-lesson ${l.present ? 'good' : 'bad'}"><div class="row" style="gap:10px">${emo(l.group?.emoji || '📚')}<div class="grow"><b>${esc(l.group?.name || '')}</b><div class="small muted" data-noi18n>${l.start}${l.end && l.end !== l.start ? '–' + l.end : ''}</div></div>
+      <span class="pill ${l.present ? 'good' : 'bad'}">${l.present ? 'был' : 'не был'}</span></div>${l.reason ? `<p class="small" style="margin-top:8px">💬 ${esc(l.reason)}</p>` : ''}</div>`).join('')}
+    ${x.grades.length ? `<div class="card grades-list">${x.grades.map(gradeRow).join('')}</div>` : ''}</div>`);
+}
+function nextLesson(schedule) {
+  if (!schedule?.length) return null;
+  const now = new Date(Date.now() + 5 * 3600_000); // Ташкент
+  const dow = ((now.getUTCDay() + 6) % 7) + 1, cur = now.getUTCHours() * 60 + now.getUTCMinutes();
+  const toMin = (hm) => { const [h, m] = hm.split(':').map(Number); return h * 60 + m; };
+  let best = null;
+  for (const s of schedule) {
+    let delta = (s.dow - dow + 7) % 7;
+    if (delta === 0 && toMin(s.start) <= cur) delta = 7;
+    const key = delta * 1440 + toMin(s.start);
+    if (!best || key < best.key) best = { key, s, delta };
+  }
+  const L = curLang();
+  const day = best.delta === 0 ? tr('Сегодня') : best.delta === 1 ? tr('Завтра') : DOW_FULL[L][best.s.dow - 1];
+  return { group: best.s.group, text: `${day}, ${best.s.start}–${best.s.end} · ${best.s.group.name}` };
+}
+
+// ───────── ЖУРНАЛ (учитель) ─────────
+const JR = { view: 'cal', y: null, m: null, day: null };
+async function tabJournal() {
+  const j = await api('/admin/journal');
+  S.journal = j;
+  if (JR.y == null) { const [y, m] = j.today.split('-').map(Number); JR.y = y; JR.m = m - 1; JR.day = j.today; }
+  const seg = `<div class="seg" style="margin-top:12px">${[['cal', 'Календарь'], ['sched', 'Расписание']].map(([id, t]) => `<button data-jv="${id}" class="${JR.view === id ? 'on' : ''}">${t}</button>`).join('')}</div>`;
+  let body = '';
+  if (JR.view === 'sched') body = scheduleHtml(j);
+  else {
+    const byDay = {};
+    j.sessions.forEach((s) => (byDay[s.date] ||= { s: [], g: [] }).s.push(s));
+    j.grades.forEach((g) => (byDay[g.date] ||= { s: [], g: [] }).g.push(g));
+    const cal = monthCal(JR.y, JR.m, (ds) => {
+      const x = byDay[ds];
+      if (!x) return null;
+      const abs = x.s.reduce((n, s) => n + s.members.filter((m) => m.absent).length, 0);
+      const pend = x.s.some((s) => s.status !== 'done');
+      return { cls: pend ? 'mark' : abs ? 'bad' : x.s.length ? 'good' : '', html: `${abs ? `<em class="abs">${abs}</em>` : ''}${x.g.length ? `<em class="gr">★${x.g.length}</em>` : ''}` };
+    }, { today: j.today, selected: JR.day });
+    const x = byDay[JR.day] || { s: [], g: [] };
+    body = `<div class="card" style="margin-top:12px">${calNav(JR.y, JR.m)}${cal}
+        <div class="cal-legend"><span><i class="good"></i>все были</span><span><i class="bad"></i>есть пропуски</span><span><i class="mark"></i>ждёт отметки</span></div></div>
+      <button class="btn block" data-grade style="margin-top:12px">${ic('star')}Поставить оценку</button>
+      <div class="section-title"><h2>${emo('📅')} <span data-noi18n>${dmy(JR.day)}</span></h2><button class="link small" data-startnow>${ic('add-circle', 'sm')}Отметить урок</button></div>
+      ${x.s.map(sessionCard).join('') || `<p class="muted small center" style="margin:6px 0 10px">${JR.day === j.today ? 'Сегодня уроков по расписанию нет — или ещё не начались.' : 'В этот день уроков не было.'}</p>`}
+      ${x.g.length ? `<div class="card grades-list" style="margin-top:10px">${x.g.map((g) => `<div class="grow-row">${gradeChip(g.value)}<div class="grow"><b>${esc(g.name)}</b><div class="small muted">${g.lesson ? `${emo(g.lesson.emoji)} ${esc(g.lesson.title)} · ` : ''}+${g.xp} XP${g.comment ? ' · ' + esc(g.comment) : ''}</div></div><button class="iconbtn" data-delgrade="${g.id}" aria-label="Удалить">${ic('trash-bin-trash', 'sm')}</button></div>`).join('')}</div>` : ''}
+      ${j.groups.some((g) => g.schedule.length) ? '' : `<div class="card hint-card" style="margin-top:12px">${me('think', 70, 'still')}<div class="grow small">Заполни <b>Расписание</b> групп — и в начале каждого урока бот спросит тебя, кого нет. Ответишь именами — и всё попадёт сюда.</div></div>`}`;
+  }
+  app.innerHTML = adminTop('Журнал') + seg + body;
+  bindAdminTop();
+  $$('[data-jv]').forEach((b) => (b.onclick = () => { JR.view = b.dataset.jv; tabJournal().catch(fail); }));
+  $$('[data-cm]').forEach((b) => (b.onclick = () => { JR.m += Number(b.dataset.cm); if (JR.m < 0) { JR.m = 11; JR.y--; } if (JR.m > 11) { JR.m = 0; JR.y++; } tabJournal().catch(fail); }));
+  $$('[data-day]').forEach((b) => (b.onclick = () => { JR.day = b.dataset.day; haptic('light'); tabJournal().catch(fail); }));
+  const gb = $('[data-grade]');
+  if (gb) gb.onclick = () => gradeSheet({ date: JR.day });
+  const sn = $('[data-startnow]');
+  if (sn) sn.onclick = () => startLessonSheet();
+  $$('[data-att]').forEach((b) => (b.onclick = () => toggleAttendance(b.dataset.att, b.dataset.u)));
+  $$('[data-delsess]').forEach((b) => (b.onclick = async () => { if (!(await confirmSheet('Удалить урок из журнала?', '', 'Удалить', true))) return; try { await del('/admin/sessions/' + b.dataset.delsess); tabJournal().catch(fail); } catch (e) { fail(e); } }));
+  $$('[data-delgrade]').forEach((b) => (b.onclick = async () => { if (!(await confirmSheet('Удалить оценку?', 'XP за неё тоже снимутся.', 'Удалить', true))) return; try { await del('/admin/grades/' + b.dataset.delgrade); tabJournal().catch(fail); } catch (e) { fail(e); } }));
+  if (JR.view === 'sched') bindSchedule(j);
+}
+function sessionCard(s) {
+  const abs = s.members.filter((m) => m.absent);
+  return `<div class="card sess ${s.status === 'done' ? (abs.length ? 'bad' : 'good') : 'mark'}">
+    <div class="row" style="gap:10px">${emo(s.group?.emoji || '📚')}<div class="grow"><b>${esc(s.group?.name || '')}</b><div class="small muted"><span data-noi18n>${s.start}${s.end && s.end !== s.start ? '–' + s.end : ''}</span> · <span>${s.status === 'done' ? (abs.length ? `не было: ${abs.length} из ${s.members.length}` : 'все на месте') : 'ждёт отметки'}</span></div></div>
+      <button class="iconbtn" data-delsess="${s.id}" aria-label="Удалить">${ic('trash-bin-trash', 'sm')}</button></div>
+    <div class="att-chips">${s.members.map((m) => `<button class="achip ${s.status !== 'done' ? '' : m.absent ? 'bad' : 'good'}" data-att="${s.id}" data-u="${esc(m.id)}">${m.absent ? '❌' : s.status === 'done' ? '✅' : '•'} ${esc(m.name)}</button>`).join('')}</div>
+    ${abs.filter((m) => m.reason).map((m) => `<p class="small reason">💬 <b>${esc(m.name)}:</b> ${esc(m.reason)}</p>`).join('')}
+    ${s.status !== 'done' ? `<p class="small muted" style="margin-top:6px">Нажми на тех, кого нет, или сразу «Сохранить», если все пришли.</p><button class="btn sm block" data-att="${s.id}" data-u="">${ic('check-circle', 'sm')}Сохранить</button>` : ''}</div>`;
+}
+// Нажатие на ученика: переключить «был / не был». Для неотмеченного урока сначала копим, «Сохранить» отправляет
+const ATT_DRAFT = {};
+async function toggleAttendance(sid, uid) {
+  const s = S.journal.sessions.find((x) => x.id === sid);
+  if (!s) return;
+  haptic('light');
+  if (s.status !== 'done' && uid) {
+    const d = (ATT_DRAFT[sid] ||= new Set());
+    d.has(uid) ? d.delete(uid) : d.add(uid);
+    const b = $(`[data-att="${sid}"][data-u="${CSS.escape(uid)}"]`);
+    if (b) { b.classList.toggle('bad', d.has(uid)); b.firstChild.textContent = d.has(uid) ? '❌ ' : '• '; }
+    return;
+  }
+  let absent = s.members.filter((m) => m.absent).map((m) => m.id);
+  if (s.status !== 'done') absent = [...(ATT_DRAFT[sid] || [])];
+  else absent = absent.includes(uid) ? absent.filter((x) => x !== uid) : [...absent, uid];
+  try { await api('/admin/sessions/' + sid, { absent }); delete ATT_DRAFT[sid]; haptic('success'); tabJournal().catch(fail); } catch (e) { fail(e); }
+}
+// Отметить урок вручную: выбрать группу (по умолчанию — сегодня, сейчас)
+function startLessonSheet() {
+  const j = S.journal;
+  openSheet(`<div class="stack"><h2>${emo('📋')} Отметить урок</h2><p class="muted small">Выбери группу — появится урок на <span data-noi18n>${dmy(JR.day)}</span>, и ты отметишь, кого нет.</p>
+    <div class="stack">${j.groups.map((g) => `<button class="card tap row" data-sg="${g.id}" style="gap:10px;width:100%;text-align:left;font:inherit;color:inherit">${emo(g.emoji)}<div class="grow"><b>${esc(g.name)}</b><div class="small muted">${plural(g.size, 'ученик', 'ученика', 'учеников')}</div></div>${ic('alt-arrow-right')}</button>`).join('') || '<p class="muted center">Сначала создай группу</p>'}</div></div>`, (el, close) => {
+    $$('[data-sg]', el).forEach((b) => (b.onclick = async () => {
+      const slot = j.groups.find((g) => g.id === b.dataset.sg)?.schedule.find((s) => s.dow === ((new Date(JR.day + 'T12:00:00Z').getUTCDay() + 6) % 7) + 1);
+      try { await api(`/admin/groups/${b.dataset.sg}/sessions`, { date: JR.day, start: slot?.start, end: slot?.end }); close(); tabJournal().catch(fail); } catch (e) { fail(e); }
+    }));
+  });
+}
+// Оценка: ученик → балл 1–10 (XP = балл × 20) → тема (необязательно) → комментарий
+async function gradeSheet({ userId = null, date = null, after = null } = {}) {
+  const o = S.overview || (await loadOverview());
+  let picked = userId;
+  let value = null;
+  const per = S.journal?.xpPerPoint || 20;
+  const lessons = o.lessons.filter((l) => !l.exam).sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+  const list = (q) => o.students.filter((u) => !q || u.name.toLowerCase().includes(q)).map((u) => `<button class="list-check ${picked === u.id ? 'on' : ''}" data-u="${esc(u.id)}">${avatar(u)}<div class="grow"><b>${esc(u.name)}</b></div></button>`).join('') || `<p class="muted center small">${esc(tr('Никого не нашли'))}</p>`;
+  openSheet(`<div class="stack" data-noi18n><h2>${emo('⭐')} ${esc(tr('Поставить оценку'))}</h2>
+    ${userId ? `<p class="muted">${esc(o.students.find((u) => u.id === userId)?.name || '')}</p>` : `${o.students.length > 6 ? `<input class="input" data-q placeholder="${esc(tr('Поиск по имени'))}">` : ''}<div data-list style="max-height:30vh;overflow:auto">${list('')}</div>`}
+    <div class="grade-pick">${Array.from({ length: 10 }, (_, i) => i + 1).map((v) => `<button data-v="${v}" style="--gc:${gradeColor(v)}">${v}</button>`).join('')}</div>
+    <p class="center small muted" data-xpprev>${esc(tr('Выбери балл: 10 = 200 XP'))}</p>
+    <select class="input" data-lesson><option value="">${esc(tr('Тема (необязательно)'))}</option>${lessons.map((l) => `<option value="${esc(l.id)}">${esc(l.title)}</option>`).join('')}</select>
+    <input class="input" data-comment maxlength="300" placeholder="${esc(tr('Комментарий (необязательно)'))}">
+    <button class="btn block" data-ok disabled>${ic('star')}<span>${esc(tr('Поставить'))}</span></button></div>`, (el, close) => {
+    const ready = () => { $('[data-ok]', el).disabled = !(picked && value); };
+    const bind = () => $$('[data-u]', el).forEach((b) => (b.onclick = () => { picked = b.dataset.u; $$('[data-u]', el).forEach((x) => x.classList.toggle('on', x === b)); haptic('light'); ready(); }));
+    bind();
+    const q = $('[data-q]', el);
+    if (q) q.oninput = () => { $('[data-list]', el).innerHTML = list(q.value.trim().toLowerCase()); bind(); };
+    $$('[data-v]', el).forEach((b) => (b.onclick = () => {
+      value = Number(b.dataset.v);
+      $$('[data-v]', el).forEach((x) => x.classList.toggle('on', x === b));
+      $('[data-xpprev]', el).innerHTML = `${gradeChip(value)} → <b>+${value * per} XP</b>`;
+      haptic(value >= 9 ? 'success' : 'light');
+      ready();
+    }));
+    $('[data-ok]', el).onclick = async () => {
+      $('[data-ok]', el).disabled = true;
+      try {
+        await api('/admin/grades', { userId: picked, value, lessonId: $('[data-lesson]', el).value || null, comment: $('[data-comment]', el).value, date });
+        haptic('success');
+        if (value >= 9) sfx.win();
+        toast(`${tr('Оценка поставлена')}: ${value} (+${value * per} XP)`);
+        close();
+        (after || (() => tabJournal()))().catch?.(fail);
+      } catch (e) { ready(); fail(e); }
+    };
+  });
+}
+// Расписание групп: дни недели + время начала и конца
+function scheduleHtml(j) {
+  const L = curLang();
+  return `<p class="muted small" style="margin-top:12px">В начале каждого урока (через 10 минут) бот спросит тебя, кого нет. Время — Ташкент.</p>
+    ${j.groups.map((g) => `<div class="card sched" data-gid="${g.id}" style="margin-top:12px"><div class="row" style="gap:10px">${emo(g.emoji)}<b class="grow">${esc(g.name)}</b><span class="pill">${plural(g.size, 'ученик', 'ученика', 'учеников')}</span></div>
+      <div class="slots">${g.schedule.map((s) => slotRow(s, L)).join('')}</div>
+      <div class="row" style="gap:8px;margin-top:10px"><button class="btn ghost sm grow" data-addslot>${ic('add-circle', 'sm')}Добавить день</button><button class="btn sm grow" data-savesched>${ic('check-circle', 'sm')}Сохранить</button></div></div>`).join('') || emptyState('sleepy', 'Групп пока нет', 'Создай группу во вкладке «Группы».')}`;
+}
+const slotRow = (s, L) => `<div class="slot" data-noi18n><select class="input" data-dow>${DOW_FULL[L].map((d, i) => `<option value="${i + 1}" ${s.dow === i + 1 ? 'selected' : ''}>${d}</option>`).join('')}</select>
+  <input class="input" type="time" data-start value="${s.start}"><span>–</span><input class="input" type="time" data-end value="${s.end}"><button class="iconbtn" data-rmslot aria-label="Удалить">${ic('trash-bin-trash', 'sm')}</button></div>`;
+function bindSchedule() {
+  const L = curLang();
+  const bindRm = (card) => $$('[data-rmslot]', card).forEach((b) => (b.onclick = () => b.closest('.slot').remove()));
+  $$('.sched').forEach((card) => {
+    bindRm(card);
+    $('[data-addslot]', card).onclick = () => { $('.slots', card).insertAdjacentHTML('beforeend', slotRow({ dow: 1, start: '14:00', end: '15:30' }, L)); bindRm(card); };
+    $('[data-savesched]', card).onclick = async () => {
+      const slots = $$('.slot', card).map((r) => ({ dow: Number($('[data-dow]', r).value), start: $('[data-start]', r).value, end: $('[data-end]', r).value }));
+      try { await api(`/admin/groups/${card.dataset.gid}/schedule`, { slots }); haptic('success'); toast(tr('Расписание сохранено')); tabJournal().catch(fail); } catch (e) { fail(e); }
+    };
+  });
 }
 
 const TYPE_LABEL = { choice: 'выбор', truefalse: 'верно/неверно', input: 'ввод', order: 'порядок', match: 'пары', fill: 'пропуски' };

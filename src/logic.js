@@ -735,7 +735,9 @@ export function createLogic(store, { adminIds }) {
 
   // ───────── статистика ─────────
   // Бонусы учителя считаются и в общей лиге, и в лиге группы
-  const bonusXp = (uid) => Object.values(S.bonuses || {}).filter((b) => b.userId === String(uid)).reduce((s, b) => s + b.xp, 0);
+  // + оценки учителя (журнал): 10 баллов = 200 XP
+  const bonusXp = (uid) => Object.values(S.bonuses || {}).filter((b) => b.userId === String(uid)).reduce((s, b) => s + b.xp, 0)
+    + Object.values(S.grades || {}).filter((g) => g.userId === String(uid)).reduce((s, g) => s + (g.xp || 0), 0);
   const totalXp = (uid) => countedAttempts(uid).reduce((s, a) => s + (a.xp || 0), 0) + learnXp(uid) + bonusXp(uid);
   function groupXp(uid, gid) {
     const pubIds = new Set(pubsForGroup(gid).map((p) => p.id));
@@ -1103,7 +1105,7 @@ export function createLogic(store, { adminIds }) {
   }
 
   return {
-    S, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
+    S, log, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
     upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,

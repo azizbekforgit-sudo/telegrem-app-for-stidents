@@ -765,3 +765,50 @@ code { background: var(--card-2); padding: 1px 6px; border-radius: 7px; font-siz
 .att-list { margin: 8px 0 0 52px; display: grid; gap: 6px; }
 .att-list > div { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; }
 .att-n { width: 22px; height: 22px; border-radius: 50%; background: var(--accent-l); color: var(--accent-d); display: grid; place-items: center; font-size: 12px; font-weight: 900; flex: none; }
+
+/* ───── журнал и дневник ───── */
+.cal { margin-top: 8px; }
+.cal-h, .cal-g { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+.cal-h b { text-align: center; font-size: 11px; font-weight: 800; color: var(--muted); padding-bottom: 4px; }
+.cal-d { position: relative; aspect-ratio: 1; border-radius: 12px; background: var(--track); font-weight: 800; font-size: 14px; color: var(--text); display: grid; place-items: center; padding: 0; font-family: inherit; border: 2px solid transparent; }
+.cal-d span { line-height: 1; }
+.cal-d.good { background: color-mix(in srgb, var(--good) 28%, var(--card)); color: var(--good-d); }
+.cal-d.bad { background: color-mix(in srgb, var(--bad) 26%, var(--card)); color: var(--bad-d); }
+.cal-d.mark { background: color-mix(in srgb, var(--gold) 30%, var(--card)); }
+.cal-d.today { border-color: var(--accent); }
+.cal-d.sel { box-shadow: 0 0 0 3px var(--accent); }
+.cal-d em { position: absolute; font-style: normal; font-size: 9.5px; font-weight: 900; line-height: 1; padding: 2px 4px; border-radius: 6px; color: #fff; }
+.cal-d em.abs { left: 2px; bottom: 2px; background: var(--bad); }
+.cal-d em.gr { right: 2px; top: 2px; background: var(--gold-d, #e8a10f); }
+.cal-d .gchip.mini { position: absolute; right: -3px; top: -3px; }
+.cal-nav { display: flex; align-items: center; justify-content: space-between; }
+.cal-nav b { font-size: 17px; }
+.cal-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; font-size: 12px; color: var(--muted); font-weight: 700; }
+.cal-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.cal-legend i { width: 12px; height: 12px; border-radius: 4px; display: inline-block; }
+.cal-legend i.good { background: var(--good); } .cal-legend i.bad { background: var(--bad); } .cal-legend i.mark { background: var(--gold); }
+.gchip { display: inline-grid; place-items: center; min-width: 34px; height: 34px; border-radius: 12px; color: #fff; font-weight: 900; font-size: 17px; box-shadow: 0 3px 0 rgba(0, 0, 0, 0.15); flex: none; }
+.gchip.mini { min-width: 18px; height: 18px; border-radius: 7px; font-size: 11px; box-shadow: none; border: 2px solid var(--card); }
+.grow-row { display: flex; align-items: center; gap: 12px; padding: 9px 2px; }
+.grow-row + .grow-row { border-top: 1px solid var(--line); }
+.grades-list { padding: 4px 12px; }
+.diary-tiles { margin-top: 12px; }
+.next-lesson { margin-top: 12px; display: flex; align-items: center; gap: 12px; }
+.next-lesson > .ic { color: var(--accent-d); width: 30px; height: 30px; }
+.next-lesson small { display: block; color: var(--muted); font-weight: 700; font-size: 12px; }
+.day-lesson.good { border-color: color-mix(in srgb, var(--good) 50%, var(--line)); }
+.day-lesson.bad { border-color: color-mix(in srgb, var(--bad) 50%, var(--line)); }
+.sess { margin-top: 10px; border-left: 5px solid var(--line); }
+.sess.good { border-left-color: var(--good); } .sess.bad { border-left-color: var(--bad); } .sess.mark { border-left-color: var(--gold); }
+.att-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.achip { padding: 6px 10px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--card); font: inherit; font-size: 13px; font-weight: 700; color: var(--text); }
+.achip.good { border-color: color-mix(in srgb, var(--good) 55%, var(--line)); background: color-mix(in srgb, var(--good) 12%, var(--card)); }
+.achip.bad { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 14%, var(--card)); color: var(--bad-d); }
+.sess .reason { margin-top: 8px; padding: 8px 10px; background: var(--track); border-radius: 10px; }
+.grade-pick { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.grade-pick button { aspect-ratio: 1; border-radius: 16px; border: 2.5px solid var(--gc); color: var(--gc); background: var(--card); font: inherit; font-size: 22px; font-weight: 900; box-shadow: 0 4px 0 var(--gc); transition: transform 0.1s; }
+.grade-pick button.on { background: var(--gc); color: #fff; transform: translateY(3px); box-shadow: 0 1px 0 var(--gc); }
+.slot { display: grid; grid-template-columns: 1fr auto 1fr auto; gap: 6px; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); }
+.slot select { grid-column: 1 / -1; }
+.slot .input { padding: 10px; font-size: 15px; min-width: 0; }
+.hint-card { display: flex; align-items: center; gap: 10px; }

@@ -22,10 +22,37 @@ const T = {
   siteLogin: { ru: (u, l, p) => `🌐 <b>Вход в Зубрик на сайте</b>\n\nТам твой же аккаунт: те же очки, тесты и лига.\n\n🔗 ${u}\n👤 Логин: <code>${l}</code>\n🔑 Пароль: <code>${p}</code>\n\nНикому не показывай пароль. Новый пароль — команда /site.`, uz: (u, l, p) => `🌐 <b>Zubrikka saytda kirish</b>\n\nU yerda sening o'sha akkaunting: o'sha ochkolar, testlar va liga.\n\n🔗 ${u}\n👤 Login: <code>${l}</code>\n🔑 Parol: <code>${p}</code>\n\nParolni hech kimga ko'rsatma. Yangi parol — /site buyrug'i.`, en: (u, l, p) => `🌐 <b>Sign in to Zubrik on the website</b>\n\nIt's your same account: the same points, tests and league.\n\n🔗 ${u}\n👤 Login: <code>${l}</code>\n🔑 Password: <code>${p}</code>\n\nDon't show your password to anyone. New password — the /site command.` },
   bonus: { ru: (x, r) => `🎁 <b>Учитель начислил тебе ${x} XP!</b>${r ? '\n' + r : ''}\n\nТак держать! 💪`, uz: (x, r) => `🎁 <b>Ustoz senga ${x} XP berdi!</b>${r ? '\n' + r : ''}\n\nShunday davom et! 💪`, en: (x, r) => `🎁 <b>Your teacher gave you ${x} XP!</b>${r ? '\n' + r : ''}\n\nKeep it up! 💪` },
   access: { ru: (n, list, more) => `🔓 <b>Тебе открыли ${n} ${n === 1 ? 'урок' : 'урока(ов)'}!</b>\n\n${list}${more}\n\nЗаходи на «Путь» и учись 💪`, uz: (n, list, more) => `🔓 <b>Senga ${n} ta dars ochildi!</b>\n\n${list}${more}\n\n«Yo'l» bo'limiga kir va o'qi 💪`, en: (n, list, more) => `🔓 <b>${n} lesson${n === 1 ? '' : 's'} unlocked for you!</b>\n\n${list}${more}\n\nOpen your Path and learn 💪` },
+  absent: {
+    ru: (g, d) => `👋 Привет! Сегодня (${d}) тебя не было на уроке ${g}.\n\nПочему не пришёл? Напиши ответ одним сообщением — я передам учителю.`,
+    uz: (g, d) => `👋 Salom! Bugun (${d}) sen ${g} darsida bo'lmading.\n\nNega kelmading? Javobni bitta xabar bilan yoz — men ustozga yetkazaman.`,
+    en: (g, d) => `👋 Hi! Today (${d}) you missed the ${g} lesson.\n\nWhy didn't you come? Reply in one message and I'll pass it to the teacher.`,
+  },
+  absentParent: {
+    ru: (n, g, d) => `📋 ${n} сегодня (${d}) не был(а) на уроке ${g}.`,
+    uz: (n, g, d) => `📋 ${n} bugun (${d}) ${g} darsida bo'lmadi.`,
+    en: (n, g, d) => `📋 ${n} missed the ${g} lesson today (${d}).`,
+  },
+  reasonThanks: { ru: '🙏 Спасибо, я передал учителю.', uz: '🙏 Rahmat, ustozga yetkazdim.', en: '🙏 Thanks, I passed it to the teacher.' },
+  grade: {
+    ru: (v, x, c, low) => `${v >= 9 ? '🏆' : v >= 7 ? '⭐' : '📘'} <b>Учитель поставил тебе ${v}/10</b> (+${x} XP)${c}${low ? `\n\nНе вешай нос! ${low}` : v >= 9 ? '\n\nОтлично, так держать! 💪' : ''}\n\nВсё видно в «Дневнике».`,
+    uz: (v, x, c, low) => `${v >= 9 ? '🏆' : v >= 7 ? '⭐' : '📘'} <b>Ustoz senga ${v}/10 baho qo'ydi</b> (+${x} XP)${c}${low ? `\n\nTushkunlikka tushma! ${low}` : v >= 9 ? "\n\nZo'r, shunday davom et! 💪" : ''}\n\nHammasi «Kundalik»da.`,
+    en: (v, x, c, low) => `${v >= 9 ? '🏆' : v >= 7 ? '⭐' : '📘'} <b>Your teacher gave you ${v}/10</b> (+${x} XP)${c}${low ? `\n\nChin up! ${low}` : v >= 9 ? '\n\nGreat job, keep it up! 💪' : ''}\n\nSee it all in your «Diary».`,
+  },
+  lowTopic: {
+    ru: (t) => `Давай вместе повторим тему «${t}» — открой Дневник, там кнопка «Повторить тему».`,
+    uz: (t) => `Keling, «${t}» mavzusini birga takrorlaymiz — Kundalikni och, u yerda «Mavzuni takrorlash» tugmasi bor.`,
+    en: (t) => `Let's go over «${t}» together — open your Diary and tap «Review the topic».`,
+  },
+  lowAny: { ru: 'Давай разберём, что не получилось, — в следующий раз будет выше!', uz: "Keling, nima chiqmaganini ko'rib chiqamiz — keyingi safar balandroq bo'ladi!", en: "Let's figure out what went wrong — next time it'll be higher!" },
+  gradeParent: {
+    ru: (n, v, t) => `📘 ${n} получил(а) оценку ${v}/10${t ? ` по теме «${t}»` : ''}.`,
+    uz: (n, v, t) => `📘 ${n} ${v}/10 baho oldi${t ? ` («${t}» mavzusi)` : ''}.`,
+    en: (n, v, t) => `📘 ${n} got ${v}/10${t ? ` on «${t}»` : ''}.`,
+  },
   remindTest: { ru: (t) => `\n\n🧩 Тест: <b>${t}</b>\nТы его ещё не сдал — заходи! ⏳`, uz: (t) => `\n\n🧩 Test: <b>${t}</b>\nSen uni hali topshirmading — kir! ⏳`, en: (t) => `\n\n🧩 Test: <b>${t}</b>\nYou haven't taken it yet — come in! ⏳` },
 };
 
-export function createBot({ token, logic, store, appUrl, adminIds }) {
+export function createBot({ token, logic, journal, store, appUrl, adminIds }) {
   const bot = new Bot(token);
   const S = logic.S;
 
@@ -177,6 +204,126 @@ export function createBot({ token, logic, store, appUrl, adminIds }) {
   });
 
   // Бота добавили в группу — подсказываем, что делать
+
+  // ───────── журнал: посещаемость ─────────
+  const fmtDate = (d) => d.split('-').reverse().slice(0, 2).join('.');
+  const sessTitle = (s) => { const g = S.groups[s.groupId]; return `${g?.emoji || '📚'} <b>${esc(g?.name || 'Группа')}</b> · ${fmtDate(s.date)} · ${s.start}${s.end && s.end !== s.start ? '–' + s.end : ''}`; };
+  // Клавиатура: каждый ученик — кнопка (✅ был / ❌ нет), внизу «Все пришли» и «Готово»
+  function attendanceKb(s) {
+    const kb = new InlineKeyboard();
+    const draft = new Set(s.draft || s.absent || []);
+    s.members.forEach((id, i) => {
+      kb.text(`${draft.has(id) ? '❌' : '✅'} ${logic.name(S.users[id])}`.slice(0, 60), `at:${s.id}:${i}`);
+      if (i % 2 === 1) kb.row();
+    });
+    if (s.members.length % 2) kb.row();
+    kb.text('👍 Все пришли', `at:${s.id}:all`).text('💾 Готово', `at:${s.id}:ok`);
+    return kb;
+  }
+  async function askAttendance(s) {
+    s.draft = [];
+    s.msgs = [];
+    const text = `📋 ${sessTitle(s)}\n\nУрок начался. <b>Кого нет?</b>\nНапиши имена через запятую (например: <i>Бегзод, Наргиза</i>) или нажми на учеников ниже. Если все на месте — «Все пришли».`;
+    for (const id of adminIds) {
+      const m = await safeSend(id, text, { reply_markup: attendanceKb(s) });
+      if (m) s.msgs.push({ chat: id, msg: m.message_id });
+    }
+    store.save();
+  }
+  const summary = (s) => {
+    const absent = s.absent.map((id) => logic.name(S.users[id]));
+    return `📋 ${sessTitle(s)}\n\n${absent.length ? `❌ <b>Не было (${absent.length}):</b> ${esc(absent.join(', '))}\n✅ Были: ${s.members.length - absent.length} из ${s.members.length}` : `✅ <b>Все ${s.members.length} на месте!</b>`}\n\nЖурнал — в приложении, вкладка «Журнал».`;
+  };
+  // После отметки: обновить сообщения учителю и написать пропустившим (и их родителям)
+  async function onAttendance(s, fresh, { fromApp = false } = {}) {
+    for (const m of s.msgs || []) {
+      try { await bot.api.editMessageText(m.chat, m.msg, summary(s), { parse_mode: 'HTML', reply_markup: new InlineKeyboard().text('✏️ Изменить', `at:${s.id}:edit`) }); } catch { /* сообщение уже другое */ }
+    }
+    const g = S.groups[s.groupId];
+    const gname = `${g?.emoji || ''} <b>${esc(g?.name || '')}</b>`;
+    for (const uid of fresh) {
+      await safeSend(uid, tt('absent', langOf(uid), gname, fmtDate(s.date)));
+      for (const p of Object.values(S.users).filter((u) => u.role === 'parent' && (u.children || []).includes(uid))) {
+        await safeSend(p.id, tt('absentParent', langOf(p.id), `<b>${esc(logic.name(S.users[uid]))}</b>`, gname, fmtDate(s.date)));
+      }
+    }
+    if (!fromApp) return;
+  }
+  async function finishAttendance(s, absentIds) {
+    const r = journal.markAttendance(s.id, absentIds);
+    delete s.draft;
+    store.save();
+    await onAttendance(r.session, r.fresh);
+    return r;
+  }
+  bot.callbackQuery(/^at:(\w+):(\w+)$/, async (ctx) => {
+    if (!logic.isAdmin(ctx.from.id)) return ctx.answerCallbackQuery({ text: 'Только для учителя' });
+    const [, sid, act] = ctx.match;
+    const s = S.sessions?.[sid];
+    if (!s) return ctx.answerCallbackQuery({ text: 'Занятие не найдено' });
+    if (act === 'edit') {
+      s.draft = [...s.absent];
+      store.save();
+      await ctx.editMessageText(`📋 ${sessTitle(s)}\n\nИсправь отметки и нажми «Готово».`, { parse_mode: 'HTML', reply_markup: attendanceKb(s) }).catch(() => {});
+      return ctx.answerCallbackQuery();
+    }
+    if (act === 'all' || act === 'ok') {
+      await finishAttendance(s, act === 'all' ? [] : s.draft || []);
+      return ctx.answerCallbackQuery({ text: act === 'all' ? 'Все на месте 👍' : 'Сохранил' });
+    }
+    const id = s.members[Number(act)];
+    if (!id) return ctx.answerCallbackQuery();
+    const d = new Set(s.draft || []);
+    d.has(id) ? d.delete(id) : d.add(id);
+    s.draft = [...d];
+    store.save();
+    await ctx.editMessageReplyMarkup({ reply_markup: attendanceKb(s) }).catch(() => {});
+    return ctx.answerCallbackQuery({ text: d.has(id) ? `❌ ${logic.name(S.users[id])} — нет` : `✅ ${logic.name(S.users[id])} — пришёл` });
+  });
+  async function tickAttendance() {
+    for (const s of journal.dueSessions()) {
+      console.log('[attendance-ask] ' + JSON.stringify({ group: S.groups[s.groupId]?.name, date: s.date, start: s.start }));
+      await askAttendance(s);
+    }
+  }
+
+  // ───────── оценки ─────────
+  async function notifyGrade(g) {
+    const uid = g.userId;
+    const lang = langOf(uid);
+    const l = g.lessonId ? S.lessons[g.lessonId] : null;
+    const title = l ? (l.tr?.[lang]?.title || l.title) : '';
+    const low = g.value <= 5 ? (l ? tt('lowTopic', lang, esc(title)) : tt('lowAny', lang)) : '';
+    const c = (l ? `\n📚 ${esc(title)}` : '') + (g.comment ? `\n💬 ${esc(g.comment)}` : '');
+    await safeSend(uid, tt('grade', lang, g.value, g.xp, c, low), { reply_markup: privateKb(tt('open', lang)) });
+    for (const p of Object.values(S.users).filter((u) => u.role === 'parent' && (u.children || []).includes(uid))) {
+      await safeSend(p.id, tt('gradeParent', langOf(p.id), `<b>${esc(logic.name(S.users[uid]))}</b>`, g.value, esc(l ? (l.tr?.[langOf(p.id)]?.title || l.title) : '')));
+    }
+  }
+
+  // ───────── текстовые сообщения в личке ─────────
+  // Учитель: имена отсутствующих в ответ на «Кого нет?». Ученик: причина пропуска.
+  bot.on('message:text', async (ctx, next) => {
+    if (ctx.chat.type !== 'private' || ctx.message.text.startsWith('/')) return next();
+    const uid = String(ctx.from.id);
+    if (logic.isAdmin(uid)) {
+      const s = journal.pendingSession();
+      if (!s) return next();
+      const r = journal.parseNames(s.id, ctx.message.text);
+      if (!r.all && !r.ids.length) {
+        return ctx.reply(`🤔 Не нашёл таких учеников в ${esc(S.groups[s.groupId]?.name || 'группе')}: ${esc(r.unknown.join(', '))}.\nНапиши имена ещё раз или отметь кнопками.`, { parse_mode: 'HTML', reply_markup: attendanceKb(s) });
+      }
+      await finishAttendance(s, r.ids);
+      const miss = r.unknown.length ? `\n\n⚠️ Не узнал: ${esc(r.unknown.join(', '))} — проверь в «Журнале» или нажми «Изменить».` : '';
+      return ctx.reply(summary(s) + miss, { parse_mode: 'HTML', reply_markup: new InlineKeyboard().text('✏️ Изменить', `at:${s.id}:edit`) });
+    }
+    const s = journal.setReason(uid, ctx.message.text);
+    if (!s) return next();
+    await ctx.reply(tt('reasonThanks', langOf(uid)));
+    const g = S.groups[s.groupId];
+    await notifyAdmins(`💬 <b>${esc(logic.name(S.users[uid]))}</b> о пропуске (${g?.emoji || ''} ${esc(g?.name || '')}, ${fmtDate(s.date)}):\n\n«${esc(ctx.message.text.slice(0, 500))}»`);
+  });
+
   bot.on('my_chat_member', async (ctx) => {
     const st = ctx.myChatMember.new_chat_member.status;
     if (ctx.chat.type !== 'private' && (st === 'member' || st === 'administrator') && ctx.myChatMember.old_chat_member.status === 'left') {
@@ -295,5 +442,5 @@ export function createBot({ token, logic, store, appUrl, adminIds }) {
     console.log(`[bot] @${bot.botInfo.username} готов`);
   }
 
-  return { bot, setup, notifyPublish, notifyPersonal, announce, tickReminders, onRoleChosen, sendLogin, notifyBonus, notifyAccess };
+  return { bot, setup, notifyPublish, notifyPersonal, announce, tickReminders, onRoleChosen, sendLogin, notifyBonus, notifyAccess, notifyGrade, onAttendance, tickAttendance };
 }

@@ -6,6 +6,7 @@ import express from 'express';
 import { webhookCallback } from 'grammy';
 import { createStore } from './store.js';
 import { createLogic, httpError } from './logic.js';
+import { createJournal } from './journal.js';
 import { verifyInitData } from './auth.js';
 import { validateTranslation } from './grading.js';
 import { createBot } from './bot.js';
@@ -20,6 +21,7 @@ const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..')
 
 const store = await createStore();
 const logic = createLogic(store, { adminIds: ADMIN_IDS });
+const journal = createJournal({ logic, store });
 console.log(`[store] ${store.backend}`);
 
 // Тесты, которые Claude готовит из конспектов, лежат в content/lessons/*.json — подхватываем при старте.
@@ -84,7 +86,7 @@ if (fs.existsSync(archiveFile)) {
   if (n) console.log(`[archive] скрыто тестов: ${n}`);
 }
 
-const tg = BOT_TOKEN && process.env.NO_BOT !== '1' ? createBot({ token: BOT_TOKEN, logic, store, appUrl: PUBLIC_URL + '/', adminIds: ADMIN_IDS }) : null;
+const tg = BOT_TOKEN && process.env.NO_BOT !== '1' ? createBot({ token: BOT_TOKEN, logic, journal, store, appUrl: PUBLIC_URL + '/', adminIds: ADMIN_IDS }) : null;
 
 const app = express();
 app.disable('x-powered-by');
@@ -157,6 +159,13 @@ api.get('/parent/students/:uid', h((req) => {
   if (!logic.parentStudents().some((u) => u.id === req.params.uid)) throw httpError(404, 'Ученик не найден');
   return logic.userStats(req.params.uid);
 }));
+// Дневник: посещаемость и оценки
+api.get('/me/diary', h((req) => journal.diary(req.user.id)));
+api.get('/parent/students/:uid/diary', h((req) => {
+  parentOnly(req);
+  if (!logic.parentStudents().some((u) => u.id === req.params.uid)) throw httpError(404, 'Ученик не найден');
+  return journal.diary(req.params.uid);
+}));
 api.post('/parent/children', h((req) => (parentOnly(req), logic.setChildren(req.user.id, req.body?.ids))));
 api.get('/league/global', h(() => logic.globalLeague()));
 api.get('/leaderboard/:gid', h((req) => {
@@ -198,6 +207,23 @@ adm.post('/logins', h(async () => {
   for (const l of list) l.sent = Boolean(await tg?.sendLogin(l));
   return list;
 }));
+// ───────── журнал: расписание, посещаемость, оценки ─────────
+adm.get('/journal', h(() => journal.adminJournal()));
+adm.get('/students/:uid/diary', h((req) => journal.diary(req.params.uid)));
+adm.post('/groups/:gid/schedule', h((req) => ({ schedule: journal.setSchedule(req.params.gid, req.body?.slots) })));
+adm.post('/groups/:gid/sessions', h((req) => journal.sessionOut(journal.startSession(req.params.gid, req.body || {}))));
+adm.post('/sessions/:sid', h(async (req) => {
+  const r = journal.markAttendance(req.params.sid, req.body?.absent);
+  await tg?.onAttendance(r.session, r.fresh, { fromApp: true });
+  return journal.sessionOut(r.session);
+}));
+adm.delete('/sessions/:sid', h((req) => (journal.deleteSession(req.params.sid), { ok: true })));
+adm.post('/grades', h(async (req) => {
+  const g = journal.addGrade(req.body || {});
+  await tg?.notifyGrade(g);
+  return g;
+}));
+adm.delete('/grades/:id', h((req) => (journal.deleteGrade(req.params.id), { ok: true })));
 adm.post('/students/:uid/bonus', h(async (req) => {
   const r = logic.addBonus({ userId: req.params.uid, xp: req.body?.xp, reason: req.body?.reason });
   await tg?.notifyBonus(r.bonus);
@@ -302,6 +328,8 @@ app.listen(PORT, async () => {
     console.error('[bot] не удалось запустить:', e.message);
   }
   setInterval(() => tg.tickReminders().catch((e) => console.error('[reminders]', e)), 30_000);
+  // журнал: в начале урока по расписанию бот спрашивает учителя «кого нет?»
+  setInterval(() => tg.tickAttendance().catch((e) => console.error('[attendance]', e)), 30_000);
 });
 
 // Бесплатный Render усыпляет сервис через 15 мин без запросов — тогда не уходят напоминания.
