@@ -2128,7 +2128,7 @@ async function viewGroup(gid) {
   if (S.groupTab === 'members') {
     const rows = st.leaderboard.rows;
     const mis = Object.fromEntries(st.heat.map((h) => [h.userId, h.mistakes]));
-    body = `<button class="btn block" data-add style="margin-top:14px">${ic('user-plus-rounded')}Добавить учеников</button>
+    body = `<div class="row" style="gap:8px;margin-top:14px"><button class="btn grow" data-add>${ic('user-plus-rounded')}Добавить учеников</button><button class="btn ghost grow" data-gtime>${ic('clock-circle')}Время для журнала</button></div>
       <div class="card" style="padding:6px 8px;margin-top:14px">${rows.length ? rows.map((r) => `<div class="item" data-student="${r.userId}">${avatar(r)}<div class="grow"><b class="ellipsis" style="display:block">${esc(r.name)}</b>
         <div class="small muted">${r.done}/${st.tests.length} тестов · ср. ${pctText(r.avg)} · ${r.xp} XP</div></div>
         ${mis[r.userId] ? `<span class="pill bad" title="Ошибок в копилке">${ic('refresh', 'sm')}${mis[r.userId]}</span>` : ''}
@@ -2174,6 +2174,8 @@ async function viewGroup(gid) {
   }));
   const add = $('[data-add]');
   if (add) add.onclick = () => addMembersSheet(g);
+  const gt = $('[data-gtime]');
+  if (gt) gt.onclick = () => scheduleSheet(gid);
   $$('[data-gtest]').forEach((b) => (b.onclick = () => testAttemptsSheet(b.dataset.gtest)));
 }
 
@@ -2389,47 +2391,70 @@ function nextLesson(schedule) {
 }
 
 // ───────── ЖУРНАЛ (учитель) ─────────
-const JR = { view: 'cal', y: null, m: null, day: null };
+const JR = { group: null, y: null, m: null, day: null };
 async function tabJournal() {
   const j = await api('/admin/journal');
   S.journal = j;
   if (JR.y == null) { const [y, m] = j.today.split('-').map(Number); JR.y = y; JR.m = m - 1; JR.day = j.today; }
-  const seg = `<div class="seg" style="margin-top:12px">${[['cal', 'Календарь'], ['sched', 'Расписание']].map(([id, t]) => `<button data-jv="${id}" class="${JR.view === id ? 'on' : ''}">${t}</button>`).join('')}</div>`;
-  let body = '';
-  if (JR.view === 'sched') body = scheduleHtml(j);
-  else {
-    const byDay = {};
-    j.sessions.forEach((s) => (byDay[s.date] ||= { s: [], g: [] }).s.push(s));
-    j.grades.forEach((g) => (byDay[g.date] ||= { s: [], g: [] }).g.push(g));
-    const cal = monthCal(JR.y, JR.m, (ds) => {
-      const x = byDay[ds];
-      if (!x) return null;
-      const abs = x.s.reduce((n, s) => n + s.members.filter((m) => m.absent).length, 0);
-      const pend = x.s.some((s) => s.status !== 'done');
-      return { cls: pend ? 'mark' : abs ? 'bad' : x.s.length ? 'good' : '', html: `${abs ? `<em class="abs">${abs}</em>` : ''}${x.g.length ? `<em class="gr">★${x.g.length}</em>` : ''}` };
-    }, { today: j.today, selected: JR.day });
-    const x = byDay[JR.day] || { s: [], g: [] };
-    body = `<div class="card" style="margin-top:12px">${calNav(JR.y, JR.m)}${cal}
-        <div class="cal-legend"><span><i class="good"></i>все были</span><span><i class="bad"></i>есть пропуски</span><span><i class="mark"></i>ждёт отметки</span></div></div>
-      <button class="btn block" data-grade style="margin-top:12px">${ic('star')}Поставить оценку</button>
-      <div class="section-title"><h2>${emo('📅')} <span data-noi18n>${dmy(JR.day)}</span></h2><button class="link small" data-startnow>${ic('add-circle', 'sm')}Отметить урок</button></div>
-      ${x.s.map(sessionCard).join('') || `<p class="muted small center" style="margin:6px 0 10px">${JR.day === j.today ? 'Сегодня уроков по расписанию нет — или ещё не начались.' : 'В этот день уроков не было.'}</p>`}
-      ${x.g.length ? `<div class="card grades-list" style="margin-top:10px">${x.g.map((g) => `<div class="grow-row">${gradeChip(g.value)}<div class="grow"><b>${esc(g.name)}</b><div class="small muted">${g.lesson ? `${emo(g.lesson.emoji)} ${esc(g.lesson.title)} · ` : ''}+${g.xp} XP${g.comment ? ' · ' + esc(g.comment) : ''}</div></div><button class="iconbtn" data-delgrade="${g.id}" aria-label="Удалить">${ic('trash-bin-trash', 'sm')}</button></div>`).join('')}</div>` : ''}
-      ${j.groups.some((g) => g.schedule.length) ? '' : `<div class="card hint-card" style="margin-top:12px">${me('think', 70, 'still')}<div class="grow small">Заполни <b>Расписание</b> групп — и в начале каждого урока бот спросит тебя, кого нет. Ответишь именами — и всё попадёт сюда.</div></div>`}`;
+  if (!j.groups.some((g) => g.id === JR.group)) JR.group = j.groups[0]?.id || null;
+  const g = j.groups.find((x) => x.id === JR.group);
+  const chips = `<div class="chips jr-groups" style="margin-top:12px">${j.groups.map((x) => `<button class="choice ${x.id === JR.group ? 'on' : ''}" data-jg="${x.id}">${emo(x.emoji)} ${esc(x.name)}</button>`).join('')}</div>`;
+  if (!g) {
+    app.innerHTML = adminTop('Журнал') + emptyState('sleepy', 'Групп пока нет', 'Создай группу во вкладке «Группы».');
+    bindAdminTop();
+    return;
   }
-  app.innerHTML = adminTop('Журнал') + seg + body;
+  const L = curLang();
+  const sched = g.schedule.length ? g.schedule.map((s) => `${WEEKDAYS[L][s.dow - 1]} ${s.start}–${s.end}`).join(' · ') : '';
+  const sessions = j.sessions.filter((s) => s.groupId === g.id);
+  const grades = j.grades.filter((x) => g.students.some((u) => u.id === x.userId));
+  const byDay = {};
+  sessions.forEach((s) => (byDay[s.date] ||= { s: [], g: [] }).s.push(s));
+  grades.forEach((x) => (byDay[x.date] ||= { s: [], g: [] }).g.push(x));
+  const cal = monthCal(JR.y, JR.m, (ds) => {
+    const x = byDay[ds];
+    if (!x) return null;
+    const abs = x.s.reduce((n, s) => n + s.members.filter((m) => m.absent).length, 0);
+    const pend = x.s.some((s) => s.status !== 'done');
+    return { cls: pend ? 'mark' : abs ? 'bad' : x.s.length ? 'good' : '', html: `${abs ? `<em class="abs">${abs}</em>` : ''}${x.g.length ? `<em class="gr">★${x.g.length}</em>` : ''}` };
+  }, { today: j.today, selected: JR.day });
+  const day = byDay[JR.day] || { s: [], g: [] };
+  const roster = g.students.map((u) => `<div class="jr-row" data-st="${esc(u.id)}">${avatar(u)}<div class="grow" style="min-width:0"><b class="ellipsis" style="display:block">${esc(u.name)}</b>
+      <div class="jr-marks"><span class="plus">＋${u.plus}</span><span class="minus">−${u.minus}</span>${u.grades.map((v) => gradeChip(v, 'mini')).join('')}</div></div>
+      <div class="jr-avg">${u.avg != null ? gradeChip(Math.round(u.avg)) + `<small>${u.avg}</small>` : '<span class="faint small">—</span>'}</div>
+      <button class="iconbtn" data-gr="${esc(u.id)}" aria-label="Оценка">${ic('star', 'sm')}</button></div>`).join('');
+  app.innerHTML = adminTop('Журнал') + chips + `
+    <div class="card jr-head" style="margin-top:12px"><div class="row" style="gap:10px">${emo(g.emoji, { cls: 'lg' })}<div class="grow"><h2>${esc(g.name)}</h2>
+      <div class="small muted">${sched ? `<span data-noi18n>${esc(sched)}</span>` : 'Время уроков не задано'}</div></div>
+      <button class="btn ghost sm" data-time>${ic('clock-circle', 'sm')}Время</button></div>
+      <div class="jr-sum"><span>${plural(g.lessons, 'урок', 'урока', 'уроков')}</span><span>${plural(g.students.length, 'ученик', 'ученика', 'учеников')}</span></div></div>
+    <div class="card" style="margin-top:12px;padding:4px 10px"><div class="jr-legend"><span class="plus">＋ был</span><span class="minus">− не был</span><span>⭐ оценки</span></div>${roster || '<p class="muted center small" style="padding:12px">В группе пока нет учеников</p>'}</div>
+    <div class="row" style="gap:8px;margin-top:12px"><button class="btn grow" data-grade>${ic('star')}Поставить оценку</button><button class="btn ghost grow" data-startnow>${ic('add-circle')}Отметить урок</button></div>
+    <div class="card" style="margin-top:12px">${calNav(JR.y, JR.m)}${cal}
+      <div class="cal-legend"><span><i class="good"></i>все были</span><span><i class="bad"></i>есть пропуски</span><span><i class="mark"></i>ждёт отметки</span></div></div>
+    <div class="section-title"><h2>${emo('📅')} <span data-noi18n>${dmy(JR.day)}</span></h2></div>
+    ${day.s.map(sessionCard).join('') || `<p class="muted small center" style="margin:6px 0 10px">${JR.day === j.today ? 'Сегодня уроков по расписанию нет — или ещё не начались.' : 'В этот день уроков не было.'}</p>`}
+    ${day.g.length ? `<div class="card grades-list" style="margin-top:10px">${day.g.map((x) => `<div class="grow-row">${gradeChip(x.value)}<div class="grow"><b>${esc(x.name)}</b><div class="small muted">${x.lesson ? `${emo(x.lesson.emoji)} ${esc(x.lesson.title)} · ` : ''}+${x.xp} XP${x.comment ? ' · ' + esc(x.comment) : ''}</div></div><button class="iconbtn" data-delgrade="${x.id}" aria-label="Удалить">${ic('trash-bin-trash', 'sm')}</button></div>`).join('')}</div>` : ''}
+    ${g.schedule.length ? '' : `<div class="card hint-card" style="margin-top:12px">${me('think', 70, 'still')}<div class="grow small">Нажми <b>«Время»</b> и задай дни и часы уроков — и в начале каждого урока бот спросит тебя, кого нет.</div></div>`}`;
   bindAdminTop();
-  $$('[data-jv]').forEach((b) => (b.onclick = () => { JR.view = b.dataset.jv; tabJournal().catch(fail); }));
+  $$('[data-jg]').forEach((b) => (b.onclick = () => { JR.group = b.dataset.jg; haptic('light'); tabJournal().catch(fail); }));
+  $('[data-time]').onclick = () => scheduleSheet(g.id, () => tabJournal());
+  $$('[data-st]').forEach((r) => (r.onclick = (e) => { if (e.target.closest('[data-gr]')) return; openStudent(r.dataset.st); }));
+  $$('[data-gr]').forEach((b) => (b.onclick = () => gradeSheet({ userId: b.dataset.gr, date: JR.day })));
   $$('[data-cm]').forEach((b) => (b.onclick = () => { JR.m += Number(b.dataset.cm); if (JR.m < 0) { JR.m = 11; JR.y--; } if (JR.m > 11) { JR.m = 0; JR.y++; } tabJournal().catch(fail); }));
   $$('[data-day]').forEach((b) => (b.onclick = () => { JR.day = b.dataset.day; haptic('light'); tabJournal().catch(fail); }));
-  const gb = $('[data-grade]');
-  if (gb) gb.onclick = () => gradeSheet({ date: JR.day });
-  const sn = $('[data-startnow]');
-  if (sn) sn.onclick = () => startLessonSheet();
+  $('[data-grade]').onclick = () => gradeSheet({ date: JR.day, only: g.students.map((u) => u.id) });
+  $('[data-startnow]').onclick = () => markGroupLesson(g);
   $$('[data-att]').forEach((b) => (b.onclick = () => toggleAttendance(b.dataset.att, b.dataset.u)));
   $$('[data-delsess]').forEach((b) => (b.onclick = async () => { if (!(await confirmSheet('Удалить урок из журнала?', '', 'Удалить', true))) return; try { await del('/admin/sessions/' + b.dataset.delsess); tabJournal().catch(fail); } catch (e) { fail(e); } }));
   $$('[data-delgrade]').forEach((b) => (b.onclick = async () => { if (!(await confirmSheet('Удалить оценку?', 'XP за неё тоже снимутся.', 'Удалить', true))) return; try { await del('/admin/grades/' + b.dataset.delgrade); tabJournal().catch(fail); } catch (e) { fail(e); } }));
-  if (JR.view === 'sched') bindSchedule(j);
+}
+function openStudent(uid) { openView({ type: 'student', id: uid, parent: S.view }); }
+// Урок группы на выбранный день (время берём из расписания, если есть)
+async function markGroupLesson(g) {
+  const dow = ((new Date(JR.day + 'T12:00:00Z').getUTCDay() + 6) % 7) + 1;
+  const slot = g.schedule.find((s) => s.dow === dow);
+  try { await api(`/admin/groups/${g.id}/sessions`, { date: JR.day, start: slot?.start, end: slot?.end }); haptic('success'); tabJournal().catch(fail); } catch (e) { fail(e); }
 }
 function sessionCard(s) {
   const abs = s.members.filter((m) => m.absent);
@@ -2458,27 +2483,17 @@ async function toggleAttendance(sid, uid) {
   else absent = absent.includes(uid) ? absent.filter((x) => x !== uid) : [...absent, uid];
   try { await api('/admin/sessions/' + sid, { absent }); delete ATT_DRAFT[sid]; haptic('success'); tabJournal().catch(fail); } catch (e) { fail(e); }
 }
-// Отметить урок вручную: выбрать группу (по умолчанию — сегодня, сейчас)
-function startLessonSheet() {
-  const j = S.journal;
-  openSheet(`<div class="stack"><h2>${emo('📋')} Отметить урок</h2><p class="muted small">Выбери группу — появится урок на <span data-noi18n>${dmy(JR.day)}</span>, и ты отметишь, кого нет.</p>
-    <div class="stack">${j.groups.map((g) => `<button class="card tap row" data-sg="${g.id}" style="gap:10px;width:100%;text-align:left;font:inherit;color:inherit">${emo(g.emoji)}<div class="grow"><b>${esc(g.name)}</b><div class="small muted">${plural(g.size, 'ученик', 'ученика', 'учеников')}</div></div>${ic('alt-arrow-right')}</button>`).join('') || '<p class="muted center">Сначала создай группу</p>'}</div></div>`, (el, close) => {
-    $$('[data-sg]', el).forEach((b) => (b.onclick = async () => {
-      const slot = j.groups.find((g) => g.id === b.dataset.sg)?.schedule.find((s) => s.dow === ((new Date(JR.day + 'T12:00:00Z').getUTCDay() + 6) % 7) + 1);
-      try { await api(`/admin/groups/${b.dataset.sg}/sessions`, { date: JR.day, start: slot?.start, end: slot?.end }); close(); tabJournal().catch(fail); } catch (e) { fail(e); }
-    }));
-  });
-}
 // Оценка: ученик → балл 1–10 (XP = балл × 20) → тема (необязательно) → комментарий
-async function gradeSheet({ userId = null, date = null, after = null } = {}) {
-  const o = S.overview || (await loadOverview());
+async function gradeSheet({ userId = null, date = null, after = null, only = null } = {}) {
+  const o0 = S.overview || (await loadOverview());
+  const o = only ? { ...o0, students: o0.students.filter((u) => only.includes(u.id)) } : o0;
   let picked = userId;
   let value = null;
   const per = S.journal?.xpPerPoint || 20;
   const lessons = o.lessons.filter((l) => !l.exam).sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
   const list = (q) => o.students.filter((u) => !q || u.name.toLowerCase().includes(q)).map((u) => `<button class="list-check ${picked === u.id ? 'on' : ''}" data-u="${esc(u.id)}">${avatar(u)}<div class="grow"><b>${esc(u.name)}</b></div></button>`).join('') || `<p class="muted center small">${esc(tr('Никого не нашли'))}</p>`;
   openSheet(`<div class="stack" data-noi18n><h2>${emo('⭐')} ${esc(tr('Поставить оценку'))}</h2>
-    ${userId ? `<p class="muted">${esc(o.students.find((u) => u.id === userId)?.name || '')}</p>` : `${o.students.length > 6 ? `<input class="input" data-q placeholder="${esc(tr('Поиск по имени'))}">` : ''}<div data-list style="max-height:30vh;overflow:auto">${list('')}</div>`}
+    ${userId ? `<p class="muted">${esc(o0.students.find((u) => u.id === userId)?.name || '')}</p>` : `${o.students.length > 6 ? `<input class="input" data-q placeholder="${esc(tr('Поиск по имени'))}">` : ''}<div data-list style="max-height:30vh;overflow:auto">${list('')}</div>`}
     <div class="grade-pick">${Array.from({ length: 10 }, (_, i) => i + 1).map((v) => `<button data-v="${v}" style="--gc:${gradeColor(v)}">${v}</button>`).join('')}</div>
     <p class="center small muted" data-xpprev>${esc(tr('Выбери балл: 10 = 200 XP'))}</p>
     <select class="input" data-lesson><option value="">${esc(tr('Тема (необязательно)'))}</option>${lessons.map((l) => `<option value="${esc(l.id)}">${esc(l.title)}</option>`).join('')}</select>
@@ -2509,28 +2524,33 @@ async function gradeSheet({ userId = null, date = null, after = null } = {}) {
     };
   });
 }
-// Расписание групп: дни недели + время начала и конца
-function scheduleHtml(j) {
+// «Время для журнала»: дни недели и часы уроков одной группы
+async function scheduleSheet(gid, after) {
+  const j = S.journal?.groups?.some((g) => g.id === gid) ? S.journal : (S.journal = await api('/admin/journal'));
+  const g = j.groups.find((x) => x.id === gid);
+  if (!g) return;
   const L = curLang();
-  return `<p class="muted small" style="margin-top:12px">В начале каждого урока (через 10 минут) бот спросит тебя, кого нет. Время — Ташкент.</p>
-    ${j.groups.map((g) => `<div class="card sched" data-gid="${g.id}" style="margin-top:12px"><div class="row" style="gap:10px">${emo(g.emoji)}<b class="grow">${esc(g.name)}</b><span class="pill">${plural(g.size, 'ученик', 'ученика', 'учеников')}</span></div>
-      <div class="slots">${g.schedule.map((s) => slotRow(s, L)).join('')}</div>
-      <div class="row" style="gap:8px;margin-top:10px"><button class="btn ghost sm grow" data-addslot>${ic('add-circle', 'sm')}Добавить день</button><button class="btn sm grow" data-savesched>${ic('check-circle', 'sm')}Сохранить</button></div></div>`).join('') || emptyState('sleepy', 'Групп пока нет', 'Создай группу во вкладке «Группы».')}`;
-}
-const slotRow = (s, L) => `<div class="slot" data-noi18n><select class="input" data-dow>${DOW_FULL[L].map((d, i) => `<option value="${i + 1}" ${s.dow === i + 1 ? 'selected' : ''}>${d}</option>`).join('')}</select>
-  <input class="input" type="time" data-start value="${s.start}"><span>–</span><input class="input" type="time" data-end value="${s.end}"><button class="iconbtn" data-rmslot aria-label="Удалить">${ic('trash-bin-trash', 'sm')}</button></div>`;
-function bindSchedule() {
-  const L = curLang();
-  const bindRm = (card) => $$('[data-rmslot]', card).forEach((b) => (b.onclick = () => b.closest('.slot').remove()));
-  $$('.sched').forEach((card) => {
-    bindRm(card);
-    $('[data-addslot]', card).onclick = () => { $('.slots', card).insertAdjacentHTML('beforeend', slotRow({ dow: 1, start: '14:00', end: '15:30' }, L)); bindRm(card); };
-    $('[data-savesched]', card).onclick = async () => {
-      const slots = $$('.slot', card).map((r) => ({ dow: Number($('[data-dow]', r).value), start: $('[data-start]', r).value, end: $('[data-end]', r).value }));
-      try { await api(`/admin/groups/${card.dataset.gid}/schedule`, { slots }); haptic('success'); toast(tr('Расписание сохранено')); tabJournal().catch(fail); } catch (e) { fail(e); }
+  openSheet(`<div class="stack"><h2>${ic('clock-circle')} Время для журнала</h2><p class="muted small">${emo(g.emoji)} ${esc(g.name)} · через 10 минут после начала урока бот спросит тебя, кого нет. Время — Ташкент.</p>
+    <div class="slots">${g.schedule.map((s) => slotRow(s, L)).join('')}</div>
+    <button class="btn ghost block" data-addslot>${ic('add-circle')}Добавить день</button>
+    <button class="btn block" data-savesched>${ic('check-circle')}Сохранить</button></div>`, (el, close) => {
+    const bindRm = () => $$('[data-rmslot]', el).forEach((b) => (b.onclick = () => b.closest('.slot').remove()));
+    bindRm();
+    $('[data-addslot]', el).onclick = () => {
+      const last = $$('.slot', el).pop();
+      const st = last ? $('[data-start]', last).value : '14:00';
+      const en = last ? $('[data-end]', last).value : '15:30';
+      $('.slots', el).insertAdjacentHTML('beforeend', slotRow({ dow: last ? Math.min(7, Number($('[data-dow]', last).value) + 2) : 1, start: st, end: en }, L));
+      bindRm();
+    };
+    $('[data-savesched]', el).onclick = async () => {
+      const slots = $$('.slot', el).map((r) => ({ dow: Number($('[data-dow]', r).value), start: $('[data-start]', r).value, end: $('[data-end]', r).value }));
+      try { await api(`/admin/groups/${gid}/schedule`, { slots }); haptic('success'); toast(tr('Расписание сохранено')); close(); S.journal = null; after?.()?.catch?.(fail); } catch (e) { fail(e); }
     };
   });
 }
+const slotRow = (s, L) => `<div class="slot" data-noi18n><select class="input" data-dow>${DOW_FULL[L].map((d, i) => `<option value="${i + 1}" ${s.dow === i + 1 ? 'selected' : ''}>${d}</option>`).join('')}</select>
+  <input class="input" type="time" data-start value="${s.start}"><span>–</span><input class="input" type="time" data-end value="${s.end}"><button class="iconbtn" data-rmslot aria-label="Удалить">${ic('trash-bin-trash', 'sm')}</button></div>`;
 
 const TYPE_LABEL = { choice: 'выбор', truefalse: 'верно/неверно', input: 'ввод', order: 'порядок', match: 'пары', fill: 'пропуски' };
 

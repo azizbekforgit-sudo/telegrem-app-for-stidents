@@ -812,3 +812,19 @@ code { background: var(--card-2); padding: 1px 6px; border-radius: 7px; font-siz
 .slot select { grid-column: 1 / -1; }
 .slot .input { padding: 10px; font-size: 15px; min-width: 0; }
 .hint-card { display: flex; align-items: center; gap: 10px; }
+
+/* журнал: кнопки групп и ученики с плюсами / минусами / оценками */
+.jr-groups { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
+.jr-groups .choice { flex: none; }
+.jr-head h2 { margin: 0; }
+.jr-sum { display: flex; gap: 14px; margin-top: 10px; font-size: 13px; font-weight: 700; color: var(--muted); }
+.jr-legend { display: flex; gap: 12px; font-size: 12px; font-weight: 800; color: var(--muted); padding: 8px 2px 6px; border-bottom: 1px solid var(--line); }
+.jr-row { display: flex; align-items: center; gap: 10px; padding: 10px 2px; cursor: pointer; }
+.jr-row + .jr-row { border-top: 1px solid var(--line); }
+.jr-marks { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
+.plus, .minus { font-weight: 900; font-size: 13px; padding: 2px 7px; border-radius: 8px; }
+.plus { color: var(--good-d); background: color-mix(in srgb, var(--good) 16%, var(--card)); }
+.minus { color: var(--bad-d); background: color-mix(in srgb, var(--bad) 14%, var(--card)); }
+.jr-marks .gchip.mini { border: none; }
+.jr-avg { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 40px; }
+.jr-avg small { font-size: 11px; font-weight: 800; color: var(--muted); }

@@ -259,7 +259,7 @@ export function createBot({ token, logic, journal, store, appUrl, adminIds }) {
   bot.callbackQuery(/^at:(\w+):(\w+)$/, async (ctx) => {
     if (!logic.isAdmin(ctx.from.id)) return ctx.answerCallbackQuery({ text: 'Только для учителя' });
     const [, sid, act] = ctx.match;
-    const s = S.sessions?.[sid];
+    const s = S.classes?.[sid];
     if (!s) return ctx.answerCallbackQuery({ text: 'Занятие не найдено' });
     if (act === 'edit') {
       s.draft = [...s.absent];

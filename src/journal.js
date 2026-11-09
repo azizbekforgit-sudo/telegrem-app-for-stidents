@@ -1,8 +1,8 @@
 // Журнал: расписание групп, посещаемость по урокам и оценки по 10-балльной шкале.
-// Всё лежит в общем состоянии: group.schedule, S.sessions, S.grades.
+// Всё лежит в общем состоянии: group.schedule, S.classes (занятия), S.grades. (S.sessions — это входы на сайт!)
 //
 //  group.schedule = [{ dow: 1..7 (пн..вс), start: 'HH:MM', end: 'HH:MM' }]
-//  S.sessions[id] = { id, groupId, date: 'YYYY-MM-DD', start, end, members: [uid], absent: [uid], status: 'asking'|'done',
+//  S.classes[id] = { id, groupId, date: 'YYYY-MM-DD', start, end, members: [uid], absent: [uid], status: 'asking'|'done',
 //                     reasons: { uid: текст }, notified: [uid], createdAt, markedAt }
 //  S.grades[id]   = { id, userId, value: 1..10, xp, lessonId, comment, date, at }
 //
@@ -26,7 +26,11 @@ const latin = (s) => String(s || '').toLowerCase().replace(/[ʼ'`‘’]/g, '').
 
 export function createJournal({ logic, store }) {
   const S = logic.S;
-  S.sessions ||= {};
+  S.classes ||= {};
+  // раньше занятия по ошибке лежали в S.sessions (там входы на сайт) — переносим их сюда один раз
+  for (const [k, v] of Object.entries(S.sessions || {})) {
+    if (v && typeof v === 'object' && v.groupId && v.date) { S.classes[k] = v; delete S.sessions[k]; }
+  }
   S.grades ||= {};
   const httpError = (status, message) => Object.assign(new Error(message), { status });
   const nameOf = (uid) => logic.name(S.users[uid]);
@@ -46,10 +50,10 @@ export function createJournal({ logic, store }) {
   }
 
   // ───────── занятия и посещаемость ─────────
-  const findSession = (gid, date, start) => Object.values(S.sessions).find((s) => s.groupId === gid && s.date === date && s.start === start);
+  const findSession = (gid, date, start) => Object.values(S.classes).find((s) => s.groupId === gid && s.date === date && s.start === start);
   function newSession(gid, date, start, end) {
     const s = { id: store.nextId('s'), groupId: gid, date, start, end, members: members(gid), absent: [], status: 'asking', reasons: {}, notified: [], createdAt: Date.now(), markedAt: null };
-    S.sessions[s.id] = s;
+    S.classes[s.id] = s;
     store.save();
     return s;
   }
@@ -81,7 +85,7 @@ export function createJournal({ logic, store }) {
   }
   // Отметить отсутствующих. Возвращает тех, кому ещё не писали о пропуске
   function markAttendance(sid, absentIds) {
-    const s = S.sessions[sid];
+    const s = S.classes[sid];
     if (!s) throw httpError(404, 'Занятие не найдено');
     const set = new Set((absentIds || []).map(String));
     s.absent = s.members.filter((id) => set.has(id));
@@ -94,16 +98,16 @@ export function createJournal({ logic, store }) {
     return { session: s, fresh };
   }
   function deleteSession(sid) {
-    if (!S.sessions[sid]) throw httpError(404, 'Занятие не найдено');
-    delete S.sessions[sid];
+    if (!S.classes[sid]) throw httpError(404, 'Занятие не найдено');
+    delete S.classes[sid];
     store.save();
   }
   // Последнее занятие, о котором бот спросил учителя и ответа ещё нет (за последние 16 часов)
-  const pendingSession = () => Object.values(S.sessions).filter((s) => s.status === 'asking' && Date.now() - s.createdAt < 16 * 3600_000).sort((a, b) => b.createdAt - a.createdAt)[0] || null;
+  const pendingSession = () => Object.values(S.classes).filter((s) => s.status === 'asking' && Date.now() - s.createdAt < 16 * 3600_000).sort((a, b) => b.createdAt - a.createdAt)[0] || null;
 
   // «Бегзод, Наргиза» → ученики группы. «все пришли» → никого нет в отсутствующих
   function parseNames(sid, text) {
-    const s = S.sessions[sid];
+    const s = S.classes[sid];
     const raw = String(text || '').trim();
     const t = latin(raw);
     if (/^(vse (prishli|byli|zdes|na meste)|nikogo net|net otsutstvuyushih|hammasi (keldi|bor)|all (here|present))/.test(t) || ['vse', 'all', 'hammasi', '0', '-'].includes(t)) return { all: true, ids: [], unknown: [] };
@@ -127,7 +131,7 @@ export function createJournal({ logic, store }) {
   // Ученик ответил, почему не пришёл: к последнему пропуску за 3 дня без ответа
   function setReason(uid, text) {
     uid = String(uid);
-    const s = Object.values(S.sessions)
+    const s = Object.values(S.classes)
       .filter((x) => x.absent.includes(uid) && x.notified.includes(uid) && !x.reasons[uid] && Date.now() - (x.markedAt || x.createdAt) < 3 * 86400_000)
       .sort((a, b) => b.markedAt - a.markedAt)[0];
     if (!s) return null;
@@ -171,16 +175,30 @@ export function createJournal({ logic, store }) {
   // Журнал учителя: расписание, занятия и оценки
   function adminJournal() {
     const groups = Object.values(S.groups).sort((a, b) => a.createdAt - b.createdAt).map((g) => ({ id: g.id, name: g.name, emoji: g.emoji, schedule: g.schedule || [], size: members(g.id).length }));
-    const sessions = Object.values(S.sessions).sort((a, b) => (b.date + b.start).localeCompare(a.date + a.start)).slice(0, 600).map(sessionOut);
+    const sessions = Object.values(S.classes).sort((a, b) => `${b.date}${b.start}`.localeCompare(`${a.date}${a.start}`)).slice(0, 600).map(sessionOut);
+    // ученики каждой группы: плюсы (был), минусы (не был) и оценки
+    const allGrades = Object.values(S.grades);
+    for (const g of groups) {
+      const done = Object.values(S.classes).filter((c) => c.groupId === g.id && c.status === 'done');
+      g.lessons = done.length;
+      g.students = members(g.id).map((uid) => {
+        const mine = done.filter((c) => c.members.includes(uid));
+        const minus = mine.filter((c) => c.absent.includes(uid)).length;
+        const gr = allGrades.filter((x) => x.userId === uid).sort((a, b) => a.at - b.at);
+        const u = S.users[uid];
+        return { id: uid, name: nameOf(uid), prefs: u?.prefs || null, photoUrl: u?.photoUrl || null, plus: mine.length - minus, minus,
+          grades: gr.slice(-5).map((x) => x.value), avg: gr.length ? Math.round((gr.reduce((n, x) => n + x.value, 0) / gr.length) * 10) / 10 : null };
+      }).sort((a, b) => a.name.localeCompare(b.name));
+    }
     const grades = Object.values(S.grades).sort((a, b) => b.at - a.at).slice(0, 1000).map((g) => gradeOut(g));
     return { today: dateOf(local()), groups, sessions, grades, xpPerPoint: XP_PER_POINT };
   }
   // Дневник ученика: дни с уроками (был / не был), оценки, сводка
   function diary(uid) {
     uid = String(uid);
-    const days = Object.values(S.sessions)
+    const days = Object.values(S.classes)
       .filter((s) => s.status === 'done' && s.members.includes(uid))
-      .sort((a, b) => (a.date + a.start).localeCompare(b.date + b.start))
+      .sort((a, b) => `${a.date}${a.start}`.localeCompare(`${b.date}${b.start}`))
       .map((s) => ({ id: s.id, date: s.date, start: s.start, end: s.end, group: S.groups[s.groupId] ? { name: S.groups[s.groupId].name, emoji: S.groups[s.groupId].emoji } : null, present: !s.absent.includes(uid), reason: s.reasons[uid] || null }));
     const lang = S.users[uid]?.prefs?.lang || null;
     const grades = Object.values(S.grades).filter((g) => g.userId === uid).sort((a, b) => a.at - b.at).map((g) => gradeOut(g, lang));
