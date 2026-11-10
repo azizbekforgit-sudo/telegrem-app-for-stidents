@@ -11,6 +11,8 @@ const { chromium } = require('playwright');
 const base = process.argv[2] || 'http://localhost:3000';
 const out = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'public', 'm', 'tg');
 const POSES = ['happy', 'talk', 'think', 'sad', 'peace', 'love', 'teach', 'cheer'];
+// состояния маскота: файл <маскот>-<состояние>.jpg (поза подбирается сама)
+const CONDS = [['hungry', 'sad'], ['fat', 'happy'], ['strong', 'cheer']];
 
 fs.mkdirSync(out, { recursive: true });
 const b = await chromium.launch();
@@ -18,7 +20,7 @@ const p = await b.newPage({ viewport: { width: 480, height: 480 }, deviceScaleFa
 await p.goto(base + '/');
 const ids = await p.evaluate(async () => Object.keys((await import('/mascots.js')).MASCOTS));
 for (const id of ids) {
-  for (const pose of POSES) {
+  for (const pose of [...POSES, ...CONDS.map(([c]) => c)]) {
     await p.evaluate(async ([id, pose]) => {
       const m = await import('/mascots.js');
       const c = m.MASCOTS[id].color;
@@ -26,7 +28,7 @@ for (const id of ids) {
         #card{width:480px;height:480px;display:grid;place-items:center;background:radial-gradient(circle at 50% 38%, #fff 0%, color-mix(in srgb, ${c} 26%, #fff) 70%, color-mix(in srgb, ${c} 44%, #fff) 100%)}
         .m-talk .mouth-a,.m-teach .mouth-a{opacity:0!important}.m-talk .mouth-b,.m-teach .mouth-b{opacity:1!important}
         .mascot.raster .r-rest{opacity:0!important}.mascot.raster .r-main{opacity:1!important}</style>
-        <div id="card">${m.mascot(id, pose, 400)}</div>`;
+        <div id="card">${{ hungry: m.mascot(id, 'sad', 400, '', false, 'hungry'), fat: m.mascot(id, 'happy', 400, '', false, 'fat'), strong: m.mascot(id, 'cheer', 400, '', false, 'strong') }[pose] || m.mascot(id, pose, 400)}</div>`;
       await Promise.all([...document.images, ...document.querySelectorAll('image')].map((im) => (im.decode ? im.decode().catch(() => {}) : null)));
     }, [id, pose]);
     await p.waitForTimeout(250);

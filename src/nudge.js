@@ -43,6 +43,16 @@ const T = {
     uz: (t) => `🏆 Sen «${t}» testini 100% ga yechding! Mavzuni unutmadingmi?\n\nO'zingni sinab ko'r — yana bir marta xatosiz yech 🔥`,
     en: (t) => `🏆 You got 100% on «${t}»! Still remember it?\n\nChallenge yourself — do it again without a single mistake 🔥`,
   },
+  hungry: {
+    ru: '🍽 И я проголодался… Реши тест или покорми меня — еда в магазине!',
+    uz: "🍽 Men esa och qoldim… Testni yech yoki meni boqib qo'y — ovqat do'konda!",
+    en: "🍽 And I'm hungry… Take a test or feed me — food is in the shop!",
+  },
+  starving: {
+    ru: '😢 Я совсем ослаб от голода… Реши тест или покорми меня, пожалуйста!',
+    uz: "😢 Ochlikdan butunlay holsizlandim… Iltimos, testni yech yoki meni boqib qo'y!",
+    en: "😢 I'm so weak from hunger… Please take a test or feed me!",
+  },
   more: { ru: (n) => `• … и ещё ${n}`, uz: (n) => `• … va yana ${n} ta`, en: (n) => `• … and ${n} more` },
   open: { ru: '🎮 Открыть приложение', uz: '🎮 Ilovani ochish', en: '🎮 Open the app' },
   // родителям
@@ -72,7 +82,7 @@ const T = {
   },
 };
 
-export function createNudges({ logic, journal, store }) {
+export function createNudges({ logic, journal, shop, store }) {
   const S = logic.S;
   const tt = (key, lang, ...a) => { const v = T[key][lang] || T[key].ru; return typeof v === 'function' ? v(...a) : v; };
   const langOf = (u) => (['uz', 'en'].includes(u?.prefs?.lang) ? u.prefs.lang : 'ru');
@@ -95,6 +105,8 @@ export function createNudges({ logic, journal, store }) {
     const hello = `${T.greet[lang][slot.part]}, ${esc(first(u))}!\n\n`;
     const base = { chatId: u.id, mascot: u.prefs?.mascot || 'mimi', lang, button: tt('open', lang) };
     const pending = st.filter((x) => x.pct == null);
+    const pet = shop?.pet(u.id, now);
+    if (pet?.lastFed && pet.lastFed > (n.lastAt || 0) && n.lastAt) return null; // покормил — маскот напишет в другой раз
     // забываем про тесты, которые решены больше суток назад или которых уже нет
     for (const id of Object.keys(n.reminded)) {
       const x = st.find((y) => y.lessonId === id);
@@ -104,13 +116,14 @@ export function createNudges({ logic, journal, store }) {
       const cur = pending[pending.length - 1];
       const debts = pending.slice(0, -1);
       pending.forEach((x) => (n.reminded[x.lessonId] = (n.reminded[x.lessonId] || 0) + 1));
-      return { ...base, kind: 'debt', count: pending.length, pose: debts.length >= 3 ? 'sad' : debts.length ? 'think' : 'talk',
-        text: hello + (debts.length ? tt('many', lang, esc(cur.title(lang)), bullets(debts, lang)) : tt('one', lang, esc(cur.title(lang)))) };
+      const hunger = pet?.state === 'hungry' ? tt('starving', lang) : tt('hungry', lang);
+      return { ...base, kind: 'debt', count: pending.length, pose: pet?.state === 'hungry' ? 'hungry' : debts.length >= 3 ? 'sad' : debts.length ? 'think' : 'talk', mascot: pet?.mascot || base.mascot,
+        text: hello + (debts.length ? tt('many', lang, esc(cur.title(lang)), bullets(debts, lang)) : tt('one', lang, esc(cur.title(lang)))) + '\n\n' + hunger };
     }
     // всё решено: сутки после теста, о котором напоминали, зовём повторить
     const done = st.filter((x) => x.pct != null && n.reminded[x.lessonId] && now - x.doneAt <= DAY).sort((a, b) => b.doneAt - a.doneAt || (b.order ?? 0) - (a.order ?? 0))[0];
     if (!done) return null;
-    return { ...base, kind: 'review', count: 0, pose: done.pct === 100 ? 'love' : 'peace',
+    return { ...base, kind: 'review', count: 0, mascot: pet?.mascot || base.mascot, pose: pet?.state === 'strong' ? 'strong' : done.pct === 100 ? 'love' : 'peace',
       text: hello + (done.pct === 100 ? tt('review100', lang, esc(done.title(lang))) : tt('review', lang, esc(done.title(lang)), done.pct)) };
   }
 
@@ -123,22 +136,23 @@ export function createNudges({ logic, journal, store }) {
     for (const kidId of p.children || []) {
       const k = S.users[kidId];
       if (!k) continue;
-      mascot ||= k.prefs?.mascot || 'mimi';
+      mascot ||= shop?.currentMascot(kidId) || k.prefs?.mascot || 'kapi';
       const kn = esc(first(k));
       const st = logic.testStatus(kidId);
       const kd = (n.kids[kidId] ||= { told: [] });
       const pending = st.filter((x) => x.pct == null);
       // решил то, о чём мы писали родителю
       for (const x of st.filter((y) => y.pct != null && kd.told.includes(y.lessonId))) blocks.push(tt('pDone', lang, kn, esc(x.title(lang)), x.pct));
+      const fed = shop?.pet(kidId).fedToday;
       const fresh = pending.filter((x) => !kd.told.includes(x.lessonId));
-      if (fresh.length) {
+      if (fed) { /* покормил маскота — сегодня родителям про долги не пишем */ } else if (fresh.length) {
         const cur = fresh[fresh.length - 1];
         const rest = pending.filter((x) => x !== cur);
         blocks.push(tt('pFirst', lang, kn, esc(cur.title(lang))) + (rest.length ? `\n${tt('pAlso', lang)}\n${bullets(rest, lang)}` : ''));
       } else if (pending.length) {
         blocks.push(`${tt('pAgain', lang, kn)}\n${bullets(pending, lang)}`);
       }
-      kd.told = pending.map((x) => x.lessonId);
+      if (!fed) kd.told = pending.map((x) => x.lessonId);
       // вечером — посещаемость и оценки за сегодня
       if (slot.part === 2) {
         const d = journal.diary(kidId);
@@ -168,6 +182,7 @@ export function createNudges({ logic, journal, store }) {
       u.nudge.last = slot.key;
       touched = true;
       const m = parent ? parentMsg(u, slot) : studentMsg(u, slot, now);
+      u.nudge.lastAt = now;
       if (m) out.push(m);
     }
     if (touched) store.save();

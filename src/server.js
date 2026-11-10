@@ -8,6 +8,7 @@ import { createStore } from './store.js';
 import { createLogic, httpError } from './logic.js';
 import { createJournal } from './journal.js';
 import { createNudges } from './nudge.js';
+import { createShop } from './shop.js';
 import { verifyInitData } from './auth.js';
 import { validateTranslation } from './grading.js';
 import { createBot } from './bot.js';
@@ -23,7 +24,9 @@ const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..')
 const store = await createStore();
 const logic = createLogic(store, { adminIds: ADMIN_IDS });
 const journal = createJournal({ logic, store });
-const nudges = createNudges({ logic, journal, store });
+const shop = createShop({ logic, store });
+const nudges = createNudges({ logic, journal, shop, store });
+{ const n = shop.migrate(); if (n) console.log(`[shop] оставили бесплатно уже выбранных маскотов: ${n}`); }
 console.log(`[store] ${store.backend}`);
 
 // Тесты, которые Claude готовит из конспектов, лежат в content/lessons/*.json — подхватываем при старте.
@@ -166,8 +169,27 @@ api.use(auth);
 api.post('/auth/logout', h((req) => (logic.logout(req.session), { ok: true })));
 
 // ───────── ученик ─────────
-api.get('/me', h((req) => logic.home(req.user.id)));
-api.post('/me/prefs', h((req) => logic.setPrefs(req.user.id, req.body || {})));
+// Главная + магазин: баланс XP, свои маскоты, зелья, состояние маскота
+const withShop = (uid, m) => (m && !m.isAdmin && !m.isParent && !m.needRole ? { ...m, shop: { balance: shop.balance(uid), owned: shop.owned(uid), potions: logic.S.users[uid]?.potions || 0, pet: shop.pet(uid) } } : m);
+api.get('/me', h((req) => withShop(req.user.id, logic.home(req.user.id))));
+api.post('/me/prefs', h((req) => {
+  const p = { ...(req.body || {}) };
+  // чужого (не купленного) маскота выбрать нельзя
+  if (p.mascot && !req.admin && !logic.isParent(req.user.id) && !shop.owned(req.user.id).includes(p.mascot)) delete p.mascot;
+  return logic.setPrefs(req.user.id, p);
+}));
+// ───────── магазин ─────────
+const langOfReq = (req) => logic.S.users[req.user.id]?.prefs?.lang || 'ru';
+api.get('/shop', h((req) => shop.catalog(req.user.id, langOfReq(req))));
+api.post('/shop/buy', h((req) => shop.buy(req.user.id, req.body?.item, langOfReq(req))));
+api.post('/attempts/:id/magnifier', h((req) => {
+  const { a, q, lesson } = logic.attemptQuestion(req.user.id, req.params.id, req.body?.index);
+  return shop.useMagnifier(req.user.id, a, q, lesson);
+}));
+api.post('/attempts/:id/potion', h((req) => {
+  const { a, q, lesson } = logic.attemptQuestion(req.user.id, req.params.id, req.body?.index);
+  return shop.usePotion(req.user.id, a, q, lesson, req.body?.options);
+}));
 api.get('/stats/me', h((req) => logic.userStats(req.user.id)));
 // Роль нового пользователя: ученик или родитель
 api.post('/me/role', h(async (req) => {
@@ -331,7 +353,7 @@ app.get('*', (_req, res) => res.sendFile(path.join(root, 'public', 'index.html')
 app.use((err, _req, res, _next) => {
   const status = err.status || 500;
   if (status >= 500) console.error(err);
-  res.status(status).json({ error: err.message || 'Ошибка сервера' });
+  res.status(status).json({ error: err.message || 'Ошибка сервера', ...(err.code ? { code: err.code } : {}), ...(err.mascot ? { mascot: err.mascot, food: err.food || null } : {}) });
 });
 
 app.listen(PORT, async () => {

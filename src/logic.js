@@ -634,6 +634,18 @@ export function createLogic(store, { adminIds }) {
     return a;
   }
 
+  // Для лупы и зелья: вопрос попытки и его урок (на языке попытки)
+  function attemptQuestion(uid, aid, index) {
+    const a = getOwnAttempt(uid, aid);
+    if (a.finishedAt) throw httpError(400, 'Тест уже завершён');
+    const it = itemsOf(a)[Number(index)];
+    const q = qOf(it, a.lang);
+    if (!q) throw httpError(400, 'Неверный номер вопроса');
+    return { a, q, lesson: loc(S.lessons[it.lessonId], a.lang), lang: a.lang || 'ru' };
+  }
+  // Сколько раз и когда ученик решал тесты (для состояния маскота)
+  const finishedAt = (uid) => Object.values(S.attempts).filter((a) => a.userId === String(uid) && a.finishedAt && !a.preview).map((a) => a.finishedAt);
+
   function answer(uid, aid, index, value) {
     const a = getOwnAttempt(uid, aid);
     if (a.finishedAt) throw httpError(400, 'Тест уже завершён');
@@ -1123,7 +1135,7 @@ export function createLogic(store, { adminIds }) {
   }
 
   return {
-    S, log, testStatus, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
+    S, log, testStatus, attemptQuestion, finishedAt, totalXp, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
     upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,

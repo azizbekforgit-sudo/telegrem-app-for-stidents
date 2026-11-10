@@ -102,7 +102,7 @@ function savePrefs(patch) {
   clearTimeout(prefsTimer);
   prefsTimer = setTimeout(() => api('/me/prefs', { accent: LOOK.accent, mode: LOOK.mode, mascot: LOOK.mascot, lang: LOOK.lang }).catch(() => {}), 400);
 }
-const me = (emotion, size, cls = '') => mascot(LOOK.mascot, emotion, size, cls);
+const me = (emotion, size, cls = '') => mascot(LOOK.mascot, emotion, size, cls, false, S.me?.shop ? PET_COND : null);
 
 // ───────── инфраструктура ─────────
 // Вход на сайте (без Telegram): токен сессии хранится в браузере
@@ -118,7 +118,7 @@ async function api(path, body, method) {
   const res = await fetch('/api' + path, { method: method || (body ? 'POST' : 'GET'), headers, body: body ? JSON.stringify(body) : undefined });
   const data = await res.json().catch(() => ({}));
   if (res.status === 401 && SESSION && !path.startsWith('/auth/')) { setSession(''); loginScreen(); }
-  if (!res.ok) throw new Error(data.error || 'Ошибка сети');
+  if (!res.ok) throw Object.assign(new Error(data.error || 'Ошибка сети'), { code: data.code || null, data });
   return data;
 }
 const del = (path) => api(path, undefined, 'DELETE');
@@ -966,7 +966,7 @@ function confetti() {
 
 // ───────── состояние и навигация ─────────
 const S = { me: null, tab: null, view: null, overview: null, leagueGroup: null, groupTab: 'members' };
-const STUDENT_TABS = [['home', 'home-smile', 'Путь'], ['diary', 'calendar', 'Дневник'], ['league', 'cup-star', 'Лига'], ['stats', 'chart-2', 'Прогресс'], ['profile', 'user-rounded', 'Профиль']];
+const STUDENT_TABS = [['home', 'home-smile', 'Путь'], ['diary', 'calendar', 'Дневник'], ['shop', 'shop', 'Магазин'], ['league', 'cup-star', 'Лига'], ['stats', 'chart-2', 'Прогресс'], ['profile', 'user-rounded', 'Профиль']];
 const PARENT_TABS = [['phome', 'home-smile', 'Главная'], ['league', 'cup-star', 'Лига'], ['kids', 'users-group-rounded', 'Ученики'], ['pprofile', 'user-rounded', 'Профиль']];
 const ADMIN_TABS = [['dash', 'widget-5', 'Панель'], ['path', 'home-smile', 'Путь'], ['groups', 'users-group-rounded', 'Группы'], ['journal', 'calendar', 'Журнал'], ['tests', 'notebook-bookmark', 'Тесты'], ['bot', 'chat-round-dots', 'Бот']];
 
@@ -1000,11 +1000,12 @@ async function route() {
   if (S.view?.type === 'group') return viewGroup(S.view.id);
   if (S.view?.type === 'student') return viewStudent(S.view.id);
   if (S.view?.type === 'league') return viewLeague();
-  const r = { home: tabHome, league: tabLeague, stats: tabStats, profile: tabProfile, dash: tabDash, groups: tabGroups, path: tabTeacherPath, journal: tabJournal, diary: tabDiary, tests: tabTests, bot: tabBot, phome: tabParentHome, kids: tabKids, pprofile: tabParentProfile }[S.tab];
+  const r = { home: tabHome, league: tabLeague, stats: tabStats, profile: tabProfile, dash: tabDash, groups: tabGroups, path: tabTeacherPath, journal: tabJournal, diary: tabDiary, shop: tabShop, tests: tabTests, bot: tabBot, phome: tabParentHome, kids: tabKids, pprofile: tabParentProfile }[S.tab];
   await r();
 }
 async function refreshMe() {
   S.me = await api('/me');
+  syncShop(S.me);
   return S.me;
 }
 
@@ -1377,7 +1378,8 @@ function mascotReels(current, onPick) {
       <div class="rbub" data-bubble><small></small><p></p></div>
       <div class="meta"><h2>${esc(tr(m.name))}</h2><p>${esc(tr(m.about))}</p>
         <div class="stat5">${STAT_KEYS.map((k, i) => `<div style="--i:${i}"><span>${STAT_EMOJI[i]} ${esc(tr(k))}</span><div class="bar5">${[1, 2, 3, 4, 5].map((n) => `<i class="${n <= st[i] ? 'on' : ''}"></i>`).join('')}</div></div>`).join('')}</div></div>
-      <button class="reel-pick" data-pick>${id === current ? '✓ ' + esc(tr('Твой напарник')) : esc(tr('Выбрать')) + ': ' + esc(tr(m.name))}</button>
+      <button class="reel-pick ${S.me?.shop && !S.me.shop.owned.includes(id) ? 'locked' : ''}" data-pick>${id === current ? '✓ ' + esc(tr('Твой напарник')) : S.me?.shop && !S.me.shop.owned.includes(id) ? `${ic('lock-keyhole', 'sm')} ${esc(tr('В магазине'))}` : esc(tr('Выбрать')) + ': ' + esc(tr(m.name))}</button>
+      ${S.me?.shop && !S.me.shop.owned.includes(id) ? `<div class="reel-lock">${ic('lock-keyhole')}</div>` : ''}
       ${id === ids[0] ? `<div class="swipe-hint" data-hint>${ic('alt-arrow-left')}<span>${esc(tr('Свайпни вверх'))}</span></div>` : ''}
     </section>`;
   }).join('')}</div>`;
@@ -1459,6 +1461,7 @@ function mascotReels(current, onPick) {
 function bindAppearance(el, onChange) {
   const pk = $('[data-pickm]', el);
   if (pk) pk.onclick = () => mascotReels(LOOK.mascot, (id) => {
+    if (S.me?.shop && !S.me.shop.owned.includes(id)) { $$('.sheet-wrap, .overlay').forEach((x) => x.remove()); go('shop'); return; }
     haptic('success');
     savePrefs({ mascot: id });
     $('[data-curm]', el).innerHTML = curMascotInner();
@@ -1821,7 +1824,8 @@ const KIND = { choice: 'Выбери ответ', truefalse: 'Верно или 
 async function startLesson(target) {
   let data;
   try { data = await api('/attempts', target); } catch (e) { return fail(e); }
-  const P = { ...data, i: 0, queue: data.questions.map((_, i) => i), review: [], phase: 'main', combo: 0, xp: 0, value: null, ready: false, answered: false };
+  const P = { ...data, i: 0, queue: data.questions.map((_, i) => i), review: [], phase: 'main', combo: 0, xp: 0, value: null, ready: false, answered: false, magUsed: false, potUsed: false };
+  const tools = testTools(data, P);
   const el = document.createElement('div');
   el.className = 'player';
   layer.appendChild(el);
@@ -1846,7 +1850,7 @@ async function startLesson(target) {
     P.value = null; P.ready = false; P.answered = false;
     el.innerHTML = `
       <div class="ptop"><button class="pclose" data-close aria-label="Закрыть">${ic('close-circle')}</button><div class="pbar"><i style="width:${(doneCount() / total()) * 100}%"></i></div>
-        <span class="combo" data-combo>${comboHtml()}</span></div>
+        <span class="combo" data-combo>${comboHtml()}</span>${P.phase === 'main' && !S.me?.isAdmin ? tools.html() : ''}</div>
       <div class="pbody">
         <div class="qkind ${P.phase === 'review' ? 'review' : ''}">${P.phase === 'review' ? `${emo(E.repeat)} Работа над ошибками` : data.preview ? `${ic('eye', 'sm')} Превью учителя ·` : ''} ${KIND[q.type]}${q.topic ? ` <span class="t">· ${esc(q.topic)}</span>` : ''}${q.from ? ` <span class="t">· ${esc(q.from)}</span>` : ''}</div>
         <div class="qhead">${me('think', 84)}<div class="qprompt">${esc(q.prompt)}</div></div>
@@ -1856,6 +1860,7 @@ async function startLesson(target) {
       </div>
       <div class="pfoot"><div class="in"><div data-fb></div><button class="btn block" data-check disabled>Проверить</button></div></div>`;
     $('[data-close]', el).onclick = close;
+    tools.bind(el, q, qi);
     const hint = $('[data-hint]', el);
     if (hint) hint.onclick = () => { hint.parentElement.innerHTML = emo(E.bulb) + ' ' + esc(q.hint); };
     mountAnswer($('[data-area]', el), q, P, setReady, () => $('[data-check]', el).click());
@@ -2598,6 +2603,187 @@ async function scheduleSheet(gid, after) {
 }
 const slotRow = (s, L) => `<div class="slot" data-noi18n><select class="input" data-dow>${DOW_FULL[L].map((d, i) => `<option value="${i + 1}" ${s.dow === i + 1 ? 'selected' : ''}>${d}</option>`).join('')}</select>
   <input class="input" type="time" data-start value="${s.start}"><span>–</span><input class="input" type="time" data-end value="${s.end}"><button class="iconbtn" data-rmslot aria-label="Удалить">${ic('trash-bin-trash', 'sm')}</button></div>`;
+
+// ═══════════════ МАГАЗИН (за XP) ═══════════════
+// Состояние маскота ученика (голодный / толстенький / силач) — рисуется везде, где появляется его напарник
+let PET_COND = null;
+function syncShop(m) {
+  const sh = m?.shop;
+  if (!sh) { PET_COND = null; return; }
+  PET_COND = sh.pet && sh.pet.state !== 'normal' ? sh.pet.state : null;
+  if (sh.pet?.mascot && sh.pet.mascot !== LOOK.mascot) applyLook({ mascot: sh.pet.mascot });
+}
+const PET_SAY = {
+  hungry: 'Я голодный… 😢 Реши тест или покорми меня — еда ниже.',
+  fat: 'Ох, я объелся… 🍔 Давай лучше порешаем тесты!',
+  strong: 'Смотри, какие мышцы! 💪 Это всё твои тесты.',
+  normal: 'Здесь всё покупается за XP. Решай тесты — и XP будет больше!',
+};
+const PET_LABEL = { hungry: '😢 голодный', fat: '🍔 толстенький', strong: '💪 силач', normal: '🙂 в форме' };
+
+async function tabShop() {
+  const c = await api('/shop');
+  const L = curLang();
+  const mine = c.pet.mascot;
+  const myFood = c.foods.find((f) => f.mascot === mine);
+  const otherFoods = c.foods.filter((f) => f.mascot !== mine);
+  const name = (id) => tr(MASCOTS[id]?.name || id);
+  app.innerHTML = topbar() + `
+    <div class="hero shop-hero">${me('talk', 108, 'quiet')}<div class="grow"><h1>${ic('shop')} Магазин</h1><div class="say" data-say>${esc(PET_SAY[c.pet.state])}</div></div></div>
+    <div class="card wallet"><div class="row" style="gap:12px">${emo(E.bolt, { cls: 'lg', anim: true })}<div class="grow"><small>Можно потратить</small><b data-noi18n>${c.balance} XP</b></div>
+      <span class="pill">${PET_LABEL[c.pet.state]}</span></div>
+      <p class="small muted" style="margin-top:8px">Лига считает весь заработанный XP — покупки её не уменьшают.</p></div>
+
+    ${sectionTitle('🍽️', `Еда для ${name(mine)}`)}
+    ${myFood ? `<button class="card shop-food mine" data-food="${myFood.id}">${emo(myFood.emoji, { cls: 'lg' })}<div class="grow"><b data-noi18n>${esc(myFood.name)}</b><span>Любимая еда твоего напарника. Покормишь — он скажет спасибо и не будет голодным.</span></div><span class="price">${myFood.price} XP</span></button>` : ''}
+    <details class="other-food"><summary>Еда других маскотов</summary><div class="food-grid">${otherFoods.map((f) => `<button class="food-tile" data-food="${f.id}">${emo(f.emoji)}<b data-noi18n>${esc(f.name)}</b><small>${esc(name(f.mascot))} · ${f.price} XP</small></button>`).join('')}</div></details>
+
+    ${sectionTitle('🧪', 'Помощь в тестах')}
+    <div class="card shop-row">${ic('flask', 'lg')}<div class="grow"><b>Зелье подсказки</b><span>Выпей в тесте — маскот даст маленькую подсказку к вопросу. Одно зелье за тест.</span><small>У тебя: <b data-pot>${c.potion.have}</b></small></div><button class="btn sm" data-potion>${c.potion.price} XP</button></div>
+    <div class="card shop-row">${ic('magnifer', 'lg')}<div class="grow"><b>Лупа</b><span>Не понял вопрос? Нажми лупу в тесте — маскот на ${c.magnifier.seconds} секунд покажет нужный кусочек обучалки. Один раз за тест.</span></div><span class="price">${c.magnifier.price} XP</span></div>
+
+    ${sectionTitle('🐾', 'Маскоты')}
+    <div class="shop-mascots">${c.mascots.map((x) => `<button class="mcard ${x.owned ? 'owned' : 'locked'} ${x.id === mine ? 'on' : ''}" data-m="${x.id}" style="--c:${MASCOTS[x.id]?.color || '#ccc'}">
+      <div class="mart">${mascot(x.id, 'happy', 96, 'still')}${x.owned ? '' : `<span class="mlock">${ic('lock-keyhole')}</span>`}</div>
+      <b>${esc(name(x.id))}</b><small>${x.id === mine ? '✓ твой' : x.owned ? 'выбрать' : x.free ? 'бесплатно' : `<span data-noi18n>${x.price} XP</span>`}</small></button>`).join('')}</div>`;
+  speak($('[data-say]'), PET_SAY[c.pet.state], $('.hero .mascot'));
+  $$('[data-food]').forEach((b) => (b.onclick = () => buyFood(b.dataset.food, c)));
+  $('[data-potion]').onclick = () => buyItem('potion', `${tr('Купить зелье')} — ${c.potion.price} XP?`);
+  $$('[data-m]').forEach((b) => (b.onclick = () => {
+    const x = c.mascots.find((m) => m.id === b.dataset.m);
+    if (x.owned) { if (x.id !== mine) { haptic('light'); savePrefs({ mascot: x.id }); setTimeout(() => refreshMe().then(syncShop).then(() => tabShop()).catch(fail), 500); } return; }
+    mascotBuySheet(x, c.balance);
+  }));
+}
+function mascotBuySheet(x, balance) {
+  const nm = tr(MASCOTS[x.id].name);
+  openSheet(`<div class="stack center">${mascot(x.id, 'cheer', 150)}<h2>${esc(nm)}</h2><p class="muted">${esc(tr(MASCOTS[x.id].about))}</p>
+    <div class="price big" data-noi18n>${x.price} XP</div>
+    <button class="btn block" data-buy ${balance < x.price ? 'disabled' : ''}>${ic('shop')}${balance < x.price ? `Не хватает ${x.price - balance} XP` : 'Купить и выбрать'}</button>
+    <p class="small muted">У тебя: <span data-noi18n>${balance} XP</span></p></div>`, (el, close) => {
+    $('[data-buy]', el).onclick = async () => {
+      try {
+        const r = await api('/shop/buy', { item: 'mascot:' + x.id });
+        haptic('success'); sfx.win(); confetti();
+        applyLook({ mascot: x.id });
+        close();
+        toast(`${nm} — ${tr('теперь твой напарник!')}`);
+        await refreshMe().then(syncShop);
+        tabShop().catch(fail);
+        return r;
+      } catch (e) { fail(e); }
+    };
+  });
+}
+async function buyItem(item, question) {
+  if (!(await confirmSheet(question, '', tr('Купить')))) return null;
+  try {
+    const r = await api('/shop/buy', { item });
+    haptic('success'); sfx.ok();
+    toast(item === 'potion' ? `🧪 ${tr('Зелий')}: ${r.potions}` : tr('Куплено!'));
+    if (S.tab === 'shop') tabShop().catch(fail);
+    return r;
+  } catch (e) { fail(e); return null; }
+}
+async function buyFood(id, c) {
+  const f = c.foods.find((x) => x.id === id);
+  try {
+    await api('/shop/buy', { item: 'food:' + id });
+    haptic('success'); sfx.win();
+    openSheet(`<div class="stack center"><div class="eat">${me('love', 150)}<span class="bite">${emo(f.emoji, { cls: 'lg' })}</span></div><h2>Ням-ням! 😋</h2><div class="say-box" data-say></div><button class="btn block" data-ok>Пожалуйста!</button></div>`, (el, close) => {
+      speak($('[data-say]', el), 'Спасибо! Я сытый и довольный. А теперь давай решим тест — так я стану сильнее 💪', $('.eat .mascot', el));
+      $('[data-ok]', el).onclick = close;
+    });
+    await refreshMe().then(syncShop);
+    tabShop().catch(fail);
+  } catch (e) {
+    if (e.code !== 'wrong-food') return fail(e);
+    haptic('error');
+    const right = e.data?.food;
+    openSheet(`<div class="stack center">${me('oops', 140)}<div class="say-box" data-say></div>${right ? `<p class="muted small">Я ем только: ${emo(right.emoji)} <b data-noi18n>${esc(right.name)}</b></p>` : ''}<button class="btn block" data-ok>${ic('play')}Решать тест</button></div>`, (el, close) => {
+      speak($('[data-say]', el), 'Ты что? Лучше реши тест, а? Дурачок 😜', $('.mascot', el));
+      $('[data-ok]', el).onclick = () => { close(); go('home'); };
+    });
+  }
+}
+
+// ───────── в тесте: лупа и зелье ─────────
+function testTools(data, P) {
+  return {
+    html: () => `<button class="tool" data-mag ${P.magUsed ? 'disabled' : ''} aria-label="Лупа">${ic('magnifer')}</button>
+      <button class="tool" data-pot ${P.potUsed ? 'disabled' : ''} aria-label="Зелье">${ic('flask')}<em data-noi18n>${S.me?.shop?.potions ?? 0}</em></button>`,
+    bind(el, q, qi) {
+      const mag = $('[data-mag]', el);
+      if (mag) mag.onclick = () => magnifierSheet(el, data, P, q, qi);
+      const pot = $('[data-pot]', el);
+      if (pot) pot.onclick = () => potionSheet(el, data, P, q, qi);
+    },
+  };
+}
+function magnifierSheet(el, data, P, q, qi) {
+  if (P.magUsed) return toast(tr('Лупа уже использована в этом тесте'));
+  const bal = S.me?.shop?.balance ?? 0;
+  openSheet(`<div class="stack center">${ic('magnifer', 'xl')}<h2>Лупа</h2>
+    <p class="muted">Не понял вопрос? Маскот на 30 секунд покажет кусочек обучалки, который поможет его решить.</p>
+    <div class="tags" style="justify-content:center"><span class="pill gold" data-noi18n>−100 XP</span><span class="pill">один раз за тест</span></div>
+    <button class="btn block" data-use ${!data.preview && bal < 100 ? 'disabled' : ''}>${ic('magnifer')}${!data.preview && bal < 100 ? 'Не хватает XP' : 'Использовать'}</button>
+    <p class="small muted">У тебя: <span data-noi18n>${bal} XP</span></p></div>`, (sh, close) => {
+    $('[data-use]', sh).onclick = async () => {
+      try {
+        const r = await api(`/attempts/${data.attemptId}/magnifier`, { index: qi });
+        close();
+        P.magUsed = true;
+        if (S.me?.shop) S.me.shop.balance = r.balance;
+        $('[data-mag]', el)?.setAttribute('disabled', '');
+        showMagnifier(el, r);
+      } catch (e) { if (e.code === 'used') { P.magUsed = true; $('[data-mag]', el)?.setAttribute('disabled', ''); } fail(e); }
+    };
+  });
+}
+function showMagnifier(el, r) {
+  haptic('medium');
+  const box = document.createElement('div');
+  box.className = 'mag-pop';
+  box.dataset.noi18n = '1';
+  box.innerHTML = `<div class="mag-card"><div class="row" style="gap:10px;align-items:flex-start">${me('teach', 74)}<div class="grow"><small>${ic('magnifer', 'sm')} ${esc(r.help.title)}</small>
+    ${r.help.slides.map((s) => `<div class="mag-slide ${s.quote ? 'quote' : ''}">${s.emoji ? emo(s.emoji) : ''}${s.quote ? `<b>${esc(tr('Учитель говорил:'))}</b> ` : ''}${rich(s.text)}${s.code ? `<pre class="code">${highlight(s.code)}</pre>` : ''}</div>`).join('')}</div></div>
+    <div class="mag-timer"><i style="animation-duration:${r.seconds}s"></i></div><button class="link small" data-x>Закрыть</button></div>`;
+  el.appendChild(box);
+  const done = () => { box.classList.add('out'); setTimeout(() => box.remove(), 250); };
+  const t = setTimeout(done, r.seconds * 1000);
+  $('[data-x]', box).onclick = () => { clearTimeout(t); done(); };
+}
+function potionSheet(el, data, P, q, qi) {
+  if (P.potUsed) return toast(tr('Зелье уже выпито в этом тесте'));
+  const have = S.me?.shop?.potions ?? 0;
+  const use = async (close) => {
+    try {
+      const r = await api(`/attempts/${data.attemptId}/potion`, { index: qi, options: q.options || null });
+      close?.();
+      P.potUsed = true;
+      if (S.me?.shop) S.me.shop.potions = r.potions;
+      const b = $('[data-pot]', el);
+      if (b) { b.setAttribute('disabled', ''); $('em', b).textContent = r.potions; }
+      haptic('success');
+      const area = $('[data-area]', el);
+      if (r.remove != null) { const o = $(`.opt[data-i="${r.remove}"]`, area); if (o) { o.classList.add('gone'); o.disabled = true; } }
+      area.insertAdjacentHTML('beforebegin', `<div class="potion-hint" data-noi18n>${me('wow', 56, 'still')}<div class="grow"><small>🧪 ${esc(tr('Подсказка'))}</small><p>${rich(r.hint || tr('Подумай ещё раз — ответ ближе, чем кажется!'))}${r.remove != null ? `<br><span class="small muted">${esc(tr('Один неверный вариант я убрал.'))}</span>` : ''}</p></div></div>`);
+    } catch (e) { fail(e); }
+  };
+  if (data.preview) return use();
+  if (have > 0) {
+    openSheet(`<div class="stack center">${ic('flask', 'xl')}<h2>Зелье подсказки</h2><p class="muted">Маскот даст маленькую подсказку к этому вопросу. Одно зелье за тест.</p>
+      <p class="small muted">Осталось зелий: <b data-noi18n>${have}</b></p><button class="btn block" data-use>${ic('flask')}Выпить</button></div>`, (sh, close) => { $('[data-use]', sh).onclick = () => use(close); });
+  } else {
+    const bal = S.me?.shop?.balance ?? 0;
+    openSheet(`<div class="stack center">${ic('flask', 'xl')}<h2>Зелий нет</h2><p class="muted">Купи зелье за 150 XP — и сразу выпей. Маскот подскажет к этому вопросу.</p>
+      <button class="btn block" data-buyuse ${bal < 150 ? 'disabled' : ''}>${ic('shop')}${bal < 150 ? 'Не хватает XP' : 'Купить и выпить'}</button><p class="small muted">У тебя: <span data-noi18n>${bal} XP</span></p></div>`, (sh, close) => {
+      $('[data-buyuse]', sh).onclick = async () => {
+        try { const r = await api('/shop/buy', { item: 'potion' }); if (S.me?.shop) { S.me.shop.potions = r.potions; S.me.shop.balance = r.balance; } await use(close); } catch (e) { fail(e); }
+      };
+    });
+  }
+}
 
 const TYPE_LABEL = { choice: 'выбор', truefalse: 'верно/неверно', input: 'ввод', order: 'порядок', match: 'пары', fill: 'пропуски' };
 

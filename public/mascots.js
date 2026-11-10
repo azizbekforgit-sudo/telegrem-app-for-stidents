@@ -401,7 +401,7 @@ const GRAD = { mimi: ['#ffffff', '#f3e6ef'], kapi: ['#e6aa74', '#c07b48'], dino:
 // Анимации те же, что у остальных (класс m-body), а «говорит» — лёгкое покачивание (CSS .raster).
 const RASTER = { plu: true };
 
-export function mascot(id = 'mimi', emo = 'happy', size = 120, cls = '', crop = false) {
+function mascotBase(id = 'mimi', emo = 'happy', size = 120, cls = '', crop = false) {
   if (RASTER[id] && MASCOTS[id]) {
     if (!FACE[emo] && emo !== 'angry') emo = 'happy';
     const box = crop ? '20 20 160 160' : '0 0 200 200';
@@ -425,4 +425,49 @@ export function mascot(id = 'mimi', emo = 'happy', size = 120, cls = '', crop = 
     <g class="m-body">${B.back}${B.body}${B.top || ''}${B.nose || ''}${face(B.f, emo, B.pal)}${arms(pose, B.a, fillPaw, B.st)}${B.extra || ''}</g>${(SW = 3, '')}
     ${e.fx ? fx(e.fx, { ...B.b, face: B.f }) : ''}
   </svg>`;
+}
+
+// ───────── состояние маскота (магазин и еда): голодный / толстенький / силач ─────────
+// Рисуется поверх любого маскота (и нарисованного кодом, и картинки): форма тела меняется трансформацией,
+// сверху — свои детали. Анимации — классы cond-* в app.css. Всё статичное задано атрибутами, поэтому картинки для бота
+// (scripts/render-mascots.js) рендерятся и без CSS.
+export const CONDITIONS = ['hungry', 'fat', 'strong'];
+const COND_FACE = { hungry: { happy: 'sad', cheer: 'sad', peace: 'sad', love: 'sad', wow: 'oops' }, fat: { sad: 'happy' }, strong: { happy: 'cheer', sad: 'think' } };
+function condOverlay(cond, color, k) {
+  const ink = '#3b2a35';
+  if (cond === 'strong') {
+    // согнутые руки с бицепсами, кубики пресса, искорки силы
+    const arm = (flip) => `<g transform="translate(${flip > 0 ? 200 : 0} 0) scale(${flip > 0 ? -1 : 1} 1)"><g class="cond-flex">
+      <path d="M40 132 C22 134 10 124 10 110 C10 96 18 84 26 78 C30 72 38 72 40 78 C42 84 36 88 34 94 C40 92 48 96 50 104 C52 114 48 124 40 132Z" fill="${color}" stroke="${ink}" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M22 110 C26 100 36 98 42 104" stroke="${ink}" stroke-width="3" fill="none" stroke-linecap="round" opacity=".55"/>
+      <ellipse cx="31" cy="76" rx="9" ry="8" fill="${color}" stroke="${ink}" stroke-width="4"/></g></g>`;
+    const abs = [0, 1, 2].map((r) => [86, 104].map((x) => `<rect x="${x}" y="${136 + r * 13}" width="12" height="10" rx="4" fill="#000" fill-opacity=".07" stroke="${ink}" stroke-opacity=".35" stroke-width="2.2"/>`).join('')).join('');
+    const spark = (x, y, s) => `<path transform="translate(${x} ${y}) scale(${s})" d="M0 -10 C1 -3 3 -1 10 0 C3 1 1 3 0 10 C-1 3 -3 1 -10 0 C-3 -1 -1 -3 0 -10Z" fill="#ffc83d"/>`;
+    return `<g class="cond-abs">${abs}</g>${arm(-1)}${arm(1)}<g class="fx-tw">${spark(24, 52, 0.9)}${spark(176, 48, 1.1)}</g>`;
+  }
+  if (cond === 'fat') {
+    // пухлые щёки, пузико и крошки
+    return `<g class="cond-jiggle"><ellipse cx="100" cy="170" rx="48" ry="16" fill="${color}" fill-opacity=".55"/><path d="M96 168 Q100 173 104 168" stroke="${ink}" stroke-width="2.6" fill="none" stroke-linecap="round" opacity=".6"/></g>
+      <ellipse cx="58" cy="122" rx="12" ry="8" fill="#ff8fb0" opacity=".55"/><ellipse cx="142" cy="122" rx="12" ry="8" fill="#ff8fb0" opacity=".55"/>
+      <g fill="#c98a4b"><circle cx="128" cy="184" r="2.6"/><circle cx="136" cy="181" r="1.8"/><circle cx="70" cy="185" r="2.2"/></g>`;
+  }
+  if (cond === 'hungry') {
+    // урчит живот, пустая миска, слабость
+    return `<g class="cond-rumble" stroke="${ink}" stroke-width="3" fill="none" stroke-linecap="round" opacity=".6">
+        <path d="M58 150 q5 -5 10 0 t10 0"/><path d="M122 154 q5 -5 10 0 t10 0"/></g>
+      <g transform="translate(160 176)"><path d="M-20 -6 L20 -6 Q18 10 0 10 Q-18 10 -20 -6Z" fill="#e8e2ee" stroke="${ink}" stroke-width="3" stroke-linejoin="round"/><ellipse cx="0" cy="-6" rx="20" ry="4" fill="#cfc6da" stroke="${ink}" stroke-width="3"/></g>
+      <g class="fx-float" font-family="Nunito,system-ui" font-weight="900" fill="#9b8fb5"><text x="30" y="40" font-size="18">…</text></g>`;
+  }
+  return '';
+}
+export function mascot(id = 'mimi', emo = 'happy', size = 120, cls = '', crop = false, cond = null) {
+  if (!CONDITIONS.includes(cond)) return mascotBase(id, emo, size, cls, crop);
+  emo = COND_FACE[cond][emo] || emo;
+  const svg = mascotBase(id, emo, size, `${cls} cond-${cond}`, crop);
+  const color = id === 'mimi' ? '#f6eef3' : (MASCOTS[id] || MASCOTS.mimi).color;
+  const shape = { hungry: 'scale(.8 .95)', fat: 'scale(1.2 .93)', strong: 'scale(1.04 1.02)' }[cond];
+  const filt = cond === 'hungry' ? `<filter id="cw${++uid}"><feColorMatrix type="saturate" values=".45"/></filter>` : '';
+  const open = svg.indexOf('>') + 1;
+  const close = svg.lastIndexOf('</svg>');
+  return `${svg.slice(0, open)}${filt ? `<defs>${filt}</defs>` : ''}<g class="cond-wrap"${filt ? ` filter="url(#cw${uid})"` : ''} transform="translate(100 188) ${shape} translate(-100 -188)"><g class="cond-anim">${svg.slice(open, close)}</g></g>${condOverlay(cond, color)}</svg>`;
 }

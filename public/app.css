@@ -835,3 +835,75 @@ code { background: var(--card-2); padding: 1px 6px; border-radius: 7px; font-siz
 .kd-stats div { background: var(--track); border-radius: 12px; padding: 8px 2px; }
 .kd-stats b { display: block; font-size: 17px; font-weight: 900; }
 .kd-stats span { font-size: 10.5px; color: var(--muted); font-weight: 700; line-height: 1.15; display: block; }
+
+/* состояния маскота: голодный (слабеет, качается), толстенький (трясётся пузико), силач (играет бицепсами) */
+.mascot .cond-anim { transform-box: view-box; transform-origin: 100px 188px; }
+.cond-hungry .cond-anim { animation: condWeak 2.8s ease-in-out infinite; }
+.cond-hungry .cond-rumble { animation: condRumble 0.9s ease-in-out infinite; }
+.cond-fat .cond-anim { animation: condJiggle 1.4s ease-in-out infinite; }
+.cond-fat .cond-jiggle { transform-box: view-box; transform-origin: 100px 170px; animation: condJiggle 1.4s ease-in-out infinite; }
+.cond-strong .cond-flex { transform-box: fill-box; transform-origin: 80% 90%; animation: condFlex 1.2s ease-in-out infinite; }
+.cond-strong .cond-anim { animation: condPump 1.2s ease-in-out infinite; }
+.mascot.still .cond-anim, .mascot.still .cond-flex, .mascot.still .cond-jiggle, .mascot.still .cond-rumble { animation: none; }
+@keyframes condWeak { 0%, 100% { transform: rotate(-3deg) translateY(2px); } 50% { transform: rotate(3deg) translateY(4px); } }
+@keyframes condRumble { 0%, 100% { opacity: .2; } 50% { opacity: .75; } }
+@keyframes condJiggle { 0%, 100% { transform: scale(1, 1); } 30% { transform: scale(1.03, 0.97); } 60% { transform: scale(0.98, 1.02); } }
+@keyframes condFlex { 0%, 100% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(-8deg) scale(1.08); } }
+@keyframes condPump { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+
+/* ───── магазин ───── */
+.shop-hero h1 { display: flex; align-items: center; gap: 8px; }
+.wallet small { display: block; color: var(--muted); font-weight: 800; font-size: 12px; }
+.wallet b { font-size: 26px; font-weight: 900; }
+.shop-food { width: 100%; display: flex; align-items: center; gap: 12px; text-align: left; font: inherit; color: inherit; }
+.shop-food.mine { border-color: var(--accent); background: var(--accent-l); }
+.shop-food .emo.lg { width: 54px; height: 54px; }
+.shop-food b, .shop-row b { display: block; font-size: 16px; }
+.shop-food span, .shop-row span { display: block; font-size: 12.5px; color: var(--muted); line-height: 1.3; }
+.shop-row { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
+.shop-row > .ic { color: var(--accent-d); flex: none; }
+.shop-row small { display: block; margin-top: 4px; font-size: 12px; font-weight: 700; }
+.price { font-weight: 900; color: var(--gold-d, #c88a00); white-space: nowrap; }
+.price.big { font-size: 28px; }
+.other-food { margin-top: 10px; }
+.other-food summary { cursor: pointer; font-weight: 800; color: var(--muted); font-size: 14px; padding: 6px 2px; }
+.food-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+.food-tile { background: var(--card); border: 1.5px solid var(--line); border-radius: 16px; padding: 10px 6px; display: flex; flex-direction: column; align-items: center; gap: 2px; font: inherit; color: inherit; }
+.food-tile .emo { width: 36px; height: 36px; }
+.food-tile b { font-size: 12.5px; line-height: 1.15; text-align: center; }
+.food-tile small { font-size: 10.5px; color: var(--muted); text-align: center; }
+.shop-mascots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.mcard { position: relative; background: var(--card); border: 2px solid var(--line); border-radius: 20px; padding: 8px 4px 10px; display: flex; flex-direction: column; align-items: center; gap: 2px; font: inherit; color: inherit; }
+.mcard .mart { position: relative; }
+.mcard.locked .mart .mascot { filter: grayscale(0.85) brightness(0.92); opacity: 0.75; }
+.mcard .mlock { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; }
+.mcard .mlock .ic { width: 34px; height: 34px; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5)); }
+.mcard.on { border-color: var(--accent); background: var(--accent-l); }
+.mcard b { font-size: 14px; }
+.mcard small { font-size: 12px; font-weight: 800; color: var(--muted); }
+.mcard.locked small { color: var(--gold-d, #c88a00); }
+.eat { position: relative; }
+.eat .bite { position: absolute; right: -6px; bottom: 18px; animation: bite 0.6s ease-in-out 3; }
+@keyframes bite { 50% { transform: translateX(-26px) scale(0.7); opacity: 0.6; } }
+.reel-pick.locked { background: #3b2a35; color: #fff; }
+.reel-lock { position: absolute; left: 50%; top: 38%; transform: translate(-50%, -50%); color: #fff; z-index: 3; pointer-events: none; }
+.reel-lock .ic { width: 64px; height: 64px; filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5)); }
+/* тест: лупа и зелье */
+.ptop .tool { position: relative; width: 38px; height: 38px; border-radius: 12px; background: var(--card); border: 1.5px solid var(--line); display: grid; place-items: center; color: var(--accent-d); flex: none; }
+.ptop .tool:disabled { opacity: 0.35; }
+.ptop .tool em { position: absolute; right: -5px; top: -6px; font-style: normal; font-size: 10px; font-weight: 900; background: #8a5cf6; color: #fff; border-radius: 8px; padding: 1px 5px; }
+.mag-pop { position: absolute; left: 12px; right: 12px; top: 64px; z-index: 30; animation: magIn 0.3s cubic-bezier(.2, 1.4, .4, 1); }
+.mag-pop.out { opacity: 0; transform: translateY(-10px); transition: 0.25s; }
+.mag-card { background: var(--card); border: 2px solid var(--accent); border-radius: 22px; padding: 14px; box-shadow: 0 18px 40px -16px rgba(40, 20, 60, 0.45); max-height: 60vh; overflow: auto; max-width: 600px; margin: 0 auto; }
+.mag-card small { display: block; font-weight: 900; color: var(--accent-d); margin-bottom: 6px; }
+.mag-slide { font-size: 14.5px; line-height: 1.4; margin-top: 6px; }
+.mag-slide.quote { background: var(--accent-l); border-radius: 12px; padding: 8px 10px; }
+.mag-slide .emo { width: 26px; height: 26px; vertical-align: -6px; margin-right: 4px; }
+.mag-timer { height: 6px; background: var(--track); border-radius: 3px; overflow: hidden; margin: 10px 0 6px; }
+.mag-timer i { display: block; height: 100%; background: var(--accent); animation: magTime linear forwards; }
+@keyframes magTime { from { width: 100%; } to { width: 0; } }
+@keyframes magIn { from { opacity: 0; transform: translateY(-14px) scale(0.96); } }
+.potion-hint { display: flex; gap: 10px; align-items: center; background: color-mix(in srgb, #8a5cf6 12%, var(--card)); border: 1.5px solid color-mix(in srgb, #8a5cf6 40%, var(--line)); border-radius: 16px; padding: 8px 12px; margin-bottom: 12px; animation: magIn 0.3s ease; }
+.potion-hint small { display: block; font-weight: 900; color: #6b3fd4; }
+.potion-hint p { margin: 2px 0 0; font-size: 14px; line-height: 1.35; }
+.opt.gone { opacity: 0.3; text-decoration: line-through; pointer-events: none; }
