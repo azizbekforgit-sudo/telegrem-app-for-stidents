@@ -828,3 +828,10 @@ code { background: var(--card-2); padding: 1px 6px; border-radius: 7px; font-siz
 .jr-marks .gchip.mini { border: none; }
 .jr-avg { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 40px; }
 .jr-avg small { font-size: 11px; font-weight: 800; color: var(--muted); }
+
+/* родителю: календарь ребёнка на главной */
+.kid-diary h3 { margin: 0; }
+.kd-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 12px 0; text-align: center; }
+.kd-stats div { background: var(--track); border-radius: 12px; padding: 8px 2px; }
+.kd-stats b { display: block; font-size: 17px; font-weight: 900; }
+.kd-stats span { font-size: 10.5px; color: var(--muted); font-weight: 700; line-height: 1.15; display: block; }

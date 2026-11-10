@@ -556,6 +556,24 @@ export function createLogic(store, { adminIds }) {
     }
     return b;
   }
+  // Тесты ученика для напоминалок: что выдано и что решено (лучший результат по всем доступам к уроку).
+  // Уроки, открытые «задним числом» миграцией (auto), долгом не считаются.
+  function testStatus(uid) {
+    uid = String(uid);
+    const byLesson = new Map();
+    for (const p of pubsForUser(uid)) {
+      const l = S.lessons[p.lessonId];
+      if (!l || l.archived) continue;
+      if (!byLesson.has(p.lessonId)) byLesson.set(p.lessonId, []);
+      byLesson.get(p.lessonId).push(p);
+    }
+    return [...byLesson].filter(([, pubs]) => pubs.some((p) => !p.auto)).map(([lessonId, pubs]) => {
+      const l = S.lessons[lessonId];
+      const b = pubs.map((p) => best(uid, p.id)).filter(Boolean).sort((x, y) => y.pct - x.pct)[0] || null;
+      const first = pubs.flatMap((p) => finishedAttempts(uid, p.id)).sort((x, y) => x.finishedAt - y.finishedAt)[0];
+      return { lessonId, order: l.order ?? null, emoji: l.emoji, title: (lang) => loc(l, lang).title, givenAt: Math.min(...pubs.filter((p) => !p.auto).map((p) => p.publishedAt)), pct: b ? b.pct : null, doneAt: first ? first.finishedAt : null };
+    }).sort((x, y) => (x.order ?? 999) - (y.order ?? 999) || x.givenAt - y.givenAt);
+  }
   const firstAttempt = (uid, pubId) => finishedAttempts(uid, pubId).sort((a, b) => a.finishedAt - b.finishedAt)[0] || null;
 
   const MISTAKES_PER_SESSION = 10;
@@ -1105,7 +1123,7 @@ export function createLogic(store, { adminIds }) {
   }
 
   return {
-    S, log, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
+    S, log, testStatus, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
     upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,

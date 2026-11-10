@@ -1,5 +1,10 @@
 // Telegram-бот: регистрация учеников, привязка чатов-групп, уведомления о тестах и напоминания.
-import { Bot, InlineKeyboard, GrammyError } from 'grammy';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { Bot, InlineKeyboard, InputFile, GrammyError } from 'grammy';
+
+const TG_ART = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'public', 'm', 'tg');
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const mention = (u, name) => `<a href="tg://user?id=${u}">${esc(name)}</a>`;
@@ -52,7 +57,7 @@ const T = {
   remindTest: { ru: (t) => `\n\n🧩 Тест: <b>${t}</b>\nТы его ещё не сдал — заходи! ⏳`, uz: (t) => `\n\n🧩 Test: <b>${t}</b>\nSen uni hali topshirmading — kir! ⏳`, en: (t) => `\n\n🧩 Test: <b>${t}</b>\nYou haven't taken it yet — come in! ⏳` },
 };
 
-export function createBot({ token, logic, journal, store, appUrl, adminIds }) {
+export function createBot({ token, logic, journal, nudges, store, appUrl, adminIds }) {
   const bot = new Bot(token);
   const S = logic.S;
 
@@ -204,6 +209,38 @@ export function createBot({ token, logic, journal, store, appUrl, adminIds }) {
   });
 
   // Бота добавили в группу — подсказываем, что делать
+
+  // ───────── напоминалки с маскотом ─────────
+  // Картинка маскота (public/m/tg/<маскот>-<поза>.jpg) с подписью. Нет картинки или не отправилась — обычный текст.
+  const artIds = new Map(); // file_id уже загруженных картинок
+  async function sendMascot(chatId, mascot, pose, text, extra = {}) {
+    const key = `${mascot}-${pose}`;
+    const file = path.join(TG_ART, key + '.jpg');
+    if (text.length <= 1000 && (artIds.has(key) || fs.existsSync(file))) {
+      try {
+        const m = await bot.api.sendPhoto(chatId, artIds.get(key) || new InputFile(file), { caption: text, parse_mode: 'HTML', ...extra });
+        const id = m.photo?.[m.photo.length - 1]?.file_id;
+        if (id) artIds.set(key, id);
+        return m;
+      } catch (e) {
+        if (!(e instanceof GrammyError)) console.error('[bot] photo failed', e);
+        else if (e.error_code === 403) return null; // пользователь остановил бота
+      }
+    }
+    return safeSend(chatId, text, extra);
+  }
+  let nudging = false;
+  async function tickNudges() {
+    if (nudging || !nudges) return;
+    nudging = true;
+    try {
+      for (const m of nudges.due()) {
+        const ok = await sendMascot(m.chatId, m.mascot, m.pose, m.text, { reply_markup: privateKb(m.button) });
+        console.log('[nudge] ' + JSON.stringify({ to: m.chatId, name: logic.name(S.users[m.chatId]), kind: m.kind, count: m.count, sent: Boolean(ok) }));
+        await new Promise((r) => setTimeout(r, 120));
+      }
+    } finally { nudging = false; }
+  }
 
   // ───────── журнал: посещаемость ─────────
   const fmtDate = (d) => d.split('-').reverse().slice(0, 2).join('.');
@@ -442,5 +479,5 @@ export function createBot({ token, logic, journal, store, appUrl, adminIds }) {
     console.log(`[bot] @${bot.botInfo.username} готов`);
   }
 
-  return { bot, setup, notifyPublish, notifyPersonal, announce, tickReminders, onRoleChosen, sendLogin, notifyBonus, notifyAccess, notifyGrade, onAttendance, tickAttendance };
+  return { bot, setup, notifyPublish, notifyPersonal, announce, tickReminders, onRoleChosen, sendLogin, notifyBonus, notifyAccess, notifyGrade, onAttendance, tickAttendance, tickNudges, sendMascot };
 }

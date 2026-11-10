@@ -7,6 +7,7 @@ import { webhookCallback } from 'grammy';
 import { createStore } from './store.js';
 import { createLogic, httpError } from './logic.js';
 import { createJournal } from './journal.js';
+import { createNudges } from './nudge.js';
 import { verifyInitData } from './auth.js';
 import { validateTranslation } from './grading.js';
 import { createBot } from './bot.js';
@@ -22,6 +23,7 @@ const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..')
 const store = await createStore();
 const logic = createLogic(store, { adminIds: ADMIN_IDS });
 const journal = createJournal({ logic, store });
+const nudges = createNudges({ logic, journal, store });
 console.log(`[store] ${store.backend}`);
 
 // Тесты, которые Claude готовит из конспектов, лежат в content/lessons/*.json — подхватываем при старте.
@@ -108,7 +110,7 @@ if (fs.existsSync(archiveFile)) {
   if (n) console.log(`[archive] скрыто тестов: ${n}`);
 }
 
-const tg = BOT_TOKEN && process.env.NO_BOT !== '1' ? createBot({ token: BOT_TOKEN, logic, journal, store, appUrl: PUBLIC_URL + '/', adminIds: ADMIN_IDS }) : null;
+const tg = BOT_TOKEN && process.env.NO_BOT !== '1' ? createBot({ token: BOT_TOKEN, logic, journal, nudges, store, appUrl: PUBLIC_URL + '/', adminIds: ADMIN_IDS }) : null;
 
 const app = express();
 app.disable('x-powered-by');
@@ -352,6 +354,8 @@ app.listen(PORT, async () => {
   setInterval(() => tg.tickReminders().catch((e) => console.error('[reminders]', e)), 30_000);
   // журнал: в начале урока по расписанию бот спрашивает учителя «кого нет?»
   setInterval(() => tg.tickAttendance().catch((e) => console.error('[attendance]', e)), 30_000);
+  // напоминалки ученикам и родителям три раза в день
+  setInterval(() => tg.tickNudges().catch((e) => console.error('[nudge]', e)), 60_000);
 });
 
 // Бесплатный Render усыпляет сервис через 15 мин без запросов — тогда не уходят напоминания.

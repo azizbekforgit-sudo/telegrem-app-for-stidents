@@ -1625,6 +1625,7 @@ async function tabParentHome() {
     ${sectionTitle('👨‍👩‍👧', 'Мои дети', `<button class="link" data-kids>${ic('pen-2', 'sm')}${m.children.length ? 'Изменить' : 'Выбрать'}</button>`)}
     ${m.children.length ? `<div class="stack">${m.children.map((c) => kidCard(c, false)).join('')}</div>`
       : `<div class="card center stack">${me('think', 90)}<p class="muted">Выберите своего ребёнка — и я буду показывать его успехи прямо здесь.</p><button class="btn" data-kids>${ic('user-plus-rounded')}Выбрать ребёнка</button></div>`}
+    <div data-kiddiary></div>
     <div class="tiles" style="margin-top:16px">
       <button class="tile tap" data-go="league">${emo(E.trophy, { anim: true })}<div><b>Лига</b><span>общая и групп</span></div></button>
       <button class="tile tap" data-go="kids">${emo(E.student)}<div><b>${m.totalStudents}</b><span>учеников курса</span></div></button>
@@ -1636,6 +1637,51 @@ async function tabParentHome() {
   $$('[data-go]').forEach((b) => (b.onclick = () => go(b.dataset.go)));
   $('[data-look]').onclick = () => appearanceSheet(false);
   bindLeagueStudents();
+  mountKidDiaries($('[data-kiddiary]'), m.children).catch(() => {});
+}
+
+// Родителю на главной: календарь каждого ребёнка — был / не был на уроке, оценки, итоги
+const KD = { y: null, m: null };
+async function mountKidDiaries(root, kids) {
+  if (!root || !kids.length) return;
+  const list = await Promise.all(kids.map((c) => api(`/parent/students/${c.id}/diary`).catch(() => null)));
+  if (!root.isConnected) return;
+  const today = list.find(Boolean)?.today;
+  if (!today) return;
+  if (KD.y == null) { const [y, mo] = today.split('-').map(Number); KD.y = y; KD.m = mo - 1; }
+  const draw = () => {
+    root.innerHTML = kids.map((c, i) => {
+      const d = list[i];
+      if (!d) return '';
+      const byDay = {};
+      d.days.forEach((x) => (byDay[x.date] ||= { lessons: [], grades: [] }).lessons.push(x));
+      d.grades.forEach((g) => (byDay[g.date] ||= { lessons: [], grades: [] }).grades.push(g));
+      const t = byDay[d.today];
+      const todayLine = t?.lessons.length ? (t.lessons.some((l) => !l.present) ? '<span class="pill bad">Сегодня не был на уроке</span>' : '<span class="pill good">Сегодня был на уроке</span>') : '<span class="pill">Сегодня урока не было</span>';
+      const st = d.stats;
+      const cal = monthCal(KD.y, KD.m, (ds) => {
+        const x = byDay[ds];
+        if (!x) return null;
+        const miss = x.lessons.some((l) => !l.present), was = x.lessons.some((l) => l.present);
+        return { cls: miss ? 'bad' : was ? 'good' : '', html: x.grades.length ? gradeChip(x.grades[x.grades.length - 1].value, 'mini') : '' };
+      }, { today: d.today });
+      const last = d.grades.slice(-3).reverse();
+      return `<div class="card kid-diary" data-kid="${i}" style="margin-top:14px"><div class="row between" style="gap:8px"><h3>${emo('📒')} <span data-noi18n>${esc(c.name)}</span></h3>${todayLine}</div>
+        <div class="kd-stats"><div><b>${st.attendance != null ? st.attendance + '%' : '—'}</b><span>посещаемость</span></div><div><b data-noi18n>${st.present}/${st.lessons}</b><span>был на уроках</span></div><div><b>${st.missed}</b><span>пропусков</span></div><div><b>${st.avgGrade ?? '—'}</b><span>средний балл</span></div></div>
+        ${calNav(KD.y, KD.m)}${cal}
+        <div class="cal-legend"><span><i class="good"></i>был</span><span><i class="bad"></i>не был</span><span>${gradeChip(8, 'mini')} оценка</span></div>
+        ${last.length ? `<div class="grades-list" style="padding:0;margin-top:8px">${last.map(gradeRow).join('')}</div>` : ''}</div>`;
+    }).join('');
+    $$('[data-cm]', root).forEach((b) => (b.onclick = () => { KD.m += Number(b.dataset.cm); if (KD.m < 0) { KD.m = 11; KD.y--; } if (KD.m > 11) { KD.m = 0; KD.y++; } haptic('light'); draw(); }));
+    $$('[data-kid]', root).forEach((card) => {
+      const d = list[Number(card.dataset.kid)];
+      $$('[data-day]', card).forEach((b) => (b.onclick = () => {
+        const x = { lessons: d.days.filter((l) => l.date === b.dataset.day), grades: d.grades.filter((g) => g.date === b.dataset.day) };
+        if (x.lessons.length || x.grades.length) { haptic('light'); daySheet(b.dataset.day, x); }
+      }));
+    });
+  };
+  draw();
 }
 
 async function tabKids() {
@@ -2335,7 +2381,7 @@ function renderDiary(d, { path = [], self = false, who = null, root = app, onBac
       const x = byDay[ds];
       if (!x) return null;
       const miss = x.lessons.some((l) => !l.present), was = x.lessons.some((l) => l.present);
-      return { cls: miss ? 'bad' : was ? 'good' : 'mark', html: x.grades.length ? gradeChip(x.grades[x.grades.length - 1].value, 'mini') : '' };
+      return { cls: miss ? 'bad' : was ? 'good' : '', html: x.grades.length ? gradeChip(x.grades[x.grades.length - 1].value, 'mini') : '' };
     }, { today: d.today });
     const recent = d.grades.slice(-8).reverse();
     root.innerHTML = (onBack ? `<div class="topbar"><button class="back" data-back>${ic('alt-arrow-left')}Назад</button></div>` : self ? topbar() : '') + `
