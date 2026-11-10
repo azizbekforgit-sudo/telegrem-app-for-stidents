@@ -907,3 +907,9 @@ code { background: var(--card-2); padding: 1px 6px; border-radius: 7px; font-siz
 .potion-hint small { display: block; font-weight: 900; color: #6b3fd4; }
 .potion-hint p { margin: 2px 0 0; font-size: 14px; line-height: 1.35; }
 .opt.gone { opacity: 0.3; text-decoration: line-through; pointer-events: none; }
+
+/* учитель: родители */
+.pkids { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; }
+.pchip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 12px; background: var(--track); font-weight: 700; font-size: 13px; }
+.pchip .emo { width: 18px; height: 18px; }
+.pchips-wrap { display: flex; flex-wrap: wrap; gap: 6px; }

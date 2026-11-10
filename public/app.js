@@ -1000,6 +1000,7 @@ async function route() {
   if (S.view?.type === 'group') return viewGroup(S.view.id);
   if (S.view?.type === 'student') return viewStudent(S.view.id);
   if (S.view?.type === 'league') return viewLeague();
+  if (S.view?.type === 'parents') return viewParents();
   const r = { home: tabHome, league: tabLeague, stats: tabStats, profile: tabProfile, dash: tabDash, groups: tabGroups, path: tabTeacherPath, journal: tabJournal, diary: tabDiary, shop: tabShop, tests: tabTests, bot: tabBot, phome: tabParentHome, kids: tabKids, pprofile: tabParentProfile }[S.tab];
   await r();
 }
@@ -2161,11 +2162,12 @@ function groupForm(after, existing) {
 
 async function tabGroups() {
   const o = await loadOverview();
-  app.innerHTML = adminTop('Группы') + `<div style="margin-top:10px"><button class="btn block" data-newgroup>${ic('add-circle')}Создать группу</button></div>
+  app.innerHTML = adminTop('Группы') + `<div class="row" style="margin-top:10px;gap:8px"><button class="btn grow" data-newgroup>${ic('add-circle')}Создать группу</button><button class="btn ghost grow" data-parents>${emo('👨‍👩‍👧')}Родители</button></div>
     <div class="stack" style="margin-top:16px">${o.groups.map(groupCardHtml).join('') || emptyState('think', 'Групп пока нет', 'Создай группу и добавь туда учеников. Ученики сначала запускают бота командой /start.')}</div>
     ${sectionTitle(E.student, 'Все ученики', `<span class="pill">${o.students.length}</span>`)}
     <div class="card" style="padding:6px 8px">${o.students.length ? o.students.map((u) => `<div class="item tap" data-student="${u.id}">${avatar(u)}<div class="grow"><b class="ellipsis" style="display:block">${esc(u.name)}</b><div class="small muted">${u.groups.map((gid) => o.groups.find((g) => g.id === gid)).filter(Boolean).map((g) => esc(g.name)).join(', ') || '<span style="color:var(--bad-d)">без группы</span>'}</div></div><span class="faint">${ic('alt-arrow-right')}</span></div>`).join('') : '<p class="muted center small" style="padding:14px">Пока никто не запускал бота. Отправь ученикам ссылку на бота — после /start они появятся здесь.</p>'}</div>`;
   bindAdminTop();
+  $('[data-parents]').onclick = () => openView({ type: 'parents' });
   bindGroupCards();
   $$('[data-newgroup]').forEach((b) => (b.onclick = () => groupForm()));
   $$('[data-student]').forEach((b) => (b.onclick = () => openView({ type: 'student', id: b.dataset.student, parent: S.view })));
@@ -2783,6 +2785,45 @@ function potionSheet(el, data, P, q, qi) {
       };
     });
   }
+}
+
+// ───────── Родители (учитель): кто у кого, когда заходили, вход на сайт ─────────
+async function viewParents() {
+  const d = await api('/admin/parents');
+  const seen = (t) => (t ? ago(t) : 'ещё не заходил(а)');
+  const kidChip = (k) => `<span class="pchip">${k.groups[0] ? emo(k.groups[0].emoji) : ''}<span data-noi18n>${esc(k.name)}</span></span>`;
+  app.innerHTML = `<div class="topbar"><button class="back" data-back>${ic('alt-arrow-left')}Назад</button></div>
+    <h1 style="margin-top:8px">${emo('👨‍👩‍👧')} Родители</h1>
+    <div class="tiles" style="margin-top:12px"><div class="tile">${emo('👨‍👩‍👧')}<div><b>${d.parents.length}</b><span>родителей в приложении</span></div></div>
+      <div class="tile">${emo('🧒')}<div><b>${d.withoutParent.length}</b><span>учеников без родителя</span></div></div></div>
+    <div class="stack" style="margin-top:14px">${d.parents.map((p) => `<div class="card parent-card">
+      <div class="row" style="gap:10px">${avatar(p)}<div class="grow" style="min-width:0"><b class="ellipsis" style="display:block" data-noi18n>${esc(p.name)}</b>
+        <div class="small muted">${p.username ? `<span data-noi18n>@${esc(p.username)}</span> · ` : ''}заходил(а): ${esc(seen(p.lastSeenAt))}</div></div></div>
+      <div class="pkids">${p.children.length ? `<span class="small muted">Дети:</span> ${p.children.map(kidChip).join('')}` : '<span class="pill bad">ребёнок не выбран</span>'}</div>
+      <div class="row" style="gap:8px;margin-top:10px"><button class="btn ghost sm grow" data-pkids="${esc(p.id)}">${ic('pen-2', 'sm')}Дети</button>
+        <button class="btn ghost sm grow" data-plogin="${esc(p.id)}">${ic('lock-keyhole', 'sm')}${p.login ? 'Новый пароль' : 'Вход на сайт'}</button></div>
+      ${p.login ? `<p class="small muted" style="margin-top:6px">Логин на сайте: <code data-noi18n>${esc(p.login)}</code></p>` : ''}</div>`).join('') || emptyState('sleepy', 'Родителей пока нет', 'Родитель нажимает /start в боте и выбирает «Я родитель».')}</div>
+    ${d.pending.length ? sectionTitle('⏳', 'Ещё не выбрали роль') + `<div class="card" style="padding:6px 8px">${d.pending.map((u) => `<div class="item">${avatar(u)}<div class="grow"><b data-noi18n>${esc(u.name)}</b><div class="small muted">${esc(seen(u.lastSeenAt))}</div></div></div>`).join('')}</div>` : ''}
+    ${d.withoutParent.length ? sectionTitle('🧒', 'Ученики без родителя в приложении') + `<div class="card pchips-wrap">${d.withoutParent.map(kidChip).join('')}</div>` : ''}`;
+  $('[data-back]').onclick = back;
+  $$('[data-plogin]').forEach((b) => (b.onclick = async () => {
+    if (!(await confirmSheet('Выдать вход на сайт?', 'Бот пришлёт родителю логин и пароль. Старый пароль перестанет работать.', 'Выдать'))) return;
+    try { loginsSheet([await api(`/admin/parents/${b.dataset.plogin}/login`, {})]); viewParents().catch(fail); } catch (e) { fail(e); }
+  }));
+  $$('[data-pkids]').forEach((b) => (b.onclick = () => parentKidsSheet(d, d.parents.find((p) => p.id === b.dataset.pkids))));
+}
+// Учитель сам отмечает, чей это родитель
+async function parentKidsSheet(d, p) {
+  const o = S.overview || (await loadOverview());
+  const picked = new Set(p.children.map((k) => k.id));
+  openSheet(`<div class="stack"><h2>${emo('👨‍👩‍👧')} <span data-noi18n>${esc(p.name)}</span></h2><p class="muted small">Отметь детей этого родителя.</p>
+    <div style="max-height:50vh;overflow:auto">${o.students.map((u) => `<button class="list-check ${picked.has(u.id) ? 'on' : ''}" data-c="${esc(u.id)}">${avatar(u)}<div class="grow"><b data-noi18n>${esc(u.name)}</b></div></button>`).join('')}</div>
+    <button class="btn block" data-save>${ic('check-circle')}Сохранить</button></div>`, (el, close) => {
+    $$('[data-c]', el).forEach((b) => (b.onclick = () => { const id = b.dataset.c; picked.has(id) ? picked.delete(id) : picked.add(id); b.classList.toggle('on', picked.has(id)); haptic('light'); }));
+    $('[data-save]', el).onclick = async () => {
+      try { await api(`/admin/parents/${p.id}/children`, { ids: [...picked] }); haptic('success'); close(); viewParents().catch(fail); } catch (e) { fail(e); }
+    };
+  });
 }
 
 const TYPE_LABEL = { choice: 'выбор', truefalse: 'верно/неверно', input: 'ввод', order: 'порядок', match: 'пары', fill: 'пропуски' };

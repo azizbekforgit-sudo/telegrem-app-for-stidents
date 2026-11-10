@@ -124,6 +124,14 @@ function auth(req, _res, next) {
   let tgUser = null;
   const initData = req.get('x-init-data');
   if (initData) tgUser = verifyInitData(initData, BOT_TOKEN);
+  if (initData && !tgUser) {
+    // подпись не сошлась или данные старые: пишем, кто это был (без проверки) и насколько старые данные
+    const p = new URLSearchParams(initData);
+    let who = null;
+    try { const u = JSON.parse(p.get('user') || 'null'); who = u && { id: u.id, name: [u.first_name, u.last_name].filter(Boolean).join(' '), username: u.username || null }; } catch { /* */ }
+    const age = Math.round(Date.now() / 1000 - Number(p.get('auth_date') || 0));
+    console.log('[auth-fail] ' + JSON.stringify({ reason: age > 7 * 24 * 3600 ? 'старые данные Telegram' : 'подпись не сошлась', ageHours: Math.round(age / 3600), who, path: req.path }));
+  }
   const bearer = (req.get('authorization') || '').replace(/^Bearer\s+/i, '');
   if (!tgUser && ADMIN_TOKEN && bearer && safeEq(bearer, ADMIN_TOKEN)) tgUser = { id: ADMIN_IDS[0] };
   if (!tgUser && ALLOW_DEV_AUTH && req.get('x-dev-user')) tgUser = { id: req.get('x-dev-user'), first_name: req.get('x-dev-name') || 'Dev' };
@@ -136,7 +144,10 @@ function auth(req, _res, next) {
     req.admin = logic.isAdmin(u.id);
     return next();
   }
-  if (!tgUser) return next(httpError(401, 'Открой приложение через Telegram-бота'));
+  if (!tgUser) {
+    if (!initData) console.log('[auth-fail] ' + JSON.stringify({ reason: 'нет данных Telegram и нет входа (открыли как сайт?)', path: req.path, ua: String(req.get('user-agent') || '').slice(0, 80) }));
+    return next(httpError(401, 'Открой приложение через Telegram-бота'));
+  }
   req.user = logic.upsertUser(tgUser).user;
   req.admin = logic.isAdmin(req.user.id);
   next();
@@ -270,6 +281,14 @@ adm.post('/grades', h(async (req) => {
   return g;
 }));
 adm.delete('/grades/:id', h((req) => (journal.deleteGrade(req.params.id), { ok: true })));
+// Родители: кто у кого, вход на сайт, привязка детей
+adm.get('/parents', h(() => logic.parentsOverview()));
+adm.post('/parents/:uid/login', h(async (req) => {
+  const l = logic.issueLogin(req.params.uid, { reset: true });
+  await tg?.sendLogin(l);
+  return l;
+}));
+adm.post('/parents/:uid/children', h((req) => logic.setChildren(req.params.uid, req.body?.ids)));
 adm.post('/students/:uid/bonus', h(async (req) => {
   const r = logic.addBonus({ userId: req.params.uid, xp: req.body?.xp, reason: req.body?.reason });
   await tg?.notifyBonus(r.bonus);

@@ -41,6 +41,7 @@ export function createLogic(store, { adminIds }) {
     u.lastName = tg.last_name ?? tg.lastName ?? u.lastName ?? '';
     u.username = tg.username ?? u.username ?? '';
     if (tg.photo_url) u.photoUrl = tg.photo_url;
+    u.lastSeenAt = Date.now();
     S.users[id] = u;
     store.save();
     return { user: u, isNew: !existed };
@@ -86,6 +87,21 @@ export function createLogic(store, { adminIds }) {
       groups: gids.map((id) => S.groups[id]).filter(Boolean).map((g) => ({ id: g.id, name: g.name, emoji: g.emoji })),
       totalStudents: students().length,
     };
+  }
+  // Для учителя: все родители, их дети, когда заходили, есть ли вход на сайт; и ученики без родителя в приложении
+  function parentsOverview() {
+    const kids = new Map();
+    const parents = Object.values(S.users).filter((u) => u.role === 'parent').map((p) => {
+      const children = (p.children || []).map((id) => S.users[id]).filter(Boolean).map((k) => {
+        if (!kids.has(k.id)) kids.set(k.id, []);
+        kids.get(k.id).push(name(p));
+        return { id: k.id, name: name(k), groups: userGroups(k.id).map((g) => ({ name: g.name, emoji: g.emoji })) };
+      });
+      return { ...publicUser(p), lastSeenAt: p.lastSeenAt || null, login: accountOf(p.id)?.[0] || null, children };
+    }).sort((a, b) => (b.children.length ? 1 : 0) - (a.children.length ? 1 : 0) || (b.lastSeenAt || 0) - (a.lastSeenAt || 0));
+    const pending = Object.values(S.users).filter((u) => u.needRole && !isAdmin(u.id)).map((u) => ({ ...publicUser(u), lastSeenAt: u.lastSeenAt || null }));
+    const withoutParent = students().filter((u) => !kids.has(u.id)).map((u) => ({ id: u.id, name: name(u), groups: userGroups(u.id).map((g) => ({ name: g.name, emoji: g.emoji })) })).sort((a, b) => a.name.localeCompare(b.name));
+    return { parents, pending, withoutParent };
   }
   function parentStudents() {
     const ranks = leagueRank();
@@ -1135,7 +1151,7 @@ export function createLogic(store, { adminIds }) {
   }
 
   return {
-    S, log, testStatus, attemptQuestion, finishedAt, totalXp, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
+    S, log, parentsOverview, testStatus, attemptQuestion, finishedAt, totalXp, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
     upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,
