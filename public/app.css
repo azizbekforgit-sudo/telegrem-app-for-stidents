@@ -78,6 +78,7 @@ img { -webkit-user-drag: none; user-select: none; }
 .ic.lg { width: 28px; height: 28px; }
 .emo { display: inline-block; vertical-align: -0.22em; width: 1.25em; height: 1.25em; object-fit: contain; flex: none; }
 .emo-txt { font-style: normal; }
+.emo.inl { width: 1.2em; height: 1.2em; vertical-align: -0.2em; margin: 0 0.04em; }
 
 /* ───────── загрузка ───────── */
 .splash { min-height: 90vh; display: grid; place-items: center; align-content: center; gap: 14px; color: var(--muted); }

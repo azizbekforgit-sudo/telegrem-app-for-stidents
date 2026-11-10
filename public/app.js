@@ -38,6 +38,62 @@ function emo(ch, { anim = false, cls = '' } = {}) {
   const src = anim && ANIM.has(k) ? `/ea/${k}.webp` : `/e/${file}.webp`;
   return `<img class="emo ${cls}" src="${src}" alt="" loading="lazy" decoding="async">`;
 }
+// Любой системный смайлик в тексте (кнопки, плашки, тосты, реплики маскота) сам заменяется на 3D Fluent Emoji.
+// Там, где уже стоит emo(), ничего не меняется. Не трогаем поля ввода, код, <select>/<option> и [data-noemoji].
+const EMOJI_RE = /(?:\p{Emoji_Presentation}|\p{Extended_Pictographic}️|\p{Regional_Indicator}{2})(?:️|\p{Emoji_Modifier}|‍(?:\p{Extended_Pictographic}|\p{Emoji_Presentation})️?)*/gu;
+const EMOJI_SKIP = 'input, textarea, select, option, pre, code, script, style, title, svg, [data-noemoji], [contenteditable]';
+function emojiFile(ch) {
+  const k = emoKey(ch);
+  if (EMO.has(k)) return { k, file: EMO.get(k) };
+  const base = emoKey(Array.from(ch)[0]); // с оттенком кожи и т. п. — берём основной
+  return EMO.has(base) ? { k: base, file: EMO.get(base) } : null;
+}
+function emojifyText(node) {
+  const text = node.data;
+  if (!text || !EMOJI_RE.test(text)) return;
+  EMOJI_RE.lastIndex = 0;
+  const p = node.parentElement;
+  if (!p || p.closest(EMOJI_SKIP)) return;
+  const frag = document.createDocumentFragment();
+  let last = 0, hit = false, m;
+  while ((m = EMOJI_RE.exec(text))) {
+    const f = emojiFile(m[0]);
+    if (!f) continue;
+    hit = true;
+    if (m.index > last) frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+    const img = document.createElement('img');
+    img.className = 'emo inl';
+    img.src = `/e/${f.file}.webp`;
+    img.alt = m[0];
+    img.decoding = 'async';
+    frag.appendChild(img);
+    last = m.index + m[0].length;
+  }
+  EMOJI_RE.lastIndex = 0;
+  if (!hit) return;
+  if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+  node.replaceWith(frag);
+}
+function emojifyNode(node) {
+  if (node.nodeType === 3) return emojifyText(node);
+  if (node.nodeType !== 1 || node.matches(EMOJI_SKIP)) return;
+  const w = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
+  const list = [];
+  for (let n = w.nextNode(); n; n = w.nextNode()) list.push(n);
+  list.forEach(emojifyText);
+}
+let emojiObs = null;
+function startEmojify() {
+  if (emojiObs || !EMO.size) return;
+  emojifyNode(document.body);
+  emojiObs = new MutationObserver((muts) => {
+    for (const m of muts) {
+      if (m.type === 'characterData') emojifyText(m.target);
+      else m.addedNodes.forEach(emojifyNode);
+    }
+  });
+  emojiObs.observe(document.body, { childList: true, subtree: true, characterData: true });
+}
 async function loadEmoji() {
   try {
     const names = await fetch('/e/index.json').then((r) => r.json());
@@ -3191,6 +3247,7 @@ function loginScreen() {
   tg?.onEvent?.('themeChanged', () => applyLook());
   matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', () => applyLook());
   await loadEmoji();
+  startEmojify();
   if (!IN_TG && !DEV_USER && !SESSION) return loginScreen();
   await start();
 })();
