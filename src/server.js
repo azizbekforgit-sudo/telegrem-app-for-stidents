@@ -27,6 +27,7 @@ const journal = createJournal({ logic, store });
 const shop = createShop({ logic, store });
 const nudges = createNudges({ logic, journal, shop, store });
 { const n = shop.migrate(); if (n) console.log(`[shop] оставили бесплатно уже выбранных маскотов: ${n}`); }
+{ const r = shop.revokeGifts(); if (r) { for (const x of r) console.log('[shop-v2] ' + JSON.stringify(x)); console.log(`[shop-v2-end] забрали подаренных маскотов у ${r.length}`); } }
 console.log(`[store] ${store.backend}`);
 
 // Тесты, которые Claude готовит из конспектов, лежат в content/lessons/*.json — подхватываем при старте.

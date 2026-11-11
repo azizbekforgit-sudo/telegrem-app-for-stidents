@@ -63,6 +63,27 @@ export function createShop({ logic, store }) {
     store.save();
     return n;
   }
+  // Один раз (shop-v2, по просьбе учителя): подарки shop-v1 отменяются — у всех остаются только Капи, Дино
+  // и реально купленные за XP маскоты. Кто был на чужом маскоте — переходит на Капи.
+  function revokeGifts() {
+    S.migrations ||= {};
+    if (S.migrations['shop-v2']) return null;
+    const out = [];
+    for (const u of Object.values(S.users)) {
+      if (logic.isAdmin(u.id) || u.role === 'parent') continue; // учителя и родителей магазин не касается
+      const bought = purchases(u.id).filter((p) => p.item.startsWith('mascot:')).map((p) => p.item.slice(7));
+      const before = u.owned || [];
+      const lost = before.filter((m) => !bought.includes(m));
+      u.owned = [...new Set(bought)];
+      const cur = u.prefs?.mascot;
+      const reset = cur && !FREE_MASCOTS.includes(cur) && !bought.includes(cur);
+      if (reset) u.prefs = { ...u.prefs, mascot: 'kapi' };
+      if (lost.length || reset) out.push({ user: { id: u.id, name: logic.name(u) }, lost, was: reset ? cur : null });
+    }
+    S.migrations['shop-v2'] = Date.now();
+    store.save();
+    return out;
+  }
 
   function charge(uid, item, price) {
     if (balance(uid) < price) throw httpError(400, `Не хватает XP: нужно ${price}, у тебя ${Math.max(0, balance(uid))}`, { code: 'no-xp' });
@@ -198,5 +219,5 @@ export function createShop({ logic, store }) {
     return { hint: text, remove, potions: u.potions || 0 };
   }
 
-  return { migrate, catalog, buy, balance, owned, currentMascot, pet, useMagnifier, usePotion, FOODS };
+  return { migrate, revokeGifts, catalog, buy, balance, owned, currentMascot, pet, useMagnifier, usePotion, FOODS };
 }
