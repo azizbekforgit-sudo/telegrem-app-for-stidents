@@ -2725,9 +2725,9 @@ async function tabShop() {
   const name = (id) => tr(MASCOTS[id]?.name || id);
   app.innerHTML = topbar() + `
     <div class="hero shop-hero">${me('talk', 108, 'quiet')}<div class="grow"><h1>${ic('shop')} Магазин</h1><div class="say" data-say>${esc(PET_SAY[c.pet.state])}</div></div></div>
-    <div class="card wallet"><div class="row" style="gap:12px">${emo(E.bolt, { cls: 'lg', anim: true })}<div class="grow"><small>Можно потратить</small><b data-noi18n>${c.balance} XP</b></div>
+    <div class="card wallet"><div class="row" style="gap:12px">${emo(E.bolt, { cls: 'lg', anim: true })}<div class="grow"><small>Твой XP</small><b data-noi18n>${c.balance} XP</b></div>
       <span class="pill">${PET_LABEL[c.pet.state]}</span></div>
-      <p class="small muted" style="margin-top:8px">Лига считает весь заработанный XP — покупки её не уменьшают.</p></div>
+      <p class="small muted" style="margin-top:8px">Покупки списывают XP из общего счёта — того же, что в лиге.</p></div>
 
     ${sectionTitle('🍽️', `Еда для ${name(mine)}`)}
     ${myFood ? `<button class="card shop-food mine" data-food="${myFood.id}">${emo(myFood.emoji, { cls: 'lg' })}<div class="grow"><b data-noi18n>${esc(myFood.name)}</b><span>Любимая еда твоего напарника. Покормишь — он скажет спасибо и не будет голодным.</span></div><span class="price">${myFood.price} XP</span></button>` : ''}

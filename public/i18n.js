@@ -25,6 +25,7 @@ const PHRASES = [
   ['ПОБЕДА!', 'VICTORY!', "G'ALABA!"], ['Я в тебя верил!', 'I believed in you!', 'Men senga ishongandim!'],
   ['Курс', 'Course', 'Kurs'],
   ['Дневник', 'Diary', 'Kundalik'],
+  ['Твой XP', 'Your XP', 'Sening XP'], ['Покупки списывают XP из общего счёта — того же, что в лиге.', 'Purchases take XP from your main total — the same one as in the league.', "Xaridlar XP ni umumiy hisobdan oladi — ligadagi bilan bir xil."],
   ['Лёгкий', 'Easy', 'Oson'],
   ['Средний', 'Medium', 'O\'rta'],
   ['Сложный', 'Hard', 'Qiyin'],

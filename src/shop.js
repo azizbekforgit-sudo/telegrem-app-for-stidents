@@ -43,7 +43,7 @@ export function createShop({ logic, store }) {
   };
   const purchases = (uid) => Object.values(S.purchases).filter((p) => p.userId === String(uid));
   const spent = (uid) => purchases(uid).reduce((n, p) => n + p.price, 0);
-  const balance = (uid) => logic.totalXp(uid) - spent(uid);
+  const balance = (uid) => logic.totalXp(uid); // общий XP (уже за вычетом покупок)
   const owned = (uid) => [...new Set([...FREE_MASCOTS, ...(S.users[String(uid)]?.owned || [])])];
   const currentMascot = (uid) => {
     const m = S.users[String(uid)]?.prefs?.mascot;
@@ -65,6 +65,24 @@ export function createShop({ logic, store }) {
   }
   // Один раз (shop-v2, по просьбе учителя): подарки shop-v1 отменяются — у всех остаются только Капи, Дино
   // и реально купленные за XP маскоты. Кто был на чужом маскоте — переходит на Капи.
+  function refundMascots(key, userIds) {
+    S.migrations ||= {};
+    if (S.migrations[key]) return null;
+    const out = [];
+    for (const uid of userIds) {
+      const u = S.users[uid];
+      if (!u) continue;
+      const refunded = purchases(uid).filter((p) => p.item.startsWith('mascot:'));
+      for (const p of refunded) delete S.purchases[p.id];
+      const ids = refunded.map((p) => p.item.slice(7));
+      u.owned = (u.owned || []).filter((m) => !ids.includes(m));
+      if (ids.includes(u.prefs?.mascot)) u.prefs = { ...u.prefs, mascot: 'kapi' };
+      out.push({ user: { id: uid, name: logic.name(u) }, mascots: ids, refundXp: refunded.reduce((n, p) => n + p.price, 0), xpNow: logic.totalXp(uid) });
+    }
+    S.migrations[key] = Date.now();
+    store.save();
+    return out;
+  }
   function revokeGifts() {
     S.migrations ||= {};
     if (S.migrations['shop-v2']) return null;
@@ -117,7 +135,7 @@ export function createShop({ logic, store }) {
     const own = owned(uid);
     const u = S.users[String(uid)];
     return {
-      balance: balance(uid), earned: logic.totalXp(uid), spent: spent(uid),
+      balance: balance(uid), earned: logic.earnedXp(uid), spent: spent(uid),
       mascots: Object.entries(MASCOT_PRICES).map(([id, price]) => ({ id, price, free: FREE_MASCOTS.includes(id), owned: own.includes(id) })).sort((a, b) => a.price - b.price),
       foods: Object.entries(FOODS).map(([mascot, f]) => ({ id: mascot, mascot, emoji: f.emoji, price: f.price, name: f.name[lang] || f.name.ru })),
       potion: { price: POTION_PRICE, have: u?.potions || 0 },
@@ -219,5 +237,5 @@ export function createShop({ logic, store }) {
     return { hint: text, remove, potions: u.potions || 0 };
   }
 
-  return { migrate, revokeGifts, catalog, buy, balance, owned, currentMascot, pet, useMagnifier, usePotion, FOODS };
+  return { migrate, revokeGifts, refundMascots, catalog, buy, balance, owned, currentMascot, pet, useMagnifier, usePotion, FOODS };
 }

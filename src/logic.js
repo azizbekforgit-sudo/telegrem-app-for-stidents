@@ -824,11 +824,12 @@ export function createLogic(store, { adminIds }) {
   // + оценки учителя (журнал): 10 баллов = 200 XP
   const bonusXp = (uid) => Object.values(S.bonuses || {}).filter((b) => b.userId === String(uid)).reduce((s, b) => s + b.xp, 0)
     + Object.values(S.grades || {}).filter((g) => g.userId === String(uid)).reduce((s, g) => s + (g.xp || 0), 0);
-  const totalXp = (uid) => countedAttempts(uid).reduce((s, a) => s + (a.xp || 0), 0) + learnXp(uid) + bonusXp(uid);
-  function groupXp(uid, gid) {
-    const pubIds = new Set(pubsForGroup(gid).map((p) => p.id));
-    return countedAttempts(uid).filter((a) => pubIds.has(a.pubId)).reduce((s, a) => s + (a.xp || 0), 0) + learnXp(uid, pubIds) + bonusXp(uid);
-  }
+  // Один XP на всё: заработано минус потрачено в магазине. Это число видно в общей лиге, в лиге группы, вверху экрана и в магазине.
+  const earnedXp = (uid) => countedAttempts(uid).reduce((s, a) => s + (a.xp || 0), 0) + learnXp(uid) + bonusXp(uid);
+  const spentXp = (uid) => Object.values(S.purchases || {}).filter((p) => p.userId === String(uid)).reduce((s, p) => s + (p.price || 0), 0);
+  const totalXp = (uid) => earnedXp(uid) - spentXp(uid);
+  // лига группы показывает тот же XP, что и общая
+  const groupXp = (uid) => totalXp(uid);
   // Начислить (или снять, если xp < 0) баллы вручную. id делает начисление однократным
   function addBonus({ id, userId, xp, reason }) {
     const u = S.users[String(userId)];
@@ -1191,7 +1192,7 @@ export function createLogic(store, { adminIds }) {
   }
 
   return {
-    S, log, levelsOf, parentsOverview, testStatus, attemptQuestion, finishedAt, totalXp, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
+    S, log, earnedXp, spentXp, levelsOf, parentsOverview, testStatus, attemptQuestion, finishedAt, totalXp, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
     upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,
