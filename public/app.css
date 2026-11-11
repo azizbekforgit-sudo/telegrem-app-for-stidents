@@ -914,3 +914,26 @@ code { background: var(--card-2); padding: 1px 6px; border-radius: 7px; font-siz
 .pchip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 12px; background: var(--track); font-weight: 700; font-size: 13px; }
 .pchip .emo { width: 18px; height: 18px; }
 .pchips-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* уровни сложности */
+.lv-list { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.lv-card { display: flex; align-items: center; gap: 12px; text-align: left; padding: 12px 14px; border-radius: 20px; border: 2px solid var(--line); background: var(--card); font: inherit; color: inherit; box-shadow: 0 4px 0 var(--line); }
+.lv-card b { display: block; font-size: 17px; }
+.lv-card span { font-size: 12.5px; color: var(--muted); line-height: 1.3; }
+.lv-card .pill { flex: none; }
+.lv-card .lv-emo .emo.lg { width: 40px; height: 40px; }
+.lv-card.lv1 { border-color: color-mix(in srgb, var(--good) 45%, var(--line)); }
+.lv-card.lv2 { border-color: color-mix(in srgb, #ff8a3d 55%, var(--line)); }
+.lv-card.lv3 { border-color: color-mix(in srgb, #8a5cf6 60%, var(--line)); background: color-mix(in srgb, #8a5cf6 7%, var(--card)); }
+.lv-card.locked, .lv-card:disabled { opacity: 0.55; }
+.lv-card:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--line); }
+.lv-dots { display: flex; gap: 3px; justify-content: center; margin-top: 4px; }
+.lv-dots i { width: 16px; height: 16px; border-radius: 6px; background: var(--track); color: var(--faint); font-style: normal; font-size: 10px; font-weight: 900; display: grid; place-items: center; }
+.lv-dots i.on { background: var(--gold); color: #fff; }
+.qtimer { position: relative; height: 10px; border-radius: 6px; background: var(--track); margin: 4px 16px 0; overflow: visible; max-width: 608px; }
+@media (min-width: 640px) { .qtimer { margin: 4px auto 0; } }
+.qtimer i { display: block; height: 100%; width: 100%; border-radius: 6px; background: #8a5cf6; transition: width 0.2s linear; }
+.qtimer b { position: absolute; right: 0; top: 12px; font-size: 12px; font-weight: 900; color: #6b3fd4; }
+.qtimer.hurry i { background: var(--bad); }
+.qtimer.hurry b { color: var(--bad-d); }
+.lv-card b .lv-n { display: inline; font-size: inherit; color: inherit; }

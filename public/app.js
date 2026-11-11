@@ -1158,7 +1158,8 @@ function pathNodes(p, k, todo) {
   const locked = p.hasLearn && !p.learnDone;
   const cls = (locked ? 'locked' : p.best == null ? '' : p.best < 50 ? 'weak' : 'done') + (p.exam ? ' exam' : '');
   const stars = p.stars != null ? `<div class="stars">${[0, 1, 2].map((s) => emo(E.star, { cls: s < p.stars ? '' : 'off' })).join('')}</div>` : '';
-  out += node(k, 'test', locked ? ic('lock-keyhole', 'lg') : emo(p.best === 100 ? E.crown : p.emoji), cls, `data-pub="${p.pubId}"`, `${stars}<div class="lbl">${p.exam ? '<span class="pill gold sm">📝 тест</span><br>' : ''}<b>${esc(p.title)}</b>${p.best != null ? `<br>${p.best}%` : locked ? '<br>после обучалки' : ''}</div>`);
+  const lvDots = p.levels ? `<div class="lv-dots">${p.levels.map((l) => `<i class="${l.done || l.locked ? 'on' : ''}">${l.level}</i>`).join('')}</div>` : '';
+  out += node(k, 'test', locked ? ic('lock-keyhole', 'lg') : emo(p.best === 100 ? E.crown : p.emoji), cls, `data-pub="${p.pubId}"`, `${stars}<div class="lbl">${p.exam ? '<span class="pill gold sm">📝 тест</span><br>' : ''}<b>${esc(p.title)}</b>${p.best != null ? `<br>${p.best}%` : locked ? '<br>после обучалки' : ''}${lvDots}</div>`);
   return out;
 }
 
@@ -1189,7 +1190,7 @@ async function tabTeacherPath() {
   app.innerHTML = html;
   bindAdminTop();
   $$('[data-tlearn]').forEach((b) => (b.onclick = () => { haptic('medium'); startLearn({ lessonId: b.dataset.tlearn }); }));
-  $$('[data-ttest]').forEach((b) => (b.onclick = () => { haptic('medium'); startLesson({ lessonId: b.dataset.ttest }); }));
+  $$('[data-ttest]').forEach((b) => (b.onclick = () => { haptic('medium'); const l = list.find((x) => x.id === b.dataset.ttest); if (l?.exam) startLesson({ lessonId: l.id }); else levelSheet({ target: { lessonId: b.dataset.ttest }, title: l?.title, emoji: l?.emoji, preview: true }); }));
 }
 
 // Закрытый урок курса: учитель ещё не дал доступ
@@ -1238,11 +1239,31 @@ function lessonSheet(p) {
       <h2>${emo(p.emoji)} ${esc(p.title)}</h2>
       ${p.description ? `<p class="muted">${esc(p.description)}</p>` : ''}
       <div class="tags" style="justify-content:center"><span class="pill accent">${emo(E.puzzle)}${plural(p.questions, 'вопрос', 'вопроса', 'вопросов')}</span>${p.topics.slice(0, 4).map((t) => `<span class="pill">${esc(t)}</span>`).join('')}</div>
-      ${again ? `<div>${donut(p.best, { size: 116, stroke: 13, sub: 'лучший' })}</div><p class="muted small">Повторное прохождение — тренировка: XP не начисляется, но лучший результат обновится.</p>` : `<p class="muted small">${emo(E.fire)} Правильные ответы подряд дают комбо: ×2 и ×3 XP</p>`}
+      ${again ? `<div>${donut(p.best, { size: 116, stroke: 13, sub: 'лучший' })}</div><p class="muted small" ${p.levels ? 'hidden' : ''}>Повторное прохождение — тренировка: XP не начисляется, но лучший результат обновится.</p>` : `<p class="muted small">${emo(E.fire)} Правильные ответы подряд дают комбо: ×2 и ×3 XP</p>`}
       <button class="btn block" data-go>${ic('play')}${again ? 'Пройти ещё раз' : 'Начать'}</button></div>`,
-    (el, close) => { $('[data-go]', el).onclick = () => { close(); startLesson({ pubId: p.pubId }); }; },
+    (el, close) => { $('[data-go]', el).onclick = () => { close(); if (p.levels) levelSheet({ target: { pubId: p.pubId }, levels: p.levels, title: p.title, emoji: p.emoji }); else startLesson({ pubId: p.pubId }); }; },
   );
 }
+
+// Выбор уровня сложности перед тестом урока (у готовых тестов-экзаменов уровней нет)
+const LEVEL_INFO = {
+  1: { name: 'Лёгкий', emo: '🌱', desc: 'Вопросы урока' },
+  2: { name: 'Средний', emo: '🔥', desc: 'Больше вопросов, похожие ложные варианты, без подсказок' },
+  3: { name: 'Сложный', emo: '💀', desc: 'Ещё больше ловушек, вопросы вперемешку, 45 секунд на вопрос' },
+};
+function levelSheet({ target, levels, title, emoji, preview = false }) {
+  const list = levels || [1, 2, 3].map((level) => ({ level, reward: { 1: 80, 2: 150, 3: 350 }[level], done: false, locked: false, best: null }));
+  openSheet(`<div class="stack"><h2 class="center">${emo(emoji || '🧩')} ${esc(title || '')}</h2><p class="muted center small">Выбери уровень сложности. Очки за каждый уровень даются один раз.</p>
+    <div class="lv-list">${list.map((l) => {
+      const i = LEVEL_INFO[l.level];
+      const state = l.locked ? `<span class="pill">${ic('lock-keyhole', 'sm')}пройден раньше</span>` : l.done ? `<span class="pill good">✓ ${l.best ?? 0}% · без очков</span>` : `<span class="pill gold" data-noi18n>+${l.reward} XP</span>`;
+      return `<button class="lv-card lv${l.level} ${l.locked ? 'locked' : ''} ${l.done ? 'done' : ''}" data-lv="${l.level}" ${l.locked && !preview ? 'disabled' : ''}>
+        <span class="lv-emo">${emo(i.emo, { cls: 'lg' })}</span><div class="grow"><b>${l.level}. <span class="lv-n">${i.name}</span></b><span>${i.desc}</span></div>${state}</button>`;
+    }).join('')}</div></div>`, (el, close) => {
+    $$('[data-lv]', el).forEach((b) => (b.onclick = () => { haptic('medium'); close(); startLesson({ ...target, level: Number(b.dataset.lv) }); }));
+  });
+}
+
 
 async function tabLeague() {
   const m = S.me || (await refreshMe());
@@ -1908,6 +1929,7 @@ async function startLesson(target) {
     el.innerHTML = `
       <div class="ptop"><button class="pclose" data-close aria-label="Закрыть">${ic('close-circle')}</button><div class="pbar"><i style="width:${(doneCount() / total()) * 100}%"></i></div>
         <span class="combo" data-combo>${comboHtml()}</span>${P.phase === 'main' && !S.me?.isAdmin ? tools.html() : ''}</div>
+      ${data.timeLimit && P.phase === 'main' ? `<div class="qtimer"><i data-tbar></i><b data-tleft>${data.timeLimit}</b></div>` : ''}
       <div class="pbody">
         <div class="qkind ${P.phase === 'review' ? 'review' : ''}">${P.phase === 'review' ? `${emo(E.repeat)} Работа над ошибками` : data.preview ? `${ic('eye', 'sm')} Превью учителя ·` : ''} ${KIND[q.type]}${q.topic ? ` <span class="t">· ${esc(q.topic)}</span>` : ''}${q.from ? ` <span class="t">· ${esc(q.from)}</span>` : ''}</div>
         <div class="qhead">${me('think', 84)}<div class="qprompt">${esc(q.prompt)}</div></div>
@@ -1918,6 +1940,17 @@ async function startLesson(target) {
       <div class="pfoot"><div class="in"><div data-fb></div><button class="btn block" data-check disabled>Проверить</button></div></div>`;
     $('[data-close]', el).onclick = close;
     tools.bind(el, q, qi);
+    // уровень 3: таймер на вопрос; время вышло — ответ неверный
+    if (data.timeLimit && P.phase === 'main') {
+      const bar = $('[data-tbar]', el);
+      const end = Date.now() + data.timeLimit * 1000;
+      clearInterval(P.timer);
+      P.timer = setInterval(() => {
+        const left = Math.max(0, end - Date.now());
+        if (bar) { bar.style.width = `${(left / (data.timeLimit * 1000)) * 100}%`; bar.parentElement.classList.toggle('hurry', left < 10000); $('[data-tleft]', el).textContent = Math.ceil(left / 1000); }
+        if (left <= 0) { clearInterval(P.timer); if (!P.answered) { P.timeout = true; P.ready = true; haptic('error'); check(qi); } }
+      }, 200);
+    }
     const hint = $('[data-hint]', el);
     if (hint) hint.onclick = () => { hint.parentElement.innerHTML = emo(E.bulb) + ' ' + esc(q.hint); };
     mountAnswer($('[data-area]', el), q, P, setReady, () => $('[data-check]', el).click());
@@ -1934,10 +1967,12 @@ async function startLesson(target) {
     let r;
     try {
       r = P.phase === 'main'
-        ? await api(`/attempts/${data.attemptId}/answer`, { index: qi, answer: P.value })
+        ? await api(`/attempts/${data.attemptId}/answer`, { index: qi, answer: P.value, timeout: Boolean(P.timeout) })
         : await api(`/attempts/${data.attemptId}/retry`, { index: qi, answer: P.value });
     } catch (e) { btn.disabled = false; return fail(e); }
     P.answered = true;
+    P.timeout = false;
+    clearInterval(P.timer);
     const foot = $('.pfoot', el);
     if (P.phase === 'main') {
       P.combo = r.combo;
@@ -1970,6 +2005,7 @@ async function startLesson(target) {
   }
 
   async function next() {
+    clearInterval(P.timer);
     P.i++;
     if (P.i < P.queue.length) return render();
     if (P.phase === 'main' && P.review.length) {
@@ -2005,6 +2041,7 @@ async function startLesson(target) {
     el.innerHTML = `<div class="pbody"><div class="result">
       <div style="position:relative;display:inline-block">${me(look.emo, 150)}<span style="position:absolute;right:-26px;top:4px">${emo(look.icon, { anim: true, cls: 'xl' })}</span></div>
       <h1>${look.title}</h1>
+      ${r.level ? `<p style="margin-top:6px"><span class="pill ${r.practice ? '' : 'gold'}">${emo(LEVEL_INFO[r.level].emo)} ${r.level}. <span>${LEVEL_INFO[r.level].name}</span> · ${r.preview ? 'превью' : r.practice ? 'уровень уже пройден — без очков' : `<span data-noi18n>+${r.xp} XP</span> из <span data-noi18n>${r.reward}</span>`}</span></p>` : ''}
       ${data.mistakes ? `<p class="muted" style="margin-top:4px">${r.mistakesLeft ? `В копилке ошибок осталось ${plural(r.mistakesLeft, 'вопрос', 'вопроса', 'вопросов')}` : 'Копилка ошибок пуста — красота!'}</p>` : ''}
       ${!data.mistakes && !data.preview && r.correct < r.total ? `<p class="muted small" style="margin-top:4px">${emo(E.repeat)} Ошибки попали в твою «Работу над ошибками» на главной</p>` : ''}
       <p class="muted">${emo(data.lesson.emoji)} ${esc(data.lesson.title)}${r.practice ? ' · тренировка' : r.preview ? ' · превью' : ''}</p>

@@ -1,6 +1,7 @@
 // Вся предметная логика: ученики, группы, тесты, попытки, статистика.
 import crypto from 'node:crypto';
 import { checkAnswer, choicePerm, publicQuestion, validateLesson } from './grading.js';
+import { buildLevel, LEVEL_XP, LEVEL_TIME } from './levels.js';
 
 const log = (tag, obj) => console.log(`[${tag}] ` + JSON.stringify(obj));
 
@@ -478,8 +479,9 @@ export function createLogic(store, { adminIds }) {
       .sort((a, b) => a.finishedAt - b.finishedAt)
       .filter((a) => {
         if (a.kind === 'mistakes' || !a.lessonId || a.practice) return true;
-        if (seen.has(a.lessonId)) return false;
-        seen.add(a.lessonId);
+        const key = `${a.lessonId}#${a.level || 1}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
         return true;
       });
   }
@@ -514,6 +516,20 @@ export function createLogic(store, { adminIds }) {
   }
 
   // ───────── попытки ─────────
+  const questionAt = (a, index, lang = a.lang) => (a.qs ? a.qs[index] : qOf(itemsOf(a)[index], lang));
+  // Уровни урока для ученика: что пройдено, что закрыто. Кто решал тест до уровней — уровень 1 закрыт (уже пройден).
+  function levelsOf(uid, lessonId) {
+    uid = String(uid);
+    if (S.lessons[lessonId]?.kind === 'exam') return null;
+    const mine = Object.values(S.attempts).filter((a) => a.userId === uid && a.lessonId === lessonId && a.finishedAt && !a.preview && a.kind !== 'mistakes');
+    const legacy = mine.some((a) => !a.level);
+    return [1, 2, 3].map((lv) => {
+      const at = mine.filter((a) => (a.level || 1) === lv);
+      const best = at.reduce((m, a) => Math.max(m, scoreOf(a).pct), -1);
+      const xp = at.reduce((m, a) => m + (a.xp || 0), 0);
+      return { level: lv, reward: LEVEL_XP[lv], time: LEVEL_TIME[lv], done: at.length > 0, best: best >= 0 ? best : null, xp, locked: lv === 1 && legacy };
+    });
+  }
   const scoreOf = (a) => {
     const correct = a.answers.filter((x) => x.correct).length;
     const total = itemsOf(a).length || a.answers.length;
@@ -594,7 +610,7 @@ export function createLogic(store, { adminIds }) {
 
   const MISTAKES_PER_SESSION = 10;
 
-  function startAttempt(uid, { pubId, lessonId, mistakes }) {
+  function startAttempt(uid, { pubId, lessonId, mistakes, level }) {
     uid = String(uid);
     if (mistakes) {
       const items = mistakesOf(uid).slice(0, MISTAKES_PER_SESSION).map(({ lessonId: l, index }) => ({ lessonId: l, index }));
@@ -627,16 +643,33 @@ export function createLogic(store, { adminIds }) {
     }
     if (!lesson) throw httpError(404, 'Тест не найден');
     const noXp = Boolean(pubId && S.pubs[pubId]?.noXp);
-    const practice = !preview && (noXp || finishedAttempts(uid, pubId).length > 0 || Object.values(S.attempts).some((x) => x.userId === uid && x.lessonId === lesson.id && x.finishedAt && !x.preview));
-    const a = { id: store.nextId('a'), lang: langOf(uid), pubId: pubId || null, lessonId: lesson.id, userId: uid, preview, practice, startedAt: Date.now(), finishedAt: null, answers: [], combo: 0, maxCombo: 0, xp: 0 };
+    // уровень сложности (у готовых тестов-экзаменов уровней нет)
+    const lv = lesson.kind === 'exam' ? null : [1, 2, 3].includes(Number(level)) ? Number(level) : 1;
+    let practice;
+    if (lv) {
+      const st = levelsOf(uid, lesson.id)[lv - 1];
+      if (!preview && st.locked) throw httpError(403, 'Первый уровень ты уже прошёл раньше — выбери уровень 2 или 3');
+      // уровень уже пройден — без очков; «открыт задним числом» (noXp) касается только уровня 1, уровни 2 и 3 новые
+      practice = !preview && ((noXp && lv === 1) || st.done);
+    } else {
+      practice = !preview && (noXp || finishedAttempts(uid, pubId).length > 0 || Object.values(S.attempts).some((x) => x.userId === uid && x.lessonId === lesson.id && x.finishedAt && !x.preview));
+    }
+    const id = store.nextId('a');
+    const built = lv ? buildLevel(lesson, lv, id) : null;
+    const a = { id, lang: langOf(uid), pubId: pubId || null, lessonId: lesson.id, userId: uid, preview, practice, startedAt: Date.now(), finishedAt: null, answers: [], combo: 0, maxCombo: 0, xp: 0,
+      ...(lv ? { level: lv, qs: built.questions, items: built.src } : {}) };
     S.attempts[a.id] = a;
     store.save();
+    const qs = built ? built.questions : lesson.questions;
     return {
       attemptId: a.id,
       preview,
       practice,
+      level: lv,
+      reward: lv ? LEVEL_XP[lv] : null,
+      timeLimit: lv ? LEVEL_TIME[lv] : 0,
       lesson: { id: lesson.id, title: lesson.title, emoji: lesson.emoji, description: lesson.description },
-      questions: lesson.questions.map((q, i) => publicQuestion(q, `${a.id}:${i}`)),
+      questions: qs.map((q, i) => publicQuestion(q, `${a.id}:${i}`)),
     };
   }
 
@@ -655,33 +688,33 @@ export function createLogic(store, { adminIds }) {
     const a = getOwnAttempt(uid, aid);
     if (a.finishedAt) throw httpError(400, 'Тест уже завершён');
     const it = itemsOf(a)[Number(index)];
-    const q = qOf(it, a.lang);
+    const q = questionAt(a, Number(index));
     if (!q) throw httpError(400, 'Неверный номер вопроса');
-    return { a, q, lesson: loc(S.lessons[it.lessonId], a.lang), lang: a.lang || 'ru' };
+    return { a, q, lesson: loc(S.lessons[it?.lessonId || a.lessonId], a.lang), lang: a.lang || 'ru' };
   }
   // Сколько раз и когда ученик решал тесты (для состояния маскота)
   const finishedAt = (uid) => Object.values(S.attempts).filter((a) => a.userId === String(uid) && a.finishedAt && !a.preview).map((a) => a.finishedAt);
 
-  function answer(uid, aid, index, value) {
+  function answer(uid, aid, index, value, timeout = false) {
     const a = getOwnAttempt(uid, aid);
     if (a.finishedAt) throw httpError(400, 'Тест уже завершён');
-    const q = qOf(itemsOf(a)[index], a.lang);
+    const q = questionAt(a, index);
     if (!q || index !== a.answers.length) throw httpError(400, 'Неверный номер вопроса');
-    const res = checkAnswer(q, toOriginal(q, a, index, value));
+    const res = timeout ? { correct: false, correctText: checkAnswer(q, null).correctText } : checkAnswer(q, toOriginal(q, a, index, value));
     a.combo = res.correct ? a.combo + 1 : 0;
     a.maxCombo = Math.max(a.maxCombo, a.combo);
     const mult = a.combo >= 5 ? 3 : a.combo >= 3 ? 2 : 1;
-    const gained = res.correct && !a.preview && !a.practice ? 10 * mult : 0;
+    const gained = res.correct && !a.preview && !a.practice && !a.level ? 10 * mult : 0;
     a.xp += gained;
-    a.answers.push({ index, correct: res.correct, value });
+    a.answers.push({ index, correct: res.correct, value, ...(timeout ? { timeout: true } : {}) });
     store.save();
-    return { correct: res.correct, correctText: res.correctText, explain: q.explain || null, combo: a.combo, mult, xpGained: gained };
+    return { correct: res.correct, correctText: res.correctText, explain: q.explain || null, combo: a.combo, mult, xpGained: gained, timeout };
   }
 
   // «Работа над ошибками»: перепроверка без записи в статистику
   function retry(uid, aid, index, value) {
     const a = getOwnAttempt(uid, aid);
-    const q = qOf(itemsOf(a)[index], a.lang);
+    const q = questionAt(a, index);
     if (!q || a.answers.length < itemsOf(a).length) throw httpError(400, 'Сначала ответь на все вопросы');
     const res = checkAnswer(q, toOriginal(q, a, index, value));
     return { correct: res.correct, correctText: res.correctText, explain: q.explain || null };
@@ -693,7 +726,10 @@ export function createLogic(store, { adminIds }) {
     if (!a.finishedAt) {
       if (a.answers.length < items.length) throw httpError(400, 'Есть неотвеченные вопросы');
       a.finishedAt = Date.now();
-      if (!a.preview && !a.practice && scoreOf(a).pct === 100) a.xp += 20; // бонус за идеал
+      if (a.level) {
+        // уровень: награда × процент правильных (если уровень ещё не был пройден)
+        if (!a.preview && !a.practice) a.xp = Math.round((LEVEL_XP[a.level] * scoreOf(a).pct) / 100);
+      } else if (!a.preview && !a.practice && scoreOf(a).pct === 100) a.xp += 20; // бонус за идеал
       if (!a.preview) touchStreak(S.users[a.userId]);
       store.save();
       if (!a.preview) logResult(a);
@@ -701,7 +737,7 @@ export function createLogic(store, { adminIds }) {
     const s = scoreOf(a);
     const topics = {};
     a.answers.forEach((x) => {
-      const t = qOf(items[x.index], a.lang)?.topic || 'Общее';
+      const t = questionAt(a, x.index)?.topic || 'Общее';
       topics[t] ||= { topic: t, correct: 0, total: 0 };
       topics[t].total++;
       if (x.correct) topics[t].correct++;
@@ -720,7 +756,10 @@ export function createLogic(store, { adminIds }) {
       preview: a.preview,
       durationSec: Math.round(((a.finishedAt || Date.now()) - a.startedAt) / 1000),
       topics: Object.values(topics).map((t) => ({ ...t, pct: pct(t.correct, t.total) })),
-      questions: a.answers.map((x) => ({ prompt: qOf(items[x.index], a.lang)?.prompt || '', correct: x.correct })),
+      questions: a.answers.map((x) => ({ prompt: questionAt(a, x.index)?.prompt || '', correct: x.correct })),
+      level: a.level || null,
+      reward: a.level ? LEVEL_XP[a.level] : null,
+      levels: a.level && !a.preview ? levelsOf(a.userId, a.lessonId) : null,
       group,
       mistakesLeft: mistakesOf(a.userId).length,
       streak: currentStreak(S.users[a.userId]),
@@ -734,13 +773,14 @@ export function createLogic(store, { adminIds }) {
       user: { id: a.userId, name: name(S.users[a.userId]) },
       group: pub?.groupId ? S.groups[pub.groupId]?.name : pub?.userId ? 'личное' : null,
       lesson: a.kind === 'mistakes' ? 'mistakes' : a.lessonId,
+      level: a.level || null,
       kind: a.kind || (a.practice ? 'practice' : 'test'),
       pct: scoreOf(a).pct,
       wrong: a.answers.filter((x) => !x.correct).map((x) => {
         const it = items[x.index];
-        const q = qOf(it);
-        const ql = qOf(it, a.lang);
-        return { lesson: it.lessonId, q: it.index, topic: q?.topic, prompt: q?.prompt, lang: a.lang || 'ru', given: answerText(ql, toOriginal(ql, a, x.index, x.value)), right: q ? checkAnswer(q, null).correctText : null };
+        const q = it ? qOf(it) : questionAt(a, x.index);
+        const ql = questionAt(a, x.index);
+        return { lesson: it?.lessonId || a.lessonId, q: it ? it.index : null, timeout: x.timeout || undefined, topic: q?.topic, prompt: q?.prompt, lang: a.lang || 'ru', given: answerText(ql, toOriginal(ql, a, x.index, x.value)), right: q ? checkAnswer(q, null).correctText : null };
       }),
     });
   }
@@ -1056,7 +1096,7 @@ export function createLogic(store, { adminIds }) {
     const path = pubsForUser(uid).map((p) => {
       const l = loc(S.lessons[p.lessonId], langOf(uid));
       const b = best(uid, p.id);
-      return { pubId: p.id, title: l.title, emoji: l.emoji, description: l.description, questions: l.questions.length, topics: l.topics, groupId: p.groupId, groupName: p.userId ? 'Лично' : S.groups[p.groupId].name, personal: Boolean(p.userId), forYou: Boolean(S.lessons[p.lessonId].personal), order: S.lessons[p.lessonId].order ?? null, lessonId: p.lessonId, exam: l.kind === 'exam', hasLearn: Boolean(l.learn) && !p.noLearn, learnDone: learnDone(uid, p.id), learnSections: l.learn?.sections.length || 0, publishedAt: p.publishedAt, best: b ? b.pct : null, stars: b ? (b.pct === 100 ? 3 : b.pct >= 80 ? 2 : b.pct >= 50 ? 1 : 0) : null };
+      return { pubId: p.id, title: l.title, emoji: l.emoji, description: l.description, questions: l.questions.length, topics: l.topics, groupId: p.groupId, groupName: p.userId ? 'Лично' : S.groups[p.groupId].name, personal: Boolean(p.userId), forYou: Boolean(S.lessons[p.lessonId].personal), order: S.lessons[p.lessonId].order ?? null, lessonId: p.lessonId, exam: l.kind === 'exam', levels: levelsOf(uid, p.lessonId), hasLearn: Boolean(l.learn) && !p.noLearn, learnDone: learnDone(uid, p.id), learnSections: l.learn?.sections.length || 0, publishedAt: p.publishedAt, best: b ? b.pct : null, stars: b ? (b.pct === 100 ? 3 : b.pct >= 80 ? 2 : b.pct >= 50 ? 1 : 0) : null };
     });
     return {
       user: publicUser(u),
@@ -1151,7 +1191,7 @@ export function createLogic(store, { adminIds }) {
   }
 
   return {
-    S, log, parentsOverview, testStatus, attemptQuestion, finishedAt, totalXp, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
+    S, log, levelsOf, parentsOverview, testStatus, attemptQuestion, finishedAt, totalXp, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
     upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,

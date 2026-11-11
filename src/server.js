@@ -233,7 +233,7 @@ api.post('/attempts', h((req) => logic.startAttempt(req.user.id, req.body || {})
 api.post('/learn/start', h((req) => logic.startLearn(req.user.id, req.body || {})));
 api.post('/learn/check', h((req) => logic.checkLearn(req.user.id, req.body || {}, Number(req.body.section), Number(req.body.index), req.body.answer)));
 api.post('/learn/finish', h((req) => logic.finishLearn(req.user.id, req.body || {})));
-api.post('/attempts/:id/answer', h((req) => logic.answer(req.user.id, req.params.id, Number(req.body.index), req.body.answer)));
+api.post('/attempts/:id/answer', h((req) => logic.answer(req.user.id, req.params.id, Number(req.body.index), req.body.answer, Boolean(req.body.timeout))));
 api.post('/attempts/:id/retry', h((req) => logic.retry(req.user.id, req.params.id, Number(req.body.index), req.body.answer)));
 api.post('/attempts/:id/finish', h((req) => logic.finish(req.user.id, req.params.id)));
 
