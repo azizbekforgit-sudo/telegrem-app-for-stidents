@@ -1,0 +1,437 @@
+{
+  "title": "Lesson 20. Events — part 1",
+  "description": "click, input, mouseover/mouseout, classList, e.target and a live profile card",
+  "learn": {
+    "intro": "Hi! Today our site starts **listening to a person** for the first time: clicks, typing, hovering the mouse. Let's go!",
+    "sections": [
+      {
+        "title": "Click and addEventListener",
+        "slides": [
+          {
+            "emoji": "👂",
+            "text": "Before, our site only showed things. Today it starts **listening to a person**: a click, typing, hovering the mouse — all of these are **events**."
+          },
+          {
+            "text": "The formula: `element.addEventListener(\"event\", function)`. **What** we listen to, **which** event and **what** to do."
+          },
+          {
+            "text": "A click counter: every press adds 1. `let`, because the number changes.",
+            "code": "const button = document.querySelector(\".btn\");\nconst counter = document.querySelector(\".count\");\nlet count = 0;\n\nbutton.addEventListener(\"click\", function () {\n  count = count + 1;\n  counter.textContent = \"Clicks: \" + count;\n});"
+          },
+          {
+            "quote": true,
+            "text": "The event name is **lowercase and without on**: `\"click\"`, not `\"Click\"` or `\"onClick\"`. And we pass the function **without brackets**: `changeText`, not `changeText()` — otherwise it runs right away on load."
+          }
+        ],
+        "check": [
+          {
+            "type": "truefalse",
+            "topic": "Click and addEventListener",
+            "prompt": "The code `btn.addEventListener(\"Click\", f)` works on a click.",
+            "answer": false,
+            "explain": "The event name is lowercase: \"click\". With a capital letter nothing happens."
+          },
+          {
+            "type": "choice",
+            "topic": "Click and addEventListener",
+            "prompt": "Why is the counter declared with let, not const?",
+            "options": [
+              "Its value changes on every click",
+              "let is faster",
+              "const is not allowed in JS",
+              "It is shorter"
+            ],
+            "answer": 0,
+            "explain": "const can't be reassigned, and count = count + 1 changes the value."
+          }
+        ]
+      },
+      {
+        "title": "Subscribe button and classList",
+        "slides": [
+          {
+            "emoji": "🔔",
+            "text": "We build a «Subscribe» button like on YouTube: press it — it turns grey «Subscribed», press again — it comes back."
+          },
+          {
+            "text": "`classList.toggle(\"class\")` — no class, it adds it; there is one, it removes it. `classList.contains(\"class\")` answers `true` or `false`: is the class there now.",
+            "code": "const subBtn = document.querySelector(\".sub-btn\");\n\nsubBtn.addEventListener(\"click\", function () {\n  subBtn.classList.toggle(\"subscribed\");\n\n  if (subBtn.classList.contains(\"subscribed\")) {\n    subBtn.textContent = \"Subscribed\";\n  } else {\n    subBtn.textContent = \"Subscribe\";\n  }\n});"
+          },
+          {
+            "quote": true,
+            "text": "We change the button color **with a CSS class**, and JS only toggles the class. The subscriber count lives in a variable, so it resets when the page reloads."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Subscribe button and classList",
+            "prompt": "What does btn.classList.contains(\"subscribed\") return if there is no class?",
+            "options": [
+              "false",
+              "true",
+              "null",
+              "\"subscribed\""
+            ],
+            "answer": 0,
+            "explain": "contains answers «is the class there?» — true or false."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Subscribe button and classList",
+            "prompt": "classList.toggle removes the class if it is already there.",
+            "answer": true,
+            "explain": "toggle is a switch: missing — adds, present — removes."
+          }
+        ]
+      },
+      {
+        "title": "The input event",
+        "slides": [
+          {
+            "emoji": "⌨️",
+            "text": "The `input` event fires **on every letter** in a field. The field text is in `input.value`."
+          },
+          {
+            "text": "You type a name — it appears on the page right away:",
+            "code": "const input = document.querySelector(\".name\");\nconst hello = document.querySelector(\".hello\");\n\ninput.addEventListener(\"input\", function () {\n  hello.textContent = input.value;\n});"
+          },
+          {
+            "text": "`name.length` — how many letters. You can show a «7 / 20» counter and turn it red when there are more than 15. And `maxlength=\"20\"` in HTML won't let you type more."
+          },
+          {
+            "quote": true,
+            "text": "Want to react to every letter — listen to `input`, not `click`."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "The input event",
+            "prompt": "Where is the text the student typed in the field?",
+            "options": [
+              "input.value",
+              "input.text",
+              "input.length",
+              "input.target"
+            ],
+            "answer": 0,
+            "explain": "An input field's text is in the value property."
+          }
+        ]
+      },
+      {
+        "title": "Mouse hover",
+        "slides": [
+          {
+            "emoji": "🖱️",
+            "text": "`mouseover` — the cursor **entered** the element, `mouseout` — it **left**. Hover the smiley — it smiles 😃, move away — 😐 again.",
+            "code": "const face = document.querySelector(\".face\");\n\nface.addEventListener(\"mouseover\", function () {\n  face.textContent = \"😃\";\n});\n\nface.addEventListener(\"mouseout\", function () {\n  face.textContent = \"😐\";\n});"
+          },
+          {
+            "quote": true,
+            "text": "CSS `:hover` can enlarge or recolor, but it **can't change the content** — the text or the smiley. You need JS for that."
+          }
+        ],
+        "check": [
+          {
+            "type": "match",
+            "topic": "Mouse hover",
+            "prompt": "Match the event and when it fires",
+            "pairs": [
+              [
+                "mouseover",
+                "The cursor entered the element"
+              ],
+              [
+                "mouseout",
+                "The cursor left the element"
+              ],
+              [
+                "input",
+                "A letter was typed in a field"
+              ],
+              [
+                "click",
+                "The element was clicked"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": "The event object e.target",
+        "slides": [
+          {
+            "emoji": "🎯",
+            "text": "The handler function gets an **event object** — it is called `e` or `event`. It holds a lot, but for now we need one thing: `e.target` — **the element that was clicked**."
+          },
+          {
+            "text": "The color buttons recolor the whole page. The listener is the same, but the result differs — because `e.target` points to the pressed button each time.",
+            "code": "const buttons = document.querySelectorAll(\".colors button\");\n\nbuttons.forEach(function (btn) {\n  btn.addEventListener(\"click\", function (e) {\n    document.body.style.backgroundColor = e.target.textContent;\n  });\n});"
+          },
+          {
+            "quote": true,
+            "text": "Forget `e` in the function brackets — you get the error `e is not defined`. Write `function (e) { … }`."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "The event object e.target",
+            "prompt": "What is e.target?",
+            "options": [
+              "The element that was clicked",
+              "The event name",
+              "All buttons on the page",
+              "The click time"
+            ],
+            "answer": 0,
+            "explain": "target is the «target»: the element the event happened on."
+          },
+          {
+            "type": "truefalse",
+            "topic": "The event object e.target",
+            "prompt": "If you don't write e in the function brackets and then use e.target, you get the error e is not defined.",
+            "answer": true,
+            "explain": "The event object must be taken as a parameter: function (e) { … }."
+          }
+        ]
+      },
+      {
+        "title": "Practice: profile card",
+        "slides": [
+          {
+            "emoji": "🪪",
+            "text": "We put it all into a **live profile card**: type a name — it appears on the card, and the first letter goes in the round avatar. Press a color — the border and avatar change. The subscribe button toggles."
+          },
+          {
+            "text": "`name[0]` is the first letter of a string (indexes start at zero, as in arrays). `toUpperCase()` makes it a capital: «aziz» → «A». If the field is empty, there is no `name[0]` — so we check with `if` first.",
+            "code": "input.addEventListener(\"input\", function () {\n  const name = input.value;\n  if (name === \"\") {\n    cardName.textContent = \"Your name\";\n    avatar.textContent = \"?\";\n  } else {\n    cardName.textContent = name;\n    avatar.textContent = name[0].toUpperCase();\n  }\n});"
+          },
+          {
+            "text": "Homework: a like button like on Instagram. 🤍 0 → press → ❤️ 1 and it turns red → press again → 🤍 0. The color — through a CSS class, not through style in JS.",
+            "code": "likeBtn.addEventListener(\"click\", function () {\n  likeBtn.classList.toggle(\"liked\");\n  if (likeBtn.classList.contains(\"liked\")) {\n    likes = likes + 1;\n    likeBtn.textContent = `❤️ ${likes}`;\n  } else {\n    likes = likes - 1;\n    likeBtn.textContent = `🤍 ${likes}`;\n  }\n});"
+          },
+          {
+            "quote": true,
+            "text": "Today your site started listening to a person for the first time."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Practice: profile card",
+            "prompt": "What does \"aziz\"[0].toUpperCase() return?",
+            "options": [
+              "\"A\"",
+              "\"a\"",
+              "\"AZIZ\"",
+              "\"z\""
+            ],
+            "answer": 0,
+            "explain": "[0] takes the first letter, toUpperCase makes it a capital."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "truefalse",
+      "topic": "Click and addEventListener",
+      "prompt": "An event is a user action the site can react to: a click, typing, hovering.",
+      "answer": true,
+      "explain": "Everything a person does on the page is an event, and addEventListener listens to them."
+    },
+    {
+      "type": "fill",
+      "topic": "Click and addEventListener",
+      "prompt": "Fill in the blanks: call a function when the button is clicked",
+      "text": "button.___(\"___\", changeText);",
+      "answer": [
+        "addEventListener",
+        "click"
+      ],
+      "extra": [
+        "onClick",
+        "Click",
+        "listen"
+      ],
+      "explain": "The formula: element.addEventListener(\"event\", function). The event name is lowercase, without on."
+    },
+    {
+      "type": "choice",
+      "topic": "Click and addEventListener",
+      "prompt": "What happens with this code?",
+      "code": "button.addEventListener(\"click\", changeText());",
+      "options": [
+        "The function runs right away on load, not on a click",
+        "All correct, it runs on a click",
+        "It runs twice per click",
+        "It deletes the button"
+      ],
+      "answer": 0,
+      "explain": "With brackets changeText() the function is called at once. Pass changeText without brackets."
+    },
+    {
+      "type": "choice",
+      "topic": "Click and addEventListener",
+      "prompt": "What is on the page after three clicks?",
+      "code": "const button = document.querySelector(\".btn\");\nconst counter = document.querySelector(\".count\");\nlet count = 0;\n\nbutton.addEventListener(\"click\", function () {\n  count = count + 1;\n  counter.textContent = \"Clicks: \" + count;\n});",
+      "options": [
+        "Clicks: 3",
+        "Clicks: 1",
+        "Clicks: 0",
+        "Clicks: 111"
+      ],
+      "answer": 0,
+      "explain": "Every click adds 1 to count: 0 → 1 → 2 → 3."
+    },
+    {
+      "type": "fill",
+      "topic": "Subscribe button and classList",
+      "prompt": "Fill in the blanks: toggle the class and check if it is there",
+      "text": "btn.classList.___(\"subscribed\");\nif (btn.classList.___(\"subscribed\")) { … }",
+      "answer": [
+        "toggle",
+        "contains"
+      ],
+      "extra": [
+        "add",
+        "has",
+        "switch"
+      ],
+      "explain": "toggle switches the class, contains answers true/false — is it there."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Subscribe button and classList",
+      "prompt": "The subscriber count in a variable stays even if you reload the page.",
+      "answer": false,
+      "explain": "Variables live while the page is open. After a reload the script starts over."
+    },
+    {
+      "type": "choice",
+      "topic": "The input event",
+      "prompt": "Which event fires on every typed letter?",
+      "options": [
+        "input",
+        "click",
+        "mouseover",
+        "change"
+      ],
+      "answer": 0,
+      "explain": "input catches every change of the field — every letter."
+    },
+    {
+      "type": "fill",
+      "topic": "The input event",
+      "prompt": "Fill in the blanks: show the length of the name from the field",
+      "text": "const name = input.___;\ncounter.textContent = name.___ + \" / 20\";",
+      "answer": [
+        "value",
+        "length"
+      ],
+      "extra": [
+        "text",
+        "size",
+        "target"
+      ],
+      "explain": "The field text is input.value, the number of letters is .length."
+    },
+    {
+      "type": "match",
+      "topic": "Mouse hover",
+      "prompt": "Match what you need and how to write it",
+      "pairs": [
+        [
+          "The cursor entered",
+          "\"mouseover\""
+        ],
+        [
+          "The cursor left",
+          "\"mouseout\""
+        ],
+        [
+          "Text from a field",
+          "input.value"
+        ],
+        [
+          "What was clicked",
+          "e.target"
+        ]
+      ]
+    },
+    {
+      "type": "truefalse",
+      "topic": "Mouse hover",
+      "prompt": "CSS :hover can swap the smiley 😐 for 😃 on hover.",
+      "answer": false,
+      "explain": ":hover changes the style (size, color), not the content. Only JS can swap the smiley: mouseover / mouseout."
+    },
+    {
+      "type": "choice",
+      "topic": "The event object e.target",
+      "prompt": "Why does the same handler paint the page in different colors?",
+      "code": "const buttons = document.querySelectorAll(\".colors button\");\n\nbuttons.forEach(function (btn) {\n  btn.addEventListener(\"click\", function (e) {\n    document.body.style.backgroundColor = e.target.textContent;\n  });\n});",
+      "options": [
+        "e.target is the pressed button each time",
+        "forEach picks a random color",
+        "body changes color by itself",
+        "The color is fixed in CSS"
+      ],
+      "answer": 0,
+      "explain": "The color comes from the pressed button's text: e.target.textContent."
+    },
+    {
+      "type": "order",
+      "topic": "The event object e.target",
+      "prompt": "Build a handler that receives the event object",
+      "tokens": [
+        "btn.addEventListener(",
+        "\"click\",",
+        "function",
+        "(e)",
+        "{",
+        "console.log(e.target);",
+        "});"
+      ],
+      "extra": [
+        "(click)",
+        "e.click"
+      ],
+      "explain": "We take the event object as the parameter (e), and e.target is the clicked element."
+    },
+    {
+      "type": "choice",
+      "topic": "Practice: profile card",
+      "prompt": "Why the if (name === \"\") check in the profile card?",
+      "code": "input.addEventListener(\"input\", function () {\n  const name = input.value;\n  if (name === \"\") {\n    cardName.textContent = \"Your name\";\n    avatar.textContent = \"?\";\n  } else {\n    cardName.textContent = name;\n    avatar.textContent = name[0].toUpperCase();\n  }\n});",
+      "options": [
+        "An empty string has no name[0] — we show «?» and «Your name»",
+        "To make the field red",
+        "To delete the card",
+        "click doesn't work without it"
+      ],
+      "answer": 0,
+      "explain": "If the field is empty there is no first letter and nothing to call toUpperCase() on."
+    },
+    {
+      "type": "fill",
+      "topic": "Practice: profile card",
+      "prompt": "Fill in the blanks: the first letter of the name as a capital",
+      "text": "avatar.textContent = name[___].___();",
+      "answer": [
+        "0",
+        "toUpperCase"
+      ],
+      "extra": [
+        "1",
+        "toLowerCase",
+        "upper"
+      ],
+      "explain": "Indexes start at zero: name[0] is the first letter. toUpperCase() makes it a capital."
+    }
+  ]
+}

@@ -1,0 +1,440 @@
+{
+  "id": "lesson-20-events-p1",
+  "order": 20,
+  "title": "Урок 20. События — часть 1",
+  "emoji": "👂",
+  "description": "click, input, mouseover/mouseout, classList, e.target и живая карточка профиля",
+  "learn": {
+    "intro": "Привет! Сегодня наш сайт впервые начнёт **слушать человека**: клики, ввод текста, наведение мышки. Поехали!",
+    "sections": [
+      {
+        "title": "Клик и addEventListener",
+        "slides": [
+          {
+            "emoji": "👂",
+            "text": "Раньше наш сайт только показывал. Сегодня он начнёт **слушать человека**: клик, ввод текста, наведение мышки — всё это **события**."
+          },
+          {
+            "text": "Формула: `элемент.addEventListener(\"событие\", функция)`. На **что** слушаем, **какое** событие и **что** сделать."
+          },
+          {
+            "text": "Счётчик кликов: каждое нажатие прибавляет 1. `let`, потому что число меняется.",
+            "code": "const button = document.querySelector(\".btn\");\nconst counter = document.querySelector(\".count\");\nlet count = 0;\n\nbutton.addEventListener(\"click\", function () {\n  count = count + 1;\n  counter.textContent = \"Нажали: \" + count;\n});"
+          },
+          {
+            "quote": true,
+            "text": "Имя события — **маленькими буквами и без on**: `\"click\"`, а не `\"Click\"` или `\"onClick\"`. И функцию передаём **без скобок**: `changeText`, а не `changeText()` — иначе она сработает сразу при загрузке."
+          }
+        ],
+        "check": [
+          {
+            "type": "truefalse",
+            "topic": "Клик и addEventListener",
+            "prompt": "Код `btn.addEventListener(\"Click\", f)` сработает при клике.",
+            "answer": false,
+            "explain": "Имя события пишется маленькими буквами: \"click\". С большой буквы ничего не происходит."
+          },
+          {
+            "type": "choice",
+            "topic": "Клик и addEventListener",
+            "prompt": "Почему счётчик объявляют через let, а не const?",
+            "options": [
+              "Его значение меняется при каждом клике",
+              "let работает быстрее",
+              "const нельзя в JS",
+              "Так короче"
+            ],
+            "answer": 0,
+            "explain": "const нельзя перезаписать, а count = count + 1 меняет значение."
+          }
+        ]
+      },
+      {
+        "title": "Кнопка подписки и classList",
+        "slides": [
+          {
+            "emoji": "🔔",
+            "text": "Делаем кнопку «Подписаться», как на YouTube: нажал — стала серой «Вы подписаны», нажал ещё раз — вернулась."
+          },
+          {
+            "text": "`classList.toggle(\"класс\")` — класса нет, добавит; есть — уберёт. `classList.contains(\"класс\")` отвечает `true` или `false`: есть ли сейчас класс.",
+            "code": "const subBtn = document.querySelector(\".sub-btn\");\n\nsubBtn.addEventListener(\"click\", function () {\n  subBtn.classList.toggle(\"subscribed\");\n\n  if (subBtn.classList.contains(\"subscribed\")) {\n    subBtn.textContent = \"Вы подписаны\";\n  } else {\n    subBtn.textContent = \"Подписаться\";\n  }\n});"
+          },
+          {
+            "quote": true,
+            "text": "Цвет кнопки меняем **классом в CSS**, а JS только переключает класс. Число подписчиков хранится в переменной, поэтому после перезагрузки страницы оно сбрасывается."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Кнопка подписки и classList",
+            "prompt": "Что вернёт btn.classList.contains(\"subscribed\"), если класса нет?",
+            "options": [
+              "false",
+              "true",
+              "null",
+              "\"subscribed\""
+            ],
+            "answer": 0,
+            "explain": "contains отвечает на вопрос «есть ли класс?» — true или false."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Кнопка подписки и classList",
+            "prompt": "classList.toggle убирает класс, если он уже есть.",
+            "answer": true,
+            "explain": "toggle — переключатель: нет — добавит, есть — уберёт."
+          }
+        ]
+      },
+      {
+        "title": "Событие input",
+        "slides": [
+          {
+            "emoji": "⌨️",
+            "text": "Событие `input` срабатывает **на каждую букву** в поле. Текст поля лежит в `input.value`."
+          },
+          {
+            "text": "Печатаешь имя — оно сразу появляется на странице:",
+            "code": "const input = document.querySelector(\".name\");\nconst hello = document.querySelector(\".hello\");\n\ninput.addEventListener(\"input\", function () {\n  hello.textContent = input.value;\n});"
+          },
+          {
+            "text": "`name.length` — сколько букв. Можно показать счётчик «7 / 20» и покрасить его в красный, когда букв больше 15. А `maxlength=\"20\"` в HTML не даст ввести больше."
+          },
+          {
+            "quote": true,
+            "text": "Хочешь реагировать на каждую букву — слушай `input`, а не `click`."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Событие input",
+            "prompt": "Где лежит текст, который ученик напечатал в поле?",
+            "options": [
+              "input.value",
+              "input.text",
+              "input.length",
+              "input.target"
+            ],
+            "answer": 0,
+            "explain": "Текст поля ввода — в свойстве value."
+          }
+        ]
+      },
+      {
+        "title": "Наведение мышки",
+        "slides": [
+          {
+            "emoji": "🖱️",
+            "text": "`mouseover` — курсор **зашёл** на элемент, `mouseout` — **ушёл**. Наводишь на смайлик — он улыбается 😃, убираешь — снова 😐.",
+            "code": "const face = document.querySelector(\".face\");\n\nface.addEventListener(\"mouseover\", function () {\n  face.textContent = \"😃\";\n});\n\nface.addEventListener(\"mouseout\", function () {\n  face.textContent = \"😐\";\n});"
+          },
+          {
+            "quote": true,
+            "text": "CSS `:hover` умеет увеличить или перекрасить, но **не может поменять содержимое** — текст или смайлик. Для этого нужен JS."
+          }
+        ],
+        "check": [
+          {
+            "type": "match",
+            "topic": "Наведение мышки",
+            "prompt": "Соедини событие и когда оно срабатывает",
+            "pairs": [
+              [
+                "mouseover",
+                "Курсор зашёл на элемент"
+              ],
+              [
+                "mouseout",
+                "Курсор ушёл с элемента"
+              ],
+              [
+                "input",
+                "Напечатали букву в поле"
+              ],
+              [
+                "click",
+                "Нажали на элемент"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Объект события e.target",
+        "slides": [
+          {
+            "emoji": "🎯",
+            "text": "Функция-обработчик получает **объект события** — его называют `e` или `event`. В нём много всего, а нам пока нужно одно: `e.target` — **элемент, на который нажали**."
+          },
+          {
+            "text": "Кнопки цветов перекрашивают всю страницу. Слушатель один и тот же, а результат разный — потому что `e.target` каждый раз указывает на нажатую кнопку.",
+            "code": "const buttons = document.querySelectorAll(\".colors button\");\n\nbuttons.forEach(function (btn) {\n  btn.addEventListener(\"click\", function (e) {\n    document.body.style.backgroundColor = e.target.textContent;\n  });\n});"
+          },
+          {
+            "quote": true,
+            "text": "Забыл `e` в скобках функции — получишь ошибку `e is not defined`. Пиши `function (e) { … }`."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Объект события e.target",
+            "prompt": "Что такое e.target?",
+            "options": [
+              "Элемент, на который нажали",
+              "Название события",
+              "Все кнопки страницы",
+              "Время клика"
+            ],
+            "answer": 0,
+            "explain": "target — «цель»: тот элемент, с которым произошло событие."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Объект события e.target",
+            "prompt": "Если не написать e в скобках функции, а потом использовать e.target, будет ошибка e is not defined.",
+            "answer": true,
+            "explain": "Объект события нужно принять параметром: function (e) { … }."
+          }
+        ]
+      },
+      {
+        "title": "Практика: карточка профиля",
+        "slides": [
+          {
+            "emoji": "🪪",
+            "text": "Собираем всё в **живую карточку профиля**: вводишь имя — оно появляется на карточке, а в кружке-аватаре первая буква. Нажимаешь цвет — меняются рамка и аватар. Кнопка подписки переключается."
+          },
+          {
+            "text": "`name[0]` — первая буква строки (индексы с нуля, как в массивах). `toUpperCase()` делает её заглавной: «азиз» → «А». Если поле пустое, `name[0]` нет — поэтому сначала проверяем `if`.",
+            "code": "input.addEventListener(\"input\", function () {\n  const name = input.value;\n  if (name === \"\") {\n    cardName.textContent = \"Ваше имя\";\n    avatar.textContent = \"?\";\n  } else {\n    cardName.textContent = name;\n    avatar.textContent = name[0].toUpperCase();\n  }\n});"
+          },
+          {
+            "text": "Домашка: кнопка лайка, как в Instagram. 🤍 0 → нажал → ❤️ 1 и покраснела → нажал ещё раз → 🤍 0. Цвет — через класс в CSS, а не через style в JS.",
+            "code": "likeBtn.addEventListener(\"click\", function () {\n  likeBtn.classList.toggle(\"liked\");\n  if (likeBtn.classList.contains(\"liked\")) {\n    likes = likes + 1;\n    likeBtn.textContent = `❤️ ${likes}`;\n  } else {\n    likes = likes - 1;\n    likeBtn.textContent = `🤍 ${likes}`;\n  }\n});"
+          },
+          {
+            "quote": true,
+            "text": "Сегодня ваш сайт впервые начал слушать человека."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Практика: карточка профиля",
+            "prompt": "Что вернёт \"азиз\"[0].toUpperCase()?",
+            "options": [
+              "\"А\"",
+              "\"а\"",
+              "\"АЗИЗ\"",
+              "\"з\""
+            ],
+            "answer": 0,
+            "explain": "[0] берёт первую букву, toUpperCase делает её заглавной."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "truefalse",
+      "topic": "Клик и addEventListener",
+      "prompt": "Событие — это действие пользователя, на которое сайт может отреагировать: клик, ввод, наведение.",
+      "answer": true,
+      "explain": "Всё, что делает человек на странице, — события, и addEventListener их слушает."
+    },
+    {
+      "type": "fill",
+      "topic": "Клик и addEventListener",
+      "prompt": "Вставь пропущенное: при клике по кнопке вызвать функцию",
+      "text": "button.___(\"___\", changeText);",
+      "answer": [
+        "addEventListener",
+        "click"
+      ],
+      "extra": [
+        "onClick",
+        "Click",
+        "listen"
+      ],
+      "explain": "Формула: элемент.addEventListener(\"событие\", функция). Имя события — маленькими буквами, без on."
+    },
+    {
+      "type": "choice",
+      "topic": "Клик и addEventListener",
+      "prompt": "Что случится с этим кодом?",
+      "code": "button.addEventListener(\"click\", changeText());",
+      "options": [
+        "Функция сработает сразу при загрузке, а не по клику",
+        "Всё правильно, сработает по клику",
+        "Сработает два раза за клик",
+        "Удалит кнопку"
+      ],
+      "answer": 0,
+      "explain": "Со скобками changeText() функция вызывается сразу. Нужно передать changeText без скобок."
+    },
+    {
+      "type": "choice",
+      "topic": "Клик и addEventListener",
+      "prompt": "Что будет на странице после трёх кликов?",
+      "code": "const button = document.querySelector(\".btn\");\nconst counter = document.querySelector(\".count\");\nlet count = 0;\n\nbutton.addEventListener(\"click\", function () {\n  count = count + 1;\n  counter.textContent = \"Нажали: \" + count;\n});",
+      "options": [
+        "Нажали: 3",
+        "Нажали: 1",
+        "Нажали: 0",
+        "Нажали: 111"
+      ],
+      "answer": 0,
+      "explain": "Каждый клик прибавляет 1 к count: 0 → 1 → 2 → 3."
+    },
+    {
+      "type": "fill",
+      "topic": "Кнопка подписки и classList",
+      "prompt": "Вставь пропущенное: переключить класс и проверить, есть ли он",
+      "text": "btn.classList.___(\"subscribed\");\nif (btn.classList.___(\"subscribed\")) { … }",
+      "answer": [
+        "toggle",
+        "contains"
+      ],
+      "extra": [
+        "add",
+        "has",
+        "switch"
+      ],
+      "explain": "toggle переключает класс, contains отвечает true/false — есть ли он."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Кнопка подписки и classList",
+      "prompt": "Число подписчиков в переменной сохранится, даже если перезагрузить страницу.",
+      "answer": false,
+      "explain": "Переменные живут, пока открыта страница. После перезагрузки скрипт начинается заново."
+    },
+    {
+      "type": "choice",
+      "topic": "Событие input",
+      "prompt": "Какое событие срабатывает на каждую напечатанную букву?",
+      "options": [
+        "input",
+        "click",
+        "mouseover",
+        "change"
+      ],
+      "answer": 0,
+      "explain": "input ловит каждое изменение поля — каждую букву."
+    },
+    {
+      "type": "fill",
+      "topic": "Событие input",
+      "prompt": "Вставь пропущенное: показать длину имени из поля",
+      "text": "const name = input.___;\ncounter.textContent = name.___ + \" / 20\";",
+      "answer": [
+        "value",
+        "length"
+      ],
+      "extra": [
+        "text",
+        "size",
+        "target"
+      ],
+      "explain": "Текст поля — input.value, количество букв — .length."
+    },
+    {
+      "type": "match",
+      "topic": "Наведение мышки",
+      "prompt": "Соедини, что нужно, и как это написать",
+      "pairs": [
+        [
+          "Курсор зашёл",
+          "\"mouseover\""
+        ],
+        [
+          "Курсор ушёл",
+          "\"mouseout\""
+        ],
+        [
+          "Текст из поля",
+          "input.value"
+        ],
+        [
+          "На что нажали",
+          "e.target"
+        ]
+      ]
+    },
+    {
+      "type": "truefalse",
+      "topic": "Наведение мышки",
+      "prompt": "CSS :hover может заменить смайлик 😐 на 😃 при наведении.",
+      "answer": false,
+      "explain": ":hover меняет стиль (размер, цвет), но не содержимое. Поменять смайлик может только JS: mouseover / mouseout."
+    },
+    {
+      "type": "choice",
+      "topic": "Объект события e.target",
+      "prompt": "Почему один и тот же обработчик красит страницу в разные цвета?",
+      "code": "const buttons = document.querySelectorAll(\".colors button\");\n\nbuttons.forEach(function (btn) {\n  btn.addEventListener(\"click\", function (e) {\n    document.body.style.backgroundColor = e.target.textContent;\n  });\n});",
+      "options": [
+        "e.target каждый раз — та кнопка, которую нажали",
+        "forEach выбирает случайный цвет",
+        "body сам меняет цвет",
+        "Цвет зашит в CSS"
+      ],
+      "answer": 0,
+      "explain": "Цвет берётся из текста нажатой кнопки: e.target.textContent."
+    },
+    {
+      "type": "order",
+      "topic": "Объект события e.target",
+      "prompt": "Собери обработчик, который получает объект события",
+      "tokens": [
+        "btn.addEventListener(",
+        "\"click\",",
+        "function",
+        "(e)",
+        "{",
+        "console.log(e.target);",
+        "});"
+      ],
+      "extra": [
+        "(click)",
+        "e.click"
+      ],
+      "explain": "Объект события принимаем параметром (e), а e.target — нажатый элемент."
+    },
+    {
+      "type": "choice",
+      "topic": "Практика: карточка профиля",
+      "prompt": "Зачем в карточке профиля проверка if (name === \"\")?",
+      "code": "input.addEventListener(\"input\", function () {\n  const name = input.value;\n  if (name === \"\") {\n    cardName.textContent = \"Ваше имя\";\n    avatar.textContent = \"?\";\n  } else {\n    cardName.textContent = name;\n    avatar.textContent = name[0].toUpperCase();\n  }\n});",
+      "options": [
+        "В пустой строке нет name[0] — показываем «?» и «Ваше имя»",
+        "Чтобы поле стало красным",
+        "Чтобы удалить карточку",
+        "Без неё не работает click"
+      ],
+      "answer": 0,
+      "explain": "Если поле пустое, первой буквы нет, и toUpperCase() вызвать не на чем."
+    },
+    {
+      "type": "fill",
+      "topic": "Практика: карточка профиля",
+      "prompt": "Вставь пропущенное: первая буква имени заглавной",
+      "text": "avatar.textContent = name[___].___();",
+      "answer": [
+        "0",
+        "toUpperCase"
+      ],
+      "extra": [
+        "1",
+        "toLowerCase",
+        "upper"
+      ],
+      "explain": "Индексы с нуля: name[0] — первая буква. toUpperCase() делает её заглавной."
+    }
+  ]
+}

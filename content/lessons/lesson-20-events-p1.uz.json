@@ -1,0 +1,437 @@
+{
+  "title": "20-dars. Hodisalar — 1-qism",
+  "description": "click, input, mouseover/mouseout, classList, e.target va jonli profil kartochkasi",
+  "learn": {
+    "intro": "Salom! Bugun saytimiz birinchi marta **odamni tinglashni** boshlaydi: bosishlar, matn kiritish, sichqonchani olib borish. Ketdik!",
+    "sections": [
+      {
+        "title": "Bosish va addEventListener",
+        "slides": [
+          {
+            "emoji": "👂",
+            "text": "Avval saytimiz faqat ko'rsatardi. Bugun u **odamni tinglashni** boshlaydi: bosish, matn kiritish, sichqonchani olib borish — bularning hammasi **hodisalar**."
+          },
+          {
+            "text": "Formula: `element.addEventListener(\"hodisa\", funksiya)`. **Nimani** tinglaymiz, **qaysi** hodisa va **nima** qilish kerak."
+          },
+          {
+            "text": "Bosishlar hisoblagichi: har bir bosish 1 qo'shadi. `let`, chunki son o'zgaradi.",
+            "code": "const button = document.querySelector(\".btn\");\nconst counter = document.querySelector(\".count\");\nlet count = 0;\n\nbutton.addEventListener(\"click\", function () {\n  count = count + 1;\n  counter.textContent = \"Bosildi: \" + count;\n});"
+          },
+          {
+            "quote": true,
+            "text": "Hodisa nomi — **kichik harflar bilan va on siz**: `\"click\"`, `\"Click\"` yoki `\"onClick\"` emas. Funksiyani esa **qavslarsiz** beramiz: `changeText`, `changeText()` emas — aks holda u sahifa yuklanishi bilan ishlab ketadi."
+          }
+        ],
+        "check": [
+          {
+            "type": "truefalse",
+            "topic": "Bosish va addEventListener",
+            "prompt": "`btn.addEventListener(\"Click\", f)` kodi bosilganda ishlaydi.",
+            "answer": false,
+            "explain": "Hodisa nomi kichik harflar bilan yoziladi: \"click\". Katta harf bilan hech narsa bo'lmaydi."
+          },
+          {
+            "type": "choice",
+            "topic": "Bosish va addEventListener",
+            "prompt": "Nega hisoblagich const emas, let bilan e'lon qilinadi?",
+            "options": [
+              "Uning qiymati har bir bosishda o'zgaradi",
+              "let tezroq ishlaydi",
+              "JS da const mumkin emas",
+              "Shunday qisqaroq"
+            ],
+            "answer": 0,
+            "explain": "const ni qayta yozib bo'lmaydi, count = count + 1 esa qiymatni o'zgartiradi."
+          }
+        ]
+      },
+      {
+        "title": "Obuna tugmasi va classList",
+        "slides": [
+          {
+            "emoji": "🔔",
+            "text": "YouTube dagidek «Obuna bo'lish» tugmasini qilamiz: bosdi — kulrang «Obuna bo'ldingiz» bo'ldi, yana bosdi — qaytdi."
+          },
+          {
+            "text": "`classList.toggle(\"klass\")` — klass yo'q bo'lsa qo'shadi; bor bo'lsa olib tashlaydi. `classList.contains(\"klass\")` `true` yoki `false` qaytaradi: hozir klass bormi.",
+            "code": "const subBtn = document.querySelector(\".sub-btn\");\n\nsubBtn.addEventListener(\"click\", function () {\n  subBtn.classList.toggle(\"subscribed\");\n\n  if (subBtn.classList.contains(\"subscribed\")) {\n    subBtn.textContent = \"Obuna bo'ldingiz\";\n  } else {\n    subBtn.textContent = \"Obuna bo'lish\";\n  }\n});"
+          },
+          {
+            "quote": true,
+            "text": "Tugma rangini **CSS dagi klass bilan** o'zgartiramiz, JS esa faqat klassni almashtiradi. Obunachilar soni o'zgaruvchida saqlanadi, shuning uchun sahifa qayta yuklanganda u qaytadan boshlanadi."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Obuna tugmasi va classList",
+            "prompt": "Klass yo'q bo'lsa btn.classList.contains(\"subscribed\") nima qaytaradi?",
+            "options": [
+              "false",
+              "true",
+              "null",
+              "\"subscribed\""
+            ],
+            "answer": 0,
+            "explain": "contains «klass bormi?» savoliga javob beradi — true yoki false."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Obuna tugmasi va classList",
+            "prompt": "classList.toggle klass allaqachon bo'lsa, uni olib tashlaydi.",
+            "answer": true,
+            "explain": "toggle — almashtirgich: yo'q — qo'shadi, bor — olib tashlaydi."
+          }
+        ]
+      },
+      {
+        "title": "input hodisasi",
+        "slides": [
+          {
+            "emoji": "⌨️",
+            "text": "`input` hodisasi maydondagi **har bir harfda** ishlaydi. Maydon matni `input.value` da turadi."
+          },
+          {
+            "text": "Ismni yozasan — u darhol sahifada paydo bo'ladi:",
+            "code": "const input = document.querySelector(\".name\");\nconst hello = document.querySelector(\".hello\");\n\ninput.addEventListener(\"input\", function () {\n  hello.textContent = input.value;\n});"
+          },
+          {
+            "text": "`name.length` — nechta harf. «7 / 20» hisoblagichini ko'rsatib, harflar 15 dan oshganda uni qizil qilish mumkin. HTML dagi `maxlength=\"20\"` esa ko'proq kiritishga yo'l qo'ymaydi."
+          },
+          {
+            "quote": true,
+            "text": "Har bir harfga javob bermoqchimisan — `click` emas, `input` ni tingla."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "input hodisasi",
+            "prompt": "O'quvchi maydonga yozgan matn qayerda turadi?",
+            "options": [
+              "input.value",
+              "input.text",
+              "input.length",
+              "input.target"
+            ],
+            "answer": 0,
+            "explain": "Kiritish maydoni matni — value xossasida."
+          }
+        ]
+      },
+      {
+        "title": "Sichqonchani olib borish",
+        "slides": [
+          {
+            "emoji": "🖱️",
+            "text": "`mouseover` — kursor elementga **kirdi**, `mouseout` — **chiqdi**. Smaylikka olib borasan — u kuladi 😃, olib ketasan — yana 😐.",
+            "code": "const face = document.querySelector(\".face\");\n\nface.addEventListener(\"mouseover\", function () {\n  face.textContent = \"😃\";\n});\n\nface.addEventListener(\"mouseout\", function () {\n  face.textContent = \"😐\";\n});"
+          },
+          {
+            "quote": true,
+            "text": "CSS `:hover` kattalashtirishi yoki rangini o'zgartirishi mumkin, lekin **ichidagini almashtira olmaydi** — matn yoki smaylikni. Buning uchun JS kerak."
+          }
+        ],
+        "check": [
+          {
+            "type": "match",
+            "topic": "Sichqonchani olib borish",
+            "prompt": "Hodisa va qachon ishlashini moslashtir",
+            "pairs": [
+              [
+                "mouseover",
+                "Kursor elementga kirdi"
+              ],
+              [
+                "mouseout",
+                "Kursor elementdan chiqdi"
+              ],
+              [
+                "input",
+                "Maydonga harf yozildi"
+              ],
+              [
+                "click",
+                "Elementga bosildi"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Hodisa obyekti e.target",
+        "slides": [
+          {
+            "emoji": "🎯",
+            "text": "Ishlovchi funksiya **hodisa obyektini** oladi — uni `e` yoki `event` deb atashadi. Unda ko'p narsa bor, bizga hozircha bittasi kerak: `e.target` — **bosilgan element**."
+          },
+          {
+            "text": "Rang tugmalari butun sahifani bo'yaydi. Tinglovchi bir xil, natija esa har xil — chunki `e.target` har safar bosilgan tugmani ko'rsatadi.",
+            "code": "const buttons = document.querySelectorAll(\".colors button\");\n\nbuttons.forEach(function (btn) {\n  btn.addEventListener(\"click\", function (e) {\n    document.body.style.backgroundColor = e.target.textContent;\n  });\n});"
+          },
+          {
+            "quote": true,
+            "text": "Funksiya qavsida `e` ni unutsang — `e is not defined` xatosini olasan. `function (e) { … }` deb yoz."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Hodisa obyekti e.target",
+            "prompt": "e.target nima?",
+            "options": [
+              "Bosilgan element",
+              "Hodisa nomi",
+              "Sahifadagi barcha tugmalar",
+              "Bosish vaqti"
+            ],
+            "answer": 0,
+            "explain": "target — «nishon»: hodisa yuz bergan element."
+          },
+          {
+            "type": "truefalse",
+            "topic": "Hodisa obyekti e.target",
+            "prompt": "Funksiya qavsiga e yozilmasa-yu, keyin e.target ishlatilsa, e is not defined xatosi chiqadi.",
+            "answer": true,
+            "explain": "Hodisa obyektini parametr sifatida olish kerak: function (e) { … }."
+          }
+        ]
+      },
+      {
+        "title": "Amaliyot: profil kartochkasi",
+        "slides": [
+          {
+            "emoji": "🪪",
+            "text": "Hammasini **jonli profil kartochkasiga** yig'amiz: ismni kiritasan — u kartochkada paydo bo'ladi, doira-avatarda esa birinchi harf. Rangni bosasan — ramka va avatar o'zgaradi. Obuna tugmasi almashadi."
+          },
+          {
+            "text": "`name[0]` — satrning birinchi harfi (indekslar noldan, massivlardagidek). `toUpperCase()` uni katta harf qiladi: «aziz» → «A». Maydon bo'sh bo'lsa, `name[0]` yo'q — shuning uchun avval `if` bilan tekshiramiz.",
+            "code": "input.addEventListener(\"input\", function () {\n  const name = input.value;\n  if (name === \"\") {\n    cardName.textContent = \"Ismingiz\";\n    avatar.textContent = \"?\";\n  } else {\n    cardName.textContent = name;\n    avatar.textContent = name[0].toUpperCase();\n  }\n});"
+          },
+          {
+            "text": "Uy vazifasi: Instagram dagidek layk tugmasi. 🤍 0 → bosdi → ❤️ 1 va qizardi → yana bosdi → 🤍 0. Rang — JS dagi style orqali emas, CSS dagi klass orqali.",
+            "code": "likeBtn.addEventListener(\"click\", function () {\n  likeBtn.classList.toggle(\"liked\");\n  if (likeBtn.classList.contains(\"liked\")) {\n    likes = likes + 1;\n    likeBtn.textContent = `❤️ ${likes}`;\n  } else {\n    likes = likes - 1;\n    likeBtn.textContent = `🤍 ${likes}`;\n  }\n});"
+          },
+          {
+            "quote": true,
+            "text": "Bugun saytingiz birinchi marta odamni tinglay boshladi."
+          }
+        ],
+        "check": [
+          {
+            "type": "choice",
+            "topic": "Amaliyot: profil kartochkasi",
+            "prompt": "\"aziz\"[0].toUpperCase() nima qaytaradi?",
+            "options": [
+              "\"A\"",
+              "\"a\"",
+              "\"AZIZ\"",
+              "\"z\""
+            ],
+            "answer": 0,
+            "explain": "[0] birinchi harfni oladi, toUpperCase uni katta qiladi."
+          }
+        ]
+      }
+    ]
+  },
+  "questions": [
+    {
+      "type": "truefalse",
+      "topic": "Bosish va addEventListener",
+      "prompt": "Hodisa — sayt javob bera oladigan foydalanuvchi harakati: bosish, kiritish, olib borish.",
+      "answer": true,
+      "explain": "Odam sahifada qiladigan hamma narsa — hodisalar, addEventListener ularni tinglaydi."
+    },
+    {
+      "type": "fill",
+      "topic": "Bosish va addEventListener",
+      "prompt": "Bo'sh joyni to'ldir: tugma bosilganda funksiyani chaqirish",
+      "text": "button.___(\"___\", changeText);",
+      "answer": [
+        "addEventListener",
+        "click"
+      ],
+      "extra": [
+        "onClick",
+        "Click",
+        "listen"
+      ],
+      "explain": "Formula: element.addEventListener(\"hodisa\", funksiya). Hodisa nomi — kichik harflar bilan, on siz."
+    },
+    {
+      "type": "choice",
+      "topic": "Bosish va addEventListener",
+      "prompt": "Bu kod bilan nima bo'ladi?",
+      "code": "button.addEventListener(\"click\", changeText());",
+      "options": [
+        "Funksiya bosilganda emas, sahifa yuklanishi bilan ishlaydi",
+        "Hammasi to'g'ri, bosilganda ishlaydi",
+        "Bir bosishda ikki marta ishlaydi",
+        "Tugmani o'chiradi"
+      ],
+      "answer": 0,
+      "explain": "Qavslar bilan changeText() funksiya darhol chaqiriladi. changeText ni qavslarsiz berish kerak."
+    },
+    {
+      "type": "choice",
+      "topic": "Bosish va addEventListener",
+      "prompt": "Uch marta bosilgandan keyin sahifada nima bo'ladi?",
+      "code": "const button = document.querySelector(\".btn\");\nconst counter = document.querySelector(\".count\");\nlet count = 0;\n\nbutton.addEventListener(\"click\", function () {\n  count = count + 1;\n  counter.textContent = \"Bosildi: \" + count;\n});",
+      "options": [
+        "Bosildi: 3",
+        "Bosildi: 1",
+        "Bosildi: 0",
+        "Bosildi: 111"
+      ],
+      "answer": 0,
+      "explain": "Har bir bosish count ga 1 qo'shadi: 0 → 1 → 2 → 3."
+    },
+    {
+      "type": "fill",
+      "topic": "Obuna tugmasi va classList",
+      "prompt": "Bo'sh joyni to'ldir: klassni almashtirish va u borligini tekshirish",
+      "text": "btn.classList.___(\"subscribed\");\nif (btn.classList.___(\"subscribed\")) { … }",
+      "answer": [
+        "toggle",
+        "contains"
+      ],
+      "extra": [
+        "add",
+        "has",
+        "switch"
+      ],
+      "explain": "toggle klassni almashtiradi, contains true/false qaytaradi — u bormi."
+    },
+    {
+      "type": "truefalse",
+      "topic": "Obuna tugmasi va classList",
+      "prompt": "O'zgaruvchidagi obunachilar soni sahifa qayta yuklansa ham saqlanib qoladi.",
+      "answer": false,
+      "explain": "O'zgaruvchilar sahifa ochiq turganda yashaydi. Qayta yuklangandan keyin skript boshidan boshlanadi."
+    },
+    {
+      "type": "choice",
+      "topic": "input hodisasi",
+      "prompt": "Har bir yozilgan harfda qaysi hodisa ishlaydi?",
+      "options": [
+        "input",
+        "click",
+        "mouseover",
+        "change"
+      ],
+      "answer": 0,
+      "explain": "input maydonning har bir o'zgarishini — har bir harfni ushlaydi."
+    },
+    {
+      "type": "fill",
+      "topic": "input hodisasi",
+      "prompt": "Bo'sh joyni to'ldir: maydondagi ism uzunligini ko'rsatish",
+      "text": "const name = input.___;\ncounter.textContent = name.___ + \" / 20\";",
+      "answer": [
+        "value",
+        "length"
+      ],
+      "extra": [
+        "text",
+        "size",
+        "target"
+      ],
+      "explain": "Maydon matni — input.value, harflar soni — .length."
+    },
+    {
+      "type": "match",
+      "topic": "Sichqonchani olib borish",
+      "prompt": "Nima kerak va uni qanday yozishni moslashtir",
+      "pairs": [
+        [
+          "Kursor kirdi",
+          "\"mouseover\""
+        ],
+        [
+          "Kursor chiqdi",
+          "\"mouseout\""
+        ],
+        [
+          "Maydondagi matn",
+          "input.value"
+        ],
+        [
+          "Nimaga bosildi",
+          "e.target"
+        ]
+      ]
+    },
+    {
+      "type": "truefalse",
+      "topic": "Sichqonchani olib borish",
+      "prompt": "CSS :hover olib borilganda 😐 smaylikni 😃 ga almashtira oladi.",
+      "answer": false,
+      "explain": ":hover uslubni (o'lcham, rang) o'zgartiradi, ichidagini emas. Smaylikni faqat JS almashtira oladi: mouseover / mouseout."
+    },
+    {
+      "type": "choice",
+      "topic": "Hodisa obyekti e.target",
+      "prompt": "Nega bir xil ishlovchi sahifani har xil ranglarga bo'yaydi?",
+      "code": "const buttons = document.querySelectorAll(\".colors button\");\n\nbuttons.forEach(function (btn) {\n  btn.addEventListener(\"click\", function (e) {\n    document.body.style.backgroundColor = e.target.textContent;\n  });\n});",
+      "options": [
+        "e.target har safar — bosilgan tugma",
+        "forEach tasodifiy rang tanlaydi",
+        "body o'zi rangini o'zgartiradi",
+        "Rang CSS ga yozilgan"
+      ],
+      "answer": 0,
+      "explain": "Rang bosilgan tugma matnidan olinadi: e.target.textContent."
+    },
+    {
+      "type": "order",
+      "topic": "Hodisa obyekti e.target",
+      "prompt": "Hodisa obyektini oladigan ishlovchini yig'",
+      "tokens": [
+        "btn.addEventListener(",
+        "\"click\",",
+        "function",
+        "(e)",
+        "{",
+        "console.log(e.target);",
+        "});"
+      ],
+      "extra": [
+        "(click)",
+        "e.click"
+      ],
+      "explain": "Hodisa obyektini (e) parametri bilan olamiz, e.target esa bosilgan element."
+    },
+    {
+      "type": "choice",
+      "topic": "Amaliyot: profil kartochkasi",
+      "prompt": "Profil kartochkasida if (name === \"\") tekshiruvi nima uchun?",
+      "code": "input.addEventListener(\"input\", function () {\n  const name = input.value;\n  if (name === \"\") {\n    cardName.textContent = \"Ismingiz\";\n    avatar.textContent = \"?\";\n  } else {\n    cardName.textContent = name;\n    avatar.textContent = name[0].toUpperCase();\n  }\n});",
+      "options": [
+        "Bo'sh satrda name[0] yo'q — «?» va «Ismingiz» ni ko'rsatamiz",
+        "Maydon qizil bo'lishi uchun",
+        "Kartochkani o'chirish uchun",
+        "Usiz click ishlamaydi"
+      ],
+      "answer": 0,
+      "explain": "Maydon bo'sh bo'lsa, birinchi harf yo'q va toUpperCase() ni chaqirishga narsa yo'q."
+    },
+    {
+      "type": "fill",
+      "topic": "Amaliyot: profil kartochkasi",
+      "prompt": "Bo'sh joyni to'ldir: ismning birinchi harfi katta harf bilan",
+      "text": "avatar.textContent = name[___].___();",
+      "answer": [
+        "0",
+        "toUpperCase"
+      ],
+      "extra": [
+        "1",
+        "toLowerCase",
+        "upper"
+      ],
+      "explain": "Indekslar noldan: name[0] — birinchi harf. toUpperCase() uni katta qiladi."
+    }
+  ]
+}
