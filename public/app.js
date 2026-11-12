@@ -2023,7 +2023,10 @@ async function startLesson(target) {
 
   async function finish() {
     let r;
-    try { r = await api(`/attempts/${data.attemptId}/finish`, {}); } catch (e) { return fail(e); }
+    // итог теста: если сеть моргнула или сервер ответил ошибкой — пробуем ещё раз (результат на сервере уже сохранён)
+    for (let k = 0; k < 3 && !r; k++) {
+      try { r = await api(`/attempts/${data.attemptId}/finish`, {}); } catch (e) { if (k === 2) return fail(e); await new Promise((ok) => setTimeout(ok, 700)); }
+    }
     try { tg?.disableClosingConfirmation?.(); } catch { /* */ }
     const lost = !data.mistakes && r.pct < 60;
     if (lost) await loseShow(el);

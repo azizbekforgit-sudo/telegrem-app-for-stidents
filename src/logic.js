@@ -743,10 +743,13 @@ export function createLogic(store, { adminIds }) {
       if (x.correct) topics[t].correct++;
     });
     let group = null;
+    // статистика группы — не главное: если она где-то не посчиталась, итог теста всё равно показываем
     if (a.pubId && S.pubs[a.pubId]) {
-      const ps = pubStats(a.pubId);
-      const rank = ps.ranking.findIndex((r) => r.userId === a.userId);
-      group = { avg: ps.avg, done: ps.done.length, size: ps.size, rank: rank >= 0 ? rank + 1 : null };
+      try {
+        const ps = pubStats(a.pubId);
+        const rank = ps.ranking.findIndex((r) => r.userId === a.userId);
+        group = { avg: ps.avg, done: ps.done.length, size: ps.size, rank: rank >= 0 ? rank + 1 : null };
+      } catch (e) { console.error('[finish] group stats', a.id, e); }
     }
     return {
       ...s,
