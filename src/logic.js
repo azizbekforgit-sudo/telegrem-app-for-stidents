@@ -546,7 +546,7 @@ export function createLogic(store, { adminIds }) {
   }
 
   const itemsOf = (a) => a.items || (S.lessons[a.lessonId]?.questions || []).map((_, i) => ({ lessonId: a.lessonId, index: i }));
-  const qOf = (it, lang) => loc(S.lessons[it?.lessonId], lang)?.questions[it.index];
+  const qOf = (it, lang) => (it ? loc(S.lessons[it.lessonId], lang)?.questions[it.index] : undefined);
 
   // Копилка ошибок: вопросы, на которые последний ответ ученика был неверным.
   // Считается по истории ответов, поэтому учитывает и старые попытки.
@@ -858,7 +858,8 @@ export function createLogic(store, { adminIds }) {
       if (!b) { notDone.push(uid); continue; }
       ranking.push({ userId: uid, name: name(S.users[uid]), pct: b.pct, at: b.at });
       const f = firstAttempt(uid, pubId);
-      f?.answers.forEach((x) => { perQ[x.index].total++; if (x.correct) perQ[x.index].correct++; });
+      // у попытки с уровнем номер ответа ≠ номер вопроса урока: переводим через items (вопросы из обучалки пропускаем)
+      f?.answers.forEach((x) => { const it = f.level ? f.items?.[x.index] : { index: x.index }; const row = it && perQ[it.index]; if (!row) return; row.total++; if (x.correct) row.correct++; });
     }
     ranking.sort((a, b) => b.pct - a.pct || a.at - b.at);
     return {
@@ -940,7 +941,7 @@ export function createLogic(store, { adminIds }) {
       if (b) progress.push({ pubId: p.id, title: l.title, emoji: l.emoji, pct: b.pct, groupAvg: ps.avg, at: b.at });
       const a = b && S.attempts[b.attemptId];
       a?.answers.forEach((x) => {
-        const t = l.questions[x.index].topic || l.title;
+        const t = questionAt(a, x.index, langOf(uid))?.topic || l.title;
         topics[t] ||= { topic: t, correct: 0, total: 0 };
         topics[t].total++;
         if (x.correct) topics[t].correct++;
