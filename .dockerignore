@@ -1,0 +1,5 @@
+node_modules
+data
+.git
+*.wav
+boo-big.png
