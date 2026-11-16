@@ -402,9 +402,9 @@ app.listen(PORT, async () => {
   setInterval(() => tg.tickNudges().catch((e) => console.error('[nudge]', e)), 60_000);
 });
 
-// Бесплатный Render усыпляет сервис через 15 мин без запросов — тогда не уходят напоминания.
-// Пингуем себя, чтобы сервис не засыпал.
-if (process.env.RENDER_EXTERNAL_URL && process.env.KEEP_ALIVE !== '0') {
+// Бесплатные хостинги (Render, Koyeb) усыпляют сервис без запросов — тогда не уходят напоминания.
+// Пингуем себя по публичному адресу, чтобы сервис не засыпал.
+if (PUBLIC_URL.startsWith('https://') && process.env.KEEP_ALIVE !== '0') {
   setInterval(() => fetch(PUBLIC_URL + '/healthz').catch(() => {}), 10 * 60_000);
 }
 
