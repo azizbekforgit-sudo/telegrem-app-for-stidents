@@ -1,0 +1,286 @@
+{
+  "title": "Nazorat ishi: 1–5-darslar",
+  "description": "HTML, CSS, selektorlar, box model, joylashuv. Ball berilmaydi: har bir xato uchun −100 XP, testdan chiqish −2000 XP.",
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "2-dars. CSS ulash",
+      "prompt": "Loyiha tuzilmasi shunday. index.html dagi qaysi qator uslublarni to'g'ri ulaydi?",
+      "code": "project/\n├── index.html\n└── css/\n    └── style.css",
+      "options": [
+        "<link rel=\"stylesheet\" href=\"style.css\">",
+        "<link rel=\"stylesheet\" href=\"css/style.css\">",
+        "<style src=\"css/style.css\"></style>",
+        "<link href=\"css/style.css\">"
+      ],
+      "answer": 1,
+      "explain": "Yo'l index.html dan hisoblanadi: fayl css papkasida. Oxirgi variantda rel=\"stylesheet\" yo'q — uslublar ulanmaydi."
+    },
+    {
+      "type": "choice",
+      "topic": "1-dars. HTML",
+      "prompt": "O'quvchi yopuvchi tegda qiya chiziqni unutdi. «Sarlavha ostidagi matn» qanday ko'rinadi?",
+      "code": "<h1>Mening saytim<h1>\n<p>Sarlavha ostidagi matn</p>",
+      "options": [
+        "Oddiy abzats kabi — xato faqat sarlavhaga ta'sir qiladi",
+        "Brauzer sahifa o'rniga xato ko'rsatadi",
+        "Matn sahifada ko'rinmaydi",
+        "Sarlavha kabi katta va qalin"
+      ],
+      "answer": 3,
+      "explain": "Ikkinchi <h1> yangi sarlavha ochadi, abzats uning ichida qoladi va katta, qalin bo'ladi."
+    },
+    {
+      "type": "choice",
+      "topic": "2-dars. CSS ulash",
+      "prompt": "CSS da nuqta-vergul tushib qolgan. Abzatsga nima qo'llanadi?",
+      "code": "p {\n  color: red\n  background: blue;\n  font-size: 20px;\n}",
+      "options": [
+        "Uchala xossa ham",
+        "Faqat color: red",
+        "Faqat font-size: 20px",
+        "Hech biri — butun qoidalar bloki buziladi"
+      ],
+      "answer": 2,
+      "explain": "; bo'lmasa, brauzer color qiymatini «red background: blue» deb o'qiydi — bu xato, va uni butunlay o'tkazib yuboradi. Ikki xossa buziladi, font-size ishlaydi."
+    },
+    {
+      "type": "choice",
+      "topic": "3-dars. Selektorlar",
+      "prompt": "Matn qaysi rangda bo'ladi?",
+      "code": "<p class=\"b a\">Matn</p>\n\n.a { color: red; }\n.b { color: blue; }",
+      "options": [
+        "Ko'k — CSS da .b qoidasi oxirida yozilgan",
+        "Qizil — HTML da a klassi oxirida yozilgan",
+        "Binafsha — ranglar aralashadi",
+        "Qora — ikki klass to'qnashadi va ikkalasi ham ishlamaydi"
+      ],
+      "answer": 0,
+      "explain": "Spetsifiklik bir xil, CSS da pastroqda yozilgan qoida yutadi. class atributidagi klasslar tartibi muhim emas."
+    },
+    {
+      "type": "choice",
+      "topic": "3-dars. Selektorlar",
+      "prompt": "Matn qaysi rangda bo'ladi?",
+      "code": "<div id=\"box\" class=\"wrap\">\n  <p class=\"text\">Salom</p>\n</div>\n\n#box p { color: red; }\n.wrap .text { color: green; }\np.text { color: blue; }",
+      "options": [
+        "Qizil",
+        "Yashil",
+        "Ko'k",
+        "Qora"
+      ],
+      "answer": 0,
+      "explain": "#box p da id bor — u istalgan miqdordagi klasslardan kuchli."
+    },
+    {
+      "type": "choice",
+      "topic": "3-dars. Selektorlar",
+      "prompt": "Matn qaysi rangda bo'ladi?",
+      "code": "<p id=\"title\" style=\"color: green;\">Salom</p>\n\n#title { color: red; }",
+      "options": [
+        "Qizil — id ning ustuvorligi eng yuqori",
+        "Qizil — CSS fayli HTML dan kuchli",
+        "Yashil — style atributidagi uslub id dan kuchli",
+        "Qora — qoidalar to'qnashadi"
+      ],
+      "answer": 2,
+      "explain": "style atributi CSS dagi istalgan selektordan kuchli, !important dan tashqari."
+    },
+    {
+      "type": "choice",
+      "topic": "3-dars. Selektorlar",
+      "prompt": "Matn qaysi rangda bo'ladi?",
+      "code": "<p id=\"title\">Salom</p>\n\np { color: black !important; }\n#title { color: red; }",
+      "options": [
+        "Qizil — id tegdan kuchli",
+        "Brauzerning standart rangi",
+        "Qizil — qoida pastroqda yozilgan",
+        "Qora — !important yutadi"
+      ],
+      "answer": 3,
+      "explain": "!important hatto id ni ham yengadi. Shuning uchun undan foydalanish tavsiya etilmaydi."
+    },
+    {
+      "type": "choice",
+      "topic": "3-dars. Selektorlar",
+      "prompt": "Qaysi abzatslar qizil bo'ladi?",
+      "code": "<div class=\"card\">\n  <p>1</p>\n  <div>\n    <p>2</p>\n  </div>\n</div>\n<p>3</p>\n<section class=\"card\">\n  <p>4</p>\n</section>\n\n.card p { color: red; }",
+      "options": [
+        "Faqat 1",
+        "1 va 2",
+        "1, 2 va 4",
+        "To'rttalasi ham"
+      ],
+      "answer": 2,
+      "explain": "Bo'shliq — «istalgan chuqurlikda ichida», shuning uchun 2 ham. 4 — card klassli section ichida, ota-elementning tegi muhim emas. 3 — kartochkalardan tashqarida."
+    },
+    {
+      "type": "choice",
+      "topic": "3-dars. Selektorlar",
+      "prompt": "Selektordagi bo'shliqqa e'tibor bering. Qaysi elementlar qizil bo'ladi?",
+      "code": "<div class=\"card\">A</div>\n<div>\n  <p class=\"card\">B</p>\n</div>\n<p class=\"card\">C</p>\n\ndiv .card { color: red; }",
+      "options": [
+        "Faqat A",
+        "Faqat B",
+        "A va B",
+        "A, B va C"
+      ],
+      "answer": 1,
+      "explain": "div .card — div ichidagi card klassli element. A — klassli div ning o'zi, ichida emas. A ni tanlash uchun bo'shliqsiz div.card kerak."
+    },
+    {
+      "type": "choice",
+      "topic": "4-dars. Box model",
+      "prompt": "box-sizing berilmagan (standart). Blokning chap ramkadan o'ng ramkagacha kengligi qancha?",
+      "code": ".box {\n  width: 300px;\n  padding: 10px 20px;\n  border: 5px solid black;\n  margin: 15px;\n}",
+      "options": [
+        "300px",
+        "330px",
+        "350px",
+        "380px"
+      ],
+      "answer": 2,
+      "explain": "300 + 20 + 20 (padding) + 5 + 5 (ramka) = 350. Margin kirmaydi — bu ramkadan tashqaridagi joy."
+    },
+    {
+      "type": "choice",
+      "topic": "4-dars. Box model",
+      "prompt": "O'sha blok, lekin CSS ga * { box-sizing: border-box; } qo'shildi. Endi matn uchun joy (content) qanchalik keng?",
+      "code": "* { box-sizing: border-box; }\n\n.box {\n  width: 300px;\n  padding: 10px 20px;\n  border: 5px solid black;\n  margin: 15px;\n}",
+      "options": [
+        "300px",
+        "270px",
+        "260px",
+        "250px"
+      ],
+      "answer": 3,
+      "explain": "border-box da 300px — bu butun kenglik. 300 − 40 (padding) − 10 (ramka) = 250."
+    },
+    {
+      "type": "choice",
+      "topic": "4-dars. Box model",
+      "prompt": "Chapdagi ichki chekinish qancha bo'ladi?",
+      "code": ".box { padding: 10px 20px 30px; }",
+      "options": [
+        "20px",
+        "10px",
+        "30px",
+        "0px — chap tomon uchun qiymat yo'q"
+      ],
+      "answer": 0,
+      "explain": "Uchta qiymat: tepa, chap-o'ng, past. Chap = 20px."
+    },
+    {
+      "type": "choice",
+      "topic": "4-dars. Box model",
+      "prompt": "Sahifada sariq rang qayerda bo'ladi?",
+      "code": ".box {\n  background: yellow;\n  padding: 20px;\n  margin: 20px;\n  border: 5px dashed black;\n}",
+      "options": [
+        "Faqat matn ostida (content)",
+        "Matn ostida va padding da (va punktir ramka ostida)",
+        "Matn ostida, padding va margin da",
+        "Butun brauzer oynasida"
+      ],
+      "answer": 1,
+      "explain": "Fon content va padding ni bo'yaydi (va punktir ramka ostidan ko'rinadi). Margin doim shaffof."
+    },
+    {
+      "type": "choice",
+      "topic": "4-dars. Box model",
+      "prompt": "Qizil fon qanchalik keng bo'ladi?",
+      "code": "<span>Salom</span>\n\nspan {\n  width: 200px;\n  height: 50px;\n  background: red;\n}",
+      "options": [
+        "200px",
+        "Fon umuman bo'lmaydi",
+        "Sahifaning butun kengligida",
+        "«Salom» so'zining kengligida"
+      ],
+      "answer": 3,
+      "explain": "span qatoriy element: width va height unga ta'sir qilmaydi. display: inline-block kerak."
+    },
+    {
+      "type": "choice",
+      "topic": "5-dars. Joylashuv",
+      "prompt": "B blok bilan nima bo'ladi?",
+      "code": "<div class=\"a\">A</div>\n<div class=\"b\">B</div>\n\n.a { position: relative; top: 30px; }",
+      "options": [
+        "B o'z joyida qoladi, A uning ustiga chiqishi mumkin",
+        "B ham A bilan birga 30px pastga tushadi",
+        "B ko'tarilib, A bo'shatgan joyni egallaydi",
+        "A va B o'rin almashadi"
+      ],
+      "answer": 0,
+      "explain": "relative faqat tasvirni siljitadi, «navbat»dagi joy A da qoladi."
+    },
+    {
+      "type": "choice",
+      "topic": "5-dars. Joylashuv",
+      "prompt": "Blok qayerga siljiydi?",
+      "code": ".box {\n  position: relative;\n  right: 30px;\n}",
+      "options": [
+        "O'ngga 30px",
+        "Hech qayerga — left siz right ishlamaydi",
+        "Chapga 30px",
+        "O'ngga 30px cho'ziladi"
+      ],
+      "answer": 2,
+      "explain": "right: 30px — o'z joyining o'ng chetidan chekinish, shuning uchun blok chapga suriladi."
+    },
+    {
+      "type": "choice",
+      "topic": "5-dars. Joylashuv",
+      "prompt": "Kartochka sahifa o'rtasida turibdi. Belgi qayerda bo'ladi?",
+      "code": "<div class=\"card\">\n  <span class=\"badge\">SALE</span>\n</div>\n\n.card { margin: 200px 0 0 100px; width: 300px; }\n.badge { position: absolute; top: 0; right: 0; }",
+      "options": [
+        "Kartochkaning o'ng yuqori burchagida",
+        "Kartochkaning chap yuqori burchagida",
+        "Butun sahifaning o'ng yuqori burchagida",
+        "Kartochka ichida o'z joyida qoladi"
+      ],
+      "answer": 2,
+      "explain": "Kartochkada position: relative yo'q, shuning uchun absolute ota-elementni uzoqroqdan qidiradi va butun sahifaga bog'lanadi."
+    },
+    {
+      "type": "choice",
+      "topic": "5-dars. Joylashuv",
+      "prompt": "Ota-elementda height va padding yo'q. Uning balandligi qancha bo'ladi?",
+      "code": "<div class=\"parent\">\n  <div class=\"child\">Blok 100 × 100</div>\n</div>\n\n.parent { border: 1px solid black; }\n.child { position: absolute; width: 100px; height: 100px; }",
+      "options": [
+        "0px — bola «navbatdan chiqdi», ota-element uni ko'rmaydi",
+        "102px — ramka bilan birga",
+        "100px",
+        "Sahifaning butun balandligida"
+      ],
+      "answer": 0,
+      "explain": "absolute oqimdan chiqadi. Ota-element uchun bola go'yo yo'q — balandlik 0."
+    },
+    {
+      "type": "choice",
+      "topic": "5-dars. Joylashuv",
+      "prompt": "Uzun sahifa. Pastga aylantirganda blok bilan nima bo'ladi?",
+      "code": ".menu { position: sticky; }",
+      "options": [
+        "Ekran tepasiga yopishadi",
+        "Ekran pastiga yopishadi",
+        "fixed kabi joyida qoladi",
+        "Oddiy blok kabi sahifa bilan birga tepaga ketadi"
+      ],
+      "answer": 3,
+      "explain": "top siz sticky qayerga yopishishni bilmaydi va oddiy blok kabi ishlaydi."
+    },
+    {
+      "type": "choice",
+      "topic": "5-dars. Joylashuv",
+      "prompt": "Uzun sahifadagi «Tepaga» tugmasi. Pastga aylantirganda nima bo'ladi?",
+      "code": ".to-top {\n  position: absolute;\n  bottom: 20px;\n  right: 20px;\n}",
+      "options": [
+        "Doim ekranning o'ng pastki burchagida bo'ladi",
+        "Sahifa bilan birga tepaga ketadi",
+        "Ekran tepasiga yopishadi",
+        "Yo'qoladi"
+      ],
+      "answer": 1,
+      "explain": "absolute ekranga emas, sahifaga bog'langan, shuning uchun aylantirganda ketadi. fixed kerak."
+    }
+  ]
+}

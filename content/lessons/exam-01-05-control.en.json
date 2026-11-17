@@ -1,0 +1,286 @@
+{
+  "title": "Test: lessons 1–5",
+  "description": "HTML, CSS, selectors, box model, positioning. No points: −100 XP per mistake, leaving the test −2000 XP.",
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "Lesson 2. Linking CSS",
+      "prompt": "This is the project structure. Which line in index.html links the styles correctly?",
+      "code": "project/\n├── index.html\n└── css/\n    └── style.css",
+      "options": [
+        "<link rel=\"stylesheet\" href=\"style.css\">",
+        "<link rel=\"stylesheet\" href=\"css/style.css\">",
+        "<style src=\"css/style.css\"></style>",
+        "<link href=\"css/style.css\">"
+      ],
+      "answer": 1,
+      "explain": "The path starts from index.html: the file is in the css folder. The last option has no rel=\"stylesheet\" — the styles won't load."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 1. HTML",
+      "prompt": "A student forgot the slash in the closing tag. How will «Text under the heading» look?",
+      "code": "<h1>My site<h1>\n<p>Text under the heading</p>",
+      "options": [
+        "Like a normal paragraph — the mistake only affects the heading",
+        "The browser shows an error instead of the page",
+        "The text won't appear on the page",
+        "Big and bold, like a heading"
+      ],
+      "answer": 3,
+      "explain": "The second <h1> opens a new heading, the paragraph ends up inside it and becomes big and bold."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 2. Linking CSS",
+      "prompt": "A semicolon is missing in the CSS. What applies to the paragraph?",
+      "code": "p {\n  color: red\n  background: blue;\n  font-size: 20px;\n}",
+      "options": [
+        "All three properties",
+        "Only color: red",
+        "Only font-size: 20px",
+        "None — the whole rule block breaks"
+      ],
+      "answer": 2,
+      "explain": "Without ; the browser reads the color value as «red background: blue» — that's invalid, so it skips it entirely. Two properties break, font-size works."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 3. Selectors",
+      "prompt": "What color will the text be?",
+      "code": "<p class=\"b a\">Text</p>\n\n.a { color: red; }\n.b { color: blue; }",
+      "options": [
+        "Blue — the .b rule is written last in the CSS",
+        "Red — class a is written last in the HTML",
+        "Purple — the colors mix",
+        "Black — the two classes conflict and neither applies"
+      ],
+      "answer": 0,
+      "explain": "The specificity is equal, so the rule written lower in the CSS wins. The order of classes in the class attribute doesn't matter."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 3. Selectors",
+      "prompt": "What color will the text be?",
+      "code": "<div id=\"box\" class=\"wrap\">\n  <p class=\"text\">Hello</p>\n</div>\n\n#box p { color: red; }\n.wrap .text { color: green; }\np.text { color: blue; }",
+      "options": [
+        "Red",
+        "Green",
+        "Blue",
+        "Black"
+      ],
+      "answer": 0,
+      "explain": "#box p contains an id — it beats any number of classes."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 3. Selectors",
+      "prompt": "What color will the text be?",
+      "code": "<p id=\"title\" style=\"color: green;\">Hello</p>\n\n#title { color: red; }",
+      "options": [
+        "Red — id has the highest priority",
+        "Red — the CSS file is stronger than HTML",
+        "Green — a style in the style attribute beats an id",
+        "Black — the rules conflict"
+      ],
+      "answer": 2,
+      "explain": "The style attribute beats any CSS selector except !important."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 3. Selectors",
+      "prompt": "What color will the text be?",
+      "code": "<p id=\"title\">Hello</p>\n\np { color: black !important; }\n#title { color: red; }",
+      "options": [
+        "Red — an id beats a tag",
+        "The browser's default color",
+        "Red — the rule is written lower",
+        "Black — !important wins"
+      ],
+      "answer": 3,
+      "explain": "!important beats even an id. That's exactly why it's not recommended."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 3. Selectors",
+      "prompt": "Which paragraphs turn red?",
+      "code": "<div class=\"card\">\n  <p>1</p>\n  <div>\n    <p>2</p>\n  </div>\n</div>\n<p>3</p>\n<section class=\"card\">\n  <p>4</p>\n</section>\n\n.card p { color: red; }",
+      "options": [
+        "Only 1",
+        "1 and 2",
+        "1, 2 and 4",
+        "All four"
+      ],
+      "answer": 2,
+      "explain": "A space means «inside at any depth», so 2 too. 4 is inside a section with class card — the parent's tag doesn't matter. 3 is outside the cards."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 3. Selectors",
+      "prompt": "Note the space in the selector. Which elements turn red?",
+      "code": "<div class=\"card\">A</div>\n<div>\n  <p class=\"card\">B</p>\n</div>\n<p class=\"card\">C</p>\n\ndiv .card { color: red; }",
+      "options": [
+        "Only A",
+        "Only B",
+        "A and B",
+        "A, B and C"
+      ],
+      "answer": 1,
+      "explain": "div .card is an element with class card inside a div. A is the div with the class itself, not inside one. To pick A you need div.card without a space."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 4. Box model",
+      "prompt": "box-sizing isn't set (default). How wide is the box from the left border to the right one?",
+      "code": ".box {\n  width: 300px;\n  padding: 10px 20px;\n  border: 5px solid black;\n  margin: 15px;\n}",
+      "options": [
+        "300px",
+        "330px",
+        "350px",
+        "380px"
+      ],
+      "answer": 2,
+      "explain": "300 + 20 + 20 (padding) + 5 + 5 (border) = 350. Margin isn't included — it's the space outside the border."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 4. Box model",
+      "prompt": "The same box, but * { box-sizing: border-box; } is added to the CSS. How wide is the text area (content) now?",
+      "code": "* { box-sizing: border-box; }\n\n.box {\n  width: 300px;\n  padding: 10px 20px;\n  border: 5px solid black;\n  margin: 15px;\n}",
+      "options": [
+        "300px",
+        "270px",
+        "260px",
+        "250px"
+      ],
+      "answer": 3,
+      "explain": "With border-box, 300px is the whole width. 300 − 40 (padding) − 10 (border) = 250."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 4. Box model",
+      "prompt": "What will the left padding be?",
+      "code": ".box { padding: 10px 20px 30px; }",
+      "options": [
+        "20px",
+        "10px",
+        "30px",
+        "0px — there's no value for the left side"
+      ],
+      "answer": 0,
+      "explain": "Three values: top, left-right, bottom. Left = 20px."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 4. Box model",
+      "prompt": "Where on the page will the yellow be?",
+      "code": ".box {\n  background: yellow;\n  padding: 20px;\n  margin: 20px;\n  border: 5px dashed black;\n}",
+      "options": [
+        "Only under the text (content)",
+        "Under the text and in the padding (and under the dashed border)",
+        "Under the text, in the padding and in the margin",
+        "In the whole browser window"
+      ],
+      "answer": 1,
+      "explain": "The background fills content and padding (and shows under the dashed border). Margin is always transparent."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 4. Box model",
+      "prompt": "How wide will the red background be?",
+      "code": "<span>Hello</span>\n\nspan {\n  width: 200px;\n  height: 50px;\n  background: red;\n}",
+      "options": [
+        "200px",
+        "There will be no background at all",
+        "The full width of the page",
+        "Exactly the width of the word «Hello»"
+      ],
+      "answer": 3,
+      "explain": "span is inline: width and height don't affect it. You need display: inline-block."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 5. Positioning",
+      "prompt": "What happens to box B?",
+      "code": "<div class=\"a\">A</div>\n<div class=\"b\">B</div>\n\n.a { position: relative; top: 30px; }",
+      "options": [
+        "B stays where it is, A may overlap it",
+        "B also moves down 30px together with A",
+        "B moves up and takes the space A left",
+        "A and B swap places"
+      ],
+      "answer": 0,
+      "explain": "relative only shifts the picture — A keeps its place in the «queue»."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 5. Positioning",
+      "prompt": "Where will the box move?",
+      "code": ".box {\n  position: relative;\n  right: 30px;\n}",
+      "options": [
+        "Right by 30px",
+        "Nowhere — right doesn't work without left",
+        "Left by 30px",
+        "It stretches 30px to the right"
+      ],
+      "answer": 2,
+      "explain": "right: 30px is an offset from the right edge of its own place, so the box moves left."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 5. Positioning",
+      "prompt": "The card sits in the middle of the page. Where will the badge end up?",
+      "code": "<div class=\"card\">\n  <span class=\"badge\">SALE</span>\n</div>\n\n.card { margin: 200px 0 0 100px; width: 300px; }\n.badge { position: absolute; top: 0; right: 0; }",
+      "options": [
+        "In the top right corner of the card",
+        "In the top left corner of the card",
+        "In the top right corner of the whole page",
+        "It stays in its place inside the card"
+      ],
+      "answer": 2,
+      "explain": "The card has no position: relative, so absolute looks further up and attaches to the whole page."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 5. Positioning",
+      "prompt": "The parent has no height and no padding. What will its height be?",
+      "code": "<div class=\"parent\">\n  <div class=\"child\">Box 100 × 100</div>\n</div>\n\n.parent { border: 1px solid black; }\n.child { position: absolute; width: 100px; height: 100px; }",
+      "options": [
+        "0px — the child «left the queue», the parent doesn't see it",
+        "102px — including the border",
+        "100px",
+        "The full height of the page"
+      ],
+      "answer": 0,
+      "explain": "absolute leaves the flow. For the parent the child seems not to exist — height 0."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 5. Positioning",
+      "prompt": "A long page. What happens to the box when you scroll down?",
+      "code": ".menu { position: sticky; }",
+      "options": [
+        "It sticks to the top of the screen",
+        "It sticks to the bottom of the screen",
+        "It stays in place like fixed",
+        "It scrolls up with the page like a normal box"
+      ],
+      "answer": 3,
+      "explain": "sticky without top doesn't know where to stick, so it behaves like a normal box."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 5. Positioning",
+      "prompt": "A «Back to top» button on a long page. What happens when you scroll down?",
+      "code": ".to-top {\n  position: absolute;\n  bottom: 20px;\n  right: 20px;\n}",
+      "options": [
+        "It always stays in the bottom right corner of the screen",
+        "It scrolls up with the page",
+        "It sticks to the top of the screen",
+        "It disappears"
+      ],
+      "answer": 1,
+      "explain": "absolute is tied to the page, not the screen, so it scrolls away. You need fixed."
+    }
+  ]
+}

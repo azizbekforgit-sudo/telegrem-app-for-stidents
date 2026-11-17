@@ -239,6 +239,9 @@ api.post('/learn/finish', h((req) => logic.finishLearn(req.user.id, req.body || 
 api.post('/attempts/:id/answer', h((req) => logic.answer(req.user.id, req.params.id, Number(req.body.index), req.body.answer, Boolean(req.body.timeout))));
 api.post('/attempts/:id/retry', h((req) => logic.retry(req.user.id, req.params.id, Number(req.body.index), req.body.answer)));
 api.post('/attempts/:id/finish', h((req) => logic.finish(req.user.id, req.params.id)));
+// строгая контрольная: предупреждение (ушёл с полного экрана / из приложения) и выход из теста
+api.post('/attempts/:id/warn', h((req) => logic.warn(req.user.id, req.params.id, req.body?.why)));
+api.post('/attempts/:id/forfeit', h((req) => logic.forfeit(req.user.id, req.params.id, req.body?.reason)));
 
 // ───────── учитель ─────────
 const adm = express.Router();
@@ -396,6 +399,7 @@ app.listen(PORT, async () => {
     console.error('[bot] не удалось запустить:', e.message);
   }
   setInterval(() => tg.tickReminders().catch((e) => console.error('[reminders]', e)), 30_000);
+  setInterval(() => { try { logic.sweepStrict(); } catch (e) { console.error('[strict]', e); } }, 5 * 60_000);
   // журнал: в начале урока по расписанию бот спрашивает учителя «кого нет?»
   setInterval(() => tg.tickAttendance().catch((e) => console.error('[attendance]', e)), 30_000);
   // напоминалки ученикам и родителям три раза в день

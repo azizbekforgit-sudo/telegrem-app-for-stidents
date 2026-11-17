@@ -937,3 +937,11 @@ code { background: var(--card-2); padding: 1px 6px; border-radius: 7px; font-siz
 .qtimer.hurry i { background: var(--bad); }
 .qtimer.hurry b { color: var(--bad-d); }
 .lv-card b .lv-n { display: inline; font-size: inherit; color: inherit; }
+
+/* контрольная: правила и предупреждение */
+.strict-rules p { margin: 0 0 8px; line-height: 1.4; }
+.strict-rules p:last-child { margin-bottom: 0; }
+.strict-warn { position: fixed; inset: 0; z-index: 9999; background: color-mix(in srgb, #000 62%, transparent); display: grid; place-items: center; padding: 16px; }
+.strict-warn .box { background: var(--card); border: 2px solid var(--bad); border-radius: 26px; padding: 20px; max-width: 420px; width: 100%; text-align: center; display: grid; gap: 10px; justify-items: center; animation: shake 0.4s; }
+.strict-warn .box p { color: var(--muted); margin: 0; }
+.pill.bad { background: color-mix(in srgb, var(--bad) 16%, var(--card)); color: var(--bad-d); }

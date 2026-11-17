@@ -1,0 +1,291 @@
+{
+  "id": "exam-01-05-control",
+  "order": 100,
+  "kind": "exam",
+  "strict": true,
+  "emoji": "🛡️",
+  "title": "Контрольная: уроки 1–5",
+  "description": "HTML, CSS, селекторы, box model, позиционирование. Очков нет: за каждую ошибку −100 XP, выход из теста −2000 XP.",
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "Урок 2. Подключение CSS",
+      "prompt": "Структура проекта такая. Какая строка в index.html правильно подключит стили?",
+      "code": "project/\n├── index.html\n└── css/\n    └── style.css",
+      "options": [
+        "<link rel=\"stylesheet\" href=\"style.css\">",
+        "<link rel=\"stylesheet\" href=\"css/style.css\">",
+        "<style src=\"css/style.css\"></style>",
+        "<link href=\"css/style.css\">"
+      ],
+      "answer": 1,
+      "explain": "Путь считается от index.html: файл лежит в папке css. В последнем варианте нет rel=\"stylesheet\" — стили не подключатся."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 1. HTML",
+      "prompt": "Ученик забыл косую черту в закрывающем теге. Как будет выглядеть «Текст под заголовком»?",
+      "code": "<h1>Мой сайт<h1>\n<p>Текст под заголовком</p>",
+      "options": [
+        "Как обычный абзац — ошибка влияет только на заголовок",
+        "Браузер покажет ошибку вместо страницы",
+        "Текст не появится на странице",
+        "Крупным и жирным, как заголовок"
+      ],
+      "answer": 3,
+      "explain": "Второй <h1> открывает новый заголовок, абзац оказывается внутри него и становится крупным и жирным."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 2. Подключение CSS",
+      "prompt": "В CSS пропущена точка с запятой. Что применится к абзацу?",
+      "code": "p {\n  color: red\n  background: blue;\n  font-size: 20px;\n}",
+      "options": [
+        "Все три свойства",
+        "Только color: red",
+        "Только font-size: 20px",
+        "Ни одно — весь блок правил сломается"
+      ],
+      "answer": 2,
+      "explain": "Без ; браузер читает значение color как «red background: blue» — это ошибка, и он пропускает его целиком. Ломаются два свойства, font-size работает."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 3. Селекторы",
+      "prompt": "Какого цвета будет текст?",
+      "code": "<p class=\"b a\">Текст</p>\n\n.a { color: red; }\n.b { color: blue; }",
+      "options": [
+        "Синий — правило .b в CSS написано последним",
+        "Красный — класс a в HTML написан последним",
+        "Фиолетовый — цвета смешаются",
+        "Чёрный — два класса конфликтуют, и оба не применятся"
+      ],
+      "answer": 0,
+      "explain": "Специфичность одинаковая, побеждает правило, написанное ниже в CSS. Порядок классов в атрибуте class не важен."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 3. Селекторы",
+      "prompt": "Какого цвета будет текст?",
+      "code": "<div id=\"box\" class=\"wrap\">\n  <p class=\"text\">Привет</p>\n</div>\n\n#box p { color: red; }\n.wrap .text { color: green; }\np.text { color: blue; }",
+      "options": [
+        "Красный",
+        "Зелёный",
+        "Синий",
+        "Чёрный"
+      ],
+      "answer": 0,
+      "explain": "#box p содержит id — он сильнее любого количества классов."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 3. Селекторы",
+      "prompt": "Какого цвета будет текст?",
+      "code": "<p id=\"title\" style=\"color: green;\">Привет</p>\n\n#title { color: red; }",
+      "options": [
+        "Красный — у id самый высокий приоритет",
+        "Красный — CSS-файл сильнее HTML",
+        "Зелёный — стиль в атрибуте style сильнее id",
+        "Чёрный — правила конфликтуют"
+      ],
+      "answer": 2,
+      "explain": "Атрибут style сильнее любого селектора в CSS, кроме !important."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 3. Селекторы",
+      "prompt": "Какого цвета будет текст?",
+      "code": "<p id=\"title\">Привет</p>\n\np { color: black !important; }\n#title { color: red; }",
+      "options": [
+        "Красный — id сильнее тега",
+        "Цвет браузера по умолчанию",
+        "Красный — правило написано ниже",
+        "Чёрный — !important побеждает"
+      ],
+      "answer": 3,
+      "explain": "!important побеждает даже id. Поэтому им и не советуют пользоваться."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 3. Селекторы",
+      "prompt": "Какие абзацы станут красными?",
+      "code": "<div class=\"card\">\n  <p>1</p>\n  <div>\n    <p>2</p>\n  </div>\n</div>\n<p>3</p>\n<section class=\"card\">\n  <p>4</p>\n</section>\n\n.card p { color: red; }",
+      "options": [
+        "Только 1",
+        "1 и 2",
+        "1, 2 и 4",
+        "Все четыре"
+      ],
+      "answer": 2,
+      "explain": "Пробел — «внутри на любой глубине», поэтому 2 тоже. 4 — внутри section с классом card, тег родителя не важен. 3 — вне карточек."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 3. Селекторы",
+      "prompt": "Обратите внимание на пробел в селекторе. Какие элементы станут красными?",
+      "code": "<div class=\"card\">A</div>\n<div>\n  <p class=\"card\">B</p>\n</div>\n<p class=\"card\">C</p>\n\ndiv .card { color: red; }",
+      "options": [
+        "Только A",
+        "Только B",
+        "A и B",
+        "A, B и C"
+      ],
+      "answer": 1,
+      "explain": "div .card — элемент с классом card внутри div. A — сам div с классом, а не внутри. Чтобы выбрать A, нужно div.card без пробела."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 4. Box model",
+      "prompt": "box-sizing не задан (по умолчанию). Какова ширина блока от левой рамки до правой?",
+      "code": ".box {\n  width: 300px;\n  padding: 10px 20px;\n  border: 5px solid black;\n  margin: 15px;\n}",
+      "options": [
+        "300px",
+        "330px",
+        "350px",
+        "380px"
+      ],
+      "answer": 2,
+      "explain": "300 + 20 + 20 (padding) + 5 + 5 (рамка) = 350. Margin не входит — это пространство снаружи рамки."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 4. Box model",
+      "prompt": "Тот же блок, но в CSS добавлено * { box-sizing: border-box; }. Какой ширины теперь область для текста (content)?",
+      "code": "* { box-sizing: border-box; }\n\n.box {\n  width: 300px;\n  padding: 10px 20px;\n  border: 5px solid black;\n  margin: 15px;\n}",
+      "options": [
+        "300px",
+        "270px",
+        "260px",
+        "250px"
+      ],
+      "answer": 3,
+      "explain": "При border-box 300px — это вся ширина. 300 − 40 (padding) − 10 (рамка) = 250."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 4. Box model",
+      "prompt": "Каким будет отступ слева?",
+      "code": ".box { padding: 10px 20px 30px; }",
+      "options": [
+        "20px",
+        "10px",
+        "30px",
+        "0px — для левой стороны значения нет"
+      ],
+      "answer": 0,
+      "explain": "Три значения: верх, лево-право, низ. Лево = 20px."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 4. Box model",
+      "prompt": "Где на странице будет жёлтый цвет?",
+      "code": ".box {\n  background: yellow;\n  padding: 20px;\n  margin: 20px;\n  border: 5px dashed black;\n}",
+      "options": [
+        "Только под текстом (content)",
+        "Под текстом и в padding (и под пунктирной рамкой)",
+        "Под текстом, в padding и в margin",
+        "Во всём окне браузера"
+      ],
+      "answer": 1,
+      "explain": "Фон закрашивает content и padding (и проступает под пунктирной рамкой). Margin всегда прозрачный."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 4. Box model",
+      "prompt": "Какой ширины будет красный фон?",
+      "code": "<span>Привет</span>\n\nspan {\n  width: 200px;\n  height: 50px;\n  background: red;\n}",
+      "options": [
+        "200px",
+        "Фона не будет вообще",
+        "На всю ширину страницы",
+        "Ровно по ширине слова «Привет»"
+      ],
+      "answer": 3,
+      "explain": "span строчный: width и height на него не действуют. Нужен display: inline-block."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 5. Позиционирование",
+      "prompt": "Что произойдёт с блоком B?",
+      "code": "<div class=\"a\">A</div>\n<div class=\"b\">B</div>\n\n.a { position: relative; top: 30px; }",
+      "options": [
+        "B останется на своём месте, A может наехать на него",
+        "B тоже опустится на 30px вместе с A",
+        "B поднимется и займёт место, освободившееся от A",
+        "A и B поменяются местами"
+      ],
+      "answer": 0,
+      "explain": "relative сдвигает только картинку, место в «очереди» остаётся за A."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 5. Позиционирование",
+      "prompt": "Куда сдвинется блок?",
+      "code": ".box {\n  position: relative;\n  right: 30px;\n}",
+      "options": [
+        "Вправо на 30px",
+        "Никуда — без left свойство right не работает",
+        "Влево на 30px",
+        "Растянется на 30px вправо"
+      ],
+      "answer": 2,
+      "explain": "right: 30px — отступ от правого края своего места, поэтому блок едет влево."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 5. Позиционирование",
+      "prompt": "Карточка стоит в середине страницы. Где окажется бейдж?",
+      "code": "<div class=\"card\">\n  <span class=\"badge\">SALE</span>\n</div>\n\n.card { margin: 200px 0 0 100px; width: 300px; }\n.badge { position: absolute; top: 0; right: 0; }",
+      "options": [
+        "В правом верхнем углу карточки",
+        "В левом верхнем углу карточки",
+        "В правом верхнем углу всей страницы",
+        "Останется на своём месте внутри карточки"
+      ],
+      "answer": 2,
+      "explain": "У карточки нет position: relative, поэтому absolute ищет родителя дальше и привязывается ко всей странице."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 5. Позиционирование",
+      "prompt": "У родителя нет height и padding. Какой будет его высота?",
+      "code": "<div class=\"parent\">\n  <div class=\"child\">Блок 100 × 100</div>\n</div>\n\n.parent { border: 1px solid black; }\n.child { position: absolute; width: 100px; height: 100px; }",
+      "options": [
+        "0px — ребёнок «вышел из очереди», родитель его не видит",
+        "102px — вместе с рамкой",
+        "100px",
+        "Во всю высоту страницы"
+      ],
+      "answer": 0,
+      "explain": "absolute выходит из потока. Для родителя ребёнка как будто нет — высота 0."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 5. Позиционирование",
+      "prompt": "Длинная страница. Что будет с блоком при прокрутке вниз?",
+      "code": ".menu { position: sticky; }",
+      "options": [
+        "Прилипнет к верху экрана",
+        "Прилипнет к низу экрана",
+        "Останется на месте, как fixed",
+        "Уедет вверх вместе со страницей, как обычный блок"
+      ],
+      "answer": 3,
+      "explain": "sticky без top не знает, где прилипать, и ведёт себя как обычный блок."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 5. Позиционирование",
+      "prompt": "Кнопка «Наверх» на длинной странице. Что будет при прокрутке вниз?",
+      "code": ".to-top {\n  position: absolute;\n  bottom: 20px;\n  right: 20px;\n}",
+      "options": [
+        "Всегда будет в правом нижнем углу экрана",
+        "Уедет вверх вместе со страницей",
+        "Прилипнет к верху экрана",
+        "Исчезнет"
+      ],
+      "answer": 1,
+      "explain": "absolute привязан к странице, а не к экрану, поэтому уезжает при прокрутке. Нужен fixed."
+    }
+  ]
+}
