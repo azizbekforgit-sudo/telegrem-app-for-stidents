@@ -1997,7 +1997,7 @@ async function startLesson(target) {
   if (strict) enterFullscreen();
   const guard = strict ? strictGuard(data, el, (res) => finish(res)) : null;
   // общий таймер на весь тест (сверху): время вышло — тест заканчивается, неотвеченные считаются ошибками
-  const tEnd = data.totalTime && !data.preview ? Date.now() + data.totalTime * 1000 : 0;
+  let tEnd = data.totalTime && !data.preview ? Date.now() + data.totalTime * 1000 : 0;
   const fmtLeft = (ms) => { const s = Math.max(0, Math.ceil(ms / 1000)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
   const totalTimer = tEnd ? setInterval(() => {
     const left = tEnd - Date.now();
@@ -2064,18 +2064,22 @@ async function startLesson(target) {
 
 
   async function check(qi) {
-    if (!P.ready || P.answered) return;
+    if (!P.ready || P.answered || P.sending) return;
     const btn = $('[data-check]', el);
     btn.disabled = true;
+    P.sending = true;
     let r;
     try {
       r = P.phase === 'main'
         ? await api(`/attempts/${data.attemptId}/answer`, { index: qi, answer: P.value, timeout: Boolean(P.timeout) })
         : await api(`/attempts/${data.attemptId}/retry`, { index: qi, answer: P.value });
-    } catch (e) { btn.disabled = false; return fail(e); }
+    } catch (e) { btn.disabled = false; P.sending = false; return fail(e); }
+    P.sending = false;
     P.answered = true;
     P.timeout = false;
     clearInterval(P.timer);
+    // контрольная: сверяем таймер с сервером (учитель мог прибавить время)
+    if (r.timeLeft != null && tEnd) tEnd = Date.now() + r.timeLeft;
     if (r.accepted) { haptic('light'); return next(); }
     const foot = $('.pfoot', el);
     if (P.phase === 'main') {

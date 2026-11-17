@@ -119,6 +119,9 @@ if (fs.existsSync(archiveFile)) {
 // Второй шанс по тесту (content/resets.json: [{ id, userId, lessonId }]); каждый id — один раз
 const resetsFile = path.join(root, 'content', 'resets.json');
 if (fs.existsSync(resetsFile)) for (const r of JSON.parse(fs.readFileSync(resetsFile, 'utf8'))) { const x = logic.resetAttempts('reset:' + r.id, r.userId, r.lessonId); if (x) console.log('[reset] ' + JSON.stringify(x)); }
+// Прибавка времени в контрольной (content/extend.json: [{ id, userId, lessonId, seconds }]); каждый id — один раз
+const extendFile = path.join(root, 'content', 'extend.json');
+if (fs.existsSync(extendFile)) for (const r of JSON.parse(fs.readFileSync(extendFile, 'utf8'))) { const x = logic.extendTime('extend:' + r.id, r.userId, r.lessonId, Number(r.seconds) || 0); if (x) console.log('[extend] ' + JSON.stringify(x)); }
 const removeFile = path.join(root, 'content', 'remove.json');
 if (fs.existsSync(removeFile)) for (const r of logic.removeLessons(JSON.parse(fs.readFileSync(removeFile, 'utf8')))) console.log('[remove] ' + JSON.stringify(r));
 

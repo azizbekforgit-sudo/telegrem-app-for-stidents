@@ -285,6 +285,26 @@ export function createLogic(store, { adminIds }) {
     return created;
   }
 
+  // content/extend.json: прибавить ученику время в контрольной с таймером. Идёт попытка — дедлайн сдвигается,
+  // ещё не начал — прибавка ждёт его следующего старта.
+  function takeExtraTime(uid, lessonId) {
+    const k = `${uid}:${lessonId}`;
+    const sec = S.extraTime?.[k] || 0;
+    if (sec) { delete S.extraTime[k]; }
+    return sec;
+  }
+  function extendTime(key, userId, lessonId, seconds) {
+    S.migrations ||= {};
+    if (S.migrations[key]) return null;
+    const uid = String(userId);
+    const open = Object.values(S.attempts).find((a) => a.userId === uid && a.lessonId === lessonId && !a.finishedAt && !a.preview && a.deadline);
+    let where;
+    if (open) { open.deadline = Math.max(open.deadline, Date.now()) + seconds * 1000; where = 'attempt'; }
+    else { S.extraTime ||= {}; S.extraTime[`${uid}:${lessonId}`] = (S.extraTime[`${uid}:${lessonId}`] || 0) + seconds; where = 'next-start'; }
+    S.migrations[key] = Date.now();
+    store.save();
+    return { key, user: { id: uid, name: name(S.users[uid]) }, lessonId, seconds, where, leftSec: open ? Math.round((open.deadline - Date.now()) / 1000) : null };
+  }
   // content/resets.json: второй шанс — убрать попытки ученика по тесту (и их XP/штраф), чтобы он решил заново
   function resetAttempts(key, userId, lessonId) {
     S.migrations ||= {};
@@ -701,7 +721,7 @@ export function createLogic(store, { adminIds }) {
     const id = store.nextId('a');
     const built = lv ? buildLevel(lesson, lv, id) : null;
     const a = { id, lang: langOf(uid), pubId: pubId || null, lessonId: lesson.id, userId: uid, preview, practice, startedAt: Date.now(), finishedAt: null, answers: [], combo: 0, maxCombo: 0, xp: 0,
-      ...(lv ? { level: lv, qs: built.questions, items: built.src } : {}), ...(strict ? { strict: true, warnings: 0, total: lesson.questions.length } : {}), ...(S.lessons[lesson.id]?.timeLimit && !preview ? { deadline: Date.now() + S.lessons[lesson.id].timeLimit * 1000 } : {}) };
+      ...(lv ? { level: lv, qs: built.questions, items: built.src } : {}), ...(strict ? { strict: true, warnings: 0, total: lesson.questions.length } : {}), ...(S.lessons[lesson.id]?.timeLimit && !preview ? { deadline: Date.now() + (S.lessons[lesson.id].timeLimit + takeExtraTime(uid, lesson.id)) * 1000 } : {}) };
     S.attempts[a.id] = a;
     store.save();
     const qs = built ? built.questions : lesson.questions;
@@ -712,7 +732,7 @@ export function createLogic(store, { adminIds }) {
       level: lv,
       reward: lv ? LEVEL_XP[lv] : null,
       timeLimit: lv ? LEVEL_TIME[lv] : 0,
-      totalTime: S.lessons[lesson.id]?.timeLimit || 0,
+      totalTime: a.deadline ? Math.round((a.deadline - Date.now()) / 1000) : 0,
       strict: strict ? { perWrong: STRICT_WRONG, quit: lesson.questions.length * STRICT_WRONG, maxWarnings: STRICT_WARNINGS } : null,
       lesson: { id: lesson.id, title: lesson.title, emoji: lesson.emoji, description: lesson.description },
       questions: qs.map((q, i) => publicQuestion(q, `${a.id}:${i}`)),
@@ -745,6 +765,13 @@ export function createLogic(store, { adminIds }) {
     const a = getOwnAttempt(uid, aid);
     if (a.finishedAt) throw httpError(400, 'Тест уже завершён');
     const q = questionAt(a, index);
+    const timeLeft = a.deadline ? Math.max(0, a.deadline - Date.now()) : undefined;
+    // тот же вопрос пришёл второй раз (двойное нажатие или сеть моргнула) — отвечаем тем, что уже записано
+    const dup = q && a.answers.find((x) => x.index === index);
+    if (dup) {
+      if (a.strict) return { accepted: true, timeLeft, next: a.answers.length };
+      return { correct: dup.correct, correctText: checkAnswer(q, null).correctText, explain: q.explain || null, combo: a.combo, mult: 1, xpGained: 0, timeout: Boolean(dup.timeout), repeat: true };
+    }
     if (!q || index !== a.answers.length) throw httpError(400, 'Неверный номер вопроса');
     if (a.deadline && Date.now() > a.deadline + 5000) throw httpError(400, 'Время вышло');
     const res = timeout ? { correct: false, correctText: checkAnswer(q, null).correctText } : checkAnswer(q, toOriginal(q, a, index, value));
@@ -755,7 +782,7 @@ export function createLogic(store, { adminIds }) {
     a.xp += gained;
     a.answers.push({ index, correct: res.correct, value, ...(timeout ? { timeout: true } : {}) });
     store.save();
-    if (a.strict) return { accepted: true };
+    if (a.strict) return { accepted: true, timeLeft: a.deadline ? Math.max(0, a.deadline - Date.now()) : undefined, next: a.answers.length };
     return { correct: res.correct, correctText: res.correctText, explain: q.explain || null, combo: a.combo, mult, xpGained: gained, timeout };
   }
 
@@ -1295,7 +1322,7 @@ export function createLogic(store, { adminIds }) {
 
   return {
     S, log, earnedXp, spentXp, levelsOf, parentsOverview, testStatus, attemptQuestion, finishedAt, totalXp, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
-    upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish, warn, forfeit, sweepStrict, removeLessons, resetAttempts,
+    upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish, warn, forfeit, sweepStrict, removeLessons, resetAttempts, extendTime,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,
     startLearn, checkLearn, finishLearn, assignPersonal, report, teacherName,
