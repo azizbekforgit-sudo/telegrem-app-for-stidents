@@ -120,6 +120,9 @@ if (fs.existsSync(archiveFile)) {
 const resetsFile = path.join(root, 'content', 'resets.json');
 if (fs.existsSync(resetsFile)) for (const r of JSON.parse(fs.readFileSync(resetsFile, 'utf8'))) { const x = logic.resetAttempts('reset:' + r.id, r.userId, r.lessonId); if (x) console.log('[reset] ' + JSON.stringify(x)); }
 // Прибавка времени в контрольной (content/extend.json: [{ id, userId, lessonId, seconds }]); каждый id — один раз
+// Вернуть в контрольную с сохранёнными ответами (content/resume.json: [{ id, userId, lessonId, seconds }]); каждый id — один раз
+const resumeFile = path.join(root, 'content', 'resume.json');
+if (fs.existsSync(resumeFile)) for (const r of JSON.parse(fs.readFileSync(resumeFile, 'utf8'))) { const x = logic.resumeGrant('resume:' + r.id, r.userId, r.lessonId, Number(r.seconds) || 0); if (x) console.log('[resume] ' + JSON.stringify(x)); }
 const extendFile = path.join(root, 'content', 'extend.json');
 if (fs.existsSync(extendFile)) for (const r of JSON.parse(fs.readFileSync(extendFile, 'utf8'))) { const x = logic.extendTime('extend:' + r.id, r.userId, r.lessonId, Number(r.seconds) || 0); if (x) console.log('[extend] ' + JSON.stringify(x)); }
 const removeFile = path.join(root, 'content', 'remove.json');

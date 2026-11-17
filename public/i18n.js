@@ -389,6 +389,7 @@ const TOKENS = [
 ];
 
 const PATTERNS = [
+  [/^Продолжаем с вопроса (\d+)\. Твои ответы сохранены\.$/, 'Continuing from question $1. Your answers are saved.', "$1-savoldan davom etamiz. Javoblaring saqlangan."],
   [/^Время вышло\. Неотвеченных вопросов: (\d+) — они считаются ошибками\.$/, 'Time is up. Unanswered questions: $1 — they count as mistakes.', 'Vaqt tugadi. Javobsiz savollar: $1 — ular xato hisoblanadi.'],
   [/^(\d+) мин$/, '$1 min', '$1 daq'],
   [/^Тест закончится: 0% и −(\d+) XP\.$/, 'The test will end: 0% and −$1 XP.', 'Test tugaydi: 0% va −$1 XP.'],

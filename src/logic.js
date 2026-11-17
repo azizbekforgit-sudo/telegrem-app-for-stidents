@@ -285,6 +285,59 @@ export function createLogic(store, { adminIds }) {
     return created;
   }
 
+  // Контрольную открыли снова (обновил страницу, приложение закрылось): продолжаем с того же вопроса.
+  // Без разрешения учителя (resumeSec) это считается предупреждением; время вышло — тест закрывается по времени.
+  function resumeStrict(uid, a, lesson) {
+    const lastWarn = a.warnLog?.[a.warnLog.length - 1]?.at || 0;
+    if (a.resumeSec) {
+      a.deadline = Date.now() + a.resumeSec * 1000;
+      delete a.resumeSec;
+    } else if (a.freeResume || Date.now() - lastWarn < 60_000) {
+      // учитель разрешил вернуться без штрафа, или за этот выход предупреждение уже записано
+      delete a.freeResume;
+    } else {
+      a.warnings = (a.warnings || 0) + 1;
+      (a.warnLog ||= []).push({ at: Date.now(), why: 'reopen' });
+      log('strict-warn', { user: { id: a.userId, name: name(S.users[a.userId]) }, lesson: a.lessonId, warnings: a.warnings, why: 'reopen' });
+      if (a.warnings > STRICT_WARNINGS) {
+        forfeitAttempt(a, 'warnings');
+        throw httpError(403, `Слишком много выходов из контрольной — она закрыта: 0% и −${a.total * STRICT_WRONG} XP`);
+      }
+    }
+    if (a.deadline && Date.now() >= a.deadline - 3000) {
+      finish(uid, a.id);
+      throw httpError(403, 'Время контрольной вышло — неотвеченные вопросы засчитаны как ошибки');
+    }
+    store.save();
+    log('strict-resume', { user: { id: a.userId, name: name(S.users[a.userId]) }, lesson: a.lessonId, from: a.answers.length + 1, leftSec: a.deadline ? Math.round((a.deadline - Date.now()) / 1000) : null, warnings: a.warnings || 0 });
+    return {
+      attemptId: a.id, preview: false, practice: false, level: null, reward: null, timeLimit: 0,
+      totalTime: a.deadline ? Math.round((a.deadline - Date.now()) / 1000) : 0,
+      strict: { perWrong: STRICT_WRONG, quit: lesson.questions.length * STRICT_WRONG, maxWarnings: STRICT_WARNINGS },
+      resumed: { from: a.answers.length, warnings: a.warnings || 0 },
+      lesson: { id: lesson.id, title: lesson.title, emoji: lesson.emoji, description: lesson.description },
+      questions: lesson.questions.map((q, i) => publicQuestion(q, `${a.id}:${i}`)),
+    };
+  }
+  // content/resume.json: учитель возвращает ученика в контрольную с сохранёнными ответами и даёт время.
+  // Закрытую попытку открывает снова (без штрафа), идущей — прибавляет время, не начатой — прибавка к старту.
+  function resumeGrant(key, userId, lessonId, seconds) {
+    S.migrations ||= {};
+    if (S.migrations[key]) return null;
+    const uid = String(userId);
+    const a = Object.values(S.attempts).filter((x) => x.userId === uid && x.lessonId === lessonId && !x.preview).sort((x, y) => y.startedAt - x.startedAt)[0];
+    let what;
+    if (!a) { S.extraTime ||= {}; S.extraTime[`${uid}:${lessonId}`] = (S.extraTime[`${uid}:${lessonId}`] || 0) + seconds; what = 'next-start'; }
+    else if (a.finishedAt) {
+      a.finishedAt = null; a.xp = 0; delete a.timeUp; delete a.forfeit;
+      a.deadline = null; a.resumeSec = seconds; a.startedAt = Date.now();
+      what = 'reopened';
+    } else if (a.resumeSec) { a.resumeSec += seconds; what = 'added-to-resume'; }
+    else { a.deadline = Math.max(a.deadline || 0, Date.now()) + seconds * 1000; a.freeResume = true; what = 'extended'; }
+    S.migrations[key] = Date.now();
+    store.save();
+    return { key, user: { id: uid, name: name(S.users[uid]) }, lessonId, seconds, what, answered: a ? a.answers.length : 0, xpNow: totalXp(uid) };
+  }
   // content/extend.json: прибавить ученику время в контрольной с таймером. Идёт попытка — дедлайн сдвигается,
   // ещё не начал — прибавка ждёт его следующего старта.
   function takeExtraTime(uid, lessonId) {
@@ -699,10 +752,7 @@ export function createLogic(store, { adminIds }) {
     if (strict) {
       const mine = Object.values(S.attempts).filter((x) => x.userId === uid && x.lessonId === lesson.id && !x.preview);
       const open = mine.find((x) => !x.finishedAt);
-      if (open) {
-        forfeitAttempt(open, 'quit');
-        throw httpError(403, `Ты вышел из контрольной до конца — она закрыта: 0% и −${open.total * STRICT_WRONG} XP`);
-      }
+      if (open) return resumeStrict(uid, open, lesson);
       if (mine.length) throw httpError(403, 'Контрольную можно пройти только один раз');
     }
     const noXp = Boolean(pubId && S.pubs[pubId]?.noXp);
@@ -829,7 +879,7 @@ export function createLogic(store, { adminIds }) {
   }
   // брошенные контрольные (закрыл приложение и не вернулся) закрываются штрафом через 2 часа
   function sweepStrict() {
-    const old = Object.values(S.attempts).filter((a) => a.strict && !a.finishedAt && Date.now() - a.startedAt > 2 * 3600_000);
+    const old = Object.values(S.attempts).filter((a) => a.strict && !a.finishedAt && !a.resumeSec && Date.now() - a.startedAt > 2 * 3600_000);
     for (const a of old) forfeitAttempt(a, 'quit');
     // время контрольной вышло, а ученик не вернулся — закрываем по времени: неотвеченные считаются ошибками
     for (const a of Object.values(S.attempts)) if (a.strict && !a.finishedAt && a.deadline && Date.now() > a.deadline + 60_000) { try { finish(a.userId, a.id); } catch (e) { console.error('[strict] timeup', a.id, e.message); } }
@@ -1322,7 +1372,7 @@ export function createLogic(store, { adminIds }) {
 
   return {
     S, log, earnedXp, spentXp, levelsOf, parentsOverview, testStatus, attemptQuestion, finishedAt, totalXp, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
-    upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish, warn, forfeit, sweepStrict, removeLessons, resetAttempts, extendTime,
+    upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish, warn, forfeit, sweepStrict, removeLessons, resetAttempts, extendTime, resumeGrant,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,
     startLearn, checkLearn, finishLearn, assignPersonal, report, teacherName,

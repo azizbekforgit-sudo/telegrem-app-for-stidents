@@ -1986,7 +1986,7 @@ function strictGuard(data, el, onForfeit) {
 async function startLesson(target) {
   let data;
   try { data = await api('/attempts', target); } catch (e) { return fail(e); }
-  const P = { ...data, i: 0, queue: data.questions.map((_, i) => i), review: [], phase: 'main', combo: 0, xp: 0, value: null, ready: false, answered: false, magUsed: false, potUsed: false };
+  const P = { ...data, i: data.resumed?.from || 0, queue: data.questions.map((_, i) => i), review: [], phase: 'main', combo: 0, xp: 0, value: null, ready: false, answered: false, magUsed: false, potUsed: false };
   const tools = testTools(data, P);
   const el = document.createElement('div');
   el.className = 'player';
@@ -1995,6 +1995,7 @@ async function startLesson(target) {
   try { tg?.enableClosingConfirmation?.(); } catch { /* */ }
   const strict = data.strict && !data.preview;
   if (strict) enterFullscreen();
+  if (data.resumed) toast(`Продолжаем с вопроса ${data.resumed.from + 1}. Твои ответы сохранены.`);
   const guard = strict ? strictGuard(data, el, (res) => finish(res)) : null;
   // общий таймер на весь тест (сверху): время вышло — тест заканчивается, неотвеченные считаются ошибками
   let tEnd = data.totalTime && !data.preview ? Date.now() + data.totalTime * 1000 : 0;
