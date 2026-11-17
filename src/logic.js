@@ -35,6 +35,7 @@ export function createLogic(store, { adminIds }) {
   // ───────── пользователи и группы ─────────
   function upsertUser(tg) {
     const id = String(tg.id);
+    if (S.banned?.[id]) throw httpError(403, 'Доступ закрыт');
     const existed = Boolean(S.users[id]);
     // новые пользователи сначала выбирают роль (ученик / родитель); старых это не касается
     const u = S.users[id] || { id, joinedAt: Date.now(), streak: 0, lastDay: null, needRole: !isAdmin(id) };
@@ -357,6 +358,41 @@ export function createLogic(store, { adminIds }) {
     S.migrations[key] = Date.now();
     store.save();
     return { key, user: { id: uid, name: name(S.users[uid]) }, lessonId, seconds, where, leftSec: open ? Math.round((open.deadline - Date.now()) / 1000) : null };
+  }
+  // content/purge.json: удалить ученика полностью — профиль, группы, попытки, обучалки, оценки, журнал,
+  // покупки, бонусы, входы на сайт — и закрыть ему вход (бот и приложение его больше не создадут)
+  function purgeUser(key, userId) {
+    S.migrations ||= {};
+    if (S.migrations[key]) return null;
+    const uid = String(userId);
+    const nm = name(S.users[uid]);
+    const cnt = {};
+    const drop = (coll, test) => { let n = 0; for (const [k, v] of Object.entries(S[coll] || {})) if (test(v, k)) { delete S[coll][k]; n++; } if (n) cnt[coll] = n; };
+    drop('attempts', (a) => a.userId === uid);
+    drop('pubs', (p) => p.userId === uid);
+    drop('learn', (_v, k) => k.startsWith(uid + ':'));
+    drop('purchases', (p) => p.userId === uid);
+    drop('grades', (g) => String(g.userId) === uid);
+    drop('bonuses', (b) => String(b.userId) === uid);
+    drop('reminders', (r) => String(r.userId) === uid);
+    drop('accounts', (a) => String(a.userId) === uid);
+    drop('sessions', (s2) => String(s2.userId) === uid);
+    drop('classes', (c) => String(c.userId || '') === uid);
+    drop('extraTime', (_v, k) => k.startsWith(uid + ':'));
+    for (const c of Object.values(S.classes || {})) {
+      c.members = (c.members || []).filter((x) => String(x) !== uid);
+      c.absent = (c.absent || []).filter((x) => String(x) !== uid);
+      if (c.reasons) delete c.reasons[uid];
+      if (c.notified) c.notified = c.notified.filter((x) => String(x) !== uid);
+    }
+    for (const g of Object.values(S.groups || {})) g.memberIds = (g.memberIds || []).filter((x) => String(x) !== uid);
+    for (const u of Object.values(S.users)) if (u.children) u.children = u.children.filter((x) => String(x) !== uid);
+    const had = Boolean(S.users[uid]);
+    delete S.users[uid];
+    (S.banned ||= {})[uid] = Date.now();
+    S.migrations[key] = Date.now();
+    store.save();
+    return { key, user: { id: uid, name: nm }, hadProfile: had, removed: cnt };
   }
   // content/resets.json: второй шанс — убрать попытки ученика по тесту (и их XP/штраф), чтобы он решил заново
   function resetAttempts(key, userId, lessonId) {
@@ -1372,7 +1408,7 @@ export function createLogic(store, { adminIds }) {
 
   return {
     S, log, earnedXp, spentXp, levelsOf, parentsOverview, testStatus, attemptQuestion, finishedAt, totalXp, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
-    upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish, warn, forfeit, sweepStrict, removeLessons, resetAttempts, extendTime, resumeGrant,
+    upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish, warn, forfeit, sweepStrict, removeLessons, resetAttempts, extendTime, resumeGrant, purgeUser,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,
     startLearn, checkLearn, finishLearn, assignPersonal, report, teacherName,
