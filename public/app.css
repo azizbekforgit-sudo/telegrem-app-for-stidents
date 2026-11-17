@@ -945,3 +945,7 @@ code { background: var(--card-2); padding: 1px 6px; border-radius: 7px; font-siz
 .strict-warn .box { background: var(--card); border: 2px solid var(--bad); border-radius: 26px; padding: 20px; max-width: 420px; width: 100%; text-align: center; display: grid; gap: 10px; justify-items: center; animation: shake 0.4s; }
 .strict-warn .box p { color: var(--muted); margin: 0; }
 .pill.bad { background: color-mix(in srgb, var(--bad) 16%, var(--card)); color: var(--bad-d); }
+
+/* общий таймер контрольной */
+.ttotal { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 2px auto 0; padding: 4px 14px; width: max-content; border-radius: 999px; background: var(--track); font-weight: 900; font-size: 17px; font-variant-numeric: tabular-nums; }
+.ttotal.hurry { background: color-mix(in srgb, var(--bad) 18%, var(--card)); color: var(--bad-d); animation: shake 0.5s 2; }

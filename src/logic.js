@@ -233,6 +233,7 @@ export function createLogic(store, { adminIds }) {
       prev.tr = lesson.tr || prev.tr || null;
       prev.kind = lesson.kind || prev.kind || 'lesson';
       prev.strict = Boolean(lesson.strict);
+      prev.timeLimit = Number(lesson.timeLimit) || 0;
       if (lesson.order !== undefined) prev.order = lesson.order == null ? null : Number(lesson.order);
       // qrev: вопросы поправили на месте (тот же порядок и число) — заменяем, результаты остаются
       if ((lesson.qrev || 0) > (prev.qrev || 0) && lesson.questions.length === prev.questions.length) {
@@ -254,6 +255,7 @@ export function createLogic(store, { adminIds }) {
       questions: lesson.questions,
       kind: lesson.kind || 'lesson',
       strict: Boolean(lesson.strict),
+      timeLimit: Number(lesson.timeLimit) || 0, // общий таймер на весь тест, секунды
       qrev: lesson.qrev || 0,
       order: lesson.order != null ? Number(lesson.order) : (prev?.order ?? null),
       archived: prev?.archived || false,
@@ -283,6 +285,22 @@ export function createLogic(store, { adminIds }) {
     return created;
   }
 
+  // content/remove.json: удалить тест совсем (вместе с выдачей), если его ещё никто не решал
+  function removeLessons(ids) {
+    const out = [];
+    for (const lid of ids || []) {
+      if (!S.lessons[lid]) continue;
+      const done = Object.values(S.attempts).filter((a) => a.lessonId === lid && !a.preview && a.finishedAt);
+      if (done.length) { S.lessons[lid].archived = true; out.push({ id: lid, archived: true, attempts: done.length }); continue; }
+      for (const a of Object.values(S.attempts)) if (a.lessonId === lid) delete S.attempts[a.id];
+      const pubs = Object.values(S.pubs).filter((p) => p.lessonId === lid);
+      for (const p of pubs) delete S.pubs[p.id];
+      delete S.lessons[lid];
+      out.push({ id: lid, removed: true, pubs: pubs.length });
+    }
+    if (out.length) store.save();
+    return out;
+  }
   function deleteLesson(lid) {
     if (Object.values(S.pubs).some((p) => p.lessonId === lid)) throw httpError(400, 'Тест уже отправлен — сначала отзови его у групп');
     delete S.lessons[lid];
@@ -673,7 +691,7 @@ export function createLogic(store, { adminIds }) {
     const id = store.nextId('a');
     const built = lv ? buildLevel(lesson, lv, id) : null;
     const a = { id, lang: langOf(uid), pubId: pubId || null, lessonId: lesson.id, userId: uid, preview, practice, startedAt: Date.now(), finishedAt: null, answers: [], combo: 0, maxCombo: 0, xp: 0,
-      ...(lv ? { level: lv, qs: built.questions, items: built.src } : {}), ...(strict ? { strict: true, warnings: 0, total: lesson.questions.length } : {}) };
+      ...(lv ? { level: lv, qs: built.questions, items: built.src } : {}), ...(strict ? { strict: true, warnings: 0, total: lesson.questions.length } : {}), ...(S.lessons[lesson.id]?.timeLimit && !preview ? { deadline: Date.now() + S.lessons[lesson.id].timeLimit * 1000 } : {}) };
     S.attempts[a.id] = a;
     store.save();
     const qs = built ? built.questions : lesson.questions;
@@ -684,6 +702,7 @@ export function createLogic(store, { adminIds }) {
       level: lv,
       reward: lv ? LEVEL_XP[lv] : null,
       timeLimit: lv ? LEVEL_TIME[lv] : 0,
+      totalTime: S.lessons[lesson.id]?.timeLimit || 0,
       strict: strict ? { perWrong: STRICT_WRONG, quit: lesson.questions.length * STRICT_WRONG, maxWarnings: STRICT_WARNINGS } : null,
       lesson: { id: lesson.id, title: lesson.title, emoji: lesson.emoji, description: lesson.description },
       questions: qs.map((q, i) => publicQuestion(q, `${a.id}:${i}`)),
@@ -717,6 +736,7 @@ export function createLogic(store, { adminIds }) {
     if (a.finishedAt) throw httpError(400, 'Тест уже завершён');
     const q = questionAt(a, index);
     if (!q || index !== a.answers.length) throw httpError(400, 'Неверный номер вопроса');
+    if (a.deadline && Date.now() > a.deadline + 5000) throw httpError(400, 'Время вышло');
     const res = timeout ? { correct: false, correctText: checkAnswer(q, null).correctText } : checkAnswer(q, toOriginal(q, a, index, value));
     a.combo = res.correct ? a.combo + 1 : 0;
     a.maxCombo = Math.max(a.maxCombo, a.combo);
@@ -774,6 +794,8 @@ export function createLogic(store, { adminIds }) {
   function sweepStrict() {
     const old = Object.values(S.attempts).filter((a) => a.strict && !a.finishedAt && Date.now() - a.startedAt > 2 * 3600_000);
     for (const a of old) forfeitAttempt(a, 'quit');
+    // время контрольной вышло, а ученик не вернулся — закрываем по времени: неотвеченные считаются ошибками
+    for (const a of Object.values(S.attempts)) if (a.strict && !a.finishedAt && a.deadline && Date.now() > a.deadline + 60_000) { try { finish(a.userId, a.id); } catch (e) { console.error('[strict] timeup', a.id, e.message); } }
     return old.length;
   }
 
@@ -781,7 +803,9 @@ export function createLogic(store, { adminIds }) {
     const a = getOwnAttempt(uid, aid);
     const items = itemsOf(a);
     if (!a.finishedAt) {
-      if (a.answers.length < items.length) throw httpError(400, 'Есть неотвеченные вопросы');
+      const timeUp = a.deadline && Date.now() >= a.deadline - 3000;
+      if (a.answers.length < items.length && !timeUp) throw httpError(400, 'Есть неотвеченные вопросы');
+      if (a.answers.length < items.length) a.timeUp = true;
       a.finishedAt = Date.now();
       if (a.strict) {
         // контрольная: очков нет, за каждую ошибку штраф
@@ -821,7 +845,7 @@ export function createLogic(store, { adminIds }) {
       topics: Object.values(topics).map((t) => ({ ...t, pct: pct(t.correct, t.total) })),
       questions: a.answers.map((x) => ({ prompt: questionAt(a, x.index)?.prompt || '', correct: x.correct })),
       level: a.level || null,
-      strict: a.strict ? { perWrong: STRICT_WRONG, forfeit: a.forfeit || null, warnings: a.warnings || 0 } : null,
+      strict: a.strict ? { perWrong: STRICT_WRONG, forfeit: a.forfeit || null, warnings: a.warnings || 0, timeUp: Boolean(a.timeUp), unanswered: Math.max(0, items.length - a.answers.length) } : null,
       reward: a.level ? LEVEL_XP[a.level] : null,
       levels: a.level && !a.preview ? levelsOf(a.userId, a.lessonId) : null,
       group,
@@ -839,7 +863,7 @@ export function createLogic(store, { adminIds }) {
       lesson: a.kind === 'mistakes' ? 'mistakes' : a.lessonId,
       level: a.level || null,
       kind: a.kind || (a.strict ? 'strict' : a.practice ? 'practice' : 'test'),
-      ...(a.strict ? { xp: a.xp, forfeit: a.forfeit || null, warnings: a.warnings || 0 } : {}),
+      ...(a.strict ? { xp: a.xp, forfeit: a.forfeit || null, warnings: a.warnings || 0, ...(a.timeUp ? { timeUp: true, answered: a.answers.length } : {}) } : {}),
       pct: scoreOf(a).pct,
       wrong: a.answers.filter((x) => !x.correct).map((x) => {
         const it = items[x.index];
@@ -1163,7 +1187,7 @@ export function createLogic(store, { adminIds }) {
     const path = pubsForUser(uid).map((p) => {
       const l = loc(S.lessons[p.lessonId], langOf(uid));
       const b = best(uid, p.id);
-      return { pubId: p.id, title: l.title, emoji: l.emoji, description: l.description, questions: l.questions.length, topics: l.topics, groupId: p.groupId, groupName: p.userId ? 'Лично' : S.groups[p.groupId].name, personal: Boolean(p.userId), forYou: Boolean(S.lessons[p.lessonId].personal), order: S.lessons[p.lessonId].order ?? null, lessonId: p.lessonId, exam: l.kind === 'exam', strict: Boolean(S.lessons[p.lessonId].strict), levels: levelsOf(uid, p.lessonId), hasLearn: Boolean(l.learn) && !p.noLearn, learnDone: learnDone(uid, p.id), learnSections: l.learn?.sections.length || 0, publishedAt: p.publishedAt, best: b ? b.pct : null, stars: b ? (b.pct === 100 ? 3 : b.pct >= 80 ? 2 : b.pct >= 50 ? 1 : 0) : null };
+      return { pubId: p.id, title: l.title, emoji: l.emoji, description: l.description, questions: l.questions.length, topics: l.topics, groupId: p.groupId, groupName: p.userId ? 'Лично' : S.groups[p.groupId].name, personal: Boolean(p.userId), forYou: Boolean(S.lessons[p.lessonId].personal), order: S.lessons[p.lessonId].order ?? null, lessonId: p.lessonId, exam: l.kind === 'exam', strict: Boolean(S.lessons[p.lessonId].strict), timeLimit: S.lessons[p.lessonId].timeLimit || 0, levels: levelsOf(uid, p.lessonId), hasLearn: Boolean(l.learn) && !p.noLearn, learnDone: learnDone(uid, p.id), learnSections: l.learn?.sections.length || 0, publishedAt: p.publishedAt, best: b ? b.pct : null, stars: b ? (b.pct === 100 ? 3 : b.pct >= 80 ? 2 : b.pct >= 50 ? 1 : 0) : null };
     });
     return {
       user: publicUser(u),
@@ -1203,6 +1227,7 @@ export function createLogic(store, { adminIds }) {
         hasLearn: Boolean(l.learn),
         exam: l.kind === 'exam',
         strict: Boolean(l.strict),
+        timeLimit: l.timeLimit || 0,
         learnSections: l.learn?.sections.length || 0,
       }));
     const allStudents = students().map((u) => ({ ...publicUser(u), groups: userGroups(u.id).map((g) => g.id) }));
@@ -1260,7 +1285,7 @@ export function createLogic(store, { adminIds }) {
 
   return {
     S, log, earnedXp, spentXp, levelsOf, parentsOverview, testStatus, attemptQuestion, finishedAt, totalXp, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
-    upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish, warn, forfeit, sweepStrict,
+    upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish, warn, forfeit, sweepStrict, removeLessons,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,
     startLearn, checkLearn, finishLearn, assignPersonal, report, teacherName,

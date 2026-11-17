@@ -1,6 +1,6 @@
 {
   "title": "Test: lessons 1–5",
-  "description": "HTML, CSS, selectors, box model, positioning. No points: −100 XP per mistake, leaving the test −2000 XP.",
+  "description": "HTML, CSS, selectors, box model, positioning. 15 minutes for the whole test. No points: −100 XP per mistake, leaving the test −2000 XP.",
   "questions": [
     {
       "type": "choice",

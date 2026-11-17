@@ -1,6 +1,6 @@
 {
   "title": "Nazorat ishi: 1–5-darslar",
-  "description": "HTML, CSS, selektorlar, box model, joylashuv. Ball berilmaydi: har bir xato uchun −100 XP, testdan chiqish −2000 XP.",
+  "description": "HTML, CSS, selektorlar, box model, joylashuv. Butun test uchun 15 daqiqa. Ball berilmaydi: har bir xato uchun −100 XP, testdan chiqish −2000 XP.",
   "questions": [
     {
       "type": "choice",

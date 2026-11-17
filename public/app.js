@@ -1930,6 +1930,7 @@ function strictSheet(p) {
       <p>${emo('🖥️')} Тест откроется <b>на весь экран</b>. Свернёшь приложение или выйдешь из полного экрана — получишь предупреждение.</p>
       <p>${emo('⚠️')} Можно получить 3 предупреждения. Ещё раз — тест закончится сам: <b>0%</b> и <b data-noi18n>−${quit} XP</b>.</p>
       <p>${emo('🚪')} Выйти из теста до конца — тоже <b data-noi18n>−${quit} XP</b>.</p>
+      ${p.timeLimit ? `<p>${emo('⏱️')} На весь тест <b>${Math.round(p.timeLimit / 60)} минут</b>. Время вышло — тест закончится, неотвеченные вопросы считаются ошибками.</p>` : ''}
       <p>${emo('1️⃣')} Пройти контрольную можно только один раз.</p>
     </div>
     <button class="btn block" data-go>${ic('play')}Начать контрольную</button>
@@ -1995,6 +1996,15 @@ async function startLesson(target) {
   const strict = data.strict && !data.preview;
   if (strict) enterFullscreen();
   const guard = strict ? strictGuard(data, el, (res) => finish(res)) : null;
+  // общий таймер на весь тест (сверху): время вышло — тест заканчивается, неотвеченные считаются ошибками
+  const tEnd = data.totalTime && !data.preview ? Date.now() + data.totalTime * 1000 : 0;
+  const fmtLeft = (ms) => { const s = Math.max(0, Math.ceil(ms / 1000)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+  const totalTimer = tEnd ? setInterval(() => {
+    const left = tEnd - Date.now();
+    const t = $('[data-ttotal]', el);
+    if (t) { t.textContent = fmtLeft(left); t.parentElement.classList.toggle('hurry', left < 60_000); }
+    if (left <= 0) { clearInterval(totalTimer); finish(); }
+  }, 250) : 0;
 
   const total = () => data.questions.length + P.review.length;
   const doneCount = () => (P.phase === 'main' ? P.i : data.questions.length + P.i);
@@ -2021,6 +2031,7 @@ async function startLesson(target) {
     el.innerHTML = `
       <div class="ptop"><button class="pclose" data-close aria-label="Закрыть">${ic('close-circle')}</button><div class="pbar"><i style="width:${(doneCount() / total()) * 100}%"></i></div>
         <span class="combo" data-combo>${comboHtml()}</span>${P.phase === 'main' && !S.me?.isAdmin && !data.strict ? tools.html() : ''}</div>
+      ${tEnd ? `<div class="ttotal">${emo('⏱️')}<b data-ttotal data-noi18n>${fmtLeft(tEnd - Date.now())}</b></div>` : ''}
       ${data.timeLimit && P.phase === 'main' ? `<div class="qtimer"><i data-tbar></i><b data-tleft>${data.timeLimit}</b></div>` : ''}
       <div class="pbody">
         <div class="qkind ${P.phase === 'review' ? 'review' : ''}">${P.phase === 'review' ? `${emo(E.repeat)} Работа над ошибками` : data.preview ? `${ic('eye', 'sm')} Превью учителя ·` : data.strict ? `${emo('🛡️')} Контрольная · <span data-noi18n>${P.i + 1}/${data.questions.length}</span> ·` : ''} ${KIND[q.type]}${q.topic ? ` <span class="t">· ${esc(q.topic)}</span>` : ''}${q.from ? ` <span class="t">· ${esc(q.from)}</span>` : ''}</div>
@@ -2119,6 +2130,7 @@ async function startLesson(target) {
     if (el.dataset.result) return;
     el.dataset.result = '1';
     guard?.stop();
+    clearInterval(totalTimer);
     // итог теста: если сеть моргнула или сервер ответил ошибкой — пробуем ещё раз (результат на сервере уже сохранён)
     for (let k = 0; k < 3 && !r; k++) {
       try { r = await api(`/attempts/${data.attemptId}/finish`, {}); } catch (e) { if (k === 2) return fail(e); await new Promise((ok) => setTimeout(ok, 700)); }
@@ -2141,7 +2153,7 @@ async function startLesson(target) {
     el.innerHTML = `<div class="pbody"><div class="result">
       <div style="position:relative;display:inline-block">${me(look.emo, 150)}<span style="position:absolute;right:-26px;top:4px">${emo(look.icon, { anim: true, cls: 'xl' })}</span></div>
       <h1>${look.title}</h1>
-      ${r.strict ? `<p style="margin-top:6px"><span class="pill ${r.xp < 0 ? 'bad' : 'good'}" data-noi18n>${r.xp < 0 ? '−' + Math.abs(r.xp) : 0} XP</span></p><p class="muted small">${r.strict.forfeit === 'warnings' ? 'Слишком много выходов с полного экрана — тест закончен автоматически.' : r.strict.forfeit ? 'Ты вышел из теста до конца.' : r.correct === r.total ? 'Ни одной ошибки — XP не отняли!' : `За каждую ошибку −${r.strict.perWrong} XP.`}</p>` : ''}
+      ${r.strict ? `<p style="margin-top:6px"><span class="pill ${r.xp < 0 ? 'bad' : 'good'}" data-noi18n>${r.xp < 0 ? '−' + Math.abs(r.xp) : 0} XP</span></p><p class="muted small">${r.strict.forfeit === 'warnings' ? 'Слишком много выходов с полного экрана — тест закончен автоматически.' : r.strict.forfeit ? 'Ты вышел из теста до конца.' : r.strict.timeUp ? `Время вышло. Неотвеченных вопросов: ${r.strict.unanswered} — они считаются ошибками.` : r.correct === r.total ? 'Ни одной ошибки — XP не отняли!' : `За каждую ошибку −${r.strict.perWrong} XP.`}</p>` : ''}
       ${r.level ? `<p style="margin-top:6px"><span class="pill ${r.practice ? '' : 'gold'}">${emo(LEVEL_INFO[r.level].emo)} ${r.level}. <span>${LEVEL_INFO[r.level].name}</span> · ${r.preview ? 'превью' : r.practice ? 'уровень уже пройден — без очков' : `<span data-noi18n>+${r.xp} XP</span> из <span data-noi18n>${r.reward}</span>`}</span></p>` : ''}
       ${data.mistakes ? `<p class="muted" style="margin-top:4px">${r.mistakesLeft ? `В копилке ошибок осталось ${plural(r.mistakesLeft, 'вопрос', 'вопроса', 'вопросов')}` : 'Копилка ошибок пуста — красота!'}</p>` : ''}
       ${!data.mistakes && !data.preview && r.correct < r.total ? `<p class="muted small" style="margin-top:4px">${emo(E.repeat)} Ошибки попали в твою «Работу над ошибками» на главной</p>` : ''}
@@ -3049,7 +3061,7 @@ function lessonCardHtml(l) {
   return `<div class="card">
     <div class="row" style="align-items:flex-start;gap:12px"><div style="font-size:40px;line-height:1">${emo(l.emoji, { cls: 'lg' })}</div><div class="grow"><h3>${esc(l.title)}</h3>
       ${l.description ? `<p class="small muted" style="margin-top:2px">${esc(l.description)}</p>` : ''}
-      <div class="tags" style="margin-top:8px">${l.exam ? `<span class="pill gold">${emo('📝')}тест без обучалки</span>` : ''}${l.strict ? `<span class="pill bad">${emo('🛡️')}контрольная: −100 XP за ошибку</span>` : ''}${l.hasLearn ? `<span class="pill accent">${emo('📖')}обучалка · ${l.learnSections}</span>` : ''}<span class="pill accent">${emo(E.puzzle)}${l.questions}</span>${l.types.map((t) => `<span class="pill">${TYPE_LABEL[t] || t}</span>`).join('')}</div></div>
+      <div class="tags" style="margin-top:8px">${l.exam ? `<span class="pill gold">${emo('📝')}тест без обучалки</span>` : ''}${l.strict ? `<span class="pill bad">${emo('🛡️')}контрольная: −100 XP за ошибку</span>` : ''}${l.timeLimit ? `<span class="pill">${emo('⏱️')}${Math.round(l.timeLimit / 60)} мин</span>` : ''}${l.hasLearn ? `<span class="pill accent">${emo('📖')}обучалка · ${l.learnSections}</span>` : ''}<span class="pill accent">${emo(E.puzzle)}${l.questions}</span>${l.types.map((t) => `<span class="pill">${TYPE_LABEL[t] || t}</span>`).join('')}</div></div>
       ${l.sentTo.length || l.personalFor.length ? '' : '<span class="pill gold">черновик</span>'}</div>
     ${l.topics.length ? `<p class="small muted" style="margin-top:10px">Темы: ${l.topics.map(esc).join(' · ')}</p>` : ''}
     ${l.sentTo.length ? `<div style="margin-top:12px">${l.sentTo.map((s) => `<button class="list-check" data-pubinfo="${s.pubId}">${ic('plain-2', 'sm')}<div class="grow"><b>${esc(s.groupName)}</b><div class="small muted">${s.learned != null ? `обучалку ${s.learned}/${s.size} · ` : ''}тест ${s.done}/${s.size} · ${ago(s.publishedAt)}</div></div>${pctPill(s.avg)}</button>`).join('')}</div>` : ''}

@@ -115,6 +115,9 @@ if (fs.existsSync(archiveFile)) {
   const n = logic.applyArchive(JSON.parse(fs.readFileSync(archiveFile, 'utf8')));
   if (n) console.log(`[archive] скрыто тестов: ${n}`);
 }
+// Удалить тесты совсем (content/remove.json: ["id", …]); решённые не удаляются, а скрываются
+const removeFile = path.join(root, 'content', 'remove.json');
+if (fs.existsSync(removeFile)) for (const r of logic.removeLessons(JSON.parse(fs.readFileSync(removeFile, 'utf8')))) console.log('[remove] ' + JSON.stringify(r));
 
 const tg = BOT_TOKEN && process.env.NO_BOT !== '1' ? createBot({ token: BOT_TOKEN, logic, journal, nudges, store, appUrl: PUBLIC_URL + '/', adminIds: ADMIN_IDS }) : null;
 

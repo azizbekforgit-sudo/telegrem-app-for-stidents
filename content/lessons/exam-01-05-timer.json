@@ -1,11 +1,12 @@
 {
-  "id": "exam-01-05-control",
+  "id": "exam-01-05-timer",
   "order": 100,
   "kind": "exam",
   "strict": true,
+  "timeLimit": 900,
   "emoji": "🛡️",
   "title": "Контрольная: уроки 1–5",
-  "description": "HTML, CSS, селекторы, box model, позиционирование. Очков нет: за каждую ошибку −100 XP, выход из теста −2000 XP.",
+  "description": "HTML, CSS, селекторы, box model, позиционирование. 15 минут на весь тест. Очков нет: за каждую ошибку −100 XP, выход из теста −2000 XP.",
   "questions": [
     {
       "type": "choice",

@@ -25,6 +25,8 @@ const PHRASES = [
   ['ПОБЕДА!', 'VICTORY!', "G'ALABA!"], ['Я в тебя верил!', 'I believed in you!', 'Men senga ishongandim!'],
   ['Курс', 'Course', 'Kurs'],
   ['Дневник', 'Diary', 'Kundalik'],
+  ['На весь тест', 'The whole test has', 'Butun test uchun'],
+  ['Время вышло — тест закончится, неотвеченные вопросы считаются ошибками.', 'When time is up the test ends, unanswered questions count as mistakes.', 'Vaqt tugasa — test tugaydi, javobsiz savollar xato hisoblanadi.'],
   ['контрольная: −100 XP за ошибку', 'test: −100 XP per mistake', "nazorat ishi: har xato uchun −100 XP"],
   ['результат', 'result', 'natija'],
   ['Контрольную можно пройти только один раз — она уже сдана.', 'The test can be taken only once — it\'s already done.', 'Nazorat ishini faqat bir marta topshirish mumkin — u allaqachon topshirilgan.'],
@@ -387,6 +389,8 @@ const TOKENS = [
 ];
 
 const PATTERNS = [
+  [/^Время вышло\. Неотвеченных вопросов: (\d+) — они считаются ошибками\.$/, 'Time is up. Unanswered questions: $1 — they count as mistakes.', 'Vaqt tugadi. Javobsiz savollar: $1 — ular xato hisoblanadi.'],
+  [/^(\d+) мин$/, '$1 min', '$1 daq'],
   [/^Тест закончится: 0% и −(\d+) XP\.$/, 'The test will end: 0% and −$1 XP.', 'Test tugaydi: 0% va −$1 XP.'],
   [/^Если ещё раз выйдешь, тест автоматически станет 0% и отнимется ровно (\d+) XP\.$/, 'If you leave once more, the test automatically becomes 0% and exactly $1 XP is taken.', 'Yana bir marta chiqsang, test avtomatik 0% bo\'ladi va roppa-rosa $1 XP olinadi.'],
   [/^Не выходи из теста и с полного экрана\. Осталось предупреждений: (\d+)\. Потом тест закончится: 0% и −(\d+) XP\.$/, 'Don\'t leave the test or full screen. Warnings left: $1. Then the test ends: 0% and −$2 XP.', 'Testdan va to\'liq ekrandan chiqma. Qolgan ogohlantirishlar: $1. Keyin test tugaydi: 0% va −$2 XP.'],
