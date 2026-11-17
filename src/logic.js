@@ -285,6 +285,16 @@ export function createLogic(store, { adminIds }) {
     return created;
   }
 
+  // content/resets.json: второй шанс — убрать попытки ученика по тесту (и их XP/штраф), чтобы он решил заново
+  function resetAttempts(key, userId, lessonId) {
+    S.migrations ||= {};
+    if (S.migrations[key]) return null;
+    const gone = Object.values(S.attempts).filter((a) => a.userId === String(userId) && a.lessonId === lessonId && !a.preview);
+    for (const a of gone) delete S.attempts[a.id];
+    S.migrations[key] = Date.now();
+    store.save();
+    return { key, user: { id: String(userId), name: name(S.users[String(userId)]) }, lessonId, removed: gone.length, xpReturned: -gone.reduce((s2, a) => s2 + (a.xp || 0), 0), xpNow: totalXp(String(userId)) };
+  }
   // content/remove.json: удалить тест совсем (вместе с выдачей), если его ещё никто не решал
   function removeLessons(ids) {
     const out = [];
@@ -1285,7 +1295,7 @@ export function createLogic(store, { adminIds }) {
 
   return {
     S, log, earnedXp, spentXp, levelsOf, parentsOverview, testStatus, attemptQuestion, finishedAt, totalXp, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
-    upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish, warn, forfeit, sweepStrict, removeLessons,
+    upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish, warn, forfeit, sweepStrict, removeLessons, resetAttempts,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,
     startLearn, checkLearn, finishLearn, assignPersonal, report, teacherName,

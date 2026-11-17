@@ -116,6 +116,9 @@ if (fs.existsSync(archiveFile)) {
   if (n) console.log(`[archive] скрыто тестов: ${n}`);
 }
 // Удалить тесты совсем (content/remove.json: ["id", …]); решённые не удаляются, а скрываются
+// Второй шанс по тесту (content/resets.json: [{ id, userId, lessonId }]); каждый id — один раз
+const resetsFile = path.join(root, 'content', 'resets.json');
+if (fs.existsSync(resetsFile)) for (const r of JSON.parse(fs.readFileSync(resetsFile, 'utf8'))) { const x = logic.resetAttempts('reset:' + r.id, r.userId, r.lessonId); if (x) console.log('[reset] ' + JSON.stringify(x)); }
 const removeFile = path.join(root, 'content', 'remove.json');
 if (fs.existsSync(removeFile)) for (const r of logic.removeLessons(JSON.parse(fs.readFileSync(removeFile, 'utf8')))) console.log('[remove] ' + JSON.stringify(r));
 
