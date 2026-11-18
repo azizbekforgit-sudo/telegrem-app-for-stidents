@@ -1,0 +1,131 @@
+{
+ "lessonId": "lesson-09-responsive",
+ "allow": [
+  "html",
+  "css"
+ ],
+ "topic": {
+  "ru": "Адаптивность и media",
+  "uz": "Moslashuvchanlik va media",
+  "en": "Responsive design and media"
+ },
+ "sections": {
+  "0": {
+   "title": {
+    "ru": "meta viewport",
+    "uz": "meta viewport",
+    "en": "meta viewport"
+   },
+   "intro": {
+    "ru": "Без этой строки телефон «сожмёт» сайт.",
+    "uz": "Bu qatorsiz telefon saytni «siqib» qo'yadi.",
+    "en": "Without this line a phone «shrinks» the site."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Адаптив</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <h1>Привет, телефон!</h1>\n</body>\n</html>\n",
+    "style.css": ""
+   },
+   "steps": [
+    {
+     "file": "index.html",
+     "re": "<meta\\s+name=\"viewport\"\\s+content=\"width=device-width,\\s*initial-scale=1(\\.0)?\"",
+     "say": {
+      "ru": "В `<head>` добавь `<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">`",
+      "uz": "`<head>` ga `<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">` qo'sh",
+      "en": "Add `<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">` to `<head>`"
+     },
+     "show": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
+    }
+   ],
+   "open": "index.html"
+  },
+  "1": {
+   "title": {
+    "ru": "@media",
+    "uz": "@media",
+    "en": "@media"
+   },
+   "intro": {
+    "ru": "На телефоне колонки встанут друг под другом.",
+    "uz": "Telefonda ustunlar bir-birining ostiga tushadi.",
+    "en": "On a phone the columns will stack."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"row\">\n    <div class=\"col\">1</div>\n    <div class=\"col\">2</div>\n    <div class=\"col\">3</div>\n  </div>\n</body>\n</html>\n",
+    "style.css": ".row {\n  display: flex;\n  gap: 10px;\n}\n.col {\n  flex: 1;\n  background: #def;\n  padding: 20px;\n}\n"
+   },
+   "steps": [
+    {
+     "file": "style.css",
+     "re": "@media\\s*\\(\\s*max-width\\s*:\\s*600px\\s*\\)\\s*\\{",
+     "say": {
+      "ru": "Ниже обычных стилей: `@media (max-width: 600px) { }`",
+      "uz": "Oddiy uslublar ostida: `@media (max-width: 600px) { }`",
+      "en": "Below the normal styles: `@media (max-width: 600px) { }`"
+     },
+     "show": "@media (max-width: 600px) {\n\n}"
+    },
+    {
+     "file": "style.css",
+     "re": "@media\\s*\\(\\s*max-width\\s*:\\s*600px\\s*\\)\\s*\\{[\\s\\S]*\\.row\\s*\\{[^}]*flex-direction\\s*:\\s*column",
+     "say": {
+      "ru": "Внутри media: `.row { flex-direction: column; }`",
+      "uz": "media ichida: `.row { flex-direction: column; }`",
+      "en": "Inside media: `.row { flex-direction: column; }`"
+     },
+     "show": "@media (max-width: 600px) {\n  .row {\n    flex-direction: column;\n  }\n}"
+    }
+   ],
+   "open": "style.css"
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "Сайт на трёх экранах",
+   "uz": "Uch ekrandagi sayt",
+   "en": "A site on three screens"
+  },
+  "intro": {
+   "ru": "Адаптируй галерею: компьютер — 3 колонки, планшет — 2, телефон — 1.",
+   "uz": "Galereyani moslashtir: kompyuter — 3 ustun, planshet — 2, telefon — 1.",
+   "en": "Make the gallery responsive: desktop — 3 columns, tablet — 2, phone — 1."
+  },
+  "files": {
+   "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"gallery\">\n    <div class=\"card\">Карточка 1</div>\n    <div class=\"card\">Карточка 2</div>\n    <div class=\"card\">Карточка 3</div>\n    <div class=\"card\">Карточка 4</div>\n    <div class=\"card\">Карточка 5</div>\n    <div class=\"card\">Карточка 6</div>\n  </div>\n</body>\n</html>\n",
+   "style.css": ".gallery {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 20px;\n}\n.card {\n  background: lightblue;\n  padding: 20px;\n}\n"
+  },
+  "steps": [
+   {
+    "file": "index.html",
+    "re": "<meta\\s+name=\"viewport\"",
+    "say": {
+     "ru": "Добавь meta viewport в `<head>`",
+     "uz": "`<head>` ga meta viewport qo'sh",
+     "en": "Add the meta viewport to `<head>`"
+    },
+    "show": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
+   },
+   {
+    "file": "style.css",
+    "re": "@media\\s*\\(\\s*max-width\\s*:\\s*1024px\\s*\\)\\s*\\{[\\s\\S]*repeat\\(\\s*2\\s*,",
+    "say": {
+     "ru": "Планшет: `@media (max-width: 1024px)` → `repeat(2, 1fr)`",
+     "uz": "Planshet: `@media (max-width: 1024px)` → `repeat(2, 1fr)`",
+     "en": "Tablet: `@media (max-width: 1024px)` → `repeat(2, 1fr)`"
+    },
+    "show": "@media (max-width: 1024px) {\n  .gallery {\n    grid-template-columns: repeat(2, 1fr);\n  }\n}"
+   },
+   {
+    "file": "style.css",
+    "re": "@media\\s*\\(\\s*max-width\\s*:\\s*600px\\s*\\)\\s*\\{[\\s\\S]*(repeat\\(\\s*1\\s*,|grid-template-columns\\s*:\\s*1fr)",
+    "say": {
+     "ru": "Телефон: `@media (max-width: 600px)` → одна колонка `1fr`",
+     "uz": "Telefon: `@media (max-width: 600px)` → bitta ustun `1fr`",
+     "en": "Phone: `@media (max-width: 600px)` → one column `1fr`"
+    },
+    "show": "@media (max-width: 600px) {\n  .gallery {\n    grid-template-columns: 1fr;\n  }\n}"
+   }
+  ],
+  "open": "style.css"
+ }
+}

@@ -1,0 +1,181 @@
+{
+ "lessonId": "lesson-18-objects",
+ "allow": [
+  "js"
+ ],
+ "topic": {
+  "ru": "Объекты",
+  "uz": "Obyektlar",
+  "en": "Objects"
+ },
+ "sections": {
+  "0": {
+   "title": {
+    "ru": "Объект",
+    "uz": "Obyekt",
+    "en": "An object"
+   },
+   "intro": {
+    "ru": "Опишем ученика объектом.",
+    "uz": "O'quvchini obyekt bilan tasvirlaymiz.",
+    "en": "Let's describe a student with an object."
+   },
+   "files": {
+    "script.js": "// Пиши код здесь. Результат — во вкладке «Результат» (консоль)\n"
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "const\\s+student\\s*=\\s*\\{[\\s\\S]*name\\s*:[\\s\\S]*age\\s*:[\\s\\S]*\\}",
+     "say": {
+      "ru": "`const student = { name: \"Аня\", age: 12 };`",
+      "uz": "`const student = { name: \"Anya\", age: 12 };`",
+      "en": "`const student = { name: \"Anya\", age: 12 };`"
+     },
+     "show": "const student = {\n  name: \"Аня\",\n  age: 12,\n};"
+    },
+    {
+     "file": "script.js",
+     "out": "\\S",
+     "say": {
+      "ru": "Выведи имя через точку: `console.log(student.name);`",
+      "uz": "Ismni nuqta orqali chiqar: `console.log(student.name);`",
+      "en": "Print the name with a dot: `console.log(student.name);`"
+     },
+     "show": "console.log(student.name);"
+    }
+   ]
+  },
+  "2": {
+   "title": {
+    "ru": "Изменение свойства",
+    "uz": "Xossani o'zgartirish",
+    "en": "Changing a property"
+   },
+   "intro": {
+    "ru": "Ученику исполнился год.",
+    "uz": "O'quvchiga bir yosh to'ldi.",
+    "en": "The student had a birthday."
+   },
+   "files": {
+    "script.js": "// Пиши код здесь. Результат — во вкладке «Результат» (консоль)\nconst student = { name: \"Аня\", age: 12 };\n"
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "student\\.age\\s*(=\\s*13|\\+\\+|\\+=\\s*1)",
+     "say": {
+      "ru": "`student.age = 13;` или `student.age++;`",
+      "uz": "`student.age = 13;` yoki `student.age++;`",
+      "en": "`student.age = 13;` or `student.age++;`"
+     },
+     "show": "student.age++;"
+    },
+    {
+     "file": "script.js",
+     "out": "^13$",
+     "say": {
+      "ru": "`console.log(student.age);` → 13",
+      "uz": "`console.log(student.age);` → 13",
+      "en": "`console.log(student.age);` → 13"
+     },
+     "show": "console.log(student.age);"
+    }
+   ]
+  },
+  "4": {
+   "title": {
+    "ru": "Деструктуризация",
+    "uz": "Destrukturizatsiya",
+    "en": "Destructuring"
+   },
+   "intro": {
+    "ru": "«Распакуем посылку».",
+    "uz": "«Posilkani ochamiz».",
+    "en": "Let's «unpack the parcel»."
+   },
+   "files": {
+    "script.js": "// Пиши код здесь. Результат — во вкладке «Результат» (консоль)\nconst user = { name: \"Бегзод\", city: \"Ташкент\" };\n"
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "const\\s*\\{\\s*name\\s*,\\s*city\\s*\\}\\s*=\\s*user",
+     "say": {
+      "ru": "`const { name, city } = user;`",
+      "uz": "`const { name, city } = user;`",
+      "en": "`const { name, city } = user;`"
+     },
+     "show": "const { name, city } = user;"
+    },
+    {
+     "file": "script.js",
+     "out": "\\S",
+     "say": {
+      "ru": "`console.log(name, city);`",
+      "uz": "`console.log(name, city);`",
+      "en": "`console.log(name, city);`"
+     },
+     "show": "console.log(name, city);"
+    }
+   ]
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "Профиль пользователя",
+   "uz": "Foydalanuvchi profili",
+   "en": "User profile"
+  },
+  "intro": {
+   "ru": "Объект-профиль: 5+ полей и вложенный address. Выведи всё через деструктуризацию.",
+   "uz": "Profil-obyekt: 5+ maydon va ichki address. Hammasini destrukturizatsiya orqali chiqar.",
+   "en": "A profile object: 5+ fields and a nested address. Print everything with destructuring."
+  },
+  "files": {
+   "script.js": "// Пиши код здесь. Результат — во вкладке «Результат» (консоль)\n"
+  },
+  "steps": [
+   {
+    "file": "script.js",
+    "re": "const\\s+profile\\s*=\\s*\\{([^{}]*\\w+\\s*:[^{}]*){5}",
+    "say": {
+     "ru": "`const profile = { name, age, email, isStudent, … }` — минимум 5 полей",
+     "uz": "`const profile = { name, age, email, isStudent, … }` — kamida 5 maydon",
+     "en": "`const profile = { name, age, email, isStudent, … }` — at least 5 fields"
+    },
+    "show": "const profile = {\n  name: \"Аня\",\n  age: 25,\n  email: \"anya@mail.uz\",\n  isStudent: true,\n  address: { city: \"Ташкент\", street: \"Навои 10\" },\n};"
+   },
+   {
+    "file": "script.js",
+    "re": "address\\s*:\\s*\\{[^}]*city\\s*:[^}]*street\\s*:",
+    "say": {
+     "ru": "Вложенный объект: `address: { city: \"…\", street: \"…\" }`",
+     "uz": "Ichki obyekt: `address: { city: \"…\", street: \"…\" }`",
+     "en": "A nested object: `address: { city: \"…\", street: \"…\" }`"
+    },
+    "show": "address: { city: \"Ташкент\", street: \"Навои 10\" }"
+   },
+   {
+    "file": "script.js",
+    "re": "const\\s*\\{[^}]*\\}\\s*=\\s*profile",
+    "say": {
+     "ru": "Распакуй: `const { name, age, email } = profile;`",
+     "uz": "Och: `const { name, age, email } = profile;`",
+     "en": "Unpack: `const { name, age, email } = profile;`"
+    },
+    "show": "const { name, age, email, address } = profile;"
+   },
+   {
+    "file": "script.js",
+    "out": "\\S[\\s\\S]*\\S",
+    "say": {
+     "ru": "И выведи данные в консоль",
+     "uz": "Va ma'lumotlarni konsolga chiqar",
+     "en": "And print the data to the console"
+    },
+    "show": "console.log(name, age, email, address.city);"
+   }
+  ]
+ }
+}

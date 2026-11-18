@@ -1,0 +1,199 @@
+{
+ "lessonId": "lesson-14-conditions",
+ "allow": [
+  "js"
+ ],
+ "topic": {
+  "ru": "Условия",
+  "uz": "Shartlar",
+  "en": "Conditions"
+ },
+ "sections": {
+  "0": {
+   "title": {
+    "ru": "if / else",
+    "uz": "if / else",
+    "en": "if / else"
+   },
+   "intro": {
+    "ru": "Проверим, взрослый ли человек.",
+    "uz": "Odam kattami, tekshiramiz.",
+    "en": "Let's check whether someone is an adult."
+   },
+   "files": {
+    "script.js": "// Пиши код здесь. Результат — во вкладке «Результат» (консоль)\nlet age = 15;\n"
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "if\\s*\\(\\s*age\\s*>=\\s*18\\s*\\)\\s*\\{",
+     "say": {
+      "ru": "Условие: `if (age >= 18) { … }`",
+      "uz": "Shart: `if (age >= 18) { … }`",
+      "en": "A condition: `if (age >= 18) { … }`"
+     },
+     "show": "if (age >= 18) {\n  console.log(\"Взрослый\");\n}"
+    },
+    {
+     "file": "script.js",
+     "re": "\\}\\s*else\\s*\\{",
+     "say": {
+      "ru": "Иначе: `else { console.log(\"Ребёнок\"); }`",
+      "uz": "Aks holda: `else { console.log(\"Bola\"); }`",
+      "en": "Otherwise: `else { console.log(\"Child\"); }`"
+     },
+     "show": "} else {\n  console.log(\"Ребёнок\");\n}"
+    },
+    {
+     "file": "script.js",
+     "out": "\\S",
+     "say": {
+      "ru": "Посмотри результат: при age = 15 сработает else",
+      "uz": "Natijaga qara: age = 15 da else ishlaydi",
+      "en": "Look at the result: with age = 15 the else runs"
+     }
+    }
+   ]
+  },
+  "1": {
+   "title": {
+    "ru": "else if",
+    "uz": "else if",
+    "en": "else if"
+   },
+   "intro": {
+    "ru": "Оценка по баллам.",
+    "uz": "Ball bo'yicha baho.",
+    "en": "A grade from points."
+   },
+   "files": {
+    "script.js": "// Пиши код здесь. Результат — во вкладке «Результат» (консоль)\nlet score = 75;\n"
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "if\\s*\\(\\s*score\\s*>=\\s*90\\s*\\)",
+     "say": {
+      "ru": "Сначала самое строгое: `if (score >= 90)` → «Отлично»",
+      "uz": "Avval eng qat'iysi: `if (score >= 90)` → «A'lo»",
+      "en": "The strictest first: `if (score >= 90)` → «Excellent»"
+     },
+     "show": "if (score >= 90) {\n  console.log(\"Отлично\");\n}"
+    },
+    {
+     "file": "script.js",
+     "re": "else\\s+if\\s*\\(\\s*score\\s*>=\\s*\\d+\\s*\\)",
+     "say": {
+      "ru": "Потом `else if (score >= 70)` → «Хорошо»",
+      "uz": "Keyin `else if (score >= 70)` → «Yaxshi»",
+      "en": "Then `else if (score >= 70)` → «Good»"
+     },
+     "show": "} else if (score >= 70) {\n  console.log(\"Хорошо\");\n}"
+    },
+    {
+     "file": "script.js",
+     "re": "else\\s*\\{",
+     "say": {
+      "ru": "И `else` для всего остального",
+      "uz": "Va qolgan hammasi uchun `else`",
+      "en": "And `else` for everything else"
+     },
+     "show": "} else {\n  console.log(\"Надо повторить\");\n}"
+    }
+   ]
+  },
+  "3": {
+   "title": {
+    "ru": "Тернарный оператор",
+    "uz": "Ternar operator",
+    "en": "The ternary operator"
+   },
+   "intro": {
+    "ru": "Запишем if/else в одну строку.",
+    "uz": "if/else ni bir qatorda yozamiz.",
+    "en": "Let's write if/else in one line."
+   },
+   "files": {
+    "script.js": "// Пиши код здесь. Результат — во вкладке «Результат» (консоль)\nlet age = 20;\n"
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "age\\s*>=\\s*18\\s*\\?\\s*[\"\\'`][^\"\\'`]+[\"\\'`]\\s*:\\s*[\"\\'`]",
+     "say": {
+      "ru": "`const text = age >= 18 ? \"Взрослый\" : \"Ребёнок\";`",
+      "uz": "`const text = age >= 18 ? \"Katta\" : \"Bola\";`",
+      "en": "`const text = age >= 18 ? \"Adult\" : \"Child\";`"
+     },
+     "show": "const text = age >= 18 ? \"Взрослый\" : \"Ребёнок\";"
+    },
+    {
+     "file": "script.js",
+     "out": "\\S",
+     "say": {
+      "ru": "И выведи `console.log(text);`",
+      "uz": "Va chiqar `console.log(text);`",
+      "en": "And print `console.log(text);`"
+     },
+     "show": "console.log(text);"
+    }
+   ]
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "Что взять из дома",
+   "uz": "Uydan nima olish kerak",
+   "en": "What to take from home"
+  },
+  "intro": {
+   "ru": "По трём переменным реши, что взять из дома, через if / else if / else и хотя бы одно &&.",
+   "uz": "Uchta o'zgaruvchi bo'yicha uydan nima olishni if / else if / else va kamida bitta && orqali hal qil.",
+   "en": "Using three variables decide what to take from home with if / else if / else and at least one &&."
+  },
+  "files": {
+   "script.js": "// Пиши код здесь. Результат — во вкладке «Результат» (консоль)\nlet temperature = 8;\nlet isRaining = true;\nlet hasUmbrella = false;\n"
+  },
+  "steps": [
+   {
+    "file": "script.js",
+    "re": "if\\s*\\([^)]*isRaining[^)]*&&[^)]*hasUmbrella|if\\s*\\([^)]*hasUmbrella[^)]*&&[^)]*isRaining",
+    "say": {
+     "ru": "Условие с `&&`: дождь и нет зонта",
+     "uz": "`&&` li shart: yomg'ir va soyabon yo'q",
+     "en": "A condition with `&&`: rain and no umbrella"
+    },
+    "show": "if (isRaining && !hasUmbrella) {\n  console.log(\"Возьми зонт!\");\n}"
+   },
+   {
+    "file": "script.js",
+    "re": "else\\s+if\\s*\\([^)]*temperature",
+    "say": {
+     "ru": "`else if` про температуру",
+     "uz": "Harorat haqida `else if`",
+     "en": "An `else if` about the temperature"
+    },
+    "show": "} else if (temperature < 10) {\n  console.log(\"Надень куртку\");\n}"
+   },
+   {
+    "file": "script.js",
+    "re": "else\\s*\\{",
+    "say": {
+     "ru": "И `else` — «Можно идти налегке»",
+     "uz": "Va `else` — «Yengil kiyinib chiqsa bo'ladi»",
+     "en": "And `else` — «You can go light»"
+    },
+    "show": "} else {\n  console.log(\"Можно идти налегке\");\n}"
+   },
+   {
+    "file": "script.js",
+    "out": "\\S",
+    "say": {
+     "ru": "Поменяй значения переменных и посмотри, что выводит консоль",
+     "uz": "O'zgaruvchilar qiymatini o'zgartir va konsol nima chiqarishini ko'r",
+     "en": "Change the values and see what the console prints"
+    }
+   }
+  ]
+ }
+}

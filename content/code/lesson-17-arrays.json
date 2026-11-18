@@ -1,0 +1,169 @@
+{
+ "lessonId": "lesson-17-arrays",
+ "allow": [
+  "js"
+ ],
+ "topic": {
+  "ru": "Массивы",
+  "uz": "Massivlar",
+  "en": "Arrays"
+ },
+ "sections": {
+  "2": {
+   "title": {
+    "ru": "push",
+    "uz": "push",
+    "en": "push"
+   },
+   "intro": {
+    "ru": "Добавим товар в корзину.",
+    "uz": "Savatga mahsulot qo'shamiz.",
+    "en": "Let's add an item to the cart."
+   },
+   "files": {
+    "script.js": "// Пиши код здесь. Результат — во вкладке «Результат» (консоль)\nconst cart = [\"хлеб\", \"молоко\"];\n"
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "cart\\.push\\(\\s*[\"\\'`][^\"\\'`]+[\"\\'`]\\s*\\)",
+     "say": {
+      "ru": "`cart.push(\"сыр\");` — в конец",
+      "uz": "`cart.push(\"pishloq\");` — oxiriga",
+      "en": "`cart.push(\"cheese\");` — to the end"
+     },
+     "show": "cart.push(\"сыр\");"
+    },
+    {
+     "file": "script.js",
+     "out": "^3$",
+     "say": {
+      "ru": "Выведи длину: `console.log(cart.length);` → 3",
+      "uz": "Uzunlikni chiqar: `console.log(cart.length);` → 3",
+      "en": "Print the length: `console.log(cart.length);` → 3"
+     },
+     "show": "console.log(cart.length);"
+    }
+   ]
+  },
+  "3": {
+   "title": {
+    "ru": "forEach",
+    "uz": "forEach",
+    "en": "forEach"
+   },
+   "intro": {
+    "ru": "Пройдём по каждому элементу.",
+    "uz": "Har bir element bo'ylab o'tamiz.",
+    "en": "Let's go through every element."
+   },
+   "files": {
+    "script.js": "// Пиши код здесь. Результат — во вкладке «Результат» (консоль)\nconst names = [\"Аня\", \"Бегзод\", \"Нафиса\"];\n"
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "names\\.forEach\\(",
+     "say": {
+      "ru": "`names.forEach((name) => { … });`",
+      "uz": "`names.forEach((name) => { … });`",
+      "en": "`names.forEach((name) => { … });`"
+     },
+     "show": "names.forEach((name) => {\n  console.log(\"Привет, \" + name);\n});"
+    },
+    {
+     "file": "script.js",
+     "out": "(Аня|Бегзод|Нафиса)[\\s\\S]*(Аня|Бегзод|Нафиса)[\\s\\S]*(Аня|Бегзод|Нафиса)",
+     "say": {
+      "ru": "Внутри поздоровайся с каждым",
+      "uz": "Ichida har biri bilan salomlash",
+      "en": "Say hello to each one inside"
+     }
+    }
+   ]
+  },
+  "5": {
+   "title": {
+    "ru": "filter",
+    "uz": "filter",
+    "en": "filter"
+   },
+   "intro": {
+    "ru": "Отсеем дорогие товары.",
+    "uz": "Qimmat mahsulotlarni elab olamiz.",
+    "en": "Let's sift out the expensive items."
+   },
+   "files": {
+    "script.js": "// Пиши код здесь. Результат — во вкладке «Результат» (консоль)\nconst prices = [5000, 12000, 3000, 25000];\n"
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "prices\\.filter\\(",
+     "say": {
+      "ru": "`const cheap = prices.filter((p) => p < 10000);`",
+      "uz": "`const cheap = prices.filter((p) => p < 10000);`",
+      "en": "`const cheap = prices.filter((p) => p < 10000);`"
+     },
+     "show": "const cheap = prices.filter((p) => p < 10000);"
+    },
+    {
+     "file": "script.js",
+     "out": "5000\\D+3000",
+     "say": {
+      "ru": "`console.log(cheap);` → [5000, 3000]",
+      "uz": "`console.log(cheap);` → [5000, 3000]",
+      "en": "`console.log(cheap);` → [5000, 3000]"
+     },
+     "show": "console.log(cheap);"
+    }
+   ]
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "Любимые фильмы",
+   "uz": "Sevimli filmlar",
+   "en": "Favourite films"
+  },
+  "intro": {
+   "ru": "Массив из 5–6 любимых фильмов или игр. Выведи их через forEach в формате «1. Название».",
+   "uz": "5–6 ta sevimli film yoki o'yindan massiv. Ularni forEach orqali «1. Nomi» ko'rinishida chiqar.",
+   "en": "An array of 5–6 favourite films or games. Print them with forEach as «1. Title»."
+  },
+  "files": {
+   "script.js": "// Пиши код здесь. Результат — во вкладке «Результат» (консоль)\n"
+  },
+  "steps": [
+   {
+    "file": "script.js",
+    "re": "const\\s+\\w+\\s*=\\s*\\[\\s*([\"\\'`][^\"\\'`]+[\"\\'`]\\s*,\\s*){4,}[\"\\'`][^\"\\'`]+[\"\\'`]\\s*,?\\s*\\]",
+    "say": {
+     "ru": "Массив минимум из 5 строк: `const films = [\"…\", \"…\", …];`",
+     "uz": "Kamida 5 ta satrli massiv: `const films = [\"…\", \"…\", …];`",
+     "en": "An array of at least 5 strings: `const films = [\"…\", \"…\", …];`"
+    },
+    "show": "const films = [\"Матрица\", \"Интерстеллар\", \"Майнкрафт\", \"Тачки\", \"Шрек\"];"
+   },
+   {
+    "file": "script.js",
+    "re": "\\.forEach\\(\\s*\\(?\\s*\\w+\\s*,\\s*\\w+\\s*\\)?\\s*=>",
+    "say": {
+     "ru": "forEach с двумя параметрами: `(film, index) =>`",
+     "uz": "Ikki parametrli forEach: `(film, index) =>`",
+     "en": "forEach with two parameters: `(film, index) =>`"
+    },
+    "show": "films.forEach((film, index) => {\n  console.log(`${index + 1}. ${film}`);\n});"
+   },
+   {
+    "file": "script.js",
+    "out": "^1\\. .+\\n2\\. .+\\n3\\. .+\\n4\\. .+\\n5\\. ",
+    "say": {
+     "ru": "В консоли «1. …», «2. …» и так далее",
+     "uz": "Konsolda «1. …», «2. …» va hokazo",
+     "en": "The console shows «1. …», «2. …» and so on"
+    }
+   }
+  ]
+ }
+}

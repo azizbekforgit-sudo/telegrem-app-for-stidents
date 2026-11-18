@@ -1,0 +1,178 @@
+{
+ "lessonId": "lesson-15-loops",
+ "allow": [
+  "js"
+ ],
+ "topic": {
+  "ru": "Циклы",
+  "uz": "Tsikllar",
+  "en": "Loops"
+ },
+ "sections": {
+  "0": {
+   "title": {
+    "ru": "Цикл for",
+    "uz": "for tsikli",
+    "en": "The for loop"
+   },
+   "intro": {
+    "ru": "Выведем числа от 1 до 5.",
+    "uz": "1 dan 5 gacha sonlarni chiqaramiz.",
+    "en": "Let's print the numbers from 1 to 5."
+   },
+   "files": {
+    "script.js": "// Пиши код здесь. Результат — во вкладке «Результат» (консоль)\n"
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "for\\s*\\(\\s*let\\s+i\\s*=\\s*1\\s*;\\s*i\\s*<=\\s*5\\s*;\\s*i\\+\\+\\s*\\)",
+     "say": {
+      "ru": "`for (let i = 1; i <= 5; i++) { }`",
+      "uz": "`for (let i = 1; i <= 5; i++) { }`",
+      "en": "`for (let i = 1; i <= 5; i++) { }`"
+     },
+     "show": "for (let i = 1; i <= 5; i++) {\n  console.log(i);\n}"
+    },
+    {
+     "file": "script.js",
+     "out": "^1\\n2\\n3\\n4\\n5$",
+     "say": {
+      "ru": "Внутри — `console.log(i);` В консоли 1 2 3 4 5",
+      "uz": "Ichida — `console.log(i);` Konsolda 1 2 3 4 5",
+      "en": "Inside — `console.log(i);` The console shows 1 2 3 4 5"
+     },
+     "show": "console.log(i);"
+    }
+   ]
+  },
+  "2": {
+   "title": {
+    "ru": "Цикл while",
+    "uz": "while tsikli",
+    "en": "The while loop"
+   },
+   "intro": {
+    "ru": "Обратный отсчёт до старта.",
+    "uz": "Startgacha teskari sanoq.",
+    "en": "A countdown to launch."
+   },
+   "files": {
+    "script.js": "// Пиши код здесь. Результат — во вкладке «Результат» (консоль)\nlet count = 3;\n"
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "while\\s*\\(\\s*count\\s*>\\s*0\\s*\\)",
+     "say": {
+      "ru": "`while (count > 0) { … }`",
+      "uz": "`while (count > 0) { … }`",
+      "en": "`while (count > 0) { … }`"
+     },
+     "show": "while (count > 0) {\n  console.log(count);\n  count--;\n}"
+    },
+    {
+     "file": "script.js",
+     "re": "count\\s*(--|-=\\s*1|=\\s*count\\s*-\\s*1)",
+     "say": {
+      "ru": "Не забудь уменьшать: `count--;` — иначе цикл бесконечный!",
+      "uz": "Kamaytirishni unutma: `count--;` — aks holda tsikl cheksiz!",
+      "en": "Don't forget to decrease: `count--;` — or the loop is infinite!"
+     },
+     "show": "count--;"
+    },
+    {
+     "file": "script.js",
+     "out": "^3\\n2\\n1",
+     "say": {
+      "ru": "В консоли 3, 2, 1",
+      "uz": "Konsolda 3, 2, 1",
+      "en": "The console shows 3, 2, 1"
+     }
+    }
+   ]
+  },
+  "3": {
+   "title": {
+    "ru": "for...of",
+    "uz": "for...of",
+    "en": "for...of"
+   },
+   "intro": {
+    "ru": "Переберём фрукты.",
+    "uz": "Mevalarni birma-bir ko'rib chiqamiz.",
+    "en": "Let's go through the fruits."
+   },
+   "files": {
+    "script.js": "// Пиши код здесь. Результат — во вкладке «Результат» (консоль)\nconst fruits = [\"яблоко\", \"банан\", \"киви\"];\n"
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "for\\s*\\(\\s*(const|let)\\s+\\w+\\s+of\\s+fruits\\s*\\)",
+     "say": {
+      "ru": "`for (const fruit of fruits) { … }`",
+      "uz": "`for (const fruit of fruits) { … }`",
+      "en": "`for (const fruit of fruits) { … }`"
+     },
+     "show": "for (const fruit of fruits) {\n  console.log(fruit);\n}"
+    },
+    {
+     "file": "script.js",
+     "out": "яблоко\\nбанан\\nкиви|apple|olma",
+     "say": {
+      "ru": "Выведи каждый фрукт",
+      "uz": "Har bir mevani chiqar",
+      "en": "Print every fruit"
+     }
+    }
+   ]
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "Чётные числа",
+   "uz": "Juft sonlar",
+   "en": "Even numbers"
+  },
+  "intro": {
+   "ru": "Выведи только чётные числа от 1 до 50 с помощью цикла и оператора %.",
+   "uz": "Tsikl va % operatori yordamida faqat 1 dan 50 gacha juft sonlarni chiqar.",
+   "en": "Print only the even numbers from 1 to 50 with a loop and the % operator."
+  },
+  "files": {
+   "script.js": "// Пиши код здесь. Результат — во вкладке «Результат» (консоль)\n"
+  },
+  "steps": [
+   {
+    "file": "script.js",
+    "re": "for\\s*\\(\\s*let\\s+i\\s*=\\s*1\\s*;\\s*i\\s*<=\\s*50",
+    "say": {
+     "ru": "Цикл от 1 до 50: `for (let i = 1; i <= 50; i++)`",
+     "uz": "1 dan 50 gacha tsikl: `for (let i = 1; i <= 50; i++)`",
+     "en": "A loop from 1 to 50: `for (let i = 1; i <= 50; i++)`"
+    },
+    "show": "for (let i = 1; i <= 50; i++) {\n\n}"
+   },
+   {
+    "file": "script.js",
+    "re": "if\\s*\\(\\s*i\\s*%\\s*2\\s*===?\\s*0\\s*\\)",
+    "say": {
+     "ru": "Внутри: `if (i % 2 === 0)`",
+     "uz": "Ichida: `if (i % 2 === 0)`",
+     "en": "Inside: `if (i % 2 === 0)`"
+    },
+    "show": "if (i % 2 === 0) {\n  console.log(i);\n}"
+   },
+   {
+    "file": "script.js",
+    "out": "^2\\n4\\n6[\\s\\S]*\\n50$",
+    "say": {
+     "ru": "В консоли 2, 4, 6 … 50",
+     "uz": "Konsolda 2, 4, 6 … 50",
+     "en": "The console shows 2, 4, 6 … 50"
+    }
+   }
+  ]
+ }
+}

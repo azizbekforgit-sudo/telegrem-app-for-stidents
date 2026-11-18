@@ -1,0 +1,205 @@
+{
+ "lessonId": "lesson-06-flexbox",
+ "allow": [
+  "html",
+  "css"
+ ],
+ "topic": {
+  "ru": "Flexbox",
+  "uz": "Flexbox",
+  "en": "Flexbox"
+ },
+ "sections": {
+  "0": {
+   "title": {
+    "ru": "display: flex",
+    "uz": "display: flex",
+    "en": "display: flex"
+   },
+   "intro": {
+    "ru": "Выстроим ссылки меню в ряд.",
+    "uz": "Menyu havolalarini qatorga teramiz.",
+    "en": "Let's line up the menu links in a row."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <nav class=\"menu\">\n    <a class=\"item\" href=\"#\">Главная</a>\n    <a class=\"item\" href=\"#\">Курсы</a>\n    <a class=\"item\" href=\"#\">Контакты</a>\n  </nav>\n</body>\n</html>\n",
+    "style.css": ".menu {\n  background: #eee;\n  padding: 10px;\n}\n"
+   },
+   "steps": [
+    {
+     "file": "style.css",
+     "re": "\\.menu\\s*\\{[^}]*display\\s*:\\s*flex",
+     "say": {
+      "ru": "Родителю `.menu` — `display: flex;`",
+      "uz": "`.menu` ota-elementga — `display: flex;`",
+      "en": "The parent `.menu` gets `display: flex;`"
+     },
+     "show": "display: flex;",
+     "hint": {
+      "ru": "Flex пишут родителю, а не ссылкам!",
+      "uz": "Flex ota-elementga yoziladi, havolalarga emas!",
+      "en": "Flex goes on the parent, not on the links!"
+     }
+    },
+    {
+     "file": "style.css",
+     "re": "\\.menu\\s*\\{[^}]*gap\\s*:\\s*\\d+px",
+     "say": {
+      "ru": "Расстояние между пунктами — `gap: 20px;`",
+      "uz": "Bandlar orasidagi masofa — `gap: 20px;`",
+      "en": "Space between items — `gap: 20px;`"
+     },
+     "show": "gap: 20px;"
+    }
+   ],
+   "open": "style.css"
+  },
+  "2": {
+   "title": {
+    "ru": "justify-content",
+    "uz": "justify-content",
+    "en": "justify-content"
+   },
+   "intro": {
+    "ru": "Раздвинем логотип и меню по краям.",
+    "uz": "Logotip va menyuni chetlarga suramiz.",
+    "en": "Let's push the logo and menu to the edges."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <header class=\"header\">\n    <b class=\"logo\">Зубрик</b>\n    <nav>Меню</nav>\n  </header>\n</body>\n</html>\n",
+    "style.css": ".header {\n  background: #222;\n  color: white;\n  padding: 16px;\n}\n"
+   },
+   "steps": [
+    {
+     "file": "style.css",
+     "re": "\\.header\\s*\\{[^}]*display\\s*:\\s*flex",
+     "say": {
+      "ru": "`.header` — сделай flex-контейнером",
+      "uz": "`.header` ni flex-konteyner qil",
+      "en": "Make `.header` a flex container"
+     },
+     "show": "display: flex;"
+    },
+    {
+     "file": "style.css",
+     "re": "\\.header\\s*\\{[^}]*justify-content\\s*:\\s*space-between",
+     "say": {
+      "ru": "По краям: `justify-content: space-between;`",
+      "uz": "Chetlarga: `justify-content: space-between;`",
+      "en": "To the edges: `justify-content: space-between;`"
+     },
+     "show": "justify-content: space-between;"
+    }
+   ],
+   "open": "style.css"
+  },
+  "3": {
+   "title": {
+    "ru": "align-items",
+    "uz": "align-items",
+    "en": "align-items"
+   },
+   "intro": {
+    "ru": "Поставим элементы по центру по вертикали.",
+    "uz": "Elementlarni vertikal markazga qo'yamiz.",
+    "en": "Let's center items vertically."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"box\">\n    <div class=\"item\">1</div>\n    <div class=\"item\">2</div>\n  </div>\n</body>\n</html>\n",
+    "style.css": ".box {\n  display: flex;\n  background: #eef;\n}\n.item {\n  width: 60px;\n  height: 60px;\n  background: tomato;\n}\n"
+   },
+   "steps": [
+    {
+     "file": "style.css",
+     "re": "\\.box\\s*\\{[^}]*height\\s*:\\s*\\d+px",
+     "say": {
+      "ru": "Сначала дай `.box` высоту, иначе разницы не видно: `height: 200px;`",
+      "uz": "Avval `.box` ga balandlik ber, aks holda farq ko'rinmaydi: `height: 200px;`",
+      "en": "First give `.box` a height or you won't see the difference: `height: 200px;`"
+     },
+     "show": "height: 200px;"
+    },
+    {
+     "file": "style.css",
+     "re": "\\.box\\s*\\{[^}]*align-items\\s*:\\s*center",
+     "say": {
+      "ru": "По центру по вертикали: `align-items: center;`",
+      "uz": "Vertikal markazga: `align-items: center;`",
+      "en": "Vertical center: `align-items: center;`"
+     },
+     "show": "align-items: center;"
+    },
+    {
+     "file": "style.css",
+     "re": "\\.box\\s*\\{[^}]*justify-content\\s*:\\s*center",
+     "say": {
+      "ru": "И по горизонтали: `justify-content: center;`",
+      "uz": "Va gorizontal: `justify-content: center;`",
+      "en": "And horizontally: `justify-content: center;`"
+     },
+     "show": "justify-content: center;"
+    }
+   ],
+   "open": "style.css"
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "Карточка профиля",
+   "uz": "Profil kartochkasi",
+   "en": "Profile card"
+  },
+  "intro": {
+   "ru": "Аватар слева, имя и описание справа, всё по центру по вертикали.",
+   "uz": "Avatar chapda, ism va tavsif o'ngda, hammasi vertikal markazda.",
+   "en": "Avatar on the left, name and bio on the right, all centered vertically."
+  },
+  "files": {
+   "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"profile\">\n    <div class=\"avatar\">А</div>\n    <div class=\"info\">\n      <h3>Азиз</h3>\n      <p>Учу Flexbox</p>\n    </div>\n  </div>\n</body>\n</html>\n",
+   "style.css": ".avatar {\n  background: orange;\n  border-radius: 50%;\n}\n"
+  },
+  "steps": [
+   {
+    "file": "style.css",
+    "re": "\\.profile\\s*\\{[^}]*display\\s*:\\s*flex",
+    "say": {
+     "ru": "`.profile` — `display: flex;`",
+     "uz": "`.profile` — `display: flex;`",
+     "en": "`.profile` — `display: flex;`"
+    },
+    "show": ".profile {\n  display: flex;\n}"
+   },
+   {
+    "file": "style.css",
+    "re": "\\.profile\\s*\\{[^}]*align-items\\s*:\\s*center",
+    "say": {
+     "ru": "Всё по центру по вертикали: `align-items: center;`",
+     "uz": "Hammasi vertikal markazda: `align-items: center;`",
+     "en": "Everything centered vertically: `align-items: center;`"
+    },
+    "show": "align-items: center;"
+   },
+   {
+    "file": "style.css",
+    "re": "\\.avatar\\s*\\{[^}]*width\\s*:\\s*\\d+px",
+    "say": {
+     "ru": "Аватару — фиксированная ширина и высота: `width: 80px; height: 80px;`",
+     "uz": "Avatarga — qat'iy kenglik va balandlik: `width: 80px; height: 80px;`",
+     "en": "The avatar gets a fixed width and height: `width: 80px; height: 80px;`"
+    },
+    "show": "width: 80px;\nheight: 80px;"
+   },
+   {
+    "file": "style.css",
+    "re": "\\.profile\\s*\\{[^}]*gap\\s*:\\s*\\d+px",
+    "say": {
+     "ru": "Между аватаром и текстом — `gap: 16px;`",
+     "uz": "Avatar va matn orasida — `gap: 16px;`",
+     "en": "Between the avatar and the text — `gap: 16px;`"
+    },
+    "show": "gap: 16px;"
+   }
+  ],
+  "open": "style.css"
+ }
+}

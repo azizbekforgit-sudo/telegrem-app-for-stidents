@@ -1,0 +1,195 @@
+{
+ "lessonId": "lesson-19-dom",
+ "allow": [
+  "html",
+  "css",
+  "js"
+ ],
+ "topic": {
+  "ru": "DOM",
+  "uz": "DOM",
+  "en": "DOM"
+ },
+ "sections": {
+  "1": {
+   "title": {
+    "ru": "querySelector",
+    "uz": "querySelector",
+    "en": "querySelector"
+   },
+   "intro": {
+    "ru": "Найдём заголовок на странице и поменяем текст.",
+    "uz": "Sahifadagi sarlavhani topib, matnini o'zgartiramiz.",
+    "en": "Let's find the heading on the page and change its text."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>JS</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <h1 class=\"title\">Старый заголовок</h1>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n",
+    "style.css": "",
+    "script.js": ""
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "const\\s+\\w+\\s*=\\s*document\\.querySelector\\(\\s*[\"\\']\\.title[\"\\']\\s*\\)",
+     "say": {
+      "ru": "`const title = document.querySelector(\".title\");`",
+      "uz": "`const title = document.querySelector(\".title\");`",
+      "en": "`const title = document.querySelector(\".title\");`"
+     },
+     "show": "const title = document.querySelector(\".title\");"
+    },
+    {
+     "file": "script.js",
+     "re": "\\.textContent\\s*=\\s*[\"\\'`]",
+     "say": {
+      "ru": "`title.textContent = \"Новый заголовок\";` — посмотри «Результат»",
+      "uz": "`title.textContent = \"Yangi sarlavha\";` — «Natija»ga qara",
+      "en": "`title.textContent = \"New heading\";` — look at «Result»"
+     },
+     "show": "title.textContent = \"Новый заголовок\";"
+    }
+   ],
+   "open": "script.js"
+  },
+  "2": {
+   "title": {
+    "ru": "Стили из JS",
+    "uz": "JS dan uslublar",
+    "en": "Styles from JS"
+   },
+   "intro": {
+    "ru": "Перекрасим блок из JavaScript.",
+    "uz": "Blokni JavaScript dan bo'yaymiz.",
+    "en": "Let's recolor a block from JavaScript."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>JS</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"box\">Коробка</div>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n",
+    "style.css": ".box {\n  padding: 20px;\n}\n",
+    "script.js": ""
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "document\\.querySelector\\(\\s*[\"\\']\\.box[\"\\']\\s*\\)",
+     "say": {
+      "ru": "Найди `.box` через querySelector",
+      "uz": "`.box` ni querySelector orqali top",
+      "en": "Find `.box` with querySelector"
+     },
+     "show": "const box = document.querySelector(\".box\");"
+    },
+    {
+     "file": "script.js",
+     "re": "\\.style\\.(background|backgroundColor)\\s*=",
+     "say": {
+      "ru": "В JS свойства пишутся слитно: `box.style.backgroundColor = \"gold\";`",
+      "uz": "JS da xossalar qo'shib yoziladi: `box.style.backgroundColor = \"gold\";`",
+      "en": "In JS properties are camelCase: `box.style.backgroundColor = \"gold\";`"
+     },
+     "show": "box.style.backgroundColor = \"gold\";"
+    }
+   ],
+   "open": "script.js"
+  },
+  "3": {
+   "title": {
+    "ru": "classList",
+    "uz": "classList",
+    "en": "classList"
+   },
+   "intro": {
+    "ru": "Включим тёмную тему кнопкой.",
+    "uz": "Tugma bilan qorong'i mavzuni yoqamiz.",
+    "en": "Let's switch on a dark theme with a button."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>JS</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <button class=\"btn\">Тема</button>\n  <p>Текст страницы</p>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n",
+    "style.css": ".dark {\n  background: #111;\n  color: white;\n}\n",
+    "script.js": ""
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "document\\.querySelector\\(\\s*[\"\\']\\.btn[\"\\']\\s*\\)",
+     "say": {
+      "ru": "Найди кнопку `.btn`",
+      "uz": "`.btn` tugmasini top",
+      "en": "Find the `.btn` button"
+     },
+     "show": "const btn = document.querySelector(\".btn\");"
+    },
+    {
+     "file": "script.js",
+     "re": "addEventListener\\(\\s*[\"\\']click[\"\\']",
+     "say": {
+      "ru": "Повесь клик: `btn.addEventListener(\"click\", function () { … });`",
+      "uz": "Bosishni os: `btn.addEventListener(\"click\", function () { … });`",
+      "en": "Add a click: `btn.addEventListener(\"click\", function () { … });`"
+     },
+     "show": "btn.addEventListener(\"click\", function () {\n\n});"
+    },
+    {
+     "file": "script.js",
+     "re": "document\\.body\\.classList\\.toggle\\(\\s*[\"\\']dark[\"\\']\\s*\\)",
+     "say": {
+      "ru": "Внутри: `document.body.classList.toggle(\"dark\");`",
+      "uz": "Ichida: `document.body.classList.toggle(\"dark\");`",
+      "en": "Inside: `document.body.classList.toggle(\"dark\");`"
+     },
+     "show": "document.body.classList.toggle(\"dark\");"
+    }
+   ],
+   "open": "script.js"
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "Рамка всем карточкам",
+   "uz": "Barcha kartochkalarga ramka",
+   "en": "A border for every card"
+  },
+  "intro": {
+   "ru": "Найди все карточки через querySelectorAll и добавь каждой класс с рамкой — сразу при загрузке.",
+   "uz": "querySelectorAll orqali barcha kartochkalarni top va har biriga ramkali klass qo'sh — yuklanish bilan.",
+   "en": "Find all cards with querySelectorAll and add each a class with a border — right on load."
+  },
+  "files": {
+   "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>JS</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"card\">1</div>\n  <div class=\"card\">2</div>\n  <div class=\"card\">3</div>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n",
+   "style.css": ".card {\n  padding: 20px;\n  margin: 10px;\n  background: #f4f4f4;\n}\n",
+   "script.js": ""
+  },
+  "steps": [
+   {
+    "file": "style.css",
+    "re": "\\.(\\w[\\w-]*)\\s*\\{[^}]*border\\s*:",
+    "say": {
+     "ru": "В CSS — класс с рамкой, например `.bordered { border: 2px solid #7c3aed; }`",
+     "uz": "CSS da — ramkali klass, masalan `.bordered { border: 2px solid #7c3aed; }`",
+     "en": "In CSS — a class with a border, e.g. `.bordered { border: 2px solid #7c3aed; }`"
+    },
+    "show": ".bordered {\n  border: 2px solid #7c3aed;\n}"
+   },
+   {
+    "file": "script.js",
+    "re": "document\\.querySelectorAll\\(\\s*[\"\\']\\.card[\"\\']\\s*\\)",
+    "say": {
+     "ru": "`const cards = document.querySelectorAll(\".card\");`",
+     "uz": "`const cards = document.querySelectorAll(\".card\");`",
+     "en": "`const cards = document.querySelectorAll(\".card\");`"
+    },
+    "show": "const cards = document.querySelectorAll(\".card\");"
+   },
+   {
+    "file": "script.js",
+    "re": "\\.forEach\\([\\s\\S]*classList\\.add\\(",
+    "say": {
+     "ru": "Каждой: `cards.forEach((card) => card.classList.add(\"bordered\"));`",
+     "uz": "Har biriga: `cards.forEach((card) => card.classList.add(\"bordered\"));`",
+     "en": "To each: `cards.forEach((card) => card.classList.add(\"bordered\"));`"
+    },
+    "show": "cards.forEach((card) => {\n  card.classList.add(\"bordered\");\n});"
+   }
+  ],
+  "open": "script.js"
+ }
+}

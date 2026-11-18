@@ -1,0 +1,166 @@
+{
+ "lessonId": "lesson-08-grid",
+ "allow": [
+  "html",
+  "css"
+ ],
+ "topic": {
+  "ru": "CSS Grid",
+  "uz": "CSS Grid",
+  "en": "CSS Grid"
+ },
+ "sections": {
+  "0": {
+   "title": {
+    "ru": "display: grid",
+    "uz": "display: grid",
+    "en": "display: grid"
+   },
+   "intro": {
+    "ru": "Разложим 6 карточек сеткой 3 × 2.",
+    "uz": "6 ta kartochkani 3 × 2 to'r qilib teramiz.",
+    "en": "Let's lay out 6 cards in a 3 × 2 grid."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"gallery\">\n    <div class=\"card\">Карточка 1</div>\n    <div class=\"card\">Карточка 2</div>\n    <div class=\"card\">Карточка 3</div>\n    <div class=\"card\">Карточка 4</div>\n    <div class=\"card\">Карточка 5</div>\n    <div class=\"card\">Карточка 6</div>\n  </div>\n</body>\n</html>\n",
+    "style.css": ".card {\n  background: lightblue;\n  padding: 20px;\n}\n"
+   },
+   "steps": [
+    {
+     "file": "style.css",
+     "re": "\\.gallery\\s*\\{[^}]*display\\s*:\\s*grid",
+     "say": {
+      "ru": "`.gallery` — `display: grid;`",
+      "uz": "`.gallery` — `display: grid;`",
+      "en": "`.gallery` — `display: grid;`"
+     },
+     "show": "display: grid;"
+    },
+    {
+     "file": "style.css",
+     "re": "\\.gallery\\s*\\{[^}]*grid-template-columns\\s*:\\s*(repeat\\(\\s*3\\s*,\\s*1fr\\s*\\)|1fr\\s+1fr\\s+1fr)",
+     "say": {
+      "ru": "3 равные колонки: `grid-template-columns: repeat(3, 1fr);`",
+      "uz": "3 ta teng ustun: `grid-template-columns: repeat(3, 1fr);`",
+      "en": "3 equal columns: `grid-template-columns: repeat(3, 1fr);`"
+     },
+     "show": "grid-template-columns: repeat(3, 1fr);",
+     "hint": {
+      "ru": "Без grid-template-columns колонки не появятся — будет одна!",
+      "uz": "grid-template-columns siz ustunlar paydo bo'lmaydi — bitta bo'ladi!",
+      "en": "Without grid-template-columns there's only one column!"
+     }
+    },
+    {
+     "file": "style.css",
+     "re": "\\.gallery\\s*\\{[^}]*gap\\s*:\\s*\\d+px",
+     "say": {
+      "ru": "Промежутки: `gap: 20px;`",
+      "uz": "Oraliqlar: `gap: 20px;`",
+      "en": "Gaps: `gap: 20px;`"
+     },
+     "show": "gap: 20px;"
+    }
+   ],
+   "open": "style.css"
+  },
+  "1": {
+   "title": {
+    "ru": "fr",
+    "uz": "fr",
+    "en": "fr"
+   },
+   "intro": {
+    "ru": "Средняя колонка будет в два раза шире.",
+    "uz": "O'rtadagi ustun ikki baravar keng bo'ladi.",
+    "en": "The middle column will be twice as wide."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"layout\">\n    <aside>Меню</aside>\n    <main>Контент</main>\n    <aside>Реклама</aside>\n  </div>\n</body>\n</html>\n",
+    "style.css": ".layout {\n  display: grid;\n}\n.layout > * {\n  background: #eee;\n  padding: 20px;\n}\n"
+   },
+   "steps": [
+    {
+     "file": "style.css",
+     "re": "\\.layout\\s*\\{[^}]*grid-template-columns\\s*:\\s*1fr\\s+2fr\\s+1fr",
+     "say": {
+      "ru": "Колонки `1fr 2fr 1fr` — середина вдвое шире",
+      "uz": "`1fr 2fr 1fr` ustunlar — o'rtasi ikki baravar keng",
+      "en": "Columns `1fr 2fr 1fr` — the middle is twice as wide"
+     },
+     "show": "grid-template-columns: 1fr 2fr 1fr;"
+    },
+    {
+     "file": "style.css",
+     "re": "\\.layout\\s*\\{[^}]*gap\\s*:\\s*\\d+px",
+     "say": {
+      "ru": "И `gap` между ними",
+      "uz": "Va ular orasida `gap`",
+      "en": "And a `gap` between them"
+     },
+     "show": "gap: 16px;"
+    }
+   ],
+   "open": "style.css"
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "«3 преимущества» на Grid",
+   "uz": "«3 ta afzallik» Grid bilan",
+   "en": "«3 benefits» with Grid"
+  },
+  "intro": {
+   "ru": "Переделай блок преимуществ: сетку задаёт родитель, а внутри карточки остаётся flex.",
+   "uz": "Afzalliklar blokini qayta yasa: to'rni ota-element belgilaydi, kartochka ichida esa flex qoladi.",
+   "en": "Rebuild the benefits block: the parent sets the grid, flex stays inside the card."
+  },
+  "files": {
+   "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"features\">\n    <div class=\"feature\">\n      <div class=\"icon\">🚚</div>\n      <h3>Доставка</h3>\n      <p>Текст</p>\n    </div>\n    <div class=\"feature\">\n      <div class=\"icon\">💳</div>\n      <h3>Оплата</h3>\n      <p>Текст</p>\n    </div>\n    <div class=\"feature\">\n      <div class=\"icon\">🛡️</div>\n      <h3>Гарантия</h3>\n      <p>Текст</p>\n    </div>\n  </div>\n</body>\n</html>\n",
+   "style.css": ".features {\n  display: flex;\n  gap: 24px;\n}\n.feature {\n  flex: 1;\n}\n"
+  },
+  "steps": [
+   {
+    "file": "style.css",
+    "re": "\\.features\\s*\\{[^}]*display\\s*:\\s*grid",
+    "say": {
+     "ru": "`.features` — замени flex на `display: grid;`",
+     "uz": "`.features` — flex ni `display: grid;` ga almashtir",
+     "en": "`.features` — replace flex with `display: grid;`"
+    },
+    "show": "display: grid;"
+   },
+   {
+    "file": "style.css",
+    "re": "\\.features\\s*\\{[^}]*grid-template-columns\\s*:\\s*repeat\\(\\s*3\\s*,\\s*1fr\\s*\\)",
+    "say": {
+     "ru": "`grid-template-columns: repeat(3, 1fr);`",
+     "uz": "`grid-template-columns: repeat(3, 1fr);`",
+     "en": "`grid-template-columns: repeat(3, 1fr);`"
+    },
+    "show": "grid-template-columns: repeat(3, 1fr);"
+   },
+   {
+    "file": "style.css",
+    "re": "\\.feature(?![s\\w-])\\s*\\{[^}]*flex\\s*:\\s*1\\b",
+    "say": {
+     "ru": "Убери `flex: 1` у `.feature` — ширину теперь задаёт сетка",
+     "uz": "`.feature` dan `flex: 1` ni olib tashla — kenglikni endi to'r belgilaydi",
+     "en": "Remove `flex: 1` from `.feature` — the grid sets the width now"
+    },
+    "not": true
+   },
+   {
+    "file": "style.css",
+    "re": "\\.feature(?![s\\w-])\\s*\\{[^}]*flex-direction\\s*:\\s*column",
+    "say": {
+     "ru": "Внутри `.feature` — flex-колонка по центру",
+     "uz": "`.feature` ichida — markazdagi flex-ustun",
+     "en": "Inside `.feature` — a centered flex column"
+    },
+    "show": ".feature {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n}"
+   }
+  ],
+  "open": "style.css"
+ }
+}

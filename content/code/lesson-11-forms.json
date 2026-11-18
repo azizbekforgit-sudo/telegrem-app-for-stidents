@@ -1,0 +1,210 @@
+{
+ "lessonId": "lesson-11-forms",
+ "allow": [
+  "html",
+  "css"
+ ],
+ "topic": {
+  "ru": "Формы и псевдоклассы",
+  "uz": "Formalar va psevdoklasslar",
+  "en": "Forms and pseudo-classes"
+ },
+ "sections": {
+  "0": {
+   "title": {
+    "ru": "Форма",
+    "uz": "Forma",
+    "en": "A form"
+   },
+   "intro": {
+    "ru": "Соберём форму входа.",
+    "uz": "Kirish formasini yig'amiz.",
+    "en": "Let's build a login form."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  \n</body>\n</html>\n",
+    "style.css": ""
+   },
+   "steps": [
+    {
+     "file": "index.html",
+     "re": "<form[^>]*>[\\s\\S]*</form>",
+     "say": {
+      "ru": "Обёртка: `<form>…</form>`",
+      "uz": "O'rov: `<form>…</form>`",
+      "en": "The wrapper: `<form>…</form>`"
+     },
+     "show": "<form>\n\n</form>"
+    },
+    {
+     "file": "index.html",
+     "re": "<form[\\s\\S]*<input\\s[^>]*type=\"email\"",
+     "say": {
+      "ru": "Поле почты: `<input type=\"email\" placeholder=\"Email\">`",
+      "uz": "Pochta maydoni: `<input type=\"email\" placeholder=\"Email\">`",
+      "en": "An email field: `<input type=\"email\" placeholder=\"Email\">`"
+     },
+     "show": "<input type=\"email\" placeholder=\"Email\">"
+    },
+    {
+     "file": "index.html",
+     "re": "<form[\\s\\S]*<input\\s[^>]*type=\"password\"",
+     "say": {
+      "ru": "Поле пароля: `type=\"password\"`",
+      "uz": "Parol maydoni: `type=\"password\"`",
+      "en": "A password field: `type=\"password\"`"
+     },
+     "show": "<input type=\"password\" placeholder=\"Пароль\">"
+    },
+    {
+     "file": "index.html",
+     "re": "<form[\\s\\S]*<button[^>]*type=\"submit\"[^>]*>[^<]+</button>[\\s\\S]*</form>",
+     "say": {
+      "ru": "Кнопка отправки: `<button type=\"submit\">Войти</button>`",
+      "uz": "Yuborish tugmasi: `<button type=\"submit\">Kirish</button>`",
+      "en": "A submit button: `<button type=\"submit\">Log in</button>`"
+     },
+     "show": "<button type=\"submit\">Войти</button>"
+    }
+   ],
+   "open": "index.html"
+  },
+  "2": {
+   "title": {
+    "ru": ":hover и :focus",
+    "uz": ":hover va :focus",
+    "en": ":hover and :focus"
+   },
+   "intro": {
+    "ru": "Оживим кнопку и поле ввода.",
+    "uz": "Tugma va kiritish maydonini jonlantiramiz.",
+    "en": "Let's bring the button and the input to life."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <form>\n    <input type=\"text\" placeholder=\"Имя\">\n    <button>Отправить</button>\n  </form>\n</body>\n</html>\n",
+    "style.css": "button {\n  background: #7c3aed;\n  color: white;\n  border: 0;\n  padding: 10px 20px;\n}\ninput {\n  border: 2px solid #ccc;\n  padding: 8px;\n}\n"
+   },
+   "steps": [
+    {
+     "file": "style.css",
+     "re": "button:hover\\s*\\{[^}]*background",
+     "say": {
+      "ru": "При наведении кнопка темнеет: `button:hover { background: #6d28d9; }`",
+      "uz": "Ustiga olib borganda tugma qorayadi: `button:hover { background: #6d28d9; }`",
+      "en": "On hover the button darkens: `button:hover { background: #6d28d9; }`"
+     },
+     "show": "button:hover {\n  background: #6d28d9;\n}"
+    },
+    {
+     "file": "style.css",
+     "re": "input:focus\\s*\\{[^}]*border-color",
+     "say": {
+      "ru": "Поле в фокусе — цветная рамка: `input:focus { border-color: #7c3aed; outline: none; }`",
+      "uz": "Fokusdagi maydon — rangli ramka: `input:focus { border-color: #7c3aed; outline: none; }`",
+      "en": "A focused field gets a colored border: `input:focus { border-color: #7c3aed; outline: none; }`"
+     },
+     "show": "input:focus {\n  border-color: #7c3aed;\n  outline: none;\n}"
+    }
+   ],
+   "open": "style.css"
+  },
+  "3": {
+   "title": {
+    "ru": ":nth-child",
+    "uz": ":nth-child",
+    "en": ":nth-child"
+   },
+   "intro": {
+    "ru": "Сделаем «зебру» в списке.",
+    "uz": "Ro'yxatda «zebra» qilamiz.",
+    "en": "Let's make a «zebra» list."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <ul>\n    <li>Пункт 1</li>\n    <li>Пункт 2</li>\n    <li>Пункт 3</li>\n    <li>Пункт 4</li>\n    <li>Пункт 5</li>\n    <li>Пункт 6</li>\n  </ul>\n</body>\n</html>\n",
+    "style.css": ""
+   },
+   "steps": [
+    {
+     "file": "style.css",
+     "re": "li:nth-child\\(\\s*(odd|2n\\+1|even|2n)\\s*\\)\\s*\\{[^}]*background",
+     "say": {
+      "ru": "Через один — фон: `li:nth-child(odd) { background: #eee; }`",
+      "uz": "Bittadan keyin — fon: `li:nth-child(odd) { background: #eee; }`",
+      "en": "Every other one gets a background: `li:nth-child(odd) { background: #eee; }`"
+     },
+     "show": "li:nth-child(odd) {\n  background: #eee;\n}"
+    },
+    {
+     "file": "style.css",
+     "re": "li:first-child\\s*\\{[^}]*font-weight",
+     "say": {
+      "ru": "Первый пункт — жирный: `li:first-child { font-weight: bold; }`",
+      "uz": "Birinchi band — qalin: `li:first-child { font-weight: bold; }`",
+      "en": "The first item is bold: `li:first-child { font-weight: bold; }`"
+     },
+     "show": "li:first-child {\n  font-weight: bold;\n}"
+    }
+   ],
+   "open": "style.css"
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "Форма подписки",
+   "uz": "Obuna formasi",
+   "en": "Subscribe form"
+  },
+  "intro": {
+   "ru": "Добавь на лендинг форму подписки: label, поле email, кнопка, стили :hover и :focus.",
+   "uz": "Lendingga obuna formasini qo'sh: label, email maydoni, tugma, :hover va :focus uslublari.",
+   "en": "Add a subscribe form to the landing: a label, an email field, a button, :hover and :focus styles."
+  },
+  "files": {
+   "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <section class=\"subscribe\">\n    <h2>Подпишись на новости</h2>\n    \n  </section>\n</body>\n</html>\n",
+   "style.css": ""
+  },
+  "steps": [
+   {
+    "file": "index.html",
+    "re": "<label\\s+for=\"(\\w+)\"[^>]*>[^<]+</label>[\\s\\S]*<input[^>]*id=\"\\1\"",
+    "say": {
+     "ru": "`<label for=\"email\">` и поле с тем же `id=\"email\"`",
+     "uz": "`<label for=\"email\">` va xuddi shu `id=\"email\"` li maydon",
+     "en": "`<label for=\"email\">` and a field with the same `id=\"email\"`"
+    },
+    "show": "<label for=\"email\">Почта</label>\n<input type=\"email\" id=\"email\" placeholder=\"you@mail.uz\">"
+   },
+   {
+    "file": "index.html",
+    "re": "<form[\\s\\S]*<button[\\s\\S]*</form>",
+    "say": {
+     "ru": "Оберни в `<form>` и добавь кнопку",
+     "uz": "`<form>` ga o'ra va tugma qo'sh",
+     "en": "Wrap it in a `<form>` and add a button"
+    },
+    "show": "<form>\n  …\n  <button type=\"submit\">Подписаться</button>\n</form>"
+   },
+   {
+    "file": "style.css",
+    "re": "button:hover\\s*\\{",
+    "say": {
+     "ru": "Стиль кнопки при наведении: `button:hover`",
+     "uz": "Ustiga olib borgandagi tugma uslubi: `button:hover`",
+     "en": "A hover style for the button: `button:hover`"
+    },
+    "show": "button:hover {\n  background: #6d28d9;\n}"
+   },
+   {
+    "file": "style.css",
+    "re": "input:focus\\s*\\{",
+    "say": {
+     "ru": "Стиль поля в фокусе: `input:focus`",
+     "uz": "Fokusdagi maydon uslubi: `input:focus`",
+     "en": "A focus style for the field: `input:focus`"
+    },
+    "show": "input:focus {\n  border-color: #7c3aed;\n  outline: none;\n}"
+   }
+  ],
+  "open": "index.html"
+ }
+}

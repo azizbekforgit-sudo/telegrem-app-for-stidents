@@ -1,0 +1,255 @@
+{
+ "lessonId": "lesson-20-events-p1",
+ "allow": [
+  "html",
+  "css",
+  "js"
+ ],
+ "topic": {
+  "ru": "События: click, input, наведение",
+  "uz": "Hodisalar: click, input, olib borish",
+  "en": "Events: click, input, hover"
+ },
+ "sections": {
+  "0": {
+   "title": {
+    "ru": "Счётчик кликов",
+    "uz": "Bosishlar hisoblagichi",
+    "en": "Click counter"
+   },
+   "intro": {
+    "ru": "Каждый клик прибавляет 1.",
+    "uz": "Har bir bosish 1 qo'shadi.",
+    "en": "Every click adds 1."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>JS</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <button class=\"btn\">Нажми</button>\n  <p class=\"count\">Нажали: 0</p>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n",
+    "style.css": "",
+    "script.js": ""
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "let\\s+count\\s*=\\s*0",
+     "say": {
+      "ru": "`let count = 0;` — число будет меняться",
+      "uz": "`let count = 0;` — son o'zgaradi",
+      "en": "`let count = 0;` — the number will change"
+     },
+     "show": "let count = 0;"
+    },
+    {
+     "file": "script.js",
+     "re": "addEventListener\\(\\s*[\"\\']click[\"\\']\\s*,",
+     "say": {
+      "ru": "Слушай клик: `btn.addEventListener(\"click\", function () { … });`",
+      "uz": "Bosishni tingla: `btn.addEventListener(\"click\", function () { … });`",
+      "en": "Listen for a click: `btn.addEventListener(\"click\", function () { … });`"
+     },
+     "show": "const btn = document.querySelector(\".btn\");\nconst counter = document.querySelector(\".count\");\nbtn.addEventListener(\"click\", function () {\n\n});"
+    },
+    {
+     "file": "script.js",
+     "re": "count\\s*(\\+\\+|\\+=\\s*1|=\\s*count\\s*\\+\\s*1)[\\s\\S]*textContent",
+     "say": {
+      "ru": "Внутри: `count = count + 1;` и покажи `counter.textContent = \"Нажали: \" + count;`",
+      "uz": "Ichida: `count = count + 1;` va ko'rsat `counter.textContent = \"Bosildi: \" + count;`",
+      "en": "Inside: `count = count + 1;` and show `counter.textContent = \"Clicks: \" + count;`"
+     },
+     "show": "count = count + 1;\ncounter.textContent = \"Нажали: \" + count;"
+    }
+   ],
+   "open": "script.js"
+  },
+  "1": {
+   "title": {
+    "ru": "Кнопка подписки",
+    "uz": "Obuna tugmasi",
+    "en": "Subscribe button"
+   },
+   "intro": {
+    "ru": "Как на YouTube: переключаем класс.",
+    "uz": "YouTube dagidek: klassni almashtiramiz.",
+    "en": "Like on YouTube: we toggle a class."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>JS</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <button class=\"sub-btn\">Подписаться</button>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n",
+    "style.css": ".subscribed {\n  background: #ccc;\n}\n",
+    "script.js": ""
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "classList\\.toggle\\(\\s*[\"\\']subscribed[\"\\']\\s*\\)",
+     "say": {
+      "ru": "`subBtn.classList.toggle(\"subscribed\");` по клику",
+      "uz": "Bosilganda `subBtn.classList.toggle(\"subscribed\");`",
+      "en": "`subBtn.classList.toggle(\"subscribed\");` on click"
+     },
+     "show": "const subBtn = document.querySelector(\".sub-btn\");\nsubBtn.addEventListener(\"click\", function () {\n  subBtn.classList.toggle(\"subscribed\");\n});"
+    },
+    {
+     "file": "script.js",
+     "re": "if\\s*\\(\\s*\\w+\\.classList\\.contains\\(\\s*[\"\\']subscribed[\"\\']\\s*\\)\\s*\\)",
+     "say": {
+      "ru": "Меняй текст: `if (subBtn.classList.contains(\"subscribed\")) { … } else { … }`",
+      "uz": "Matnni almashtir: `if (subBtn.classList.contains(\"subscribed\")) { … } else { … }`",
+      "en": "Change the text: `if (subBtn.classList.contains(\"subscribed\")) { … } else { … }`"
+     },
+     "show": "if (subBtn.classList.contains(\"subscribed\")) {\n  subBtn.textContent = \"Вы подписаны\";\n} else {\n  subBtn.textContent = \"Подписаться\";\n}"
+    }
+   ],
+   "open": "script.js"
+  },
+  "2": {
+   "title": {
+    "ru": "Событие input",
+    "uz": "input hodisasi",
+    "en": "The input event"
+   },
+   "intro": {
+    "ru": "Текст из поля сразу на странице.",
+    "uz": "Maydondagi matn darhol sahifada.",
+    "en": "The field text appears on the page right away."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>JS</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <input class=\"name\" placeholder=\"Твоё имя\">\n  <h2 class=\"hello\"></h2>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n",
+    "style.css": "",
+    "script.js": ""
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "addEventListener\\(\\s*[\"\\']input[\"\\']",
+     "say": {
+      "ru": "Слушай `\"input\"` у поля",
+      "uz": "Maydonda `\"input\"` ni tingla",
+      "en": "Listen for `\"input\"` on the field"
+     },
+     "show": "const input = document.querySelector(\".name\");\nconst hello = document.querySelector(\".hello\");\ninput.addEventListener(\"input\", function () {\n\n});"
+    },
+    {
+     "file": "script.js",
+     "re": "textContent\\s*=\\s*[^;\\n]*\\.value",
+     "say": {
+      "ru": "Внутри: `hello.textContent = input.value;`",
+      "uz": "Ichida: `hello.textContent = input.value;`",
+      "en": "Inside: `hello.textContent = input.value;`"
+     },
+     "show": "hello.textContent = input.value;"
+    }
+   ],
+   "open": "script.js"
+  },
+  "4": {
+   "title": {
+    "ru": "e.target",
+    "uz": "e.target",
+    "en": "e.target"
+   },
+   "intro": {
+    "ru": "Кнопки цветов перекрасят страницу.",
+    "uz": "Rang tugmalari sahifani bo'yaydi.",
+    "en": "Color buttons repaint the page."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>JS</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"colors\">\n    <button>tomato</button>\n    <button>gold</button>\n    <button>skyblue</button>\n  </div>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n",
+    "style.css": "",
+    "script.js": ""
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "querySelectorAll\\(\\s*[\"\\']\\.colors button[\"\\']\\s*\\)[\\s\\S]*forEach",
+     "say": {
+      "ru": "Найди все кнопки и пройди по ним `forEach`",
+      "uz": "Barcha tugmalarni top va `forEach` bilan o't",
+      "en": "Find all buttons and go through them with `forEach`"
+     },
+     "show": "const buttons = document.querySelectorAll(\".colors button\");\nbuttons.forEach(function (btn) {\n\n});"
+    },
+    {
+     "file": "script.js",
+     "re": "function\\s*\\(\\s*e\\s*\\)|\\(\\s*e\\s*\\)\\s*=>",
+     "say": {
+      "ru": "Обработчик принимает `e`: `function (e) { … }`",
+      "uz": "Ishlovchi `e` ni oladi: `function (e) { … }`",
+      "en": "The handler takes `e`: `function (e) { … }`"
+     },
+     "show": "btn.addEventListener(\"click\", function (e) {\n\n});"
+    },
+    {
+     "file": "script.js",
+     "re": "document\\.body\\.style\\.(backgroundColor|background)\\s*=\\s*e\\.target\\.textContent",
+     "say": {
+      "ru": "`document.body.style.backgroundColor = e.target.textContent;`",
+      "uz": "`document.body.style.backgroundColor = e.target.textContent;`",
+      "en": "`document.body.style.backgroundColor = e.target.textContent;`"
+     },
+     "show": "document.body.style.backgroundColor = e.target.textContent;"
+    }
+   ],
+   "open": "script.js"
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "Кнопка лайка",
+   "uz": "Layk tugmasi",
+   "en": "Like button"
+  },
+  "intro": {
+   "ru": "Как в Instagram: 🤍 0 → клик → ❤️ 1 и красная → клик → 🤍 0. Цвет — через класс в CSS.",
+   "uz": "Instagram dagidek: 🤍 0 → bosish → ❤️ 1 va qizil → bosish → 🤍 0. Rang — CSS dagi klass orqali.",
+   "en": "Like on Instagram: 🤍 0 → click → ❤️ 1 and red → click → 🤍 0. The color comes from a CSS class."
+  },
+  "files": {
+   "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>JS</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"post\">\n    <div class=\"post-img\">🌄</div>\n    <button class=\"like-btn\">🤍 0</button>\n  </div>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n",
+   "style.css": "",
+   "script.js": ""
+  },
+  "steps": [
+   {
+    "file": "style.css",
+    "re": "\\.liked\\s*\\{[^}]*(background|color)",
+    "say": {
+     "ru": "В CSS класс `.liked` с красным цветом",
+     "uz": "CSS da qizil rangli `.liked` klassi",
+     "en": "In CSS a `.liked` class with red"
+    },
+    "show": ".liked {\n  background: #ffdddd;\n  color: red;\n}"
+   },
+   {
+    "file": "script.js",
+    "re": "let\\s+likes\\s*=\\s*0",
+    "say": {
+     "ru": "`let likes = 0;`",
+     "uz": "`let likes = 0;`",
+     "en": "`let likes = 0;`"
+    },
+    "show": "const likeBtn = document.querySelector(\".like-btn\");\nlet likes = 0;"
+   },
+   {
+    "file": "script.js",
+    "re": "classList\\.toggle\\(\\s*[\"\\']liked[\"\\']\\s*\\)",
+    "say": {
+     "ru": "По клику `likeBtn.classList.toggle(\"liked\");`",
+     "uz": "Bosilganda `likeBtn.classList.toggle(\"liked\");`",
+     "en": "On click `likeBtn.classList.toggle(\"liked\");`"
+    },
+    "show": "likeBtn.addEventListener(\"click\", function () {\n  likeBtn.classList.toggle(\"liked\");\n});"
+   },
+   {
+    "file": "script.js",
+    "re": "classList\\.contains\\(\\s*[\"\\']liked[\"\\']\\s*\\)[\\s\\S]*likes\\s*(\\+\\+|\\+=\\s*1|=\\s*likes\\s*\\+\\s*1)[\\s\\S]*likes\\s*(--|-=\\s*1|=\\s*likes\\s*-\\s*1)",
+    "say": {
+     "ru": "Есть класс — `likes + 1` и ❤️, нет — `likes - 1` и 🤍",
+     "uz": "Klass bor — `likes + 1` va ❤️, yo'q — `likes - 1` va 🤍",
+     "en": "Has the class — `likes + 1` and ❤️, not — `likes - 1` and 🤍"
+    },
+    "show": "if (likeBtn.classList.contains(\"liked\")) {\n  likes = likes + 1;\n  likeBtn.textContent = `❤️ ${likes}`;\n} else {\n  likes = likes - 1;\n  likeBtn.textContent = `🤍 ${likes}`;\n}"
+   }
+  ],
+  "open": "script.js"
+ }
+}

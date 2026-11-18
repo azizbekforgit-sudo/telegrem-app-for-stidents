@@ -1,0 +1,165 @@
+{
+ "lessonId": "lesson-24-npm-vite",
+ "allow": [
+  "sh",
+  "json",
+  "js"
+ ],
+ "topic": {
+  "ru": "npm, Vite и модули",
+  "uz": "npm, Vite va modullar",
+  "en": "npm, Vite and modules"
+ },
+ "sections": {
+  "2": {
+   "title": {
+    "ru": "Запуск проекта",
+    "uz": "Loyihani ishga tushirish",
+    "en": "Running the project"
+   },
+   "intro": {
+    "ru": "Создадим проект на Vite и запустим.",
+    "uz": "Vite da loyiha yaratib, ishga tushiramiz.",
+    "en": "Let's create a Vite project and run it."
+   },
+   "files": {
+    "terminal.sh": "# Пиши команды по одной на строку\n"
+   },
+   "steps": [
+    {
+     "file": "terminal.sh",
+     "re": "^\\s*npm\\s+create\\s+vite@latest",
+     "say": {
+      "ru": "`npm create vite@latest my-app`",
+      "uz": "`npm create vite@latest my-app`",
+      "en": "`npm create vite@latest my-app`"
+     },
+     "show": "npm create vite@latest my-app",
+     "flags": "im"
+    },
+    {
+     "file": "terminal.sh",
+     "re": "^\\s*cd\\s+[\\w-]+\\s*$",
+     "say": {
+      "ru": "Зайди в папку: `cd my-app`",
+      "uz": "Papkaga kir: `cd my-app`",
+      "en": "Go into the folder: `cd my-app`"
+     },
+     "show": "cd my-app",
+     "flags": "im"
+    },
+    {
+     "file": "terminal.sh",
+     "re": "^\\s*npm\\s+(install|i)\\s*$",
+     "say": {
+      "ru": "Установи зависимости: `npm install`",
+      "uz": "Bog'liqliklarni o'rnat: `npm install`",
+      "en": "Install dependencies: `npm install`"
+     },
+     "show": "npm install",
+     "flags": "im"
+    },
+    {
+     "file": "terminal.sh",
+     "re": "^\\s*npm\\s+run\\s+dev\\s*$",
+     "say": {
+      "ru": "Запусти: `npm run dev`",
+      "uz": "Ishga tushir: `npm run dev`",
+      "en": "Run it: `npm run dev`"
+     },
+     "show": "npm run dev",
+     "flags": "im"
+    }
+   ],
+   "open": "terminal.sh"
+  },
+  "3": {
+   "title": {
+    "ru": "import и export",
+    "uz": "import va export",
+    "en": "import and export"
+   },
+   "intro": {
+    "ru": "Вынесем функцию в отдельный модуль.",
+    "uz": "Funksiyani alohida modulga chiqaramiz.",
+    "en": "Let's move a function into its own module."
+   },
+   "files": {
+    "math.js": "",
+    "main.js": ""
+   },
+   "steps": [
+    {
+     "file": "math.js",
+     "re": "export\\s+(function\\s+sum|const\\s+sum\\s*=)",
+     "say": {
+      "ru": "В math.js: `export function sum(a, b) { return a + b; }`",
+      "uz": "math.js da: `export function sum(a, b) { return a + b; }`",
+      "en": "In math.js: `export function sum(a, b) { return a + b; }`"
+     },
+     "show": "export function sum(a, b) {\n  return a + b;\n}"
+    },
+    {
+     "file": "main.js",
+     "re": "import\\s*\\{\\s*sum\\s*\\}\\s*from\\s*[\"\\']\\./math\\.js[\"\\']",
+     "say": {
+      "ru": "В main.js: `import { sum } from \"./math.js\";`",
+      "uz": "main.js da: `import { sum } from \"./math.js\";`",
+      "en": "In main.js: `import { sum } from \"./math.js\";`"
+     },
+     "show": "import { sum } from \"./math.js\";\nconsole.log(sum(2, 3));"
+    }
+   ],
+   "open": "math.js"
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "Скрипты и коммит",
+   "uz": "Skriptlar va kommit",
+   "en": "Scripts and a commit"
+  },
+  "intro": {
+   "ru": "Проверь скрипты в package.json и залей обновлённый проект на GitHub новым коммитом.",
+   "uz": "package.json dagi skriptlarni tekshir va yangilangan loyihani yangi kommit bilan GitHub ga yukla.",
+   "en": "Check the scripts in package.json and push the updated project to GitHub with a new commit."
+  },
+  "files": {
+   "package.json": "{\n  \"name\": \"my-app\",\n  \"version\": \"1.0.0\",\n  \"scripts\": {\n    \n  }\n}\n",
+   "terminal.sh": "# Пиши команды по одной на строку\n"
+  },
+  "steps": [
+   {
+    "file": "package.json",
+    "re": "\"scripts\"\\s*:\\s*\\{[^}]*\"dev\"\\s*:\\s*\"vite\"",
+    "say": {
+     "ru": "В scripts: `\"dev\": \"vite\"`",
+     "uz": "scripts ichida: `\"dev\": \"vite\"`",
+     "en": "In scripts: `\"dev\": \"vite\"`"
+    },
+    "show": "\"dev\": \"vite\",\n\"build\": \"vite build\""
+   },
+   {
+    "file": "package.json",
+    "re": "\"scripts\"\\s*:\\s*\\{[^}]*\"build\"\\s*:\\s*\"vite build\"",
+    "say": {
+     "ru": "И `\"build\": \"vite build\"`",
+     "uz": "Va `\"build\": \"vite build\"`",
+     "en": "And `\"build\": \"vite build\"`"
+    },
+    "show": "\"build\": \"vite build\""
+   },
+   {
+    "file": "terminal.sh",
+    "re": "git\\s+add[\\s\\S]*git\\s+commit\\s+-m\\s+[\"\\'][^\"\\']{3,}[\"\\'][\\s\\S]*git\\s+push",
+    "say": {
+     "ru": "`git add .` → `git commit -m \"…\"` → `git push`",
+     "uz": "`git add .` → `git commit -m \"…\"` → `git push`",
+     "en": "`git add .` → `git commit -m \"…\"` → `git push`"
+    },
+    "show": "git add .\ngit commit -m \"Перенёс проект на Vite\"\ngit push"
+   }
+  ],
+  "open": "package.json"
+ }
+}

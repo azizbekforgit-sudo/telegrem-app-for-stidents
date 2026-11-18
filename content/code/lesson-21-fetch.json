@@ -1,0 +1,155 @@
+{
+ "lessonId": "lesson-21-fetch",
+ "allow": [
+  "html",
+  "css",
+  "js"
+ ],
+ "topic": {
+  "ru": "fetch и JSON",
+  "uz": "fetch va JSON",
+  "en": "fetch and JSON"
+ },
+ "sections": {
+  "1": {
+   "title": {
+    "ru": "fetch",
+    "uz": "fetch",
+    "en": "fetch"
+   },
+   "intro": {
+    "ru": "Запросим список пользователей с сервера.",
+    "uz": "Serverdan foydalanuvchilar ro'yxatini so'raymiz.",
+    "en": "Let's request a list of users from a server."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>JS</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <ul class=\"users\"></ul>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n",
+    "style.css": "",
+    "script.js": ""
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "fetch\\(\\s*[\"\\']https?://",
+     "say": {
+      "ru": "`fetch(\"https://jsonplaceholder.typicode.com/users\")`",
+      "uz": "`fetch(\"https://jsonplaceholder.typicode.com/users\")`",
+      "en": "`fetch(\"https://jsonplaceholder.typicode.com/users\")`"
+     },
+     "show": "fetch(\"https://jsonplaceholder.typicode.com/users\")"
+    },
+    {
+     "file": "script.js",
+     "re": "\\.then\\(\\s*\\(?\\s*\\w+\\s*\\)?\\s*=>\\s*\\w+\\.json\\(\\s*\\)\\s*\\)",
+     "say": {
+      "ru": "Ответ в данные: `.then((res) => res.json())`",
+      "uz": "Javobni ma'lumotga: `.then((res) => res.json())`",
+      "en": "Response to data: `.then((res) => res.json())`"
+     },
+     "show": ".then((res) => res.json())"
+    },
+    {
+     "file": "script.js",
+     "re": "\\.then\\([\\s\\S]*\\.then\\(\\s*\\(?\\s*\\w+\\s*\\)?\\s*=>",
+     "say": {
+      "ru": "И второй then: `.then((data) => console.log(data))`",
+      "uz": "Va ikkinchi then: `.then((data) => console.log(data))`",
+      "en": "And a second then: `.then((data) => console.log(data))`"
+     },
+     "show": ".then((data) => console.log(data))"
+    }
+   ],
+   "open": "script.js"
+  },
+  "2": {
+   "title": {
+    "ru": ".catch",
+    "uz": ".catch",
+    "en": ".catch"
+   },
+   "intro": {
+    "ru": "Поймаем ошибку, если сети нет.",
+    "uz": "Tarmoq bo'lmasa xatoni ushlaymiz.",
+    "en": "Let's catch an error if there's no network."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>JS</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <p class=\"msg\"></p>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n",
+    "style.css": "",
+    "script.js": "fetch(\"https://jsonplaceholder.typicode.com/users\")\n  .then((res) => res.json())\n  .then((data) => console.log(data.length))\n"
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "\\.catch\\(\\s*\\(?\\s*\\w+\\s*\\)?\\s*=>",
+     "say": {
+      "ru": "Допиши в конце `.catch((err) => …)`",
+      "uz": "Oxiriga `.catch((err) => …)` qo'sh",
+      "en": "Add `.catch((err) => …)` at the end"
+     },
+     "show": "  .catch((err) => console.log(\"Ошибка:\", err));"
+    }
+   ],
+   "open": "script.js"
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "5 элементов из API",
+   "uz": "API dan 5 ta element",
+   "en": "5 items from an API"
+  },
+  "intro": {
+   "ru": "Возьми публичный API и выведи 5 элементов на страницу списком.",
+   "uz": "Ochiq API ni olib, sahifaga 5 ta elementni ro'yxat qilib chiqar.",
+   "en": "Take a public API and show 5 items on the page as a list."
+  },
+  "files": {
+   "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>JS</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <h1>Пользователи</h1>\n  <ul class=\"list\"></ul>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n",
+   "style.css": "",
+   "script.js": ""
+  },
+  "steps": [
+   {
+    "file": "script.js",
+    "re": "fetch\\(\\s*[\"\\']https?://",
+    "say": {
+     "ru": "Запрос: `fetch(\"https://jsonplaceholder.typicode.com/users\")`",
+     "uz": "So'rov: `fetch(\"https://jsonplaceholder.typicode.com/users\")`",
+     "en": "Request: `fetch(\"https://jsonplaceholder.typicode.com/users\")`"
+    },
+    "show": "fetch(\"https://jsonplaceholder.typicode.com/users\")\n  .then((res) => res.json())\n  .then((data) => {\n\n  });"
+   },
+   {
+    "file": "script.js",
+    "re": "\\.slice\\(\\s*0\\s*,\\s*5\\s*\\)",
+    "say": {
+     "ru": "Только пять: `data.slice(0, 5)`",
+     "uz": "Faqat beshta: `data.slice(0, 5)`",
+     "en": "Only five: `data.slice(0, 5)`"
+    },
+    "show": "data.slice(0, 5).forEach((user) => {\n\n});"
+   },
+   {
+    "file": "script.js",
+    "re": "createElement\\(\\s*[\"\\']li[\"\\']\\s*\\)[\\s\\S]*\\.(append|appendChild)\\(",
+    "say": {
+     "ru": "Каждому — `<li>` в список",
+     "uz": "Har biriga — ro'yxatga `<li>`",
+     "en": "Each gets an `<li>` in the list"
+    },
+    "show": "const li = document.createElement(\"li\");\nli.textContent = user.name;\nlist.append(li);"
+   },
+   {
+    "file": "script.js",
+    "re": "\\.catch\\(",
+    "say": {
+     "ru": "И `.catch` на случай ошибки",
+     "uz": "Va xato bo'lsa `.catch`",
+     "en": "And `.catch` in case of an error"
+    },
+    "show": ".catch((err) => console.log(err));"
+   }
+  ],
+  "open": "script.js"
+ }
+}

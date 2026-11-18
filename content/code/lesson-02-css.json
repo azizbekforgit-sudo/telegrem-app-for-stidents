@@ -1,0 +1,171 @@
+{
+ "lessonId": "lesson-02-css",
+ "allow": [
+  "html",
+  "css"
+ ],
+ "topic": {
+  "ru": "CSS и его подключение",
+  "uz": "CSS va uni ulash",
+  "en": "CSS and linking it"
+ },
+ "sections": {
+  "2": {
+   "title": {
+    "ru": "Подключаем style.css",
+    "uz": "style.css ni ulaymiz",
+    "en": "Linking style.css"
+   },
+   "intro": {
+    "ru": "Подключим файл стилей к странице и покрасим абзацы.",
+    "uz": "Uslublar faylini sahifaga ulab, abzatslarni bo'yaymiz.",
+    "en": "Let's link the stylesheet and color the paragraphs."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>CSS</title>\n</head>\n<body>\n  <h1>Мой сайт</h1>\n  <p>Первый абзац</p>\n  <p>Второй абзац</p>\n</body>\n</html>\n",
+    "style.css": ""
+   },
+   "steps": [
+    {
+     "file": "index.html",
+     "re": "<head>[\\s\\S]*<link\\s+rel=\"stylesheet\"\\s+href=\"style\\.css\"\\s*/?>[\\s\\S]*</head>",
+     "say": {
+      "ru": "В `<head>` подключи стили: `<link rel=\"stylesheet\" href=\"style.css\">`",
+      "uz": "`<head>` ga uslublarni ula: `<link rel=\"stylesheet\" href=\"style.css\">`",
+      "en": "In `<head>` link the styles: `<link rel=\"stylesheet\" href=\"style.css\">`"
+     },
+     "show": "<link rel=\"stylesheet\" href=\"style.css\">"
+    },
+    {
+     "file": "style.css",
+     "re": "(^|\\})\\s*p\\s*\\{[^}]*color\\s*:\\s*[^;}]+",
+     "say": {
+      "ru": "Открой style.css и напиши правило: `p { color: purple; }`",
+      "uz": "style.css ni och va qoida yoz: `p { color: purple; }`",
+      "en": "Open style.css and write a rule: `p { color: purple; }`"
+     },
+     "show": "p {\n  color: purple;\n}"
+    }
+   ],
+   "open": "index.html"
+  },
+  "4": {
+   "title": {
+    "ru": "Свойства CSS",
+    "uz": "CSS xossalari",
+    "en": "CSS properties"
+   },
+   "intro": {
+    "ru": "Попробуем width, height, font-size и color.",
+    "uz": "width, height, font-size va color ni sinab ko'ramiz.",
+    "en": "Let's try width, height, font-size and color."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>CSS</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <h1>Мой сайт</h1>\n  <p>Первый абзац</p>\n  <p>Второй абзац</p>\n  <div>Коробка</div>\n</body>\n</html>\n",
+    "style.css": ""
+   },
+   "steps": [
+    {
+     "file": "style.css",
+     "re": "h1\\s*\\{[^}]*font-size\\s*:\\s*\\d+px",
+     "say": {
+      "ru": "Сделай заголовок крупнее: `h1 { font-size: 40px; }`",
+      "uz": "Sarlavhani kattalashtir: `h1 { font-size: 40px; }`",
+      "en": "Make the heading bigger: `h1 { font-size: 40px; }`"
+     },
+     "show": "h1 {\n  font-size: 40px;\n}"
+    },
+    {
+     "file": "style.css",
+     "re": "div\\s*\\{[^}]*width\\s*:\\s*\\d+px",
+     "say": {
+      "ru": "Дай коробке ширину: `div { width: 200px; }`",
+      "uz": "Qutiga kenglik ber: `div { width: 200px; }`",
+      "en": "Give the box a width: `div { width: 200px; }`"
+     },
+     "show": "div {\n  width: 200px;\n  height: 100px;\n  background: orange;\n}"
+    },
+    {
+     "file": "style.css",
+     "re": "div\\s*\\{[^}]*height\\s*:\\s*\\d+px",
+     "say": {
+      "ru": "И высоту: `height: 100px;`",
+      "uz": "Va balandlik: `height: 100px;`",
+      "en": "And a height: `height: 100px;`"
+     },
+     "show": "height: 100px;"
+    },
+    {
+     "file": "style.css",
+     "re": "div\\s*\\{[^}]*background(-color)?\\s*:\\s*[^;}]+",
+     "say": {
+      "ru": "Покрась фон коробки: `background: orange;`",
+      "uz": "Quti fonini bo'ya: `background: orange;`",
+      "en": "Color the box background: `background: orange;`"
+     },
+     "show": "background: orange;"
+    }
+   ],
+   "open": "style.css"
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "Стили для страницы «Обо мне»",
+   "uz": "«Men haqimda» uchun uslublar",
+   "en": "Styles for «About me»"
+  },
+  "intro": {
+   "ru": "Вынеси оформление своей страницы в style.css.",
+   "uz": "Sahifang bezagini style.css ga olib chiq.",
+   "en": "Move the look of your page into style.css."
+  },
+  "files": {
+   "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Обо мне</title>\n</head>\n<body>\n  <h1>Меня зовут …</h1>\n  <p>Мне … лет</p>\n  <p>Я из …</p>\n</body>\n</html>\n",
+   "style.css": ""
+  },
+  "steps": [
+   {
+    "file": "index.html",
+    "re": "<link\\s+rel=\"stylesheet\"\\s+href=\"style\\.css\"",
+    "say": {
+     "ru": "Подключи style.css в `<head>`",
+     "uz": "`<head>` ga style.css ni ula",
+     "en": "Link style.css in `<head>`"
+    },
+    "show": "<link rel=\"stylesheet\" href=\"style.css\">"
+   },
+   {
+    "file": "style.css",
+    "re": "body\\s*\\{[^}]*background(-color)?\\s*:\\s*[^;}]+",
+    "say": {
+     "ru": "Задай фон всей странице: `body { background: … }`",
+     "uz": "Butun sahifaga fon ber: `body { background: … }`",
+     "en": "Give the whole page a background: `body { background: … }`"
+    },
+    "show": "body {\n  background: lightyellow;\n}"
+   },
+   {
+    "file": "style.css",
+    "re": "h1\\s*\\{[^}]*color\\s*:\\s*[^;}]+",
+    "say": {
+     "ru": "Покрась заголовок: `h1 { color: … }`",
+     "uz": "Sarlavhani bo'ya: `h1 { color: … }`",
+     "en": "Color the heading: `h1 { color: … }`"
+    },
+    "show": "h1 {\n  color: darkblue;\n}"
+   },
+   {
+    "file": "style.css",
+    "re": "(^|\\}|\\s)p\\s*\\{[^}]*font-size\\s*:\\s*\\d+px",
+    "say": {
+     "ru": "Всем абзацам — один размер: `p { font-size: 18px; }`",
+     "uz": "Barcha abzatslarga bitta o'lcham: `p { font-size: 18px; }`",
+     "en": "One size for all paragraphs: `p { font-size: 18px; }`"
+    },
+    "show": "p {\n  font-size: 18px;\n}"
+   }
+  ],
+  "open": "index.html"
+ }
+}

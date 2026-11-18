@@ -1,0 +1,156 @@
+{
+ "lessonId": "lesson-23-git",
+ "allow": [
+  "sh",
+  "git"
+ ],
+ "topic": {
+  "ru": "Git и GitHub",
+  "uz": "Git va GitHub",
+  "en": "Git and GitHub"
+ },
+ "sections": {
+  "1": {
+   "title": {
+    "ru": "Первый коммит",
+    "uz": "Birinchi kommit",
+    "en": "First commit"
+   },
+   "intro": {
+    "ru": "Запишем команды, которые сохраняют проект в git.",
+    "uz": "Loyihani git ga saqlaydigan buyruqlarni yozamiz.",
+    "en": "Let's write the commands that save the project in git."
+   },
+   "files": {
+    "terminal.sh": "# Пиши команды по одной на строку\n"
+   },
+   "steps": [
+    {
+     "file": "terminal.sh",
+     "re": "^\\s*git\\s+init\\s*$",
+     "say": {
+      "ru": "`git init` — создать репозиторий",
+      "uz": "`git init` — repozitoriy yaratish",
+      "en": "`git init` — create a repository"
+     },
+     "show": "git init",
+     "flags": "im"
+    },
+    {
+     "file": "terminal.sh",
+     "re": "^\\s*git\\s+add\\s+\\.\\s*$",
+     "say": {
+      "ru": "`git add .` — добавить все файлы",
+      "uz": "`git add .` — barcha fayllarni qo'shish",
+      "en": "`git add .` — add all files"
+     },
+     "show": "git add .",
+     "flags": "im"
+    },
+    {
+     "file": "terminal.sh",
+     "re": "^\\s*git\\s+commit\\s+-m\\s+[\"\\'][^\"\\']{3,}[\"\\']\\s*$",
+     "say": {
+      "ru": "`git commit -m \"Первый коммит\"` — с понятным сообщением",
+      "uz": "`git commit -m \"Birinchi kommit\"` — tushunarli xabar bilan",
+      "en": "`git commit -m \"First commit\"` — with a clear message"
+     },
+     "show": "git commit -m \"Первый коммит\"",
+     "flags": "im"
+    }
+   ],
+   "open": "terminal.sh"
+  },
+  "2": {
+   "title": {
+    "ru": "Ветки",
+    "uz": "Tarmoqlar",
+    "en": "Branches"
+   },
+   "intro": {
+    "ru": "Сделаем ветку для новой фичи.",
+    "uz": "Yangi imkoniyat uchun tarmoq yaratamiz.",
+    "en": "Let's make a branch for a new feature."
+   },
+   "files": {
+    "terminal.sh": "# Пиши команды по одной на строку\n"
+   },
+   "steps": [
+    {
+     "file": "terminal.sh",
+     "re": "^\\s*git\\s+(checkout\\s+-b|switch\\s+-c)\\s+[\\w/-]+\\s*$",
+     "say": {
+      "ru": "`git checkout -b feature-menu` — новая ветка",
+      "uz": "`git checkout -b feature-menu` — yangi tarmoq",
+      "en": "`git checkout -b feature-menu` — a new branch"
+     },
+     "show": "git checkout -b feature-menu",
+     "flags": "im"
+    },
+    {
+     "file": "terminal.sh",
+     "re": "^\\s*git\\s+push(\\s+-u)?\\s+origin\\s+[\\w/-]+\\s*$",
+     "say": {
+      "ru": "Отправь на GitHub: `git push -u origin feature-menu`",
+      "uz": "GitHub ga yubor: `git push -u origin feature-menu`",
+      "en": "Send it to GitHub: `git push -u origin feature-menu`"
+     },
+     "show": "git push -u origin feature-menu",
+     "flags": "im"
+    }
+   ],
+   "open": "terminal.sh"
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "3 коммита и .gitignore",
+   "uz": "3 ta kommit va .gitignore",
+   "en": "3 commits and .gitignore"
+  },
+  "intro": {
+   "ru": "Запиши 3 коммита с осмысленными сообщениями и .gitignore для node_modules.",
+   "uz": "Ma'noli xabarli 3 ta kommit va node_modules uchun .gitignore yoz.",
+   "en": "Write 3 commits with meaningful messages and a .gitignore for node_modules."
+  },
+  "files": {
+   "terminal.sh": "# Пиши команды по одной на строку\n",
+   ".gitignore": ""
+  },
+  "steps": [
+   {
+    "file": ".gitignore",
+    "re": "^\\s*node_modules/?\\s*$",
+    "say": {
+     "ru": "В .gitignore: `node_modules`",
+     "uz": ".gitignore da: `node_modules`",
+     "en": "In .gitignore: `node_modules`"
+    },
+    "show": "node_modules",
+    "flags": "im"
+   },
+   {
+    "file": "terminal.sh",
+    "re": "(git\\s+commit\\s+-m\\s+[\"\\'][^\"\\']{3,}[\"\\'][\\s\\S]*){3}",
+    "say": {
+     "ru": "Три `git commit -m \"…\"` (поправил цвета, добавил секцию…)",
+     "uz": "Uchta `git commit -m \"…\"` (ranglarni tuzatdim, bo'lim qo'shdim…)",
+     "en": "Three `git commit -m \"…\"` (fixed colors, added a section…)"
+    },
+    "show": "git add .\ngit commit -m \"Поправил цвета\"\ngit add .\ngit commit -m \"Добавил секцию отзывов\"\ngit add .\ngit commit -m \"Сделал адаптив\""
+   },
+   {
+    "file": "terminal.sh",
+    "re": "^\\s*git\\s+push",
+    "say": {
+     "ru": "И отправь: `git push`",
+     "uz": "Va yubor: `git push`",
+     "en": "And push: `git push`"
+    },
+    "show": "git push",
+    "flags": "im"
+   }
+  ],
+  "open": "terminal.sh"
+ }
+}

@@ -1,0 +1,191 @@
+{
+ "lessonId": "lesson-16-functions",
+ "allow": [
+  "js"
+ ],
+ "topic": {
+  "ru": "Функции",
+  "uz": "Funksiyalar",
+  "en": "Functions"
+ },
+ "sections": {
+  "1": {
+   "title": {
+    "ru": "Объявление и вызов",
+    "uz": "E'lon qilish va chaqirish",
+    "en": "Declaring and calling"
+   },
+   "intro": {
+    "ru": "Напишем рецепт и приготовим по нему.",
+    "uz": "Retsept yozib, u bo'yicha tayyorlaymiz.",
+    "en": "Let's write a recipe and cook with it."
+   },
+   "files": {
+    "script.js": "// Пиши код здесь. Результат — во вкладке «Результат» (консоль)\n"
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "function\\s+sayHello\\s*\\(\\s*\\)\\s*\\{[\\s\\S]*console\\.log",
+     "say": {
+      "ru": "`function sayHello() { console.log(\"Привет!\"); }`",
+      "uz": "`function sayHello() { console.log(\"Salom!\"); }`",
+      "en": "`function sayHello() { console.log(\"Hello!\"); }`"
+     },
+     "show": "function sayHello() {\n  console.log(\"Привет!\");\n}"
+    },
+    {
+     "file": "script.js",
+     "re": "\\}\\s*[\\s\\S]*\\bsayHello\\s*\\(\\s*\\)\\s*;?\\s*$",
+     "say": {
+      "ru": "Без вызова ничего не случится: `sayHello();`",
+      "uz": "Chaqirmasang hech narsa bo'lmaydi: `sayHello();`",
+      "en": "Nothing happens without a call: `sayHello();`"
+     },
+     "show": "sayHello();",
+     "flags": "im"
+    },
+    {
+     "file": "script.js",
+     "out": "\\S",
+     "say": {
+      "ru": "Смотри консоль",
+      "uz": "Konsolga qara",
+      "en": "Look at the console"
+     }
+    }
+   ]
+  },
+  "2": {
+   "title": {
+    "ru": "Параметры и return",
+    "uz": "Parametrlar va return",
+    "en": "Parameters and return"
+   },
+   "intro": {
+    "ru": "Функция сложит два числа и вернёт результат.",
+    "uz": "Funksiya ikki sonni qo'shib, natijani qaytaradi.",
+    "en": "The function adds two numbers and returns the result."
+   },
+   "files": {
+    "script.js": "// Пиши код здесь. Результат — во вкладке «Результат» (консоль)\n"
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "function\\s+sum\\s*\\(\\s*\\w+\\s*,\\s*\\w+\\s*\\)",
+     "say": {
+      "ru": "`function sum(a, b) { … }`",
+      "uz": "`function sum(a, b) { … }`",
+      "en": "`function sum(a, b) { … }`"
+     },
+     "show": "function sum(a, b) {\n  return a + b;\n}"
+    },
+    {
+     "file": "script.js",
+     "re": "return\\s+\\w+\\s*\\+\\s*\\w+",
+     "say": {
+      "ru": "Внутри — `return a + b;`",
+      "uz": "Ichida — `return a + b;`",
+      "en": "Inside — `return a + b;`"
+     },
+     "show": "return a + b;"
+    },
+    {
+     "file": "script.js",
+     "out": "^5$",
+     "say": {
+      "ru": "Проверь: `console.log(sum(2, 3));` → 5",
+      "uz": "Tekshir: `console.log(sum(2, 3));` → 5",
+      "en": "Check: `console.log(sum(2, 3));` → 5"
+     },
+     "show": "console.log(sum(2, 3));"
+    }
+   ]
+  },
+  "3": {
+   "title": {
+    "ru": "Стрелочная функция",
+    "uz": "Strelkali funksiya",
+    "en": "Arrow function"
+   },
+   "intro": {
+    "ru": "Короткая запись функции.",
+    "uz": "Funksiyaning qisqa yozuvi.",
+    "en": "A short way to write a function."
+   },
+   "files": {
+    "script.js": "// Пиши код здесь. Результат — во вкладке «Результат» (консоль)\n"
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "const\\s+double\\s*=\\s*\\(?\\s*\\w+\\s*\\)?\\s*=>",
+     "say": {
+      "ru": "`const double = (n) => n * 2;`",
+      "uz": "`const double = (n) => n * 2;`",
+      "en": "`const double = (n) => n * 2;`"
+     },
+     "show": "const double = (n) => n * 2;"
+    },
+    {
+     "file": "script.js",
+     "out": "^10$",
+     "say": {
+      "ru": "`console.log(double(5));` → 10",
+      "uz": "`console.log(double(5));` → 10",
+      "en": "`console.log(double(5));` → 10"
+     },
+     "show": "console.log(double(5));"
+    }
+   ]
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "isEven",
+   "uz": "isEven",
+   "en": "isEven"
+  },
+  "intro": {
+   "ru": "Напиши функцию isEven(number): true для чётного, false для нечётного. Вызови её 3 раза.",
+   "uz": "isEven(number) funksiyasini yoz: juft uchun true, toq uchun false. Uni 3 marta chaqir.",
+   "en": "Write isEven(number): true for even, false for odd. Call it 3 times."
+  },
+  "files": {
+   "script.js": "// Пиши код здесь. Результат — во вкладке «Результат» (консоль)\n"
+  },
+  "steps": [
+   {
+    "file": "script.js",
+    "re": "(function\\s+isEven\\s*\\(\\s*\\w+\\s*\\)|const\\s+isEven\\s*=\\s*\\(?\\s*\\w+\\s*\\)?\\s*=>)",
+    "say": {
+     "ru": "`function isEven(number) { … }`",
+     "uz": "`function isEven(number) { … }`",
+     "en": "`function isEven(number) { … }`"
+    },
+    "show": "function isEven(number) {\n  return number % 2 === 0;\n}"
+   },
+   {
+    "file": "script.js",
+    "re": "(return\\s+\\w+\\s*%\\s*2\\s*===?\\s*0|=>\\s*\\w+\\s*%\\s*2\\s*===?\\s*0)",
+    "say": {
+     "ru": "Вернуть: `return number % 2 === 0;`",
+     "uz": "Qaytarish: `return number % 2 === 0;`",
+     "en": "Return: `return number % 2 === 0;`"
+    },
+    "show": "return number % 2 === 0;"
+   },
+   {
+    "file": "script.js",
+    "out": "^true\\nfalse\\ntrue$",
+    "say": {
+     "ru": "`console.log(isEven(4)); console.log(isEven(7)); console.log(isEven(10));` → true false true",
+     "uz": "`console.log(isEven(4)); console.log(isEven(7)); console.log(isEven(10));` → true false true",
+     "en": "`console.log(isEven(4)); console.log(isEven(7)); console.log(isEven(10));` → true false true"
+    },
+    "show": "console.log(isEven(4));\nconsole.log(isEven(7));\nconsole.log(isEven(10));"
+   }
+  ]
+ }
+}

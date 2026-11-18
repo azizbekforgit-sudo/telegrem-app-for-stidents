@@ -1,0 +1,167 @@
+{
+ "lessonId": "lesson-26-react-state",
+ "allow": [
+  "jsx"
+ ],
+ "topic": {
+  "ru": "React: useState",
+  "uz": "React: useState",
+  "en": "React: useState"
+ },
+ "sections": {
+  "1": {
+   "title": {
+    "ru": "Счётчик",
+    "uz": "Hisoblagich",
+    "en": "Counter"
+   },
+   "intro": {
+    "ru": "Счётчик на useState.",
+    "uz": "useState dagi hisoblagich.",
+    "en": "A counter with useState."
+   },
+   "files": {
+    "App.jsx": ""
+   },
+   "steps": [
+    {
+     "file": "App.jsx",
+     "re": "import\\s*\\{\\s*useState\\s*\\}\\s*from\\s*[\"\\']react[\"\\']",
+     "say": {
+      "ru": "`import { useState } from \"react\";`",
+      "uz": "`import { useState } from \"react\";`",
+      "en": "`import { useState } from \"react\";`"
+     },
+     "show": "import { useState } from \"react\";"
+    },
+    {
+     "file": "App.jsx",
+     "re": "const\\s*\\[\\s*count\\s*,\\s*setCount\\s*\\]\\s*=\\s*useState\\(\\s*0\\s*\\)",
+     "say": {
+      "ru": "`const [count, setCount] = useState(0);`",
+      "uz": "`const [count, setCount] = useState(0);`",
+      "en": "`const [count, setCount] = useState(0);`"
+     },
+     "show": "const [count, setCount] = useState(0);"
+    },
+    {
+     "file": "App.jsx",
+     "re": "onClick=\\{\\s*\\(\\s*\\)\\s*=>\\s*setCount\\(\\s*count\\s*\\+\\s*1\\s*\\)\\s*\\}",
+     "say": {
+      "ru": "Кнопка: `<button onClick={() => setCount(count + 1)}>{count}</button>`",
+      "uz": "Tugma: `<button onClick={() => setCount(count + 1)}>{count}</button>`",
+      "en": "A button: `<button onClick={() => setCount(count + 1)}>{count}</button>`"
+     },
+     "show": "<button onClick={() => setCount(count + 1)}>\n  Нажали: {count}\n</button>"
+    }
+   ],
+   "open": "App.jsx"
+  },
+  "2": {
+   "title": {
+    "ru": "Поле ввода",
+    "uz": "Kiritish maydoni",
+    "en": "An input field"
+   },
+   "intro": {
+    "ru": "Управляемое поле: текст хранится в состоянии.",
+    "uz": "Boshqariladigan maydon: matn holatda saqlanadi.",
+    "en": "A controlled field: the text lives in state."
+   },
+   "files": {
+    "App.jsx": "import { useState } from \"react\";\n\nfunction App() {\n  \n  return (\n    <div>\n      \n    </div>\n  );\n}\n\nexport default App;\n"
+   },
+   "steps": [
+    {
+     "file": "App.jsx",
+     "re": "const\\s*\\[\\s*(\\w+)\\s*,\\s*set\\w+\\s*\\]\\s*=\\s*useState\\(\\s*[\"\\']{2}\\s*\\)",
+     "say": {
+      "ru": "`const [name, setName] = useState(\"\");`",
+      "uz": "`const [name, setName] = useState(\"\");`",
+      "en": "`const [name, setName] = useState(\"\");`"
+     },
+     "show": "const [name, setName] = useState(\"\");"
+    },
+    {
+     "file": "App.jsx",
+     "re": "<input[^>]*value=\\{\\s*\\w+\\s*\\}[^>]*onChange=\\{\\s*\\(?\\s*e\\s*\\)?\\s*=>\\s*set\\w+\\(\\s*e\\.target\\.value\\s*\\)\\s*\\}",
+     "say": {
+      "ru": "`<input value={name} onChange={(e) => setName(e.target.value)} />`",
+      "uz": "`<input value={name} onChange={(e) => setName(e.target.value)} />`",
+      "en": "`<input value={name} onChange={(e) => setName(e.target.value)} />`"
+     },
+     "show": "<input value={name} onChange={(e) => setName(e.target.value)} />"
+    },
+    {
+     "file": "App.jsx",
+     "re": "<(p|h\\d)>[^<]*\\{\\s*\\w+\\s*\\}",
+     "say": {
+      "ru": "Покажи текст: `<p>Привет, {name}!</p>`",
+      "uz": "Matnni ko'rsat: `<p>Salom, {name}!</p>`",
+      "en": "Show the text: `<p>Hello, {name}!</p>`"
+     },
+     "show": "<p>Привет, {name}!</p>"
+    }
+   ],
+   "open": "App.jsx"
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "To-do на React",
+   "uz": "React da to-do",
+   "en": "To-do in React"
+  },
+  "intro": {
+   "ru": "Перепиши список задач на React с useState: добавление и удаление задач.",
+   "uz": "Vazifalar ro'yxatini useState bilan React da qayta yoz: vazifa qo'shish va o'chirish.",
+   "en": "Rewrite the to-do list in React with useState: adding and deleting tasks."
+  },
+  "files": {
+   "App.jsx": "import { useState } from \"react\";\n\nfunction App() {\n  \n  return (\n    <div>\n      \n    </div>\n  );\n}\n\nexport default App;\n"
+  },
+  "steps": [
+   {
+    "file": "App.jsx",
+    "re": "const\\s*\\[\\s*tasks\\s*,\\s*setTasks\\s*\\]\\s*=\\s*useState\\(\\s*\\[\\s*\\]\\s*\\)",
+    "say": {
+     "ru": "Список в состоянии: `const [tasks, setTasks] = useState([]);`",
+     "uz": "Holatdagi ro'yxat: `const [tasks, setTasks] = useState([]);`",
+     "en": "A list in state: `const [tasks, setTasks] = useState([]);`"
+    },
+    "show": "const [tasks, setTasks] = useState([]);\nconst [text, setText] = useState(\"\");"
+   },
+   {
+    "file": "App.jsx",
+    "re": "setTasks\\(\\s*\\[\\s*\\.\\.\\.tasks\\s*,",
+    "say": {
+     "ru": "Добавление: `setTasks([...tasks, text]);`",
+     "uz": "Qo'shish: `setTasks([...tasks, text]);`",
+     "en": "Adding: `setTasks([...tasks, text]);`"
+    },
+    "show": "const add = () => {\n  setTasks([...tasks, text]);\n  setText(\"\");\n};"
+   },
+   {
+    "file": "App.jsx",
+    "re": "tasks\\.map\\(\\s*\\(?[^)]*\\)?\\s*=>\\s*\\(?\\s*<li[^>]*key=",
+    "say": {
+     "ru": "Вывод: `tasks.map((t, i) => <li key={i}>{t}</li>)`",
+     "uz": "Chiqarish: `tasks.map((t, i) => <li key={i}>{t}</li>)`",
+     "en": "Rendering: `tasks.map((t, i) => <li key={i}>{t}</li>)`"
+    },
+    "show": "<ul>\n  {tasks.map((t, i) => (\n    <li key={i} onClick={() => remove(i)}>{t}</li>\n  ))}\n</ul>"
+   },
+   {
+    "file": "App.jsx",
+    "re": "setTasks\\(\\s*tasks\\.filter\\(",
+    "say": {
+     "ru": "Удаление: `setTasks(tasks.filter((_, j) => j !== i));`",
+     "uz": "O'chirish: `setTasks(tasks.filter((_, j) => j !== i));`",
+     "en": "Deleting: `setTasks(tasks.filter((_, j) => j !== i));`"
+    },
+    "show": "const remove = (i) => setTasks(tasks.filter((_, j) => j !== i));"
+   }
+  ],
+  "open": "App.jsx"
+ }
+}

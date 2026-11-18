@@ -1,0 +1,162 @@
+{
+ "lessonId": "lesson-07-flex-practice",
+ "allow": [
+  "html",
+  "css"
+ ],
+ "topic": {
+  "ru": "Flexbox на практике",
+  "uz": "Flexbox amaliyotda",
+  "en": "Flexbox in practice"
+ },
+ "sections": {
+  "0": {
+   "title": {
+    "ru": "flex-wrap",
+    "uz": "flex-wrap",
+    "en": "flex-wrap"
+   },
+   "intro": {
+    "ru": "Разрешим карточкам переноситься на новую строку.",
+    "uz": "Kartochkalarga yangi qatorga o'tishga ruxsat beramiz.",
+    "en": "Let's allow the cards to wrap to a new line."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"gallery\">\n    <div class=\"card\">Карточка 1</div>\n    <div class=\"card\">Карточка 2</div>\n    <div class=\"card\">Карточка 3</div>\n    <div class=\"card\">Карточка 4</div>\n    <div class=\"card\">Карточка 5</div>\n    <div class=\"card\">Карточка 6</div>\n  </div>\n</body>\n</html>\n",
+    "style.css": ".gallery {\n  display: flex;\n}\n.card {\n  width: 200px;\n  flex-shrink: 0;\n  height: 100px;\n  background: lightblue;\n}\n"
+   },
+   "steps": [
+    {
+     "file": "style.css",
+     "re": "\\.gallery\\s*\\{[^}]*flex-wrap\\s*:\\s*wrap",
+     "say": {
+      "ru": "Чтобы не вылезали за экран: `flex-wrap: wrap;`",
+      "uz": "Ekrandan chiqib ketmasligi uchun: `flex-wrap: wrap;`",
+      "en": "So they don't overflow: `flex-wrap: wrap;`"
+     },
+     "show": "flex-wrap: wrap;"
+    },
+    {
+     "file": "style.css",
+     "re": "\\.gallery\\s*\\{[^}]*gap\\s*:\\s*\\d+px",
+     "say": {
+      "ru": "Отступы между карточками — только `gap: 20px;`",
+      "uz": "Kartochkalar orasidagi masofa — faqat `gap: 20px;`",
+      "en": "Space between the cards — only `gap: 20px;`"
+     },
+     "show": "gap: 20px;"
+    }
+   ],
+   "open": "style.css"
+  },
+  "3": {
+   "title": {
+    "ru": "flex: 1",
+    "uz": "flex: 1",
+    "en": "flex: 1"
+   },
+   "intro": {
+    "ru": "Поделим место поровну между колонками.",
+    "uz": "Joyni ustunlar orasida teng bo'lamiz.",
+    "en": "Let's share the space equally between the columns."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"row\">\n    <div class=\"col\">1</div>\n    <div class=\"col\">2</div>\n    <div class=\"col\">3</div>\n  </div>\n</body>\n</html>\n",
+    "style.css": ".row {\n  display: flex;\n  gap: 10px;\n}\n.col {\n  background: #ffd;\n  padding: 20px;\n}\n"
+   },
+   "steps": [
+    {
+     "file": "style.css",
+     "re": "\\.col\\s*\\{[^}]*flex\\s*:\\s*1\\b",
+     "say": {
+      "ru": "Каждой колонке — `flex: 1;` (без px и процентов!)",
+      "uz": "Har bir ustunga — `flex: 1;` (px va foizsiz!)",
+      "en": "Each column gets `flex: 1;` (no px or percent!)"
+     },
+     "show": "flex: 1;"
+    },
+    {
+     "file": "style.css",
+     "re": "\\.col\\s*\\{[^}]*width\\s*:\\s*\\d",
+     "say": {
+      "ru": "Не пиши ширину в px — flex сам поделит",
+      "uz": "Kenglikni px da yozma — flex o'zi bo'ladi",
+      "en": "Don't write a px width — flex shares it itself"
+     },
+     "flags": "i",
+     "not": true
+    }
+   ],
+   "open": "style.css"
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "Блок «3 преимущества»",
+   "uz": "«3 ta afzallik» bloki",
+   "en": "«3 benefits» block"
+  },
+  "intro": {
+   "ru": "3 колонки: в каждой иконка, заголовок и текст. Колонки — flex: 1, внутри — flex-колонка по центру.",
+   "uz": "3 ta ustun: har birida ikonka, sarlavha va matn. Ustunlar — flex: 1, ichida — markazdagi flex-ustun.",
+   "en": "3 columns: each with an icon, a heading and text. Columns are flex: 1, inside — a centered flex column."
+  },
+  "files": {
+   "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"features\">\n    <div class=\"feature\">\n      <div class=\"icon\">🚚</div>\n      <h3>Быстрая доставка</h3>\n      <p>Текст преимущества</p>\n    </div>\n    <div class=\"feature\">\n      <div class=\"icon\">💳</div>\n      <h3>Удобная оплата</h3>\n      <p>Текст преимущества</p>\n    </div>\n    <div class=\"feature\">\n      <div class=\"icon\">🛡️</div>\n      <h3>Гарантия</h3>\n      <p>Текст преимущества</p>\n    </div>\n  </div>\n</body>\n</html>\n",
+   "style.css": ""
+  },
+  "steps": [
+   {
+    "file": "style.css",
+    "re": "\\.features\\s*\\{[^}]*display\\s*:\\s*flex",
+    "say": {
+     "ru": "`.features` — `display: flex;`",
+     "uz": "`.features` — `display: flex;`",
+     "en": "`.features` — `display: flex;`"
+    },
+    "show": ".features {\n  display: flex;\n  gap: 24px;\n}"
+   },
+   {
+    "file": "style.css",
+    "re": "\\.features\\s*\\{[^}]*gap\\s*:\\s*\\d+px",
+    "say": {
+     "ru": "Между колонками — `gap`, не margin",
+     "uz": "Ustunlar orasida — margin emas, `gap`",
+     "en": "Between columns — `gap`, not margin"
+    },
+    "show": "gap: 24px;"
+   },
+   {
+    "file": "style.css",
+    "re": "\\.feature(?![s\\w-])\\s*\\{[^}]*flex\\s*:\\s*1\\b",
+    "say": {
+     "ru": "Каждой `.feature` — `flex: 1;`",
+     "uz": "Har bir `.feature` ga — `flex: 1;`",
+     "en": "Each `.feature` gets `flex: 1;`"
+    },
+    "show": ".feature {\n  flex: 1;\n}"
+   },
+   {
+    "file": "style.css",
+    "re": "\\.feature(?![s\\w-])\\s*\\{[^}]*flex-direction\\s*:\\s*column",
+    "say": {
+     "ru": "Внутри `.feature` — колонка: `display: flex; flex-direction: column;`",
+     "uz": "`.feature` ichida — ustun: `display: flex; flex-direction: column;`",
+     "en": "Inside `.feature` — a column: `display: flex; flex-direction: column;`"
+    },
+    "show": "display: flex;\nflex-direction: column;"
+   },
+   {
+    "file": "style.css",
+    "re": "\\.feature(?![s\\w-])\\s*\\{[^}]*align-items\\s*:\\s*center",
+    "say": {
+     "ru": "И по центру: `align-items: center;`",
+     "uz": "Va markazda: `align-items: center;`",
+     "en": "And centered: `align-items: center;`"
+    },
+    "show": "align-items: center;"
+   }
+  ],
+  "open": "style.css"
+ }
+}

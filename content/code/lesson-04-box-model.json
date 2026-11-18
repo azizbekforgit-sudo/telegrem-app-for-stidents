@@ -1,0 +1,171 @@
+{
+ "lessonId": "lesson-04-box-model",
+ "allow": [
+  "html",
+  "css"
+ ],
+ "topic": {
+  "ru": "Box model",
+  "uz": "Box model",
+  "en": "Box model"
+ },
+ "sections": {
+  "1": {
+   "title": {
+    "ru": "Padding и border",
+    "uz": "Padding va border",
+    "en": "Padding and border"
+   },
+   "intro": {
+    "ru": "Сделаем карточке внутренний отступ и рамку.",
+    "uz": "Kartochkaga ichki chekinish va ramka qilamiz.",
+    "en": "Let's give the card padding and a border."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"card\">\n    <h3>Кроссовки</h3>\n    <p>450 000 сум</p>\n  </div>\n</body>\n</html>\n",
+    "style.css": ".card {\n  width: 250px;\n  background: #f4f4f4;\n}\n"
+   },
+   "steps": [
+    {
+     "file": "style.css",
+     "re": "\\.card\\s*\\{[^}]*padding\\s*:\\s*\\d+px",
+     "say": {
+      "ru": "Добавь `.card` внутренний отступ: `padding: 20px;`",
+      "uz": "`.card` ga ichki chekinish qo'sh: `padding: 20px;`",
+      "en": "Add padding to `.card`: `padding: 20px;`"
+     },
+     "show": "padding: 20px;"
+    },
+    {
+     "file": "style.css",
+     "re": "\\.card\\s*\\{[^}]*border\\s*:\\s*\\d+px\\s+(solid|dashed|dotted)",
+     "say": {
+      "ru": "И рамку: `border: 2px solid black;`",
+      "uz": "Va ramka: `border: 2px solid black;`",
+      "en": "And a border: `border: 2px solid black;`"
+     },
+     "show": "border: 2px solid black;"
+    }
+   ],
+   "open": "style.css"
+  },
+  "4": {
+   "title": {
+    "ru": "box-sizing",
+    "uz": "box-sizing",
+    "en": "box-sizing"
+   },
+   "intro": {
+    "ru": "Включим главное правило — border-box.",
+    "uz": "Asosiy qoidani yoqamiz — border-box.",
+    "en": "Let's turn on the main rule — border-box."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"card\">\n    <h3>Кроссовки</h3>\n    <p>450 000 сум</p>\n  </div>\n</body>\n</html>\n",
+    "style.css": ".card {\n  width: 250px;\n  padding: 20px;\n  border: 2px solid black;\n}\n"
+   },
+   "steps": [
+    {
+     "file": "style.css",
+     "re": "\\*\\s*\\{[^}]*box-sizing\\s*:\\s*border-box",
+     "say": {
+      "ru": "В самом начале CSS: `* { box-sizing: border-box; }`",
+      "uz": "CSS ning boshida: `* { box-sizing: border-box; }`",
+      "en": "At the very top of CSS: `* { box-sizing: border-box; }`"
+     },
+     "show": "* {\n  box-sizing: border-box;\n}"
+    },
+    {
+     "file": "style.css",
+     "re": "\\.card\\s*\\{[^}]*margin\\s*:\\s*\\d+px",
+     "say": {
+      "ru": "И отступ снаружи карточки: `margin: 20px;`",
+      "uz": "Va kartochka tashqarisidan chekinish: `margin: 20px;`",
+      "en": "And space outside the card: `margin: 20px;`"
+     },
+     "show": "margin: 20px;"
+    }
+   ],
+   "open": "style.css"
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "3 карточки товаров",
+   "uz": "3 ta mahsulot kartochkasi",
+   "en": "3 product cards"
+  },
+  "intro": {
+   "ru": "Сделай 3 карточки в ряд: название, цена, кнопка. С padding, border и одинаковым margin.",
+   "uz": "Bir qatorda 3 ta kartochka yasa: nom, narx, tugma. padding, border va bir xil margin bilan.",
+   "en": "Make 3 cards in a row: name, price, button. With padding, border and equal margin."
+  },
+  "files": {
+   "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  \n</body>\n</html>\n",
+   "style.css": ""
+  },
+  "steps": [
+   {
+    "file": "style.css",
+    "re": "\\*\\s*\\{[^}]*box-sizing\\s*:\\s*border-box",
+    "say": {
+     "ru": "Начни CSS с `* { box-sizing: border-box; }`",
+     "uz": "CSS ni `* { box-sizing: border-box; }` bilan boshla",
+     "en": "Start CSS with `* { box-sizing: border-box; }`"
+    },
+    "show": "* {\n  box-sizing: border-box;\n}"
+   },
+   {
+    "file": "index.html",
+    "re": "(<div class=\"card\">[\\s\\S]*?<button>[\\s\\S]*?</div>[\\s\\S]*){3}",
+    "say": {
+     "ru": "В HTML три `<div class=\"card\">`: заголовок, цена и `<button>`",
+     "uz": "HTML da uchta `<div class=\"card\">`: sarlavha, narx va `<button>`",
+     "en": "In HTML three `<div class=\"card\">`: title, price and a `<button>`"
+    },
+    "show": "<div class=\"card\">\n  <h3>Кроссовки</h3>\n  <p>450 000 сум</p>\n  <button>Купить</button>\n</div>"
+   },
+   {
+    "file": "style.css",
+    "re": "\\.card\\s*\\{[^}]*padding\\s*:\\s*\\d+px",
+    "say": {
+     "ru": "`.card` — padding, чтобы текст не прилипал",
+     "uz": "`.card` — matn chetga yopishmasligi uchun padding",
+     "en": "`.card` — padding so the text doesn't stick"
+    },
+    "show": ".card {\n  padding: 16px;\n}"
+   },
+   {
+    "file": "style.css",
+    "re": "\\.card\\s*\\{[^}]*border\\s*:\\s*\\d+px",
+    "say": {
+     "ru": "`.card` — рамка border",
+     "uz": "`.card` — border ramka",
+     "en": "`.card` — a border"
+    },
+    "show": "border: 2px solid #ddd;"
+   },
+   {
+    "file": "style.css",
+    "re": "\\.card\\s*\\{[^}]*margin\\s*:\\s*\\d+px",
+    "say": {
+     "ru": "Одинаковое расстояние между карточками — margin",
+     "uz": "Kartochkalar orasida bir xil masofa — margin",
+     "en": "Equal space between cards — margin"
+    },
+    "show": "margin: 10px;"
+   },
+   {
+    "file": "style.css",
+    "re": "\\.card\\s*\\{[^}]*display\\s*:\\s*inline-block",
+    "say": {
+     "ru": "Чтобы стояли в ряд: `display: inline-block; width: 250px;`",
+     "uz": "Bir qatorda turishi uchun: `display: inline-block; width: 250px;`",
+     "en": "To stand in a row: `display: inline-block; width: 250px;`"
+    },
+    "show": "display: inline-block;\nwidth: 250px;"
+   }
+  ],
+  "open": "index.html"
+ }
+}

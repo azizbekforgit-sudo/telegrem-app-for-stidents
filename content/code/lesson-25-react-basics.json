@@ -1,0 +1,163 @@
+{
+ "lessonId": "lesson-25-react-basics",
+ "allow": [
+  "jsx"
+ ],
+ "topic": {
+  "ru": "React: компоненты и props",
+  "uz": "React: komponentlar va props",
+  "en": "React: components and props"
+ },
+ "sections": {
+  "0": {
+   "title": {
+    "ru": "Компонент",
+    "uz": "Komponent",
+    "en": "A component"
+   },
+   "intro": {
+    "ru": "Первый компонент — функция, которая возвращает JSX.",
+    "uz": "Birinchi komponent — JSX qaytaradigan funksiya.",
+    "en": "The first component is a function that returns JSX."
+   },
+   "files": {
+    "App.jsx": ""
+   },
+   "steps": [
+    {
+     "file": "App.jsx",
+     "re": "function\\s+App\\s*\\(\\s*\\)\\s*\\{[\\s\\S]*return\\s*\\(?\\s*<",
+     "say": {
+      "ru": "`function App() { return <h1>Привет, React!</h1>; }`",
+      "uz": "`function App() { return <h1>Salom, React!</h1>; }`",
+      "en": "`function App() { return <h1>Hello, React!</h1>; }`"
+     },
+     "show": "function App() {\n  return <h1>Привет, React!</h1>;\n}"
+    },
+    {
+     "file": "App.jsx",
+     "re": "export\\s+default\\s+App",
+     "say": {
+      "ru": "Экспортируй: `export default App;`",
+      "uz": "Eksport qil: `export default App;`",
+      "en": "Export it: `export default App;`"
+     },
+     "show": "export default App;"
+    }
+   ],
+   "open": "App.jsx"
+  },
+  "2": {
+   "title": {
+    "ru": "props",
+    "uz": "props",
+    "en": "props"
+   },
+   "intro": {
+    "ru": "Компонент-карточка с данными через props.",
+    "uz": "Props orqali ma'lumot oladigan kartochka-komponent.",
+    "en": "A card component that gets data through props."
+   },
+   "files": {
+    "App.jsx": "function App() {\n  return (\n    <div>\n      \n    </div>\n  );\n}\n\nexport default App;\n"
+   },
+   "steps": [
+    {
+     "file": "App.jsx",
+     "re": "function\\s+Card\\s*\\(\\s*(props|\\{\\s*\\w+[^}]*\\})\\s*\\)",
+     "say": {
+      "ru": "`function Card({ title, price }) { … }`",
+      "uz": "`function Card({ title, price }) { … }`",
+      "en": "`function Card({ title, price }) { … }`"
+     },
+     "show": "function Card({ title, price }) {\n  return (\n    <div className=\"card\">\n      <h3>{title}</h3>\n      <p>{price}</p>\n    </div>\n  );\n}"
+    },
+    {
+     "file": "App.jsx",
+     "re": "className=",
+     "say": {
+      "ru": "В JSX вместо class пишут `className`",
+      "uz": "JSX da class o'rniga `className` yoziladi",
+      "en": "In JSX use `className` instead of class"
+     },
+     "show": "<div className=\"card\">"
+    },
+    {
+     "file": "App.jsx",
+     "re": "(<Card\\s+[^>]*title=[^>]*/>[\\s\\S]*){2}",
+     "say": {
+      "ru": "Используй дважды: `<Card title=\"Кроссовки\" price=\"450 000\" />`",
+      "uz": "Ikki marta ishlat: `<Card title=\"Krossovka\" price=\"450 000\" />`",
+      "en": "Use it twice: `<Card title=\"Sneakers\" price=\"450 000\" />`"
+     },
+     "show": "<Card title=\"Кроссовки\" price=\"450 000\" />\n<Card title=\"Кепка\" price=\"90 000\" />"
+    }
+   ],
+   "open": "App.jsx"
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "Лендинг на компонентах",
+   "uz": "Komponentlardagi lending",
+   "en": "Landing in components"
+  },
+  "intro": {
+   "ru": "Разбей лендинг на компоненты Header, Hero, Features, Footer — каждый в своём файле.",
+   "uz": "Lendingni Header, Hero, Features, Footer komponentlariga ajrat — har biri o'z faylida.",
+   "en": "Split the landing into Header, Hero, Features, Footer components — each in its own file."
+  },
+  "files": {
+   "App.jsx": "function App() {\n  return (\n    <>\n      \n    </>\n  );\n}\n\nexport default App;\n",
+   "Header.jsx": ""
+  },
+  "steps": [
+   {
+    "file": "Header.jsx",
+    "re": "function\\s+Header\\s*\\(\\s*\\)[\\s\\S]*<header[\\s\\S]*export\\s+default\\s+Header",
+    "say": {
+     "ru": "Header.jsx: компонент с `<header>` и `export default Header;`",
+     "uz": "Header.jsx: `<header>` li komponent va `export default Header;`",
+     "en": "Header.jsx: a component with `<header>` and `export default Header;`"
+    },
+    "show": "function Header() {\n  return <header>Логотип</header>;\n}\n\nexport default Header;"
+   },
+   {
+    "file": "App.jsx",
+    "re": "import\\s+Header\\s+from\\s+[\"\\']\\./Header(\\.jsx)?[\"\\']",
+    "say": {
+     "ru": "В App.jsx: `import Header from \"./Header\";`",
+     "uz": "App.jsx da: `import Header from \"./Header\";`",
+     "en": "In App.jsx: `import Header from \"./Header\";`"
+    },
+    "show": "import Header from \"./Header\";"
+   },
+   {
+    "file": "App.jsx",
+    "re": "import\\s+(Hero|Features|Footer)\\s+from[\\s\\S]*import\\s+(Hero|Features|Footer)\\s+from[\\s\\S]*import\\s+(Hero|Features|Footer)\\s+from",
+    "say": {
+     "ru": "Создай файлы Hero, Features, Footer (кнопка ＋) и импортируй их",
+     "uz": "Hero, Features, Footer fayllarini yarat (＋ tugmasi) va ularni import qil",
+     "en": "Create Hero, Features, Footer files (the ＋ button) and import them"
+    },
+    "show": "import Hero from \"./Hero\";\nimport Features from \"./Features\";\nimport Footer from \"./Footer\";"
+   },
+   {
+    "file": "App.jsx",
+    "re": "<Header\\s*/>[\\s\\S]*<Hero\\s*/>[\\s\\S]*<Features\\s*/>[\\s\\S]*<Footer\\s*/>",
+    "say": {
+     "ru": "Собери в App: `<Header /> <Hero /> <Features /> <Footer />`",
+     "uz": "App da yig': `<Header /> <Hero /> <Features /> <Footer />`",
+     "en": "Put it together in App: `<Header /> <Hero /> <Features /> <Footer />`"
+    },
+    "show": "<Header />\n<Hero />\n<Features />\n<Footer />"
+   }
+  ],
+  "open": "App.jsx",
+  "extra": [
+   "Hero.jsx",
+   "Features.jsx",
+   "Footer.jsx"
+  ]
+ }
+}

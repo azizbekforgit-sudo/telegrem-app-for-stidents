@@ -1,0 +1,190 @@
+{
+ "lessonId": "lesson-13-js-basics",
+ "allow": [
+  "js"
+ ],
+ "topic": {
+  "ru": "JavaScript: переменные и типы",
+  "uz": "JavaScript: o'zgaruvchilar va turlar",
+  "en": "JavaScript: variables and types"
+ },
+ "sections": {
+  "0": {
+   "title": {
+    "ru": "let и const",
+    "uz": "let va const",
+    "en": "let and const"
+   },
+   "intro": {
+    "ru": "Заведём переменные и выведем их в консоль.",
+    "uz": "O'zgaruvchilar yaratib, ularni konsolga chiqaramiz.",
+    "en": "Let's create variables and print them to the console."
+   },
+   "files": {
+    "script.js": "// Пиши код здесь. Результат — во вкладке «Результат» (консоль)\n"
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "\\bconst\\s+name\\s*=\\s*[\"\\'`][^\"\\'`]+[\"\\'`]",
+     "say": {
+      "ru": "Имя не меняется: `const name = \"Азиз\";`",
+      "uz": "Ism o'zgarmaydi: `const name = \"Aziz\";`",
+      "en": "A name doesn't change: `const name = \"Aziz\";`"
+     },
+     "show": "const name = \"Азиз\";"
+    },
+    {
+     "file": "script.js",
+     "re": "\\blet\\s+age\\s*=\\s*\\d+",
+     "say": {
+      "ru": "Возраст меняется: `let age = 12;`",
+      "uz": "Yosh o'zgaradi: `let age = 12;`",
+      "en": "Age changes: `let age = 12;`"
+     },
+     "show": "let age = 12;"
+    },
+    {
+     "file": "script.js",
+     "out": "\\S",
+     "say": {
+      "ru": "Выведи их: `console.log(name, age);`",
+      "uz": "Ularni chiqar: `console.log(name, age);`",
+      "en": "Print them: `console.log(name, age);`"
+     },
+     "show": "console.log(name, age);"
+    }
+   ]
+  },
+  "2": {
+   "title": {
+    "ru": "Остаток %",
+    "uz": "Qoldiq %",
+    "en": "Remainder %"
+   },
+   "intro": {
+    "ru": "Проверим, чётное ли число.",
+    "uz": "Son juftligini tekshiramiz.",
+    "en": "Let's check whether a number is even."
+   },
+   "files": {
+    "script.js": "// Пиши код здесь. Результат — во вкладке «Результат» (консоль)\nlet n = 7;\n"
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "n\\s*%\\s*2",
+     "say": {
+      "ru": "Остаток от деления на 2: `n % 2`",
+      "uz": "2 ga bo'lgandagi qoldiq: `n % 2`",
+      "en": "The remainder of dividing by 2: `n % 2`"
+     },
+     "show": "console.log(n % 2);"
+    },
+    {
+     "file": "script.js",
+     "out": "^1$",
+     "say": {
+      "ru": "Выведи `console.log(n % 2);` — у 7 будет 1",
+      "uz": "`console.log(n % 2);` ni chiqar — 7 da 1 bo'ladi",
+      "en": "Print `console.log(n % 2);` — for 7 it is 1"
+     },
+     "show": "console.log(n % 2);"
+    }
+   ]
+  },
+  "3": {
+   "title": {
+    "ru": "Шаблонные строки",
+    "uz": "Shablon satrlar",
+    "en": "Template strings"
+   },
+   "intro": {
+    "ru": "Склеим текст через `${}`.",
+    "uz": "Matnni `${}` orqali yopishtiramiz.",
+    "en": "Let's join text with `${}`."
+   },
+   "files": {
+    "script.js": "// Пиши код здесь. Результат — во вкладке «Результат» (консоль)\nconst name = \"Азиз\";\nconst age = 12;\n"
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "`[^`]*\\$\\{\\s*name\\s*\\}[^`]*\\$\\{\\s*age\\s*\\}[^`]*`",
+     "say": {
+      "ru": "Обратные кавычки и `${}`: `` `Меня зовут ${name}, мне ${age}` ``",
+      "uz": "Teskari qo'shtirnoq va `${}`: `` `Mening ismim ${name}, men ${age} yoshdaman` ``",
+      "en": "Backticks and `${}`: `` `My name is ${name}, I am ${age}` ``"
+     },
+     "show": "console.log(`Меня зовут ${name}, мне ${age} лет`);"
+    },
+    {
+     "file": "script.js",
+     "out": "\\d",
+     "say": {
+      "ru": "Выведи это через `console.log`",
+      "uz": "Buni `console.log` orqali chiqar",
+      "en": "Print it with `console.log`"
+     },
+     "show": "console.log(`Меня зовут ${name}, мне ${age} лет`);"
+    }
+   ]
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "Привет из консоли",
+   "uz": "Konsoldan salom",
+   "en": "Hello from the console"
+  },
+  "intro": {
+   "ru": "Выведи в консоль фразу о себе через шаблонную строку.",
+   "uz": "Shablon satr orqali o'zing haqingdagi gapni konsolga chiqar.",
+   "en": "Print a sentence about yourself to the console with a template string."
+  },
+  "files": {
+   "script.js": "// Пиши код здесь. Результат — во вкладке «Результат» (консоль)\n"
+  },
+  "steps": [
+   {
+    "file": "script.js",
+    "re": "\\bconst\\s+name\\s*=",
+    "say": {
+     "ru": "`const name = \"Твоё имя\";`",
+     "uz": "`const name = \"Isming\";`",
+     "en": "`const name = \"Your name\";`"
+    },
+    "show": "const name = \"Азиз\";"
+   },
+   {
+    "file": "script.js",
+    "re": "\\bconst\\s+age\\s*=\\s*\\d+",
+    "say": {
+     "ru": "`const age = 20;`",
+     "uz": "`const age = 20;`",
+     "en": "`const age = 20;`"
+    },
+    "show": "const age = 20;"
+   },
+   {
+    "file": "script.js",
+    "re": "console\\.log\\(\\s*`[^`]*\\$\\{\\s*name\\s*\\}[^`]*\\$\\{\\s*age\\s*\\}",
+    "say": {
+     "ru": "`console.log(`Меня зовут ${name}, мне ${age} лет`);`",
+     "uz": "`console.log(`Mening ismim ${name}, men ${age} yoshdaman`);`",
+     "en": "`console.log(`My name is ${name}, I am ${age}`);`"
+    },
+    "show": "console.log(`Меня зовут ${name}, мне ${age} лет`);"
+   },
+   {
+    "file": "script.js",
+    "out": "\\S+.*\\d",
+    "say": {
+     "ru": "Проверь вкладку «Результат» — там твоя фраза",
+     "uz": "«Natija» yorlig'ini tekshir — u yerda gaping bor",
+     "en": "Check the «Result» tab — your sentence is there"
+    }
+   }
+  ]
+ }
+}

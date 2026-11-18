@@ -1,0 +1,156 @@
+{
+ "lessonId": "lesson-22-async",
+ "allow": [
+  "html",
+  "css",
+  "js"
+ ],
+ "topic": {
+  "ru": "async / await",
+  "uz": "async / await",
+  "en": "async / await"
+ },
+ "sections": {
+  "0": {
+   "title": {
+    "ru": "async / await",
+    "uz": "async / await",
+    "en": "async / await"
+   },
+   "intro": {
+    "ru": "Тот же запрос, но без цепочки then.",
+    "uz": "Xuddi shu so'rov, lekin then zanjirisiz.",
+    "en": "The same request, but without a then chain."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>JS</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <ul class=\"list\"></ul>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n",
+    "style.css": "",
+    "script.js": ""
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "async\\s+function\\s+\\w+\\s*\\(\\s*\\)",
+     "say": {
+      "ru": "`async function loadUsers() { … }`",
+      "uz": "`async function loadUsers() { … }`",
+      "en": "`async function loadUsers() { … }`"
+     },
+     "show": "async function loadUsers() {\n\n}"
+    },
+    {
+     "file": "script.js",
+     "re": "await\\s+fetch\\(",
+     "say": {
+      "ru": "`const res = await fetch(\"https://jsonplaceholder.typicode.com/users\");`",
+      "uz": "`const res = await fetch(\"https://jsonplaceholder.typicode.com/users\");`",
+      "en": "`const res = await fetch(\"https://jsonplaceholder.typicode.com/users\");`"
+     },
+     "show": "const res = await fetch(\"https://jsonplaceholder.typicode.com/users\");"
+    },
+    {
+     "file": "script.js",
+     "re": "await\\s+\\w+\\.json\\(\\s*\\)",
+     "say": {
+      "ru": "`const data = await res.json();`",
+      "uz": "`const data = await res.json();`",
+      "en": "`const data = await res.json();`"
+     },
+     "show": "const data = await res.json();\nconsole.log(data);"
+    },
+    {
+     "file": "script.js",
+     "re": "^\\s*loadUsers\\(\\s*\\)",
+     "say": {
+      "ru": "Не забудь вызвать: `loadUsers();`",
+      "uz": "Chaqirishni unutma: `loadUsers();`",
+      "en": "Don't forget to call it: `loadUsers();`"
+     },
+     "show": "loadUsers();",
+     "flags": "im"
+    }
+   ],
+   "open": "script.js"
+  },
+  "2": {
+   "title": {
+    "ru": "try / catch",
+    "uz": "try / catch",
+    "en": "try / catch"
+   },
+   "intro": {
+    "ru": "Обработаем ошибку красиво.",
+    "uz": "Xatoni chiroyli qayta ishlaymiz.",
+    "en": "Let's handle the error nicely."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>JS</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <p class=\"msg\"></p>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n",
+    "style.css": "",
+    "script.js": "async function loadUsers() {\n  const res = await fetch(\"https://jsonplaceholder.typicode.com/users\");\n  const data = await res.json();\n  console.log(data.length);\n}\nloadUsers();\n"
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "try\\s*\\{[\\s\\S]*await\\s+fetch[\\s\\S]*\\}\\s*catch\\s*\\(\\s*\\w+\\s*\\)\\s*\\{",
+     "say": {
+      "ru": "Оберни запрос: `try { … } catch (err) { … }`",
+      "uz": "So'rovni o'ra: `try { … } catch (err) { … }`",
+      "en": "Wrap the request: `try { … } catch (err) { … }`"
+     },
+     "show": "try {\n  const res = await fetch(\"…\");\n  const data = await res.json();\n} catch (err) {\n  console.log(\"Не удалось загрузить\");\n}"
+    }
+   ],
+   "open": "script.js"
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "Загрузка и ошибка",
+   "uz": "Yuklanish va xato",
+   "en": "Loading and error"
+  },
+  "intro": {
+   "ru": "Покажи «Загрузка…» пока идёт запрос, и сообщение об ошибке, если запрос не удался.",
+   "uz": "So'rov ketayotganda «Yuklanmoqda…» ni va so'rov muvaffaqiyatsiz bo'lsa xato xabarini ko'rsat.",
+   "en": "Show «Loading…» while the request runs and an error message if it fails."
+  },
+  "files": {
+   "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>JS</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <p class=\"status\"></p>\n  <ul class=\"list\"></ul>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n",
+   "style.css": "",
+   "script.js": ""
+  },
+  "steps": [
+   {
+    "file": "script.js",
+    "re": "textContent\\s*=\\s*[\"\\'`]Загрузка|textContent\\s*=\\s*[\"\\'`]Yuklan|textContent\\s*=\\s*[\"\\'`]Loading",
+    "say": {
+     "ru": "Перед запросом: `status.textContent = \"Загрузка…\";`",
+     "uz": "So'rovdan oldin: `status.textContent = \"Yuklanmoqda…\";`",
+     "en": "Before the request: `status.textContent = \"Loading…\";`"
+    },
+    "show": "status.textContent = \"Загрузка…\";"
+   },
+   {
+    "file": "script.js",
+    "re": "async\\s+function[\\s\\S]*try\\s*\\{[\\s\\S]*await\\s+fetch",
+    "say": {
+     "ru": "Внутри `async function` — запрос в `try` через `await fetch`",
+     "uz": "`async function` ichida — `try` da `await fetch` orqali so'rov",
+     "en": "Inside an `async function` — the request in `try` with `await fetch`"
+    },
+    "show": "const status = document.querySelector(\".status\");\n\nasync function load() {\n  status.textContent = \"Загрузка…\";\n  try {\n    const res = await fetch(\"https://jsonplaceholder.typicode.com/users\");\n    const data = await res.json();\n    status.textContent = \"\";\n    console.log(data);\n  } catch (err) {\n    status.textContent = \"Ошибка загрузки 😢\";\n  }\n}\n\nload();"
+   },
+   {
+    "file": "script.js",
+    "re": "catch\\s*\\(\\s*\\w+\\s*\\)\\s*\\{[^}]*textContent\\s*=",
+    "say": {
+     "ru": "В `catch` — текст ошибки в `status`",
+     "uz": "`catch` da — `status` ga xato matni",
+     "en": "In `catch` — the error text in `status`"
+    },
+    "show": "status.textContent = \"Ошибка загрузки 😢\";"
+   }
+  ],
+  "open": "script.js"
+ }
+}

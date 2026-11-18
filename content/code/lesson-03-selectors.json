@@ -1,0 +1,131 @@
+{
+ "lessonId": "lesson-03-selectors",
+ "allow": [
+  "html",
+  "css"
+ ],
+ "topic": {
+  "ru": "Селекторы",
+  "uz": "Selektorlar",
+  "en": "Selectors"
+ },
+ "sections": {
+  "1": {
+   "title": {
+    "ru": "Селектор по классу",
+    "uz": "Klass bo'yicha selektor",
+    "en": "Class selector"
+   },
+   "intro": {
+    "ru": "Оформим элемент по его классу.",
+    "uz": "Elementni klassi bo'yicha bezaymiz.",
+    "en": "Let's style an element by its class."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <h1 class=\"title\">Мой блог</h1>\n  <p class=\"subtitle\">Пишу о программировании</p>\n  <div class=\"card\">\n    <p>Текст карточки</p>\n  </div>\n  <p>Обычный абзац</p>\n</body>\n</html>\n",
+    "style.css": ""
+   },
+   "steps": [
+    {
+     "file": "style.css",
+     "re": "\\.title\\s*\\{[^}]*color\\s*:\\s*[^;}]+",
+     "say": {
+      "ru": "Класс пишется через точку: `.title { color: tomato; }`",
+      "uz": "Klass nuqta bilan yoziladi: `.title { color: tomato; }`",
+      "en": "A class starts with a dot: `.title { color: tomato; }`"
+     },
+     "show": ".title {\n  color: tomato;\n}"
+    },
+    {
+     "file": "style.css",
+     "re": "\\.subtitle\\s*\\{[^}]*(color|font-size)\\s*:\\s*[^;}]+",
+     "say": {
+      "ru": "Теперь `.subtitle` — сделай его серым",
+      "uz": "Endi `.subtitle` — uni kulrang qil",
+      "en": "Now `.subtitle` — make it gray"
+     },
+     "show": ".subtitle {\n  color: gray;\n}"
+    }
+   ],
+   "open": "style.css"
+  },
+  "3": {
+   "title": {
+    "ru": "Вложенность",
+    "uz": "Ichma-ich joylashuv",
+    "en": "Nesting"
+   },
+   "intro": {
+    "ru": "Покрасим только абзацы внутри карточки.",
+    "uz": "Faqat kartochka ichidagi abzatslarni bo'yaymiz.",
+    "en": "Let's color only the paragraphs inside the card."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <h1 class=\"title\">Мой блог</h1>\n  <p class=\"subtitle\">Пишу о программировании</p>\n  <div class=\"card\">\n    <p>Текст карточки</p>\n  </div>\n  <p>Обычный абзац</p>\n</body>\n</html>\n",
+    "style.css": ""
+   },
+   "steps": [
+    {
+     "file": "style.css",
+     "re": "\\.card\\s+p\\s*\\{[^}]*color\\s*:\\s*[^;}]+",
+     "say": {
+      "ru": "Пробел значит «внутри»: `.card p { color: green; }`",
+      "uz": "Bo'shliq «ichida» degani: `.card p { color: green; }`",
+      "en": "A space means «inside»: `.card p { color: green; }`"
+     },
+     "show": ".card p {\n  color: green;\n}"
+    },
+    {
+     "file": "style.css",
+     "re": "\\.card(?!\\s+p)\\s*\\{[^}]*(border|background|padding)\\s*:\\s*[^;}]+",
+     "say": {
+      "ru": "И саму карточку оформи: рамка или фон для `.card`",
+      "uz": "Kartochkaning o'zini ham beza: `.card` ga ramka yoki fon",
+      "en": "And style the card itself: a border or background for `.card`"
+     },
+     "show": ".card {\n  border: 2px solid green;\n}"
+    }
+   ],
+   "open": "style.css"
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "Три класса",
+   "uz": "Uchta klass",
+   "en": "Three classes"
+  },
+  "intro": {
+   "ru": "Добавь элементам минимум 3 разных класса и задай каждому свой цвет или фон.",
+   "uz": "Elementlarga kamida 3 ta turli klass qo'sh va har biriga o'z rangi yoki fonini ber.",
+   "en": "Add at least 3 different classes and give each its own color or background."
+  },
+  "files": {
+   "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <h1>Мой блог</h1>\n  <p>Подзаголовок</p>\n  <div>Блок</div>\n</body>\n</html>\n",
+   "style.css": ""
+  },
+  "steps": [
+   {
+    "file": "index.html",
+    "re": "class=\"[\\w-]+\"[\\s\\S]*class=\"[\\w-]+\"[\\s\\S]*class=\"[\\w-]+\"",
+    "say": {
+     "ru": "В HTML дай трём элементам классы: `class=\"title\"`, `class=\"subtitle\"`, `class=\"box\"`",
+     "uz": "HTML da uchta elementga klass ber: `class=\"title\"`, `class=\"subtitle\"`, `class=\"box\"`",
+     "en": "In HTML give three elements classes: `class=\"title\"`, `class=\"subtitle\"`, `class=\"box\"`"
+    },
+    "show": "<h1 class=\"title\">Мой блог</h1>"
+   },
+   {
+    "file": "style.css",
+    "re": "(\\.[\\w-]+\\s*\\{[^}]*(color|background)[^}]*\\}[\\s\\S]*){3}",
+    "say": {
+     "ru": "В CSS для каждого класса — свой цвет или фон",
+     "uz": "CSS da har bir klassga — o'z rangi yoki foni",
+     "en": "In CSS each class gets its own color or background"
+    },
+    "show": ".title { color: tomato; }\n.subtitle { color: gray; }\n.box { background: lightblue; }"
+   }
+  ],
+  "open": "index.html"
+ }
+}

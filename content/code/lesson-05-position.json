@@ -1,0 +1,141 @@
+{
+ "lessonId": "lesson-05-position",
+ "allow": [
+  "html",
+  "css"
+ ],
+ "topic": {
+  "ru": "Позиционирование",
+  "uz": "Joylashuv",
+  "en": "Positioning"
+ },
+ "sections": {
+  "1": {
+   "title": {
+    "ru": "position: relative",
+    "uz": "position: relative",
+    "en": "position: relative"
+   },
+   "intro": {
+    "ru": "Сдвинем коробку, не ломая очередь.",
+    "uz": "Navbatni buzmasdan qutini siljitamiz.",
+    "en": "Let's shift a box without breaking the queue."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"box\">Я сдвинусь</div>\n  <p>Я стою на месте</p>\n</body>\n</html>\n",
+    "style.css": ".box {\n  width: 150px;\n  background: gold;\n}\n"
+   },
+   "steps": [
+    {
+     "file": "style.css",
+     "re": "\\.box\\s*\\{[^}]*position\\s*:\\s*relative",
+     "say": {
+      "ru": "Дай `.box` `position: relative;`",
+      "uz": "`.box` ga `position: relative;` ber",
+      "en": "Give `.box` `position: relative;`"
+     },
+     "show": "position: relative;"
+    },
+    {
+     "file": "style.css",
+     "re": "\\.box\\s*\\{[^}]*(top|left)\\s*:\\s*\\d+px",
+     "say": {
+      "ru": "Сдвинь её: `top: 20px; left: 30px;`",
+      "uz": "Uni siljit: `top: 20px; left: 30px;`",
+      "en": "Shift it: `top: 20px; left: 30px;`"
+     },
+     "show": "top: 20px;\nleft: 30px;"
+    }
+   ],
+   "open": "style.css"
+  },
+  "5": {
+   "title": {
+    "ru": "Бейдж SALE",
+    "uz": "SALE belgisi",
+    "en": "SALE badge"
+   },
+   "intro": {
+    "ru": "Прибьём бейдж в угол карточки.",
+    "uz": "Belgini kartochka burchagiga mahkamlaymiz.",
+    "en": "Let's pin the badge to the card corner."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"card\">\n    <span class=\"badge\">SALE</span>\n    <h3>Кроссовки</h3>\n  </div>\n</body>\n</html>\n",
+    "style.css": ".card {\n  width: 250px;\n  height: 150px;\n  border: 2px solid #333;\n  margin: 40px;\n}\n.badge {\n  background: red;\n  color: white;\n}\n"
+   },
+   "steps": [
+    {
+     "file": "style.css",
+     "re": "\\.card\\s*\\{[^}]*position\\s*:\\s*relative",
+     "say": {
+      "ru": "Карточке — `position: relative;` (она станет «якорем»)",
+      "uz": "Kartochkaga — `position: relative;` (u «langar» bo'ladi)",
+      "en": "The card gets `position: relative;` (it becomes the anchor)"
+     },
+     "show": "position: relative;"
+    },
+    {
+     "file": "style.css",
+     "re": "\\.badge\\s*\\{[^}]*position\\s*:\\s*absolute",
+     "say": {
+      "ru": "Бейджу — `position: absolute;`",
+      "uz": "Belgiga — `position: absolute;`",
+      "en": "The badge gets `position: absolute;`"
+     },
+     "show": "position: absolute;"
+    },
+    {
+     "file": "style.css",
+     "re": "\\.badge\\s*\\{[^}]*top\\s*:\\s*\\d+(px)?[\\s\\S]*",
+     "say": {
+      "ru": "И в угол: `top: 10px; right: 10px;`",
+      "uz": "Va burchakka: `top: 10px; right: 10px;`",
+      "en": "And into the corner: `top: 10px; right: 10px;`"
+     },
+     "show": "top: 10px;\nright: 10px;"
+    }
+   ],
+   "open": "style.css"
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "Липкая шапка",
+   "uz": "Yopishqoq shapka",
+   "en": "Sticky header"
+  },
+  "intro": {
+   "ru": "Сделай шапку, которая прилипает к верху при прокрутке длинной страницы.",
+   "uz": "Uzun sahifani aylantirganda tepaga yopishadigan shapka yasa.",
+   "en": "Make a header that sticks to the top when you scroll a long page."
+  },
+  "files": {
+   "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <header>Мой сайт</header>\n  <p>Абзац 1</p>\n  <p>Абзац 2</p>\n  <p>Абзац 3</p>\n  <p>Абзац 4</p>\n  <p>Абзац 5</p>\n  <p>Абзац 6</p>\n  <p>Абзац 7</p>\n  <p>Абзац 8</p>\n  <p>Абзац 9</p>\n  <p>Абзац 10</p>\n  <p>Абзац 11</p>\n  <p>Абзац 12</p>\n  <p>Абзац 13</p>\n  <p>Абзац 14</p>\n  <p>Абзац 15</p>\n  <p>Абзац 16</p>\n  <p>Абзац 17</p>\n  <p>Абзац 18</p>\n  <p>Абзац 19</p>\n  <p>Абзац 20</p>\n  <p>Абзац 21</p>\n  <p>Абзац 22</p>\n  <p>Абзац 23</p>\n  <p>Абзац 24</p>\n  <p>Абзац 25</p>\n  <p>Абзац 26</p>\n  <p>Абзац 27</p>\n  <p>Абзац 28</p>\n  <p>Абзац 29</p>\n  <p>Абзац 30</p>\n</body>\n</html>\n",
+   "style.css": "header {\n  background: #222;\n  color: white;\n  padding: 16px;\n}\n"
+  },
+  "steps": [
+   {
+    "file": "style.css",
+    "re": "header\\s*\\{[^}]*position\\s*:\\s*sticky",
+    "say": {
+     "ru": "Шапке — `position: sticky;`",
+     "uz": "Shapkaga — `position: sticky;`",
+     "en": "The header gets `position: sticky;`"
+    },
+    "show": "position: sticky;"
+   },
+   {
+    "file": "style.css",
+    "re": "header\\s*\\{[^}]*top\\s*:\\s*0",
+    "say": {
+     "ru": "Без `top: 0;` sticky не знает, где прилипать",
+     "uz": "`top: 0;` siz sticky qayerga yopishishni bilmaydi",
+     "en": "Without `top: 0;` sticky doesn't know where to stick"
+    },
+    "show": "top: 0;"
+   }
+  ],
+  "open": "style.css"
+ }
+}

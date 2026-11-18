@@ -1,4 +1,5 @@
 // Точка входа: HTTP API для Mini App + Telegram-бот + планировщик напоминаний.
+import { loadCode, localize } from './code.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -33,6 +34,7 @@ const nudges = createNudges({ logic, journal, shop, store });
 console.log(`[store] ${store.backend}`);
 
 // Тесты, которые Claude готовит из конспектов, лежат в content/lessons/*.json — подхватываем при старте.
+const CODE = loadCode(path.join(root, 'content', 'code'));
 const lessonsDir = path.join(root, 'content', 'lessons');
 const newPersonal = []; // личные задания, о которых бот напишет ученикам после запуска
 // Переводы урока лежат рядом: <id>.uz.json и <id>.en.json (те же поля title, description, questions, learn)
@@ -248,7 +250,20 @@ api.get('/leaderboard/:gid', h((req) => {
   return logic.leaderboard(req.params.gid);
 }));
 api.post('/attempts', h((req) => logic.startAttempt(req.user.id, req.body || {})));
-api.post('/learn/start', h((req) => logic.startLearn(req.user.id, req.body || {})));
+// задания «пишем код» прикрепляются к обучалке; домашка — отдельно (после теста)
+const codeFor = (lessonId, lang) => { const c = CODE[lessonId]; return c ? localize({ allow: c.allow || [], topic: c.topic || '', sections: c.sections || {}, homework: c.homework || null }, lang) : null; };
+api.post('/learn/start', h((req) => { const r = logic.startLearn(req.user.id, req.body || {}); return { ...r, code: codeFor(r.lesson.id, req.user.prefs?.lang || 'ru') }; }));
+api.get('/code/:lessonId', h((req) => codeFor(req.params.lessonId, req.user.prefs?.lang || 'ru') || { none: true }));
+api.post('/code/done', h((req) => {
+  const { lessonId, task, files } = req.body || {};
+  const key = `${req.user.id}:${String(lessonId).slice(0, 80)}:${String(task).slice(0, 20)}`;
+  logic.S.code ||= {};
+  const first = !logic.S.code[key];
+  logic.S.code[key] = { at: Date.now(), files: files && typeof files === 'object' ? Object.fromEntries(Object.entries(files).slice(0, 6).map(([k, v]) => [String(k).slice(0, 40), String(v).slice(0, 20000)])) : null };
+  store.save();
+  console.log('[code] ' + JSON.stringify({ user: { id: req.user.id, name: logic.name(req.user) }, lesson: lessonId, task, first }));
+  return { ok: true };
+}));
 api.post('/learn/check', h((req) => logic.checkLearn(req.user.id, req.body || {}, Number(req.body.section), Number(req.body.index), req.body.answer)));
 api.post('/learn/finish', h((req) => logic.finishLearn(req.user.id, req.body || {})));
 api.post('/attempts/:id/answer', h((req) => logic.answer(req.user.id, req.params.id, Number(req.body.index), req.body.answer, Boolean(req.body.timeout))));

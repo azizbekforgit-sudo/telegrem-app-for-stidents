@@ -1,0 +1,190 @@
+{
+ "lessonId": "lesson-12-css-variables",
+ "allow": [
+  "html",
+  "css"
+ ],
+ "topic": {
+  "ru": "CSS-переменные и анимации",
+  "uz": "CSS o'zgaruvchilari va animatsiyalar",
+  "en": "CSS variables and animations"
+ },
+ "sections": {
+  "1": {
+   "title": {
+    "ru": "var()",
+    "uz": "var()",
+    "en": "var()"
+   },
+   "intro": {
+    "ru": "Заведём главный цвет в переменной.",
+    "uz": "Asosiy rangni o'zgaruvchiga olamiz.",
+    "en": "Let's keep the main color in a variable."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <button class=\"btn\">Купить</button>\n  <div class=\"card\">Карточка</div>\n</body>\n</html>\n",
+    "style.css": ".btn {\n  color: white;\n  border: 0;\n  padding: 12px 24px;\n}\n"
+   },
+   "steps": [
+    {
+     "file": "style.css",
+     "re": ":root\\s*\\{[^}]*--[\\w-]+\\s*:\\s*[^;}]+",
+     "say": {
+      "ru": "Объяви переменную: `:root { --main-color: #7c3aed; }`",
+      "uz": "O'zgaruvchini e'lon qil: `:root { --main-color: #7c3aed; }`",
+      "en": "Declare a variable: `:root { --main-color: #7c3aed; }`"
+     },
+     "show": ":root {\n  --main-color: #7c3aed;\n}"
+    },
+    {
+     "file": "style.css",
+     "re": "\\.btn\\s*\\{[^}]*background(-color)?\\s*:\\s*var\\(\\s*--[\\w-]+\\s*\\)",
+     "say": {
+      "ru": "Используй её: `background: var(--main-color);`",
+      "uz": "Undan foydalan: `background: var(--main-color);`",
+      "en": "Use it: `background: var(--main-color);`"
+     },
+     "show": "background: var(--main-color);"
+    }
+   ],
+   "open": "style.css"
+  },
+  "2": {
+   "title": {
+    "ru": "transition",
+    "uz": "transition",
+    "en": "transition"
+   },
+   "intro": {
+    "ru": "Сделаем смену цвета плавной.",
+    "uz": "Rang almashinuvini silliq qilamiz.",
+    "en": "Let's make the color change smooth."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <button class=\"btn\">Купить</button>\n  <div class=\"card\">Карточка</div>\n</body>\n</html>\n",
+    "style.css": ".btn {\n  background: #7c3aed;\n  color: white;\n  border: 0;\n  padding: 12px 24px;\n}\n"
+   },
+   "steps": [
+    {
+     "file": "style.css",
+     "re": "\\.btn:hover\\s*\\{[^}]*background",
+     "say": {
+      "ru": "Цвет при наведении: `.btn:hover { background: #6d28d9; }`",
+      "uz": "Ustiga olib borgandagi rang: `.btn:hover { background: #6d28d9; }`",
+      "en": "The hover color: `.btn:hover { background: #6d28d9; }`"
+     },
+     "show": ".btn:hover {\n  background: #6d28d9;\n}"
+    },
+    {
+     "file": "style.css",
+     "re": "\\.btn\\s*\\{[^}]*transition\\s*:\\s*[^;}]*\\d*\\.?\\d+m?s",
+     "say": {
+      "ru": "Плавность пишем самой кнопке (не в :hover!): `transition: background-color 0.3s ease;`",
+      "uz": "Silliqlik tugmaning o'ziga yoziladi (:hover ga emas!): `transition: background-color 0.3s ease;`",
+      "en": "Smoothness goes on the button itself (not in :hover!): `transition: background-color 0.3s ease;`"
+     },
+     "show": "transition: background-color 0.3s ease;"
+    }
+   ],
+   "open": "style.css"
+  },
+  "3": {
+   "title": {
+    "ru": "@keyframes",
+    "uz": "@keyframes",
+    "en": "@keyframes"
+   },
+   "intro": {
+    "ru": "Кнопка будет «дышать».",
+    "uz": "Tugma «nafas oladi».",
+    "en": "The button will «breathe»."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <button class=\"btn\">Купить</button>\n  <div class=\"card\">Карточка</div>\n</body>\n</html>\n",
+    "style.css": ".btn {\n  background: #7c3aed;\n  color: white;\n  border: 0;\n  padding: 12px 24px;\n}\n"
+   },
+   "steps": [
+    {
+     "file": "style.css",
+     "re": "@keyframes\\s+([\\w-]+)\\s*\\{[\\s\\S]*50%\\s*\\{[^}]*transform\\s*:\\s*scale",
+     "say": {
+      "ru": "Опиши анимацию: `@keyframes breathe { 0% {…} 50% { transform: scale(1.05); } 100% {…} }`",
+      "uz": "Animatsiyani yoz: `@keyframes breathe { 0% {…} 50% { transform: scale(1.05); } 100% {…} }`",
+      "en": "Describe the animation: `@keyframes breathe { 0% {…} 50% { transform: scale(1.05); } 100% {…} }`"
+     },
+     "show": "@keyframes breathe {\n  0% { transform: scale(1); }\n  50% { transform: scale(1.05); }\n  100% { transform: scale(1); }\n}"
+    },
+    {
+     "file": "style.css",
+     "re": "\\.btn\\s*\\{[^}]*animation\\s*:\\s*[\\w-]+\\s+\\d",
+     "say": {
+      "ru": "Включи её кнопке: `animation: breathe 2s infinite;`",
+      "uz": "Uni tugmaga yoq: `animation: breathe 2s infinite;`",
+      "en": "Turn it on for the button: `animation: breathe 2s infinite;`"
+     },
+     "show": "animation: breathe 2s infinite;"
+    }
+   ],
+   "open": "style.css"
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "Всё на переменных",
+   "uz": "Hammasi o'zgaruvchilarda",
+   "en": "Everything on variables"
+  },
+  "intro": {
+   "ru": "Замени захардкоженные цвета и отступы на CSS-переменные и добавь карточке плавный hover.",
+   "uz": "Qattiq yozilgan ranglar va chekinishlarni CSS o'zgaruvchilariga almashtir va kartochkaga silliq hover qo'sh.",
+   "en": "Replace hard-coded colors and spacing with CSS variables and add a smooth hover to the card."
+  },
+  "files": {
+   "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <button class=\"btn\">Купить</button>\n  <div class=\"card\">Карточка</div>\n</body>\n</html>\n",
+   "style.css": ".btn {\n  background: #7c3aed;\n  color: white;\n  padding: 12px 24px;\n}\n.card {\n  border: 2px solid #7c3aed;\n  padding: 24px;\n}\n"
+  },
+  "steps": [
+   {
+    "file": "style.css",
+    "re": ":root\\s*\\{[^}]*--[\\w-]+\\s*:[^}]*--[\\w-]+\\s*:",
+    "say": {
+     "ru": "В `:root` — минимум две переменные: цвет и отступ",
+     "uz": "`:root` da — kamida ikkita o'zgaruvchi: rang va chekinish",
+     "en": "In `:root` — at least two variables: a color and a spacing"
+    },
+    "show": ":root {\n  --main-color: #7c3aed;\n  --space: 24px;\n}"
+   },
+   {
+    "file": "style.css",
+    "re": "(^|\\})\\s*(?!:root)[^{}]*\\{[^}]*#7c3aed",
+    "say": {
+     "ru": "Убери `#7c3aed` из правил — пусть останется только в `:root`",
+     "uz": "Qoidalardan `#7c3aed` ni olib tashla — faqat `:root` da qolsin",
+     "en": "Remove `#7c3aed` from the rules — keep it only in `:root`"
+    },
+    "not": true
+   },
+   {
+    "file": "style.css",
+    "re": "(var\\(\\s*--[\\w-]+\\s*\\)[\\s\\S]*){3}",
+    "say": {
+     "ru": "Используй `var(--…)` минимум 3 раза",
+     "uz": "`var(--…)` dan kamida 3 marta foydalan",
+     "en": "Use `var(--…)` at least 3 times"
+    },
+    "show": "background: var(--main-color);\npadding: var(--space);"
+   },
+   {
+    "file": "style.css",
+    "re": "\\.card:hover\\s*\\{[^}]*transform",
+    "say": {
+     "ru": "Карточке — `.card:hover { transform: scale(1.03); }` и transition",
+     "uz": "Kartochkaga — `.card:hover { transform: scale(1.03); }` va transition",
+     "en": "The card gets `.card:hover { transform: scale(1.03); }` and a transition"
+    },
+    "show": ".card {\n  transition: transform 0.3s ease;\n}\n.card:hover {\n  transform: scale(1.03);\n}"
+   }
+  ],
+  "open": "style.css"
+ }
+}

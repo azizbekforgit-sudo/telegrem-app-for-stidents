@@ -1,0 +1,202 @@
+{
+ "lessonId": "lesson-01-html",
+ "allow": [
+  "html"
+ ],
+ "topic": {
+  "ru": "Первый HTML",
+  "uz": "Birinchi HTML",
+  "en": "First HTML"
+ },
+ "sections": {
+  "2": {
+   "title": {
+    "ru": "Каркас страницы",
+    "uz": "Sahifa skeleti",
+    "en": "Page skeleton"
+   },
+   "intro": {
+    "ru": "Соберём каркас страницы: html, head и body.",
+    "uz": "Sahifa skeletini yig'amiz: html, head va body.",
+    "en": "Let's build the page skeleton: html, head and body."
+   },
+   "files": {
+    "index.html": ""
+   },
+   "steps": [
+    {
+     "file": "index.html",
+     "re": "<!DOCTYPE html>",
+     "say": {
+      "ru": "Первой строкой напиши `<!DOCTYPE html>`",
+      "uz": "Birinchi qatorga `<!DOCTYPE html>` yoz",
+      "en": "Write `<!DOCTYPE html>` on the first line"
+     },
+     "show": "<!DOCTYPE html>"
+    },
+    {
+     "file": "index.html",
+     "re": "<html[^>]*>[\\s\\S]*</html>",
+     "say": {
+      "ru": "Открой и закрой тег `<html>`",
+      "uz": "`<html>` tegini och va yop",
+      "en": "Open and close the `<html>` tag"
+     },
+     "show": "<html>\n\n</html>"
+    },
+    {
+     "file": "index.html",
+     "re": "<head>[\\s\\S]*<title>[^<]+</title>[\\s\\S]*</head>",
+     "say": {
+      "ru": "Внутри html — `<head>`, а в нём `<title>` с названием",
+      "uz": "html ichida — `<head>`, uning ichida nomli `<title>`",
+      "en": "Inside html — `<head>` with a `<title>` in it"
+     },
+     "show": "<head>\n  <title>Мой сайт</title>\n</head>"
+    },
+    {
+     "file": "index.html",
+     "re": "</head>\\s*<body>[\\s\\S]*</body>",
+     "say": {
+      "ru": "После head — `<body>`: всё, что видно на странице",
+      "uz": "head dan keyin — `<body>`: sahifada ko'rinadigan hamma narsa",
+      "en": "After head — `<body>`: everything visible on the page"
+     },
+     "show": "<body>\n\n</body>"
+    }
+   ]
+  },
+  "3": {
+   "title": {
+    "ru": "Заголовок и абзацы",
+    "uz": "Sarlavha va abzatslar",
+    "en": "Heading and paragraphs"
+   },
+   "intro": {
+    "ru": "Напишем заголовок и два абзаца.",
+    "uz": "Sarlavha va ikkita abzats yozamiz.",
+    "en": "Let's write a heading and two paragraphs."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Обо мне</title>\n</head>\n<body>\n  \n</body>\n</html>\n"
+   },
+   "steps": [
+    {
+     "file": "index.html",
+     "re": "<body>[\\s\\S]*<h1>[^<]+</h1>",
+     "say": {
+      "ru": "В body напиши заголовок `<h1>` со своим именем",
+      "uz": "body ichiga ismingiz bilan `<h1>` sarlavha yoz",
+      "en": "In body write an `<h1>` heading with your name"
+     },
+     "show": "<h1>Азиз</h1>"
+    },
+    {
+     "file": "index.html",
+     "re": "(<p>[^<]+</p>[\\s\\S]*){2}",
+     "say": {
+      "ru": "Добавь два абзаца `<p>…</p>` о себе",
+      "uz": "O'zing haqingda ikkita `<p>…</p>` abzats qo'sh",
+      "en": "Add two `<p>…</p>` paragraphs about yourself"
+     },
+     "show": "<p>Мне 12 лет</p>\n<p>Я живу в Ташкенте</p>"
+    }
+   ]
+  },
+  "4": {
+   "title": {
+    "ru": "Атрибут style",
+    "uz": "style atributi",
+    "en": "The style attribute"
+   },
+   "intro": {
+    "ru": "Раскрасим абзац прямо через style.",
+    "uz": "Abzatsni to'g'ridan-to'g'ri style orqali bo'yaymiz.",
+    "en": "Let's color a paragraph right in style."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Цвета</title>\n</head>\n<body>\n  <p>Привет!</p>\n</body>\n</html>\n"
+   },
+   "steps": [
+    {
+     "file": "index.html",
+     "re": "<p\\s+style=\"[^\"]*color\\s*:\\s*[^;\"]+",
+     "say": {
+      "ru": "Добавь абзацу `style=\"color: blue;\"`",
+      "uz": "Abzatsga `style=\"color: blue;\"` qo'sh",
+      "en": "Give the paragraph `style=\"color: blue;\"`"
+     },
+     "show": "<p style=\"color: blue;\">Привет!</p>"
+    },
+    {
+     "file": "index.html",
+     "re": "<p\\s+style=\"[^\"]*font-size\\s*:\\s*\\d+px",
+     "say": {
+      "ru": "В тот же style допиши `font-size: 24px;`",
+      "uz": "O'sha style ga `font-size: 24px;` qo'sh",
+      "en": "In the same style add `font-size: 24px;`"
+     },
+     "show": "<p style=\"color: blue; font-size: 24px;\">Привет!</p>"
+    }
+   ]
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "Страница «Обо мне»",
+   "uz": "«Men haqimda» sahifasi",
+   "en": "«About me» page"
+  },
+  "intro": {
+   "ru": "Сделай страницу о себе: 4–5 абзацев (имя, возраст, город, любимая еда, мечта), у каждого свой цвет и размер.",
+   "uz": "O'zing haqingda sahifa yasa: 4–5 abzats (ism, yosh, shahar, sevimli taom, orzu), har birining o'z rangi va o'lchami bor.",
+   "en": "Make a page about yourself: 4–5 paragraphs (name, age, city, favourite food, dream), each with its own color and size."
+  },
+  "files": {
+   "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Обо мне</title>\n</head>\n<body>\n  \n</body>\n</html>\n"
+  },
+  "steps": [
+   {
+    "file": "index.html",
+    "re": "<h1>[^<]+</h1>",
+    "say": {
+     "ru": "Заголовок `<h1>` с твоим именем",
+     "uz": "Isming bilan `<h1>` sarlavha",
+     "en": "An `<h1>` heading with your name"
+    },
+    "show": "<h1>Меня зовут Азиз</h1>"
+   },
+   {
+    "file": "index.html",
+    "re": "(<p\\b[^>]*>[^<]+</p>[\\s\\S]*){4}",
+    "say": {
+     "ru": "Минимум 4 абзаца `<p>` о себе",
+     "uz": "O'zing haqingda kamida 4 ta `<p>` abzats",
+     "en": "At least 4 `<p>` paragraphs about yourself"
+    },
+    "show": "<p>Мне 12 лет</p>\n<p>Я из Ташкента</p>\n<p>Люблю плов</p>\n<p>Мечтаю стать программистом</p>"
+   },
+   {
+    "file": "index.html",
+    "re": "(<p\\s+style=\"[^\"]*color\\s*:[^\"]*\"[^>]*>[\\s\\S]*){4}",
+    "say": {
+     "ru": "У каждого абзаца свой `style=\"color: …\"`",
+     "uz": "Har bir abzatsning o'z `style=\"color: …\"` bor",
+     "en": "Every paragraph has its own `style=\"color: …\"`"
+    },
+    "show": "<p style=\"color: green;\">Мне 12 лет</p>"
+   },
+   {
+    "file": "index.html",
+    "re": "(<p\\s+style=\"[^\"]*font-size\\s*:\\s*\\d+px[^\"]*\"[\\s\\S]*){2}",
+    "say": {
+     "ru": "Хотя бы двум абзацам дай разный `font-size`",
+     "uz": "Kamida ikkita abzatsga turli `font-size` ber",
+     "en": "Give at least two paragraphs a different `font-size`"
+    },
+    "show": "<p style=\"color: green; font-size: 20px;\">…</p>"
+   }
+  ],
+  "open": "index.html"
+ }
+}

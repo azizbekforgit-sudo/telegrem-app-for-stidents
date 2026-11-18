@@ -1,0 +1,132 @@
+{
+ "lessonId": "lesson-10-landing",
+ "allow": [
+  "html",
+  "css"
+ ],
+ "topic": {
+  "ru": "Мини-проект: лендинг",
+  "uz": "Mini-loyiha: lending",
+  "en": "Mini project: landing page"
+ },
+ "sections": {
+  "3": {
+   "title": {
+    "ru": "Структура лендинга",
+    "uz": "Lending tuzilmasi",
+    "en": "Landing structure"
+   },
+   "intro": {
+    "ru": "Соберём скелет лендинга и адаптив.",
+    "uz": "Lending skeleti va moslashuvini yig'amiz.",
+    "en": "Let's build the landing skeleton and make it responsive."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  \n</body>\n</html>\n",
+    "style.css": "* {\n  box-sizing: border-box;\n}\n"
+   },
+   "steps": [
+    {
+     "file": "index.html",
+     "re": "<header[^>]*>[\\s\\S]*</header>",
+     "say": {
+      "ru": "Шапка: `<header>…</header>`",
+      "uz": "Shapka: `<header>…</header>`",
+      "en": "Header: `<header>…</header>`"
+     },
+     "show": "<header>\n  <b>Логотип</b>\n</header>"
+    },
+    {
+     "file": "index.html",
+     "re": "<section\\s+class=\"hero\"[\\s\\S]*</section>",
+     "say": {
+      "ru": "Главный экран: `<section class=\"hero\">` с заголовком и кнопкой",
+      "uz": "Asosiy ekran: sarlavha va tugmali `<section class=\"hero\">`",
+      "en": "Hero: `<section class=\"hero\">` with a heading and a button"
+     },
+     "show": "<section class=\"hero\">\n  <h1>Учись кодить</h1>\n  <button>Начать</button>\n</section>"
+    },
+    {
+     "file": "index.html",
+     "re": "<footer[^>]*>[\\s\\S]*</footer>",
+     "say": {
+      "ru": "Подвал: `<footer>…</footer>`",
+      "uz": "Pastki qism: `<footer>…</footer>`",
+      "en": "Footer: `<footer>…</footer>`"
+     },
+     "show": "<footer>© 2026</footer>"
+    },
+    {
+     "file": "style.css",
+     "re": "@media\\s*\\(\\s*max-width\\s*:\\s*600px\\s*\\)",
+     "say": {
+      "ru": "В CSS — адаптив для телефона: `@media (max-width: 600px) { }`",
+      "uz": "CSS da — telefon uchun moslashuv: `@media (max-width: 600px) { }`",
+      "en": "In CSS — phone layout: `@media (max-width: 600px) { }`"
+     },
+     "show": "@media (max-width: 600px) {\n  .hero h1 {\n    font-size: 28px;\n  }\n}"
+    }
+   ],
+   "open": "index.html"
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "Лендинг с hover",
+   "uz": "hover bilan lending",
+   "en": "Landing with hover"
+  },
+  "intro": {
+   "ru": "Доделай лендинг: шапка с меню на flex, карточки на grid и hover-эффект на кнопке.",
+   "uz": "Lendingni tugat: flex menyuli shapka, grid kartochkalar va tugmada hover-effekt.",
+   "en": "Finish the landing: a flex header with a menu, grid cards and a hover effect on the button."
+  },
+  "files": {
+   "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <header class=\"header\">\n    <b>Логотип</b>\n    <nav>Меню</nav>\n  </header>\n  <section class=\"hero\">\n    <h1>Учись кодить</h1>\n    <button class=\"btn\">Начать</button>\n  </section>\n  <section class=\"cards\">\n    <div class=\"card\">1</div>\n    <div class=\"card\">2</div>\n    <div class=\"card\">3</div>\n  </section>\n</body>\n</html>\n",
+   "style.css": "* {\n  box-sizing: border-box;\n}\n"
+  },
+  "steps": [
+   {
+    "file": "style.css",
+    "re": "\\.header\\s*\\{[^}]*justify-content\\s*:\\s*space-between",
+    "say": {
+     "ru": "Шапка на flex, логотип и меню по краям",
+     "uz": "Shapka flex da, logotip va menyu chetlarda",
+     "en": "Header in flex, logo and menu at the edges"
+    },
+    "show": ".header {\n  display: flex;\n  justify-content: space-between;\n}"
+   },
+   {
+    "file": "style.css",
+    "re": "\\.cards\\s*\\{[^}]*grid-template-columns\\s*:\\s*[^;}]+",
+    "say": {
+     "ru": "Карточки — сеткой: `display: grid; grid-template-columns: repeat(3, 1fr);`",
+     "uz": "Kartochkalar — to'r: `display: grid; grid-template-columns: repeat(3, 1fr);`",
+     "en": "Cards in a grid: `display: grid; grid-template-columns: repeat(3, 1fr);`"
+    },
+    "show": ".cards {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 20px;\n}"
+   },
+   {
+    "file": "style.css",
+    "re": "\\.btn:hover\\s*\\{[^}]*(background|color|transform)",
+    "say": {
+     "ru": "Кнопке — эффект при наведении: `.btn:hover { … }`",
+     "uz": "Tugmaga — ustiga olib borganda effekt: `.btn:hover { … }`",
+     "en": "The button gets a hover effect: `.btn:hover { … }`"
+    },
+    "show": ".btn:hover {\n  background: #6d28d9;\n}"
+   },
+   {
+    "file": "style.css",
+    "re": "@media\\s*\\(\\s*max-width\\s*:\\s*600px\\s*\\)\\s*\\{[\\s\\S]*\\.cards",
+    "say": {
+     "ru": "На телефоне карточки в одну колонку (`@media (max-width: 600px)`)",
+     "uz": "Telefonda kartochkalar bitta ustunda (`@media (max-width: 600px)`)",
+     "en": "On a phone the cards go into one column (`@media (max-width: 600px)`)"
+    },
+    "show": "@media (max-width: 600px) {\n  .cards {\n    grid-template-columns: 1fr;\n  }\n}"
+   }
+  ],
+  "open": "style.css"
+ }
+}

@@ -4,6 +4,7 @@ import { ICONS } from './icons.js';
 import { mascot, MASCOTS } from './mascots.js';
 import { LANGS, setLang, tr, detectLang, getLang } from './i18n.js';
 import { INFO, STAT_KEYS, FIELDS } from './mascot-info.js';
+import { createIde, lint, wrongTopic, checkSteps } from './ide.js';
 const LOCALE = () => ({ ru: 'ru-RU', en: 'en-US' })[getLang()] || 'ru-RU';
 const UZ_MONTHS = ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentabr', 'oktabr', 'noyabr', 'dekabr'];
 // Дата на языке интерфейса (для узбекского у браузеров нет названий месяцев — делаем сами)
@@ -2178,12 +2179,163 @@ async function startLesson(target) {
     </div></div>
     <div class="pfoot"><div class="in"><button class="btn block" data-done>Продолжить</button></div></div>`;
     $('[data-done]', el).onclick = () => { loseSong.stop(); winSong.stop(); el.remove(); if (S.view) tg?.BackButton?.show(); route().catch(fail); };
+    if (!data.mistakes && !r.strict && data.lesson?.id) homeworkCard(el, data.lesson.id, Boolean(data.preview));
     if (lost) {
       setTimeout(() => $('[data-losehint]', el)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 1600);
     }
   }
 
   render();
+}
+
+// ═══════════════ ПИШЕМ КОД (мини VS Code) ═══════════════
+// task: { title, intro, files, open, extra, steps: [{ say, show, file, re | out }], done }
+// На компьютере экран пополам: слева маскот объясняет, справа редактор.
+// На телефоне маскот зовёт «Пишем код!», свайп вверх — и снизу выезжает редактор, маскот сверху подсказывает.
+const LANG_NAME = { html: 'HTML', css: 'CSS', js: 'JavaScript', jsx: 'React (JSX)', json: 'JSON', sh: 'терминал', git: 'Git' };
+function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'learn', preview = false }) {
+  return new Promise((resolve) => {
+    const wide = matchMedia('(min-width: 900px)').matches;
+    const store = `ide:${lessonId}:${key}`;
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem(store) || 'null'); } catch { /* */ }
+    const el = document.createElement('div');
+    el.className = `player codeses ${wide ? 'wide' : 'narrow'}`;
+    layer.appendChild(el);
+    tg?.BackButton?.hide();
+    const steps = task.steps || [];
+    el.innerHTML = `
+      <div class="cs-guide">
+        <div class="cs-head"><button class="pclose" data-close aria-label="Закрыть">${ic('close-circle')}</button>
+          <div class="grow"><small>${kind === 'hw' ? `${emo('🏠')} Домашка` : `${emo('💻')} Пишем код`}</small><b>${esc(task.title || '')}</b></div>
+          <span class="pill accent" data-noi18n data-prog>0/${steps.length}</span></div>
+        <div class="cs-talk"><div class="cs-m" data-m>${me('teach', wide ? 150 : 64)}</div><div class="speech" data-say></div></div>
+        <div class="cs-show" data-show hidden></div>
+        <ol class="cs-steps" data-steps>${steps.map((st, i) => `<li data-st="${i}"><i></i><span>${rich(st.say)}</span></li>`).join('')}</ol>
+        <div class="cs-act"><button class="btn ghost dim" data-hint>${emo('💡')} Подсказка</button><button class="btn" data-done disabled>${ic('check-circle')}Готово</button></div>
+      </div>
+      <div class="cs-ide" data-ide></div>
+      ${wide ? '' : `<div class="cs-intro" data-intro><div class="teach-row col">${me('talk', 150)}<div class="speech" data-isay></div></div>
+        <div class="swipe-hint"><span class="finger">${emo('👆')}</span><i></i></div>
+        <button class="btn block" data-go>${emo('💻')} Пишем код!</button></div>`}`;
+    const $1 = (s) => $(s, el);
+    const say = (text, emotion, mood = '') => {
+      const m = $1('[data-m]');
+      m.innerHTML = me(emotion, wide ? 150 : 64);
+      m.className = `cs-m ${mood}`;
+      void m.offsetWidth;
+      m.classList.add('react');
+      $1('[data-say]').innerHTML = rich(tr(text));
+    };
+    const ide = createIde($1('[data-ide]'), {
+      files: saved?.files || task.files || { 'index.html': '' },
+      open: saved?.open || task.open,
+      allow,
+      // ＋ новый файл: можно попробовать создать любой — файл чужого урока маскот не даст (onBlocked)
+      extraFiles: [...new Set([...(task.extra || []), 'index.html', 'style.css', 'script.js'])],
+      title: `${task.title || ''} — VS Code`,
+      onChange: (files, cur) => { try { localStorage.setItem(store, JSON.stringify({ files, open: cur })); } catch { /* */ } schedule(); },
+      onConsole: () => schedule(),
+      onBlocked: (k) => { haptic('error'); sfx.bad(); say(`Стоп! ${LANG_NAME[k] || k} — это другой урок. Сейчас мы проходим «${topic}». Пиши только то, что проходим.`, 'oops', 'angry'); },
+    });
+    let passed = steps.map(() => false);
+    let lastErr = '', errSince = 0, hintLevel = 0, typedAt = Date.now(), finished = false;
+    const showCur = () => {
+      const k = passed.indexOf(false);
+      $1('[data-steps]').querySelectorAll('li').forEach((li, i) => { li.className = passed[i] ? 'ok' : i === k ? 'now' : ''; });
+      $1('[data-prog]').textContent = `${passed.filter(Boolean).length}/${steps.length}`;
+      return k;
+    };
+    function evaluate() {
+      const files = ide.files();
+      const probs = lint(files);
+      ide.setProblems(probs);
+      const wrong = wrongTopic(files, allow);
+      const now = checkSteps(task, files, ide.console());
+      const newly = now.findIndex((v, i) => v && !passed[i]);
+      passed = now;
+      const k = showCur();
+      const bad = probs.find((p) => p.sev >= 2);
+      if (wrong) { say(`Стоп! Ты пишешь ${LANG_NAME[wrong.what] || wrong.what} в ${wrong.file} — это другой урок. Сейчас мы проходим «${topic}». Убери это.`, 'oops', 'angry'); haptic('error'); return; }
+      if (bad) {
+        const key = bad.file + bad.msg;
+        if (key !== lastErr) { lastErr = key; errSince = Date.now(); haptic('warning'); say(`Ой-ой! ${tr(bad.msg)}${bad.line ? ` (${bad.file}, строка ${bad.line})` : ''}`, 'oops', 'scared'); }
+        else if (Date.now() - errSince > 20000) say(`Не сдавайся! Посмотри на строку ${bad.line || ''} в ${bad.file}: ${tr(bad.msg)}`, 'sad', 'angry');
+        return;
+      }
+      lastErr = '';
+      if (k === -1 && steps.length) {
+        if (!finished) { finished = true; sfx.win(); setTimeout(confetti, 150); haptic('success'); }
+        $1('[data-done]').disabled = false;
+        return say(task.done || 'Всё работает! Ты настоящий программист! Жми «Готово».', 'love', 'happy');
+      }
+      $1('[data-done]').disabled = !preview;
+      if (newly >= 0) { sfx.ok(); haptic('success'); say(`${['Отлично!', 'Супер!', 'Так держать!', 'В точку!'][newly % 4]} Теперь: ${steps[k].say}`, 'cheer', 'happy'); hintLevel = 0; $1('[data-show]').hidden = true; return; }
+      say(steps[k].say, 'think');
+    }
+    let timer = null;
+    function schedule() { typedAt = Date.now(); clearTimeout(timer); timer = setTimeout(evaluate, 650); }
+    // заскучал без дела — сам подсказывает
+    const idle = setInterval(() => {
+      if (Date.now() - typedAt > 45000 && !finished && el.isConnected) { typedAt = Date.now(); const k = passed.indexOf(false); if (k >= 0) { say(`Я тут! Подсказка: ${steps[k].say}`, 'sleepy'); showSnippet(k); } }
+    }, 5000);
+    function showSnippet(k) {
+      const st = steps[k];
+      if (!st?.show) return;
+      const b = $1('[data-show]');
+      b.hidden = false;
+      b.innerHTML = `<small>${esc(tr('Напиши так'))} · ${esc(st.file || '')}</small><pre class="code">${highlight(st.show)}</pre>`;
+    }
+    $1('[data-hint]').onclick = () => {
+      const k = passed.indexOf(false);
+      if (k < 0) return;
+      hintLevel++;
+      haptic('light');
+      if (steps[k].file && ide.current() !== steps[k].file) ide.open(steps[k].file);
+      if (hintLevel === 1 && steps[k].hint) say(steps[k].hint, 'teach');
+      else { say(`Смотри, пиши вот так в ${steps[k].file || 'файл'}:`, 'teach'); showSnippet(k); }
+    };
+    const close = (done) => {
+      clearInterval(idle); clearTimeout(timer); ide.destroy();
+      el.classList.add('leaving');
+      setTimeout(() => { el.remove(); if (S.view) tg?.BackButton?.show(); }, wide ? 0 : 320);
+      resolve(Boolean(done));
+    };
+    $1('[data-done]').onclick = async () => {
+      if (!preview) { try { await api('/code/done', { lessonId, task: key, files: ide.files() }); } catch { /* */ } }
+      close(true);
+    };
+    $1('[data-close]').onclick = async () => { if (finished || await confirmSheet('Выйти из редактора?', 'Код сохранится — продолжишь позже.', 'Выйти', true)) close(finished); };
+    // старт
+    const intro = task.intro || 'Давай теперь напишем с тобой код, который нам нужен!';
+    const begin = () => { el.classList.add('open'); setTimeout(() => { evaluate(); const k = passed.indexOf(false); say(k >= 0 ? `${intro}\n\nШаг 1: ${steps[k].say}` : intro, 'teach'); }, wide ? 0 : 380); };
+    if (wide) { begin(); return; }
+    speak($1('[data-isay]'), intro + ' ' + tr('Смахни вверх — откроем редактор!'), $1('.cs-intro .mascot'));
+    let y0 = null;
+    const intr = $1('[data-intro]');
+    intr.addEventListener('touchstart', (e) => { y0 = e.touches[0].clientY; }, { passive: true });
+    intr.addEventListener('touchend', (e) => { if (y0 != null && y0 - e.changedTouches[0].clientY > 50) begin(); y0 = null; });
+    $1('[data-go]').onclick = () => { haptic('medium'); begin(); };
+    showCur();
+  });
+}
+
+// После теста: маскот выходит и говорит «Время писать код!» — домашка из конспекта в редакторе
+async function homeworkCard(el, lessonId, preview) {
+  let c;
+  try { c = await api(`/code/${encodeURIComponent(lessonId)}`); } catch { return; }
+  if (!c?.homework || !el.isConnected) return;
+  const hw = c.homework;
+  const card = document.createElement('div');
+  card.className = 'card hw-card';
+  card.innerHTML = `<div class="teach-row">${me('talk', 96)}<div class="speech" data-hsay></div></div>
+    <button class="btn block" data-hw>${emo('💻')} Писать код</button>`;
+  const res = $('.result', el);
+  if (!res) return;
+  res.insertBefore(card, res.querySelector('.tiles3'));
+  speak($('[data-hsay]', card), `Время писать код! Домашка: **${hw.title}**. ${hw.intro || ''}`, $('.mascot', card));
+  card.classList.add('pop-in');
+  $('[data-hw]', card).onclick = () => codeSession({ task: hw, allow: c.allow, topic: c.topic, lessonId, key: 'hw', kind: 'hw', preview }).then((ok) => { if (ok) { $('[data-hw]', card).outerHTML = `<p class="center"><span class="pill good">✓ ${tr('Домашка готова!')}</span></p>`; } });
 }
 
 // ═══════════════ ОБУЧАЛКА ═══════════════
@@ -2195,6 +2347,11 @@ async function startLearn(target) {
   data.sections.forEach((sec, si) => {
     steps.push({ t: 'say', text: `**${tr('Раздел')} ${si + 1}. ${sec.title}**\n${tr(si === 0 ? 'Начнём!' : 'Идём дальше!')}`, emo: 'talk', section: si });
     sec.slides.forEach((sl) => steps.push({ t: 'say', text: sl.quote ? `**${tr('Учитель')} ${data.teacher} ${tr('говорил:')}**\n«${sl.text}»` : sl.text, code: sl.code, emoji: sl.emoji, emo: sl.quote ? 'peace' : 'teach', section: si }));
+    const ct = data.code?.sections?.[si];
+    if (ct) {
+      steps.push({ t: 'say', text: 'Давай теперь напишем с тобой код, который нам нужен!', emo: 'talk', section: si, codeIntro: true });
+      steps.push({ t: 'code', si, task: ct, section: si });
+    }
     if (sec.check?.length) {
       steps.push({ t: 'say', text: 'Теперь проверим, чему ты научился за эту секцию!', emo: 'talk', section: si, checkIntro: true });
       sec.check.forEach((q, i) => steps.push({ t: 'q', q, si, i }));
@@ -2219,12 +2376,17 @@ async function startLearn(target) {
     const st = steps[i];
     if (st.t === 'q') return renderQ(st);
     if (st.t === 'end') return renderEnd();
+    if (st.t === 'code') {
+      el.innerHTML = `${top()}<div class="pbody learn-body center">${me('think', 120)}</div>`;
+      codeSession({ task: st.task, allow: data.code.allow, topic: data.code.topic || data.lesson.title, lessonId: data.lesson.id, key: `s${st.si}`, preview: Boolean(target.lessonId) }).then(() => { i++; render(); });
+      return;
+    }
     el.innerHTML = `${top()}<div class="pbody learn-body">
         ${st.emoji ? `<div class="center">${emo(st.emoji, { cls: 'big' })}</div>` : ''}
         <div class="teach-row">${me(st.emo, 120)}<div class="speech" data-say></div></div>
         ${st.code ? `<pre class="code">${highlight(st.code)}</pre>` : ''}
       </div>
-      <div class="pfoot"><div class="in"><button class="btn block" data-next>${st.checkIntro ? 'Проверить себя' : 'Дальше'}</button></div></div>`;
+      <div class="pfoot"><div class="in"><button class="btn block" data-next>${st.checkIntro ? 'Проверить себя' : st.codeIntro ? `${emo('💻')} Пишем код` : 'Дальше'}</button></div></div>`;
     $('[data-close]', el).onclick = close;
     talk = speak($('[data-say]', el), st.text, $('.teach-row .mascot', el));
     $('[data-next]', el).onclick = () => { if (talk.typing()) return talk.skip(); haptic('light'); i++; render(); };

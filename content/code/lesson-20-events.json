@@ -1,0 +1,165 @@
+{
+ "lessonId": "lesson-20-events",
+ "allow": [
+  "html",
+  "css",
+  "js"
+ ],
+ "topic": {
+  "ru": "События и делегирование",
+  "uz": "Hodisalar va delegatsiya",
+  "en": "Events and delegation"
+ },
+ "sections": {
+  "2": {
+   "title": {
+    "ru": "preventDefault",
+    "uz": "preventDefault",
+    "en": "preventDefault"
+   },
+   "intro": {
+    "ru": "Форма без перезагрузки страницы.",
+    "uz": "Sahifa qayta yuklanmaydigan forma.",
+    "en": "A form without a page reload."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>JS</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <form class=\"form\">\n    <input placeholder=\"Имя\">\n    <button>Отправить</button>\n  </form>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n",
+    "style.css": "",
+    "script.js": ""
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "addEventListener\\(\\s*[\"\\']submit[\"\\']\\s*,\\s*(function\\s*\\(\\s*e\\s*\\)|\\(?\\s*e\\s*\\)?\\s*=>)",
+     "say": {
+      "ru": "Слушай `\"submit\"` у формы и прими `e`",
+      "uz": "Formada `\"submit\"` ni tingla va `e` ni ol",
+      "en": "Listen for `\"submit\"` on the form and take `e`"
+     },
+     "show": "const form = document.querySelector(\".form\");\nform.addEventListener(\"submit\", function (e) {\n\n});"
+    },
+    {
+     "file": "script.js",
+     "re": "e\\.preventDefault\\(\\s*\\)",
+     "say": {
+      "ru": "Отмени перезагрузку: `e.preventDefault();`",
+      "uz": "Qayta yuklanishni bekor qil: `e.preventDefault();`",
+      "en": "Cancel the reload: `e.preventDefault();`"
+     },
+     "show": "e.preventDefault();"
+    }
+   ],
+   "open": "script.js"
+  },
+  "3": {
+   "title": {
+    "ru": "Список задач",
+    "uz": "Vazifalar ro'yxati",
+    "en": "A to-do list"
+   },
+   "intro": {
+    "ru": "По клику добавим задачу в список.",
+    "uz": "Bosilganda ro'yxatga vazifa qo'shamiz.",
+    "en": "On click we'll add a task to the list."
+   },
+   "files": {
+    "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>JS</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <input class=\"task\" placeholder=\"Задача\">\n  <button id=\"add\">Добавить</button>\n  <ul class=\"list\"></ul>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n",
+    "style.css": "",
+    "script.js": ""
+   },
+   "steps": [
+    {
+     "file": "script.js",
+     "re": "document\\.createElement\\(\\s*[\"\\']li[\"\\']\\s*\\)",
+     "say": {
+      "ru": "Создай пункт: `const li = document.createElement(\"li\");`",
+      "uz": "Band yarat: `const li = document.createElement(\"li\");`",
+      "en": "Create an item: `const li = document.createElement(\"li\");`"
+     },
+     "show": "const li = document.createElement(\"li\");"
+    },
+    {
+     "file": "script.js",
+     "re": "li\\.textContent\\s*=\\s*\\w+\\.value",
+     "say": {
+      "ru": "Текст из поля: `li.textContent = input.value;`",
+      "uz": "Maydondagi matn: `li.textContent = input.value;`",
+      "en": "Text from the field: `li.textContent = input.value;`"
+     },
+     "show": "li.textContent = input.value;"
+    },
+    {
+     "file": "script.js",
+     "re": "\\.(append|appendChild)\\(\\s*li\\s*\\)",
+     "say": {
+      "ru": "Добавь в список: `list.append(li);`",
+      "uz": "Ro'yxatga qo'sh: `list.append(li);`",
+      "en": "Add it to the list: `list.append(li);`"
+     },
+     "show": "list.append(li);"
+    },
+    {
+     "file": "script.js",
+     "re": "\\.value\\s*=\\s*[\"\\']{2}",
+     "say": {
+      "ru": "Очисти поле: `input.value = \"\";`",
+      "uz": "Maydonni tozala: `input.value = \"\";`",
+      "en": "Clear the field: `input.value = \"\";`"
+     },
+     "show": "input.value = \"\";"
+    }
+   ],
+   "open": "script.js"
+  }
+ },
+ "homework": {
+  "title": {
+   "ru": "Удаление по клику",
+   "uz": "Bosganda o'chirish",
+   "en": "Delete on click"
+  },
+  "intro": {
+   "ru": "По клику на пункт он удаляется. Один обработчик на весь список — делегирование.",
+   "uz": "Bandga bosilganda u o'chadi. Butun ro'yxatga bitta ishlovchi — delegatsiya.",
+   "en": "Clicking an item removes it. One handler for the whole list — delegation."
+  },
+  "files": {
+   "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>JS</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <input class=\"task\" placeholder=\"Задача\">\n  <button id=\"add\">Добавить</button>\n  <ul class=\"list\">\n    <li>Купить хлеб</li>\n    <li>Сделать домашку</li>\n  </ul>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n",
+   "style.css": "",
+   "script.js": ""
+  },
+  "steps": [
+   {
+    "file": "script.js",
+    "re": "(list|ul)\\w*\\.addEventListener\\(\\s*[\"\\']click[\"\\']",
+    "say": {
+     "ru": "Обработчик клика — на сам список `.list`",
+     "uz": "Bosish ishlovchisi — `.list` ro'yxatning o'zida",
+     "en": "The click handler goes on the `.list` itself"
+    },
+    "show": "const list = document.querySelector(\".list\");\nlist.addEventListener(\"click\", function (e) {\n\n});"
+   },
+   {
+    "file": "script.js",
+    "re": "e\\.target\\.tagName\\s*===?\\s*[\"\\']LI[\"\\']",
+    "say": {
+     "ru": "Проверь, что нажали пункт: `if (e.target.tagName === \"LI\")`",
+     "uz": "Band bosilganini tekshir: `if (e.target.tagName === \"LI\")`",
+     "en": "Check that an item was clicked: `if (e.target.tagName === \"LI\")`"
+    },
+    "show": "if (e.target.tagName === \"LI\") {\n  e.target.remove();\n}"
+   },
+   {
+    "file": "script.js",
+    "re": "e\\.target\\.remove\\(\\s*\\)",
+    "say": {
+     "ru": "Удали: `e.target.remove();`",
+     "uz": "O'chir: `e.target.remove();`",
+     "en": "Remove it: `e.target.remove();`"
+    },
+    "show": "e.target.remove();"
+   }
+  ],
+  "open": "script.js"
+ }
+}
