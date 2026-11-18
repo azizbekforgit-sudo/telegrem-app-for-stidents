@@ -78,6 +78,36 @@ export function createBot({ token, logic, journal, nudges, store, appUrl, adminI
   }
   const notifyAdmins = (text, extra) => Promise.all(adminIds.map((id) => safeSend(id, text, extra)));
 
+  // Учитель просит сообщить родителям: какие тесты ребёнок не решил, его результаты и средняя оценка.
+  // content/parent-notify.json → при запуске, каждый id один раз. Учителю приходит копия.
+  async function notifyParentsDebts(uid) {
+    uid = String(uid);
+    const kid = S.users[uid];
+    if (!kid) return { error: 'нет ученика' };
+    const st = logic.testStatus(uid);
+    const pending = st.filter((x) => x.pct == null);
+    const done = st.filter((x) => x.pct != null).sort((a, b) => (b.doneAt || 0) - (a.doneAt || 0)).slice(0, 4);
+    const d = journal.diary(uid);
+    const avg = d.stats.avgGrade;
+    const kidName = `<b>${esc(logic.name(kid))}</b>`;
+    const parents = Object.values(S.users).filter((u) => u.role === 'parent' && (u.children || []).includes(uid));
+    const L = {
+      ru: { hi: `👋 Здравствуйте! Пишет учитель ${esc(logic.teacherName())}.`, debt: (n) => `${kidName} не решает тесты. Сейчас не решено: <b>${n}</b>`, none: `${kidName} решил все выданные тесты 👍`, last: 'Последние результаты:', avg: (a) => `Средняя оценка за уроки: <b>${a}</b> из 10`, noavg: 'Оценок за уроки пока нет.', ask: 'Пожалуйста, проследите, чтобы он решил тесты в приложении «Зубрик» — это занимает 10–15 минут.' },
+      uz: { hi: `👋 Assalomu alaykum! O'qituvchi ${esc(logic.teacherName())} yozmoqda.`, debt: (n) => `${kidName} testlarni yechmayapti. Hozir yechilmagan: <b>${n}</b>`, none: `${kidName} berilgan barcha testlarni yechgan 👍`, last: 'Oxirgi natijalar:', avg: (a) => `Darslar bo'yicha o'rtacha baho: <b>${a}</b> / 10`, noavg: "Darslar bo'yicha baholar hali yo'q.", ask: "Iltimos, u «Zubrik» ilovasida testlarni yechishini nazorat qiling — bu 10–15 daqiqa oladi." },
+      en: { hi: `👋 Hello! This is teacher ${esc(logic.teacherName())}.`, debt: (n) => `${kidName} isn't doing the tests. Not done right now: <b>${n}</b>`, none: `${kidName} has done all the tests given 👍`, last: 'Latest results:', avg: (a) => `Average lesson grade: <b>${a}</b> out of 10`, noavg: 'No lesson grades yet.', ask: 'Please make sure he does the tests in the «Zubrik» app — it takes 10–15 minutes.' },
+    };
+    const text = (lang) => {
+      const t = L[lang] || L.ru;
+      return [t.hi, '', pending.length ? t.debt(pending.length) : t.none, ...pending.map((x) => `• ${x.emoji || '📘'} ${esc(x.title(lang))}`),
+        ...(done.length ? ['', t.last, ...done.map((x) => `• ${esc(x.title(lang))} — ${x.pct}%`)] : []),
+        '', avg != null ? t.avg(avg) : t.noavg, ...(pending.length ? ['', t.ask] : [])].join('\n');
+    };
+    let sent = 0;
+    for (const p of parents) if (await safeSend(p.id, text(langOf(p.id)))) sent++;
+    await notifyAdmins(`📨 Родителям ${kidName} (${parents.length}, доставлено ${sent}):\n\n${text('ru')}`);
+    return { user: { id: uid, name: logic.name(kid) }, pending: pending.map((x) => x.title('ru')), last: done.map((x) => `${x.title('ru')} ${x.pct}%`), avgGrade: avg, grades: d.grades.map((g) => g.value), parents: parents.map((p) => ({ id: p.id, name: logic.name(p) })), sent };
+  }
+
   function groupsKeyboard(prefix, extraArg = '') {
     const kb = new InlineKeyboard();
     Object.values(S.groups).forEach((g, i) => {
@@ -479,5 +509,5 @@ export function createBot({ token, logic, journal, nudges, store, appUrl, adminI
     console.log(`[bot] @${bot.botInfo.username} готов`);
   }
 
-  return { bot, setup, notifyPublish, notifyPersonal, announce, tickReminders, onRoleChosen, sendLogin, notifyBonus, notifyAccess, notifyGrade, onAttendance, tickAttendance, tickNudges, sendMascot };
+  return { bot, setup, notifyPublish, notifyPersonal, announce, tickReminders, onRoleChosen, sendLogin, notifyBonus, notifyAccess, notifyGrade, onAttendance, tickAttendance, tickNudges, sendMascot, notifyParentsDebts };
 }

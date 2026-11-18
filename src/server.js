@@ -425,6 +425,16 @@ app.listen(PORT, async () => {
       console.log('[bot] long polling');
     }
     for (const pub of newPersonal) await tg.notifyPersonal(pub);
+    // Сообщить родителям о нерешённых тестах ребёнка (content/parent-notify.json: [{ id, userId }]); каждый id — один раз
+    const pnFile = path.join(root, 'content', 'parent-notify.json');
+    if (fs.existsSync(pnFile)) for (const r of JSON.parse(fs.readFileSync(pnFile, 'utf8'))) {
+      const key = 'pnotify:' + r.id;
+      logic.S.migrations ||= {};
+      if (logic.S.migrations[key]) continue;
+      logic.S.migrations[key] = Date.now();
+      store.save();
+      console.log('[parent-notify] ' + JSON.stringify(await tg.notifyParentsDebts(r.userId)));
+    }
   } catch (e) {
     console.error('[bot] не удалось запустить:', e.message);
   }
