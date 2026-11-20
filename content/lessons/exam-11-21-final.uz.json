@@ -1,0 +1,285 @@
+{
+  "title": "Yakuniy test: 11–21-darslar",
+  "description": "Formalar va CSS dan DOM, hodisalar va fetch gacha. 15 daqiqa. Ball berilmaydi: har bir xato uchun −100 XP, testdan chiqish −2000 XP.",
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "11-dars",
+      "prompt": "«Roziman» so'ziga bosildi. Nima bo'ladi?",
+      "code": "<label>\n  <input type=\"checkbox\"> Roziman\n</label>",
+      "options": [
+        "Belgi qo'yiladi — input label ichida",
+        "Hech narsa — label da for yo'q",
+        "Konsolda xato",
+        "Hech narsa — chekboksda id yo'q"
+      ],
+      "answer": 0,
+      "explain": "Agar maydon label ichida bo'lsa, bog'lanish for va id siz ishlaydi."
+    },
+    {
+      "type": "choice",
+      "topic": "12-dars",
+      "prompt": "A blok ustiga olib borganda kattalashadi. Uning ostidagi B blok bilan nima bo'ladi?",
+      "code": ".a:hover { transform: scale(1.5); }",
+      "options": [
+        "Pastga suriladi",
+        "Joyida qoladi — A uning ustiga chiqadi",
+        "Yuqoriga suriladi",
+        "Kichrayadi"
+      ],
+      "answer": 1,
+      "explain": "transform faqat element tasvirini o'zgartiradi, oqimdagi joyi o'zgarmaydi. Qo'shnilar siljimaydi."
+    },
+    {
+      "type": "choice",
+      "topic": "13-dars",
+      "prompt": "Nima chiqadi?",
+      "code": "let a = 3;\nlet b = a;\nb = 10;\nconsole.log(a);",
+      "options": [
+        "undefined",
+        "10",
+        "13",
+        "3"
+      ],
+      "answer": 3,
+      "explain": "b = a sonni nusxalaydi. Keyin b alohida o'zgaradi, a 3 bo'lib qoladi."
+    },
+    {
+      "type": "choice",
+      "topic": "14-dars",
+      "prompt": "Nima chiqadi?",
+      "code": "const x = 12;\nif (x > 10) {\n  console.log(\"10 dan katta\");\n}\nif (x > 5) {\n  console.log(\"5 dan katta\");\n} else {\n  console.log(\"kichik\");\n}",
+      "options": [
+        "10 dan katta va 5 dan katta",
+        "Faqat 5 dan katta",
+        "10 dan katta va kichik",
+        "Faqat 10 dan katta"
+      ],
+      "answer": 0,
+      "explain": "Bu ikkita alohida if, else if emas. Ikkalasi ham tekshiriladi va ikkalasi rost."
+    },
+    {
+      "type": "choice",
+      "topic": "15-dars",
+      "prompt": "Qaysi sonlar chiqadi?",
+      "code": "for (let i = 10; i > 0; i -= 3) {\n  console.log(i);\n}",
+      "options": [
+        "10, 7, 4",
+        "9, 6, 3",
+        "10, 7, 4, 1, -2",
+        "10, 7, 4, 1"
+      ],
+      "answer": 3,
+      "explain": "1 dan keyin −2 bo'ladi, −2 > 0 esa yolg'on, tsikl to'xtaydi."
+    },
+    {
+      "type": "choice",
+      "topic": "16-dars",
+      "prompt": "Nima bo'ladi?",
+      "code": "function makeTotal() {\n  let total = 500;\n}\nmakeTotal();\nconsole.log(total);",
+      "options": [
+        "Xato: total is not defined",
+        "500 chiqadi",
+        "undefined chiqadi",
+        "0 chiqadi"
+      ],
+      "answer": 0,
+      "explain": "Funksiya ichida e'lon qilingan o'zgaruvchi faqat uning ichida yashaydi. Qiymatni tashqarida olish uchun return kerak."
+    },
+    {
+      "type": "choice",
+      "topic": "17-dars",
+      "prompt": "Nima chiqadi?",
+      "code": "const a = [1, 2, 3];\nconst b = a.map((n) => n * 10);\nconsole.log(a);",
+      "options": [
+        "[1, 2, 3, 10, 20, 30]",
+        "undefined",
+        "[1, 2, 3]",
+        "[10, 20, 30]"
+      ],
+      "answer": 2,
+      "explain": "map yangi massiv yaratadi, asl massiv o'zgarmaydi."
+    },
+    {
+      "type": "choice",
+      "topic": "17-dars",
+      "prompt": "Nima chiqadi?",
+      "code": "const users = [\n  { name: \"Anya\", age: 19 },\n  { name: \"Igor\", age: 25 },\n  { name: \"Ira\", age: 30 },\n];\nconsole.log(users.find((u) => u.age > 20).name);",
+      "options": [
+        "Anya",
+        "Igor, Ira",
+        "Igor",
+        "[\"Igor\", \"Ira\"]"
+      ],
+      "answer": 2,
+      "explain": "find birinchi mos obyektni qaytaradi. Yoshi 20 dan katta birinchisi — Igor."
+    },
+    {
+      "type": "choice",
+      "topic": "18-dars",
+      "prompt": "Nima chiqadi?",
+      "code": "const user = {\n  name: \"Аня\",\n  address: { city: \"Ташкент\" },\n};\nconsole.log(user.city);",
+      "options": [
+        "{ city: \"Ташкент\" }",
+        "Xato",
+        "undefined",
+        "Toshkent"
+      ],
+      "answer": 2,
+      "explain": "city address ichida turibdi. To'g'risi: user.address.city."
+    },
+    {
+      "type": "choice",
+      "topic": "19-dars",
+      "prompt": "Sahifada item klassli uchta abzats bor: «1», «2», «3». Koddan keyin nima qoladi?",
+      "code": "document.querySelector(\".item\").textContent = \"X\";",
+      "options": [
+        "X, X, X",
+        "Xato",
+        "X, 2, 3",
+        "1, 2, X"
+      ],
+      "answer": 2,
+      "explain": "querySelector faqat birinchi mos elementni topadi."
+    },
+    {
+      "type": "choice",
+      "topic": "19-dars",
+      "prompt": "Nima bo'ladi?",
+      "code": "document.querySelectorAll(\".item\").style.color = \"red\";",
+      "options": [
+        "Xato — elementlar ro'yxatida style yo'q",
+        "Hech narsa, lekin xatosiz",
+        "Barcha elementlar qizil bo'ladi",
+        "Faqat birinchisi qizil bo'ladi"
+      ],
+      "answer": 0,
+      "explain": "querySelectorAll ro'yxat qaytaradi. Ro'yxatda style yo'q, u bo'ylab forEach bilan o'tish kerak."
+    },
+    {
+      "type": "choice",
+      "topic": "19-dars",
+      "prompt": "Abzatsda allaqachon active klassi bor. Unda qaysi klasslar qoladi?",
+      "code": "const p = document.querySelector(\"p\");\np.classList.toggle(\"active\");\np.classList.toggle(\"active\");",
+      "options": [
+        "Klasslar bo'lmaydi",
+        "Xato",
+        "active active",
+        "active qoladi"
+      ],
+      "answer": 3,
+      "explain": "Birinchi toggle klassni olib tashlaydi, ikkinchisi qaytaradi."
+    },
+    {
+      "type": "choice",
+      "topic": "20-dars",
+      "prompt": "Tugma bosilganda nima bo'ladi?",
+      "code": "function sayHi() {\n  console.log(\"Salom\");\n}\nbtn.addEventListener(\"click\", sayHi());",
+      "options": [
+        "Salom yuklanishda bir marta chiqadi, bosishlar hech narsa qilmaydi",
+        "Yuklanishda xato",
+        "Har bosishda Salom",
+        "Salom ikki marta chiqadi"
+      ],
+      "answer": 0,
+      "explain": "sayHi() qavslar bilan funksiyani darhol chaqiradi, tinglovchiga esa uning natijasi undefined beriladi. Qavssiz sayHi kerak."
+    },
+    {
+      "type": "choice",
+      "topic": "20-dars",
+      "prompt": "Foydalanuvchi «non» so'ziga bosadi. Nima bo'ladi?",
+      "code": "<ul class=\"list\">\n  <li><b>Non</b> sotib olish</li>\n</ul>\n\nlist.addEventListener(\"click\", (e) => {\n  if (e.target.tagName === \"LI\") {\n    e.target.classList.toggle(\"done\");\n  }\n});",
+      "options": [
+        "Xato",
+        "Faqat «non» so'zi chiziladi",
+        "Band chiziladi",
+        "Hech narsa — e.target <li> emas, <b> bo'ladi"
+      ],
+      "answer": 3,
+      "explain": "e.target — bosilgan eng chuqur element. «non» ga bosish — bu <b> ga bosish."
+    },
+    {
+      "type": "choice",
+      "topic": "20-dars",
+      "prompt": "Vazifalar ro'yxatli forma, tugma — type=\"submit\". Bosilganda nima bo'ladi?",
+      "code": "form.addEventListener(\"submit\", () => {\n  const li = document.createElement(\"li\");\n  li.textContent = input.value;\n  list.append(li);\n});",
+      "options": [
+        "Hech narsa qo'shilmaydi",
+        "Vazifa lip etib yo'qoladi — sahifa qayta yuklanadi",
+        "Xato",
+        "Vazifa qo'shilib qoladi"
+      ],
+      "answer": 1,
+      "explain": "e.preventDefault() yo'q — forma yuboriladi, sahifa qayta yuklanadi."
+    },
+    {
+      "type": "choice",
+      "topic": "20-dars",
+      "prompt": "Sahifada nechta yangi <li> paydo bo'ladi?",
+      "code": "const li = document.createElement(\"li\");\nli.textContent = \"Yangi vazifa\";",
+      "options": [
+        "Bitta",
+        "Xato",
+        "Bitta, lekin bo'sh",
+        "Birorta ham"
+      ],
+      "answer": 3,
+      "explain": "Element faqat xotirada yaratilgan. U paydo bo'lishi uchun list.append(li) kerak."
+    },
+    {
+      "type": "choice",
+      "topic": "21-dars",
+      "prompt": "Nima chiqadi?",
+      "code": "const data = fetch(\"https://jsonplaceholder.typicode.com/users/1\");\nconsole.log(data.name);",
+      "options": [
+        "Promise",
+        "undefined",
+        "Foydalanuvchi ismi",
+        "Xato — internet yo'q"
+      ],
+      "answer": 1,
+      "explain": "fetch darhol ma'lumot emas, va'da (Promise) qaytaradi. Va'dada name maydoni yo'q. Ma'lumotlar — faqat .then ichida."
+    },
+    {
+      "type": "choice",
+      "topic": "21-dars",
+      "prompt": "Sonlar qaysi tartibda chiqadi?",
+      "code": "console.log(\"1\");\nfetch(\"https://jsonplaceholder.typicode.com/users/1\")\n  .then((response) => response.json())\n  .then((data) => console.log(\"2\"));\nconsole.log(\"3\");",
+      "options": [
+        "2, 1, 3",
+        "1, 2, 3",
+        "1, 3, 2",
+        "1, 3 — 2 esa chiqmaydi"
+      ],
+      "answer": 2,
+      "explain": "fetch javobni kutmaydi: kod davom etadi va darhol 3 ni chiqaradi. Server javobi keyin keladi — shunda 2 chiqadi."
+    },
+    {
+      "type": "choice",
+      "topic": "21-dars",
+      "prompt": "Qaysi qator — to'g'ri JSON?",
+      "options": [
+        "{name: \"Аня\", age: 25}",
+        "{\"name\": \"Аня\", \"age\": 25}",
+        "{\"name\": \"Аня\", \"age\": 25,}",
+        "{'name': 'Аня', 'age': 25}"
+      ],
+      "answer": 1,
+      "explain": "JSON da kalitlar va satrlar — faqat qo'sh qo'shtirnoqda, oxirida ortiqcha vergul taqiqlangan."
+    },
+    {
+      "type": "choice",
+      "topic": "21-dars",
+      "prompt": "Server { \"info\": {...}, \"results\": [ …qahramonlar… ] } yubordi. Nima bo'ladi?",
+      "code": "fetch(\"https://rickandmortyapi.com/api/character\")\n  .then((response) => response.json())\n  .then((data) => {\n    data.forEach((character) => console.log(character.name));\n  });",
+      "options": [
+        "Barcha qahramonlar ismi chiqadi",
+        "Xato data.forEach is not a function",
+        "Hech narsa, lekin xatosiz",
+        "undefined chiqadi"
+      ],
+      "answer": 1,
+      "explain": "data — obyekt, obyektda forEach yo'q. Massiv data.results da turibdi."
+    }
+  ]
+}

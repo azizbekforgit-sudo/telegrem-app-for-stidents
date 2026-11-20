@@ -1,0 +1,285 @@
+{
+  "title": "Final test: lessons 11–21",
+  "description": "From forms and CSS to the DOM, events and fetch. 15 minutes. No points: −100 XP per mistake, leaving the test −2000 XP.",
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "Lesson 11",
+      "prompt": "A click on the word «I agree». What happens?",
+      "code": "<label>\n  <input type=\"checkbox\"> I agree\n</label>",
+      "options": [
+        "The box gets ticked — the input is inside the label",
+        "Nothing — the label has no for",
+        "An error in the console",
+        "Nothing — the checkbox has no id"
+      ],
+      "answer": 0,
+      "explain": "If the field is inside the label, the link works without for and id."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 12",
+      "prompt": "Box A grows on hover. What happens to box B below it?",
+      "code": ".a:hover { transform: scale(1.5); }",
+      "options": [
+        "It moves down",
+        "It stays in place — A overlaps it",
+        "It moves up",
+        "It shrinks"
+      ],
+      "answer": 1,
+      "explain": "transform changes only the element's picture; its place in the flow stays the same. Neighbors don't move."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 13",
+      "prompt": "What is printed?",
+      "code": "let a = 3;\nlet b = a;\nb = 10;\nconsole.log(a);",
+      "options": [
+        "undefined",
+        "10",
+        "13",
+        "3"
+      ],
+      "answer": 3,
+      "explain": "b = a copies the number. Then b changes on its own; a stays 3."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 14",
+      "prompt": "What is printed?",
+      "code": "const x = 12;\nif (x > 10) {\n  console.log(\"more than 10\");\n}\nif (x > 5) {\n  console.log(\"more than 5\");\n} else {\n  console.log(\"less\");\n}",
+      "options": [
+        "more than 10 and more than 5",
+        "Only more than 5",
+        "more than 10 and less",
+        "Only more than 10"
+      ],
+      "answer": 0,
+      "explain": "These are two separate ifs, not else if. Both are checked and both are true."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 15",
+      "prompt": "Which numbers are printed?",
+      "code": "for (let i = 10; i > 0; i -= 3) {\n  console.log(i);\n}",
+      "options": [
+        "10, 7, 4",
+        "9, 6, 3",
+        "10, 7, 4, 1, -2",
+        "10, 7, 4, 1"
+      ],
+      "answer": 3,
+      "explain": "After 1 comes −2, and −2 > 0 is false, so the loop stops."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 16",
+      "prompt": "What happens?",
+      "code": "function makeTotal() {\n  let total = 500;\n}\nmakeTotal();\nconsole.log(total);",
+      "options": [
+        "Error: total is not defined",
+        "500 is printed",
+        "undefined is printed",
+        "0 is printed"
+      ],
+      "answer": 0,
+      "explain": "A variable declared inside a function lives only inside it. To get the value outside you need return."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 17",
+      "prompt": "What is printed?",
+      "code": "const a = [1, 2, 3];\nconst b = a.map((n) => n * 10);\nconsole.log(a);",
+      "options": [
+        "[1, 2, 3, 10, 20, 30]",
+        "undefined",
+        "[1, 2, 3]",
+        "[10, 20, 30]"
+      ],
+      "answer": 2,
+      "explain": "map creates a new array; the original doesn't change."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 17",
+      "prompt": "What is printed?",
+      "code": "const users = [\n  { name: \"Anya\", age: 19 },\n  { name: \"Igor\", age: 25 },\n  { name: \"Ira\", age: 30 },\n];\nconsole.log(users.find((u) => u.age > 20).name);",
+      "options": [
+        "Anya",
+        "Igor, Ira",
+        "Igor",
+        "[\"Igor\", \"Ira\"]"
+      ],
+      "answer": 2,
+      "explain": "find returns the first matching object. The first one older than 20 is Igor."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 18",
+      "prompt": "What is printed?",
+      "code": "const user = {\n  name: \"Аня\",\n  address: { city: \"Ташкент\" },\n};\nconsole.log(user.city);",
+      "options": [
+        "{ city: \"Ташкент\" }",
+        "Error",
+        "undefined",
+        "Tashkent"
+      ],
+      "answer": 2,
+      "explain": "city is inside address. Correct: user.address.city."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 19",
+      "prompt": "The page has three paragraphs with class item: «1», «2», «3». What's left after the code?",
+      "code": "document.querySelector(\".item\").textContent = \"X\";",
+      "options": [
+        "X, X, X",
+        "Error",
+        "X, 2, 3",
+        "1, 2, X"
+      ],
+      "answer": 2,
+      "explain": "querySelector finds only the first matching element."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 19",
+      "prompt": "What happens?",
+      "code": "document.querySelectorAll(\".item\").style.color = \"red\";",
+      "options": [
+        "Error — a list of elements has no style",
+        "Nothing, but no error",
+        "All elements turn red",
+        "Only the first one turns red"
+      ],
+      "answer": 0,
+      "explain": "querySelectorAll returns a list. A list has no style; you need to go through it with forEach."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 19",
+      "prompt": "The paragraph already has the class active. Which classes will it have?",
+      "code": "const p = document.querySelector(\"p\");\np.classList.toggle(\"active\");\np.classList.toggle(\"active\");",
+      "options": [
+        "No classes",
+        "Error",
+        "active active",
+        "active stays"
+      ],
+      "answer": 3,
+      "explain": "The first toggle removes the class, the second brings it back."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 20",
+      "prompt": "What happens when the button is clicked?",
+      "code": "function sayHi() {\n  console.log(\"Hello\");\n}\nbtn.addEventListener(\"click\", sayHi());",
+      "options": [
+        "Hello is printed once on load, clicks do nothing",
+        "An error on load",
+        "Hello on every click",
+        "Hello is printed twice"
+      ],
+      "answer": 0,
+      "explain": "sayHi() with brackets calls the function right away, and the listener gets its result, undefined. You need sayHi without brackets."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 20",
+      "prompt": "The user clicks the word «bread». What happens?",
+      "code": "<ul class=\"list\">\n  <li>Buy <b>bread</b></li>\n</ul>\n\nlist.addEventListener(\"click\", (e) => {\n  if (e.target.tagName === \"LI\") {\n    e.target.classList.toggle(\"done\");\n  }\n});",
+      "options": [
+        "Error",
+        "Only the word «bread» is crossed out",
+        "The item is crossed out",
+        "Nothing — e.target will be <b>, not <li>"
+      ],
+      "answer": 3,
+      "explain": "e.target is the deepest element clicked. A click on «bread» is a click on <b>."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 20",
+      "prompt": "A form with a task list, the button is type=\"submit\". What happens on click?",
+      "code": "form.addEventListener(\"submit\", () => {\n  const li = document.createElement(\"li\");\n  li.textContent = input.value;\n  list.append(li);\n});",
+      "options": [
+        "Nothing is added",
+        "The task flashes and disappears — the page reloads",
+        "Error",
+        "The task is added and stays"
+      ],
+      "answer": 1,
+      "explain": "There's no e.preventDefault() — the form submits and the page reloads."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 20",
+      "prompt": "How many new <li> appear on the page?",
+      "code": "const li = document.createElement(\"li\");\nli.textContent = \"New task\";",
+      "options": [
+        "One",
+        "Error",
+        "One, but empty",
+        "None"
+      ],
+      "answer": 3,
+      "explain": "The element exists only in memory. To show it you need list.append(li)."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 21",
+      "prompt": "What is printed?",
+      "code": "const data = fetch(\"https://jsonplaceholder.typicode.com/users/1\");\nconsole.log(data.name);",
+      "options": [
+        "Promise",
+        "undefined",
+        "The user's name",
+        "Error — no internet"
+      ],
+      "answer": 1,
+      "explain": "fetch immediately returns a promise, not data. A promise has no name field. The data is only inside .then."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 21",
+      "prompt": "In what order do the numbers appear?",
+      "code": "console.log(\"1\");\nfetch(\"https://jsonplaceholder.typicode.com/users/1\")\n  .then((response) => response.json())\n  .then((data) => console.log(\"2\"));\nconsole.log(\"3\");",
+      "options": [
+        "2, 1, 3",
+        "1, 2, 3",
+        "1, 3, 2",
+        "1, 3 — and 2 won't be printed"
+      ],
+      "answer": 2,
+      "explain": "fetch doesn't wait for the reply: the code goes on and prints 3 right away. The server reply comes later — then 2 is printed."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 21",
+      "prompt": "Which line is valid JSON?",
+      "options": [
+        "{name: \"Аня\", age: 25}",
+        "{\"name\": \"Аня\", \"age\": 25}",
+        "{\"name\": \"Аня\", \"age\": 25,}",
+        "{'name': 'Аня', 'age': 25}"
+      ],
+      "answer": 1,
+      "explain": "In JSON keys and strings use only double quotes, and a trailing comma is not allowed."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 21",
+      "prompt": "The server sent { \"info\": {...}, \"results\": [ …characters… ] }. What happens?",
+      "code": "fetch(\"https://rickandmortyapi.com/api/character\")\n  .then((response) => response.json())\n  .then((data) => {\n    data.forEach((character) => console.log(character.name));\n  });",
+      "options": [
+        "All character names are printed",
+        "Error data.forEach is not a function",
+        "Nothing, but no error",
+        "undefined is printed"
+      ],
+      "answer": 1,
+      "explain": "data is an object, and objects have no forEach. The array is in data.results."
+    }
+  ]
+}

@@ -1,0 +1,286 @@
+{
+  "title": "Test: lessons 11–18",
+  "description": "Forms, CSS variables, JavaScript: variables, conditions, loops, functions, arrays, objects. 15 minutes. No points: −100 XP per mistake, leaving the test −2000 XP.",
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "Lesson 11",
+      "prompt": "A click on the word «Email». What happens?",
+      "code": "<label for=\"email\">Email</label>\n<input id=\"mail\" type=\"email\">",
+      "options": [
+        "Nothing — for and id don't match",
+        "The browser shows an error in the console",
+        "The field highlights but the cursor doesn't go in",
+        "The cursor goes into the field"
+      ],
+      "answer": 0,
+      "explain": "A label links to a field only if for equals id. Here email ≠ mail, so there's no link."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 11",
+      "prompt": "Which paragraphs turn red?",
+      "code": "<div>\n  <h3>Heading</h3>\n  <p>1</p>\n  <p>2</p>\n  <p>3</p>\n  <p>4</p>\n</div>\n\np:nth-child(odd) { color: red; }",
+      "options": [
+        "All four",
+        "1 and 3",
+        "None",
+        "2 and 4"
+      ],
+      "answer": 3,
+      "explain": "nth-child counts all siblings, including h3. h3 is 1st, the paragraphs are in places 2–5. Odd places are 3 and 5 — paragraphs «2» and «4»."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 11",
+      "prompt": "Which paragraph turns red?",
+      "code": "<div>\n  <h2>Heading</h2>\n  <p>A</p>\n  <p>B</p>\n</div>\n\np:first-child { color: red; }",
+      "options": [
+        "A and B",
+        "None",
+        "A",
+        "B"
+      ],
+      "answer": 1,
+      "explain": "p:first-child is a paragraph that is the parent's first child. Here the first child is h2, so the rule applies to nothing."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 12",
+      "prompt": "What color will the heading be? (It comes after the card, not inside it.)",
+      "code": "<div class=\"card\">Card</div>\n<h2 class=\"title\">Heading</h2>\n\n.card { --accent: red; }\n.title { color: var(--accent); }",
+      "options": [
+        "The default color (black)",
+        "Red only on hover",
+        "Red",
+        "The heading disappears"
+      ],
+      "answer": 0,
+      "explain": "A variable declared in .card is visible only inside the card. Global variables are declared in :root."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 12",
+      "prompt": "How will the button background change?",
+      "code": ".btn { background: blue; }\n.btn:hover {\n  background: red;\n  transition: background 1s;\n}",
+      "options": [
+        "Smoothly both ways",
+        "Smoothly only when the cursor leaves",
+        "Abruptly both ways",
+        "Smoothly on hover and abruptly when the cursor leaves"
+      ],
+      "answer": 3,
+      "explain": "transition is only in :hover. When the cursor leaves, the :hover rule stops working along with the transition. It belongs in the main .btn rule."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 12",
+      "prompt": "How many times will the button «breathe»?",
+      "code": "@keyframes pulse {\n  0%   { transform: scale(1); }\n  50%  { transform: scale(1.1); }\n  100% { transform: scale(1); }\n}\n.btn { animation: pulse 2s; }",
+      "options": [
+        "Forever",
+        "Once",
+        "Never — there's no infinite",
+        "Twice — once per second"
+      ],
+      "answer": 1,
+      "explain": "By default an animation plays once. To repeat it you need infinite."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 13",
+      "prompt": "What is printed?",
+      "code": "console.log(\"5\" + 1, \"5\" - 1);",
+      "options": [
+        "6 \"4\"",
+        "6 4",
+        "51 51",
+        "51 4"
+      ],
+      "answer": 3,
+      "explain": "+ with a string glues: \"51\". - doesn't work with strings, so JS turns the string into a number: 4."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 13",
+      "prompt": "What happens?",
+      "code": "const price = 100;\nprice = 200;\nconsole.log(price);",
+      "options": [
+        "100 is printed",
+        "Error — const can't be reassigned, console.log won't run",
+        "undefined is printed",
+        "200 is printed"
+      ],
+      "answer": 1,
+      "explain": "TypeError: Assignment to constant variable. After the error the code stops."
+    },
+    {
+      "type": "choice",
+      "topic": "Lessons 13–14",
+      "prompt": "What is printed?",
+      "code": "let age = \"18\";\nif (age === 18) {\n  console.log(\"Adult\");\n} else {\n  console.log(\"Child\");\n}",
+      "options": [
+        "Child",
+        "Error",
+        "Adult",
+        "Nothing"
+      ],
+      "answer": 0,
+      "explain": "\"18\" is a string, 18 is a number. === also compares types, so it's false. This happens with input field values — they're always strings."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 14",
+      "prompt": "What is printed?",
+      "code": "const score = 95;\nif (score >= 70) {\n  console.log(\"Good\");\n} else if (score >= 90) {\n  console.log(\"Excellent\");\n} else {\n  console.log(\"Needs work\");\n}",
+      "options": [
+        "Needs work",
+        "Good",
+        "Excellent",
+        "Good and Excellent"
+      ],
+      "answer": 1,
+      "explain": "Conditions are checked top to bottom. 95 ≥ 70 — the first is already true, the rest are skipped. Check bigger thresholds first."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 14",
+      "prompt": "What is printed?",
+      "code": "const a = 5;\nconsole.log(a > 3 && a < 5);",
+      "options": [
+        "Error",
+        "5",
+        "false",
+        "true"
+      ],
+      "answer": 2,
+      "explain": "a > 3 is true, but a < 5 is false (5 isn't less than 5). && needs both to be true."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 15",
+      "prompt": "Which numbers are printed?",
+      "code": "for (let i = 1; i < 10; i++) {\n  if (i % 3 === 0) {\n    console.log(i);\n  }\n}",
+      "options": [
+        "0, 3, 6, 9",
+        "3, 6, 9, 10",
+        "1, 4, 7",
+        "3, 6, 9"
+      ],
+      "answer": 3,
+      "explain": "i goes from 1 to 9. The remainder of dividing by 3 is zero for 3, 6 and 9."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 15",
+      "prompt": "What happens?",
+      "code": "let i = 0;\nwhile (i < 3) {\n  console.log(i);\n}\ni++;",
+      "options": [
+        "An infinite loop: 0 is printed endlessly",
+        "Nothing is printed",
+        "0, 1, 2 is printed",
+        "0 is printed once"
+      ],
+      "answer": 0,
+      "explain": "i++ is after the loop, not inside. i is always 0, the condition is always true — the browser freezes."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 16",
+      "prompt": "What is printed?",
+      "code": "function add(a, b) {\n  a + b;\n}\nconsole.log(add(2, 3));",
+      "options": [
+        "undefined",
+        "23",
+        "Error",
+        "5"
+      ],
+      "answer": 0,
+      "explain": "There's no return — the function computes but gives nothing back."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 16",
+      "prompt": "What is printed?",
+      "code": "function greet(name) {\n  return \"Hello, \" + name;\n}\nconsole.log(greet());",
+      "options": [
+        "Error — no argument passed",
+        "Hello,",
+        "Hello, undefined",
+        "undefined"
+      ],
+      "answer": 2,
+      "explain": "No argument was passed — the name parameter is undefined and it gets glued to the string."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 17",
+      "prompt": "What is printed?",
+      "code": "const fruits = [\"apple\", \"banana\", \"pear\"];\nconsole.log(fruits[fruits.length]);",
+      "options": [
+        "Error",
+        "3",
+        "undefined",
+        "pear"
+      ],
+      "answer": 2,
+      "explain": "fruits.length is 3, but the last index is 2. There's no element at index 3. The last one: fruits[fruits.length - 1]."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 17",
+      "prompt": "What is printed?",
+      "code": "const result = [1, 2, 3].forEach((n) => n * 2);\nconsole.log(result);",
+      "options": [
+        "[1, 2, 3]",
+        "[2, 4, 6]",
+        "undefined",
+        "6"
+      ],
+      "answer": 2,
+      "explain": "forEach returns nothing. map returns a new array."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 17",
+      "prompt": "What is printed?",
+      "code": "const prices = [5, 12, 8, 20];\nconsole.log(prices.filter((p) => p > 8).length);",
+      "options": [
+        "4",
+        "[12, 20]",
+        "3",
+        "2"
+      ],
+      "answer": 3,
+      "explain": "filter keeps [12, 20] (8 isn't greater than 8), length is 2."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 18",
+      "prompt": "What is printed?",
+      "code": "const { name, age } = { name: \"Anya\" };\nconsole.log(name, age);",
+      "options": [
+        "Anya",
+        "Anya undefined",
+        "Anya 0",
+        "Error — there's no age field"
+      ],
+      "answer": 1,
+      "explain": "The object has no age field — the age variable gets undefined, no error."
+    },
+    {
+      "type": "choice",
+      "topic": "Lesson 18",
+      "prompt": "What is printed?",
+      "code": "const user = { name: \"Anya\" };\nconst key = \"name\";\nconsole.log(user.key, user[key]);",
+      "options": [
+        "Anya undefined",
+        "Anya Anya",
+        "undefined Anya",
+        "name Anya"
+      ],
+      "answer": 2,
+      "explain": "user.key looks for a field called key — there isn't one. user[key] uses the variable's value — it looks for name."
+    }
+  ]
+}

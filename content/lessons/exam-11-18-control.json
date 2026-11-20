@@ -1,0 +1,292 @@
+{
+  "id": "exam-11-18-control",
+  "order": 100,
+  "kind": "exam",
+  "strict": true,
+  "timeLimit": 900,
+  "emoji": "🛡️",
+  "title": "Контрольная: уроки 11–18",
+  "description": "Формы, CSS-переменные, JavaScript: переменные, условия, циклы, функции, массивы, объекты. 15 минут. Очков нет: за каждую ошибку −100 XP, выход из теста −2000 XP.",
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "Урок 11",
+      "prompt": "Клик по слову «Почта». Что произойдёт?",
+      "code": "<label for=\"email\">Почта</label>\n<input id=\"mail\" type=\"email\">",
+      "options": [
+        "Ничего — for и id не совпадают",
+        "Браузер покажет ошибку в консоли",
+        "Поле подсветится, но курсор не встанет",
+        "Курсор встанет в поле ввода"
+      ],
+      "answer": 0,
+      "explain": "label связан с полем только если for равен id. Здесь email ≠ mail, связи нет."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 11",
+      "prompt": "Какие абзацы станут красными?",
+      "code": "<div>\n  <h3>Заголовок</h3>\n  <p>1</p>\n  <p>2</p>\n  <p>3</p>\n  <p>4</p>\n</div>\n\np:nth-child(odd) { color: red; }",
+      "options": [
+        "Все четыре",
+        "1 и 3",
+        "Ни один",
+        "2 и 4"
+      ],
+      "answer": 3,
+      "explain": "nth-child считает всех соседей, включая h3. h3 — 1-й, абзацы на местах 2–5. Нечётные места — 3 и 5, это абзацы «2» и «4»."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 11",
+      "prompt": "Какой абзац станет красным?",
+      "code": "<div>\n  <h2>Заголовок</h2>\n  <p>A</p>\n  <p>B</p>\n</div>\n\np:first-child { color: red; }",
+      "options": [
+        "A и B",
+        "Ни один",
+        "A",
+        "B"
+      ],
+      "answer": 1,
+      "explain": "p:first-child — абзац, который является первым ребёнком родителя. Первый ребёнок здесь h2, поэтому правило ни к чему не применится."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 12",
+      "prompt": "Какого цвета будет заголовок? (Он стоит после карточки, а не внутри неё.)",
+      "code": "<div class=\"card\">Карточка</div>\n<h2 class=\"title\">Заголовок</h2>\n\n.card { --accent: red; }\n.title { color: var(--accent); }",
+      "options": [
+        "Цвет по умолчанию (чёрный)",
+        "Красный только при наведении",
+        "Красный",
+        "Заголовок пропадёт"
+      ],
+      "answer": 0,
+      "explain": "Переменная, объявленная в .card, видна только внутри карточки. Глобальные переменные объявляют в :root."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 12",
+      "prompt": "Как будет меняться фон кнопки?",
+      "code": ".btn { background: blue; }\n.btn:hover {\n  background: red;\n  transition: background 1s;\n}",
+      "options": [
+        "Плавно в обе стороны",
+        "Плавно, только когда курсор уходит",
+        "Резко в обе стороны",
+        "Плавно при наведении и резко, когда курсор уходит"
+      ],
+      "answer": 3,
+      "explain": "transition записан только в :hover. Когда курсор уходит, правило :hover перестаёт действовать вместе с transition. Его нужно писать в основном правиле .btn."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 12",
+      "prompt": "Сколько раз «вздохнёт» кнопка?",
+      "code": "@keyframes pulse {\n  0%   { transform: scale(1); }\n  50%  { transform: scale(1.1); }\n  100% { transform: scale(1); }\n}\n.btn { animation: pulse 2s; }",
+      "options": [
+        "Бесконечно",
+        "Один раз",
+        "Ни разу — нет infinite",
+        "Два раза — по разу на каждую секунду"
+      ],
+      "answer": 1,
+      "explain": "По умолчанию анимация проигрывается один раз. Для повтора нужно infinite."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 13",
+      "prompt": "Что выведется?",
+      "code": "console.log(\"5\" + 1, \"5\" - 1);",
+      "options": [
+        "6 \"4\"",
+        "6 4",
+        "51 51",
+        "51 4"
+      ],
+      "answer": 3,
+      "explain": "+ со строкой склеивает: \"51\". - со строкой не работает, поэтому JS превращает строку в число: 4."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 13",
+      "prompt": "Что произойдёт?",
+      "code": "const price = 100;\nprice = 200;\nconsole.log(price);",
+      "options": [
+        "Выведется 100",
+        "Ошибка — const нельзя переприсвоить, console.log не выполнится",
+        "Выведется undefined",
+        "Выведется 200"
+      ],
+      "answer": 1,
+      "explain": "TypeError: Assignment to constant variable. После ошибки код дальше не выполняется."
+    },
+    {
+      "type": "choice",
+      "topic": "Уроки 13–14",
+      "prompt": "Что выведется?",
+      "code": "let age = \"18\";\nif (age === 18) {\n  console.log(\"Взрослый\");\n} else {\n  console.log(\"Ребёнок\");\n}",
+      "options": [
+        "Ребёнок",
+        "Ошибка",
+        "Взрослый",
+        "Ничего"
+      ],
+      "answer": 0,
+      "explain": "\"18\" — строка, 18 — число. === сравнивает и тип, поэтому false. Так бывает со значением из поля ввода — там всегда строка."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 14",
+      "prompt": "Что выведется?",
+      "code": "const score = 95;\nif (score >= 70) {\n  console.log(\"Хорошо\");\n} else if (score >= 90) {\n  console.log(\"Отлично\");\n} else {\n  console.log(\"Подтянуть\");\n}",
+      "options": [
+        "Подтянуть",
+        "Хорошо",
+        "Отлично",
+        "Хорошо и Отлично"
+      ],
+      "answer": 1,
+      "explain": "Условия проверяются сверху вниз. 95 ≥ 70 — первое уже истинно, остальные пропускаются. Большие пороги нужно проверять первыми."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 14",
+      "prompt": "Что выведется?",
+      "code": "const a = 5;\nconsole.log(a > 3 && a < 5);",
+      "options": [
+        "Ошибка",
+        "5",
+        "false",
+        "true"
+      ],
+      "answer": 2,
+      "explain": "a > 3 — true, но a < 5 — false (5 не меньше 5). Для && нужны оба true."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 15",
+      "prompt": "Какие числа выведутся?",
+      "code": "for (let i = 1; i < 10; i++) {\n  if (i % 3 === 0) {\n    console.log(i);\n  }\n}",
+      "options": [
+        "0, 3, 6, 9",
+        "3, 6, 9, 10",
+        "1, 4, 7",
+        "3, 6, 9"
+      ],
+      "answer": 3,
+      "explain": "i идёт от 1 до 9. Остаток от деления на 3 равен нулю у 3, 6 и 9."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 15",
+      "prompt": "Что произойдёт?",
+      "code": "let i = 0;\nwhile (i < 3) {\n  console.log(i);\n}\ni++;",
+      "options": [
+        "Бесконечный цикл: без конца выводится 0",
+        "Ничего не выведется",
+        "Выведется 0, 1, 2",
+        "Выведется 0 один раз"
+      ],
+      "answer": 0,
+      "explain": "i++ стоит после цикла, а не внутри. i всегда 0, условие всегда истинно — браузер зависнет."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 16",
+      "prompt": "Что выведется?",
+      "code": "function add(a, b) {\n  a + b;\n}\nconsole.log(add(2, 3));",
+      "options": [
+        "undefined",
+        "23",
+        "Ошибка",
+        "5"
+      ],
+      "answer": 0,
+      "explain": "Нет return — функция считает, но ничего не отдаёт наружу."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 16",
+      "prompt": "Что выведется?",
+      "code": "function greet(name) {\n  return \"Привет, \" + name;\n}\nconsole.log(greet());",
+      "options": [
+        "Ошибка — не передан аргумент",
+        "Привет,",
+        "Привет, undefined",
+        "undefined"
+      ],
+      "answer": 2,
+      "explain": "Аргумент не передали — параметр name равен undefined, и он склеивается со строкой."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 17",
+      "prompt": "Что выведется?",
+      "code": "const fruits = [\"яблоко\", \"банан\", \"груша\"];\nconsole.log(fruits[fruits.length]);",
+      "options": [
+        "Ошибка",
+        "3",
+        "undefined",
+        "груша"
+      ],
+      "answer": 2,
+      "explain": "fruits.length — 3, а последний индекс — 2. Элемента с индексом 3 нет. Последний: fruits[fruits.length - 1]."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 17",
+      "prompt": "Что выведется?",
+      "code": "const result = [1, 2, 3].forEach((n) => n * 2);\nconsole.log(result);",
+      "options": [
+        "[1, 2, 3]",
+        "[2, 4, 6]",
+        "undefined",
+        "6"
+      ],
+      "answer": 2,
+      "explain": "forEach ничего не возвращает. Новый массив возвращает map."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 17",
+      "prompt": "Что выведется?",
+      "code": "const prices = [5, 12, 8, 20];\nconsole.log(prices.filter((p) => p > 8).length);",
+      "options": [
+        "4",
+        "[12, 20]",
+        "3",
+        "2"
+      ],
+      "answer": 3,
+      "explain": "filter оставит [12, 20] (8 не больше 8), length — 2."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 18",
+      "prompt": "Что выведется?",
+      "code": "const { name, age } = { name: \"Аня\" };\nconsole.log(name, age);",
+      "options": [
+        "Аня",
+        "Аня undefined",
+        "Аня 0",
+        "Ошибка — нет поля age"
+      ],
+      "answer": 1,
+      "explain": "Поля age в объекте нет — переменная age получает undefined, ошибки нет."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 18",
+      "prompt": "Что выведется?",
+      "code": "const user = { name: \"Аня\" };\nconst key = \"name\";\nconsole.log(user.key, user[key]);",
+      "options": [
+        "Аня undefined",
+        "Аня Аня",
+        "undefined Аня",
+        "name Аня"
+      ],
+      "answer": 2,
+      "explain": "user.key ищет поле с именем key — его нет. user[key] подставляет значение переменной — ищет name."
+    }
+  ]
+}

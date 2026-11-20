@@ -1,0 +1,291 @@
+{
+  "id": "exam-11-21-final",
+  "order": 100,
+  "kind": "exam",
+  "strict": true,
+  "timeLimit": 900,
+  "emoji": "🏁",
+  "title": "Итоговый тест: уроки 11–21",
+  "description": "От форм и CSS до DOM, событий и fetch. 15 минут. Очков нет: за каждую ошибку −100 XP, выход из теста −2000 XP.",
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "Урок 11",
+      "prompt": "Клик по слову «Согласен». Что произойдёт?",
+      "code": "<label>\n  <input type=\"checkbox\"> Согласен\n</label>",
+      "options": [
+        "Галочка поставится — input внутри label",
+        "Ничего — у label нет for",
+        "Ошибка в консоли",
+        "Ничего — нет id у чекбокса"
+      ],
+      "answer": 0,
+      "explain": "Если поле лежит внутри label, связь работает без for и id."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 12",
+      "prompt": "Блок A увеличивается при наведении. Что будет с блоком B под ним?",
+      "code": ".a:hover { transform: scale(1.5); }",
+      "options": [
+        "Сдвинется вниз",
+        "Останется на месте — A наедет на него",
+        "Сдвинется вверх",
+        "Уменьшится"
+      ],
+      "answer": 1,
+      "explain": "transform меняет только картинку элемента, его место в потоке остаётся прежним. Соседи не двигаются."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 13",
+      "prompt": "Что выведется?",
+      "code": "let a = 3;\nlet b = a;\nb = 10;\nconsole.log(a);",
+      "options": [
+        "undefined",
+        "10",
+        "13",
+        "3"
+      ],
+      "answer": 3,
+      "explain": "b = a копирует число. Дальше b меняется отдельно, a остаётся 3."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 14",
+      "prompt": "Что выведется?",
+      "code": "const x = 12;\nif (x > 10) {\n  console.log(\"больше 10\");\n}\nif (x > 5) {\n  console.log(\"больше 5\");\n} else {\n  console.log(\"меньше\");\n}",
+      "options": [
+        "больше 10 и больше 5",
+        "Только больше 5",
+        "больше 10 и меньше",
+        "Только больше 10"
+      ],
+      "answer": 0,
+      "explain": "Это два отдельных if, а не else if. Проверяются оба, и оба истинны."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 15",
+      "prompt": "Какие числа выведутся?",
+      "code": "for (let i = 10; i > 0; i -= 3) {\n  console.log(i);\n}",
+      "options": [
+        "10, 7, 4",
+        "9, 6, 3",
+        "10, 7, 4, 1, -2",
+        "10, 7, 4, 1"
+      ],
+      "answer": 3,
+      "explain": "После 1 будет −2, а −2 > 0 — ложь, цикл останавливается."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 16",
+      "prompt": "Что произойдёт?",
+      "code": "function makeTotal() {\n  let total = 500;\n}\nmakeTotal();\nconsole.log(total);",
+      "options": [
+        "Ошибка: total is not defined",
+        "Выведется 500",
+        "Выведется undefined",
+        "Выведется 0"
+      ],
+      "answer": 0,
+      "explain": "Переменная, объявленная внутри функции, живёт только внутри неё. Чтобы получить значение снаружи, нужен return."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 17",
+      "prompt": "Что выведется?",
+      "code": "const a = [1, 2, 3];\nconst b = a.map((n) => n * 10);\nconsole.log(a);",
+      "options": [
+        "[1, 2, 3, 10, 20, 30]",
+        "undefined",
+        "[1, 2, 3]",
+        "[10, 20, 30]"
+      ],
+      "answer": 2,
+      "explain": "map создаёт новый массив, исходный не меняется."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 17",
+      "prompt": "Что выведется?",
+      "code": "const users = [\n  { name: \"Аня\", age: 19 },\n  { name: \"Игорь\", age: 25 },\n  { name: \"Ира\", age: 30 },\n];\nconsole.log(users.find((u) => u.age > 20).name);",
+      "options": [
+        "Аня",
+        "Игорь, Ира",
+        "Игорь",
+        "[\"Игорь\", \"Ира\"]"
+      ],
+      "answer": 2,
+      "explain": "find возвращает первый подходящий объект. Первый с возрастом больше 20 — Игорь."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 18",
+      "prompt": "Что выведется?",
+      "code": "const user = {\n  name: \"Аня\",\n  address: { city: \"Ташкент\" },\n};\nconsole.log(user.city);",
+      "options": [
+        "{ city: \"Ташкент\" }",
+        "Ошибка",
+        "undefined",
+        "Ташкент"
+      ],
+      "answer": 2,
+      "explain": "city лежит внутри address. Правильно: user.address.city."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 19",
+      "prompt": "На странице три абзаца с классом item: «1», «2», «3». Что останется после кода?",
+      "code": "document.querySelector(\".item\").textContent = \"X\";",
+      "options": [
+        "X, X, X",
+        "Ошибка",
+        "X, 2, 3",
+        "1, 2, X"
+      ],
+      "answer": 2,
+      "explain": "querySelector находит только первый подходящий элемент."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 19",
+      "prompt": "Что произойдёт?",
+      "code": "document.querySelectorAll(\".item\").style.color = \"red\";",
+      "options": [
+        "Ошибка — у списка элементов нет style",
+        "Ничего, но без ошибки",
+        "Все элементы станут красными",
+        "Красным станет только первый"
+      ],
+      "answer": 0,
+      "explain": "querySelectorAll возвращает список. У списка нет style, нужно пройтись по нему через forEach."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 19",
+      "prompt": "У абзаца уже есть класс active. Какие классы у него останутся?",
+      "code": "const p = document.querySelector(\"p\");\np.classList.toggle(\"active\");\np.classList.toggle(\"active\");",
+      "options": [
+        "Классов не будет",
+        "Ошибка",
+        "active active",
+        "Останется active"
+      ],
+      "answer": 3,
+      "explain": "Первый toggle убирает класс, второй возвращает его."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 20",
+      "prompt": "Что будет при нажатии на кнопку?",
+      "code": "function sayHi() {\n  console.log(\"Привет\");\n}\nbtn.addEventListener(\"click\", sayHi());",
+      "options": [
+        "Привет выведется один раз при загрузке, клики ничего не делают",
+        "Ошибка при загрузке",
+        "Привет при каждом клике",
+        "Привет выведется дважды"
+      ],
+      "answer": 0,
+      "explain": "sayHi() со скобками вызывает функцию сразу, а в слушатель передаётся её результат undefined. Нужно sayHi без скобок."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 20",
+      "prompt": "Пользователь кликает по слову «хлеб». Что произойдёт?",
+      "code": "<ul class=\"list\">\n  <li>Купить <b>хлеб</b></li>\n</ul>\n\nlist.addEventListener(\"click\", (e) => {\n  if (e.target.tagName === \"LI\") {\n    e.target.classList.toggle(\"done\");\n  }\n});",
+      "options": [
+        "Ошибка",
+        "Зачеркнётся только слово «хлеб»",
+        "Пункт зачеркнётся",
+        "Ничего — e.target будет <b>, а не <li>"
+      ],
+      "answer": 3,
+      "explain": "e.target — самый глубокий элемент, по которому кликнули. Клик по «хлеб» — это клик по <b>."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 20",
+      "prompt": "Форма со списком задач, кнопка — type=\"submit\". Что будет при нажатии?",
+      "code": "form.addEventListener(\"submit\", () => {\n  const li = document.createElement(\"li\");\n  li.textContent = input.value;\n  list.append(li);\n});",
+      "options": [
+        "Ничего не добавится",
+        "Задача мелькнёт и пропадёт — страница перезагрузится",
+        "Ошибка",
+        "Задача добавится и останется"
+      ],
+      "answer": 1,
+      "explain": "Нет e.preventDefault() — форма отправляется, страница перезагружается."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 20",
+      "prompt": "Сколько новых <li> появится на странице?",
+      "code": "const li = document.createElement(\"li\");\nli.textContent = \"Новая задача\";",
+      "options": [
+        "Один",
+        "Ошибка",
+        "Один, но пустой",
+        "Ни одного"
+      ],
+      "answer": 3,
+      "explain": "Элемент создан только в памяти. Чтобы он появился, нужно list.append(li)."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 21",
+      "prompt": "Что выведется?",
+      "code": "const data = fetch(\"https://jsonplaceholder.typicode.com/users/1\");\nconsole.log(data.name);",
+      "options": [
+        "Promise",
+        "undefined",
+        "Имя пользователя",
+        "Ошибка — нет интернета"
+      ],
+      "answer": 1,
+      "explain": "fetch сразу возвращает обещание (Promise), а не данные. У обещания нет поля name. Данные — только внутри .then."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 21",
+      "prompt": "В каком порядке появятся числа?",
+      "code": "console.log(\"1\");\nfetch(\"https://jsonplaceholder.typicode.com/users/1\")\n  .then((response) => response.json())\n  .then((data) => console.log(\"2\"));\nconsole.log(\"3\");",
+      "options": [
+        "2, 1, 3",
+        "1, 2, 3",
+        "1, 3, 2",
+        "1, 3 — а 2 не выведется"
+      ],
+      "answer": 2,
+      "explain": "fetch не ждёт ответа: код идёт дальше и сразу выводит 3. Ответ сервера приходит позже — тогда выводится 2."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 21",
+      "prompt": "Какая строка — правильный JSON?",
+      "options": [
+        "{name: \"Аня\", age: 25}",
+        "{\"name\": \"Аня\", \"age\": 25}",
+        "{\"name\": \"Аня\", \"age\": 25,}",
+        "{'name': 'Аня', 'age': 25}"
+      ],
+      "answer": 1,
+      "explain": "В JSON ключи и строки — только в двойных кавычках, лишняя запятая в конце запрещена."
+    },
+    {
+      "type": "choice",
+      "topic": "Урок 21",
+      "prompt": "Сервер прислал { \"info\": {...}, \"results\": [ …персонажи… ] }. Что будет?",
+      "code": "fetch(\"https://rickandmortyapi.com/api/character\")\n  .then((response) => response.json())\n  .then((data) => {\n    data.forEach((character) => console.log(character.name));\n  });",
+      "options": [
+        "Выведутся имена всех персонажей",
+        "Ошибка data.forEach is not a function",
+        "Ничего, но без ошибки",
+        "Выведется undefined"
+      ],
+      "answer": 1,
+      "explain": "data — объект, у объекта нет forEach. Массив лежит в data.results."
+    }
+  ]
+}

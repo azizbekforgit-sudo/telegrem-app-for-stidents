@@ -1,0 +1,286 @@
+{
+  "title": "Nazorat ishi: 11–18-darslar",
+  "description": "Formalar, CSS o'zgaruvchilari, JavaScript: o'zgaruvchilar, shartlar, tsikllar, funksiyalar, massivlar, obyektlar. 15 daqiqa. Ball berilmaydi: har bir xato uchun −100 XP, testdan chiqish −2000 XP.",
+  "questions": [
+    {
+      "type": "choice",
+      "topic": "11-dars",
+      "prompt": "«Pochta» so'ziga bosildi. Nima bo'ladi?",
+      "code": "<label for=\"email\">Pochta</label>\n<input id=\"mail\" type=\"email\">",
+      "options": [
+        "Hech narsa — for va id mos emas",
+        "Brauzer konsolda xato ko'rsatadi",
+        "Maydon yonadi, lekin kursor turmaydi",
+        "Kursor kiritish maydoniga turadi"
+      ],
+      "answer": 0,
+      "explain": "label maydon bilan faqat for id ga teng bo'lsa bog'lanadi. Bu yerda email ≠ mail, bog'lanish yo'q."
+    },
+    {
+      "type": "choice",
+      "topic": "11-dars",
+      "prompt": "Qaysi abzatslar qizil bo'ladi?",
+      "code": "<div>\n  <h3>Sarlavha</h3>\n  <p>1</p>\n  <p>2</p>\n  <p>3</p>\n  <p>4</p>\n</div>\n\np:nth-child(odd) { color: red; }",
+      "options": [
+        "To'rttalasi ham",
+        "1 va 3",
+        "Hech biri",
+        "2 va 4"
+      ],
+      "answer": 3,
+      "explain": "nth-child barcha qo'shnilarni, h3 ni ham sanaydi. h3 — 1-chi, abzatslar 2–5 o'rinlarda. Toq o'rinlar — 3 va 5, bular «2» va «4» abzatslari."
+    },
+    {
+      "type": "choice",
+      "topic": "11-dars",
+      "prompt": "Qaysi abzats qizil bo'ladi?",
+      "code": "<div>\n  <h2>Sarlavha</h2>\n  <p>A</p>\n  <p>B</p>\n</div>\n\np:first-child { color: red; }",
+      "options": [
+        "A va B",
+        "Hech biri",
+        "A",
+        "B"
+      ],
+      "answer": 1,
+      "explain": "p:first-child — ota-elementning birinchi bolasi bo'lgan abzats. Bu yerda birinchi bola h2, shuning uchun qoida hech narsaga qo'llanmaydi."
+    },
+    {
+      "type": "choice",
+      "topic": "12-dars",
+      "prompt": "Sarlavha qaysi rangda bo'ladi? (U kartochkadan keyin turadi, ichida emas.)",
+      "code": "<div class=\"card\">Kartochka</div>\n<h2 class=\"title\">Sarlavha</h2>\n\n.card { --accent: red; }\n.title { color: var(--accent); }",
+      "options": [
+        "Standart rang (qora)",
+        "Faqat ustiga olib borganda qizil",
+        "Qizil",
+        "Sarlavha yo'qoladi"
+      ],
+      "answer": 0,
+      "explain": ".card da e'lon qilingan o'zgaruvchi faqat kartochka ichida ko'rinadi. Global o'zgaruvchilar :root da e'lon qilinadi."
+    },
+    {
+      "type": "choice",
+      "topic": "12-dars",
+      "prompt": "Tugma foni qanday o'zgaradi?",
+      "code": ".btn { background: blue; }\n.btn:hover {\n  background: red;\n  transition: background 1s;\n}",
+      "options": [
+        "Ikki tomonga ham silliq",
+        "Faqat kursor ketganda silliq",
+        "Ikki tomonga ham keskin",
+        "Olib borganda silliq, kursor ketganda keskin"
+      ],
+      "answer": 3,
+      "explain": "transition faqat :hover da yozilgan. Kursor ketganda :hover qoidasi transition bilan birga ishlamay qoladi. Uni asosiy .btn qoidasiga yozish kerak."
+    },
+    {
+      "type": "choice",
+      "topic": "12-dars",
+      "prompt": "Tugma necha marta «nafas oladi»?",
+      "code": "@keyframes pulse {\n  0%   { transform: scale(1); }\n  50%  { transform: scale(1.1); }\n  100% { transform: scale(1); }\n}\n.btn { animation: pulse 2s; }",
+      "options": [
+        "Cheksiz",
+        "Bir marta",
+        "Birorta ham — infinite yo'q",
+        "Ikki marta — har soniyada bir marta"
+      ],
+      "answer": 1,
+      "explain": "Standart holatda animatsiya bir marta o'ynaydi. Takrorlash uchun infinite kerak."
+    },
+    {
+      "type": "choice",
+      "topic": "13-dars",
+      "prompt": "Nima chiqadi?",
+      "code": "console.log(\"5\" + 1, \"5\" - 1);",
+      "options": [
+        "6 \"4\"",
+        "6 4",
+        "51 51",
+        "51 4"
+      ],
+      "answer": 3,
+      "explain": "Satr bilan + yopishtiradi: \"51\". - satr bilan ishlamaydi, shuning uchun JS satrni songa aylantiradi: 4."
+    },
+    {
+      "type": "choice",
+      "topic": "13-dars",
+      "prompt": "Nima bo'ladi?",
+      "code": "const price = 100;\nprice = 200;\nconsole.log(price);",
+      "options": [
+        "100 chiqadi",
+        "Xato — const ni qayta tayinlab bo'lmaydi, console.log bajarilmaydi",
+        "undefined chiqadi",
+        "200 chiqadi"
+      ],
+      "answer": 1,
+      "explain": "TypeError: Assignment to constant variable. Xatodan keyin kod bajarilmaydi."
+    },
+    {
+      "type": "choice",
+      "topic": "13–14-darslar",
+      "prompt": "Nima chiqadi?",
+      "code": "let age = \"18\";\nif (age === 18) {\n  console.log(\"Katta\");\n} else {\n  console.log(\"Bola\");\n}",
+      "options": [
+        "Bola",
+        "Xato",
+        "Katta",
+        "Hech narsa"
+      ],
+      "answer": 0,
+      "explain": "\"18\" — satr, 18 — son. === turni ham solishtiradi, shuning uchun false. Kiritish maydonidagi qiymat bilan shunday bo'ladi — u yerda doim satr."
+    },
+    {
+      "type": "choice",
+      "topic": "14-dars",
+      "prompt": "Nima chiqadi?",
+      "code": "const score = 95;\nif (score >= 70) {\n  console.log(\"Yaxshi\");\n} else if (score >= 90) {\n  console.log(\"A'lo\");\n} else {\n  console.log(\"Tortish kerak\");\n}",
+      "options": [
+        "Tortish kerak",
+        "Yaxshi",
+        "A'lo",
+        "Yaxshi va A'lo"
+      ],
+      "answer": 1,
+      "explain": "Shartlar yuqoridan pastga tekshiriladi. 95 ≥ 70 — birinchisi rost, qolganlari o'tkazib yuboriladi. Katta chegaralarni birinchi tekshirish kerak."
+    },
+    {
+      "type": "choice",
+      "topic": "14-dars",
+      "prompt": "Nima chiqadi?",
+      "code": "const a = 5;\nconsole.log(a > 3 && a < 5);",
+      "options": [
+        "Xato",
+        "5",
+        "false",
+        "true"
+      ],
+      "answer": 2,
+      "explain": "a > 3 — true, lekin a < 5 — false (5 5 dan kichik emas). && uchun ikkalasi true bo'lishi kerak."
+    },
+    {
+      "type": "choice",
+      "topic": "15-dars",
+      "prompt": "Qaysi sonlar chiqadi?",
+      "code": "for (let i = 1; i < 10; i++) {\n  if (i % 3 === 0) {\n    console.log(i);\n  }\n}",
+      "options": [
+        "0, 3, 6, 9",
+        "3, 6, 9, 10",
+        "1, 4, 7",
+        "3, 6, 9"
+      ],
+      "answer": 3,
+      "explain": "i 1 dan 9 gacha boradi. 3 ga bo'lgandagi qoldiq 3, 6 va 9 da nolga teng."
+    },
+    {
+      "type": "choice",
+      "topic": "15-dars",
+      "prompt": "Nima bo'ladi?",
+      "code": "let i = 0;\nwhile (i < 3) {\n  console.log(i);\n}\ni++;",
+      "options": [
+        "Cheksiz tsikl: to'xtovsiz 0 chiqadi",
+        "Hech narsa chiqmaydi",
+        "0, 1, 2 chiqadi",
+        "0 bir marta chiqadi"
+      ],
+      "answer": 0,
+      "explain": "i++ tsikldan keyin turibdi, ichida emas. i doim 0, shart doim rost — brauzer qotib qoladi."
+    },
+    {
+      "type": "choice",
+      "topic": "16-dars",
+      "prompt": "Nima chiqadi?",
+      "code": "function add(a, b) {\n  a + b;\n}\nconsole.log(add(2, 3));",
+      "options": [
+        "undefined",
+        "23",
+        "Xato",
+        "5"
+      ],
+      "answer": 0,
+      "explain": "return yo'q — funksiya hisoblaydi, lekin tashqariga hech narsa bermaydi."
+    },
+    {
+      "type": "choice",
+      "topic": "16-dars",
+      "prompt": "Nima chiqadi?",
+      "code": "function greet(name) {\n  return \"Salom, \" + name;\n}\nconsole.log(greet());",
+      "options": [
+        "Xato — argument berilmagan",
+        "Salom,",
+        "Salom, undefined",
+        "undefined"
+      ],
+      "answer": 2,
+      "explain": "Argument berilmadi — name parametri undefined ga teng va u satrga yopishadi."
+    },
+    {
+      "type": "choice",
+      "topic": "17-dars",
+      "prompt": "Nima chiqadi?",
+      "code": "const fruits = [\"olma\", \"banan\", \"nok\"];\nconsole.log(fruits[fruits.length]);",
+      "options": [
+        "Xato",
+        "3",
+        "undefined",
+        "nok"
+      ],
+      "answer": 2,
+      "explain": "fruits.length — 3, oxirgi indeks esa — 2. 3-indeksli element yo'q. Oxirgisi: fruits[fruits.length - 1]."
+    },
+    {
+      "type": "choice",
+      "topic": "17-dars",
+      "prompt": "Nima chiqadi?",
+      "code": "const result = [1, 2, 3].forEach((n) => n * 2);\nconsole.log(result);",
+      "options": [
+        "[1, 2, 3]",
+        "[2, 4, 6]",
+        "undefined",
+        "6"
+      ],
+      "answer": 2,
+      "explain": "forEach hech narsa qaytarmaydi. Yangi massivni map qaytaradi."
+    },
+    {
+      "type": "choice",
+      "topic": "17-dars",
+      "prompt": "Nima chiqadi?",
+      "code": "const prices = [5, 12, 8, 20];\nconsole.log(prices.filter((p) => p > 8).length);",
+      "options": [
+        "4",
+        "[12, 20]",
+        "3",
+        "2"
+      ],
+      "answer": 3,
+      "explain": "filter [12, 20] ni qoldiradi (8 8 dan katta emas), length — 2."
+    },
+    {
+      "type": "choice",
+      "topic": "18-dars",
+      "prompt": "Nima chiqadi?",
+      "code": "const { name, age } = { name: \"Anya\" };\nconsole.log(name, age);",
+      "options": [
+        "Anya",
+        "Anya undefined",
+        "Anya 0",
+        "Xato — age maydoni yo'q"
+      ],
+      "answer": 1,
+      "explain": "Obyektda age maydoni yo'q — age o'zgaruvchisi undefined oladi, xato yo'q."
+    },
+    {
+      "type": "choice",
+      "topic": "18-dars",
+      "prompt": "Nima chiqadi?",
+      "code": "const user = { name: \"Anya\" };\nconst key = \"name\";\nconsole.log(user.key, user[key]);",
+      "options": [
+        "Anya undefined",
+        "Anya Anya",
+        "undefined Anya",
+        "name Anya"
+      ],
+      "answer": 2,
+      "explain": "user.key key nomli maydonni qidiradi — u yo'q. user[key] o'zgaruvchi qiymatini qo'yadi — name ni qidiradi."
+    }
+  ]
+}
