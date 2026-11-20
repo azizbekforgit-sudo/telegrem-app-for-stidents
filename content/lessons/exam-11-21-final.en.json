@@ -1,6 +1,6 @@
 {
   "title": "Final test: lessons 11–21",
-  "description": "From forms and CSS to the DOM, events and fetch. 15 minutes. No points: −100 XP per mistake, leaving the test −2000 XP.",
+  "description": "From forms and CSS to the DOM, events and fetch. 25 minutes, 5 of the 20 tasks are writing code. No points: −100 XP per mistake, leaving the test −2000 XP.",
   "questions": [
     {
       "type": "choice",

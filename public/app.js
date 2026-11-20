@@ -1899,7 +1899,7 @@ function mountAnswer(area, q, P, setReady, onEnter) {
   }
 }
 
-const KIND = { choice: 'Выбери ответ', truefalse: 'Верно или нет?', input: 'Напиши ответ', order: 'Собери ответ', match: 'Найди пары', fill: 'Вставь пропущенное' };
+const KIND = { choice: 'Выбери ответ', truefalse: 'Верно или нет?', input: 'Напиши ответ', order: 'Собери ответ', match: 'Найди пары', fill: 'Вставь пропущенное', code: 'Напиши код' };
 
 // ═══════════════ КОНТРОЛЬНАЯ (строгий тест) ═══════════════
 // Очков нет, за ошибку −100 XP. Тест идёт на весь экран; ушёл с полного экрана или из приложения — предупреждение.
@@ -1932,6 +1932,7 @@ function strictSheet(p) {
       <p>${emo('⚠️')} Можно получить 3 предупреждения. Ещё раз — тест закончится сам: <b>0%</b> и <b data-noi18n>−${quit} XP</b>.</p>
       <p>${emo('🚪')} Выйти из теста до конца — тоже <b data-noi18n>−${quit} XP</b>.</p>
       ${p.timeLimit ? `<p>${emo('⏱️')} На весь тест <b>${Math.round(p.timeLimit / 60)} минут</b>. Время вышло — тест закончится, неотвеченные вопросы считаются ошибками.</p>` : ''}
+      ${p.codeCount ? `<p>${emo('💻')} Задания «напиши код» в редакторе: ${p.codeCount} из ${p.questions}. Какие именно — выпадает случайно.</p>` : ''}
       <p>${emo('1️⃣')} Пройти контрольную можно только один раз.</p>
     </div>
     <button class="btn block" data-go>${ic('play')}Начать контрольную</button>
@@ -2005,7 +2006,14 @@ async function startLesson(target) {
     const left = tEnd - Date.now();
     const t = $('[data-ttotal]', el);
     if (t) { t.textContent = fmtLeft(left); t.parentElement.classList.toggle('hurry', left < 60_000); }
-    if (left <= 0) { clearInterval(totalTimer); finish(); }
+    if (left <= 0) {
+      clearInterval(totalTimer);
+      (async () => {
+        const files = ACTIVE_CODE?.abort();
+        if (files && P.phase === 'main' && !P.answered) { try { await api(`/attempts/${data.attemptId}/answer`, { index: P.queue[P.i], answer: files }); } catch { /* */ } }
+        finish();
+      })();
+    }
   }, 250) : 0;
 
   const total = () => data.questions.length + P.review.length;
@@ -2058,11 +2066,30 @@ async function startLesson(target) {
     }
     const hint = $('[data-hint]', el);
     if (hint) hint.onclick = () => { hint.parentElement.innerHTML = emo(E.bulb) + ' ' + esc(q.hint); };
-    mountAnswer($('[data-area]', el), q, P, setReady, () => $('[data-check]', el).click());
+    if (q.type === 'code') mountCode($('[data-area]', el), q, qi);
+    else mountAnswer($('[data-area]', el), q, P, setReady, () => $('[data-check]', el).click());
     $('[data-check]', el).onclick = () => (P.answered ? next() : check(qi));
   }
 
   const setReady = (v) => { P.ready = v; $('[data-check]', el).disabled = !v; };
+
+  // Вопрос «напиши код» (контрольная): условия + кнопка «Открыть редактор»; ответ — файлы из редактора
+  function mountCode(area, q, qi) {
+    const t = q.task;
+    const draw = () => {
+      area.innerHTML = `<div class="card code-q"><p class="muted small">${esc(t.intro)}</p>
+        <ol class="cs-steps">${t.steps.map((s) => `<li><i></i><span>${rich(s.say)}</span></li>`).join('')}</ol>
+        <button class="btn block" data-open>${emo('💻')} ${P.value ? 'Изменить код' : 'Открыть редактор'}</button>
+        ${P.value ? `<p class="center small" style="margin-top:8px"><span class="pill good">✓ ${tr('Код сохранён')}</span></p>` : `<p class="muted small center" style="margin-top:8px">${tr('Напиши код в редакторе и нажми «Сохранить ответ», потом «Проверить».')}</p>`}</div>`;
+      $('[data-open]', area).onclick = async () => {
+        haptic('medium');
+        const files = await codeSession({ task: t, allow: t.allow, topic: q.topic || '', lessonId: data.lesson.id, key: `${data.attemptId}-${qi}`, kind: 'exam', exam: { end: () => tEnd } });
+        if (files && area.isConnected) { P.value = files; setReady(true); }
+        if (area.isConnected) draw();
+      };
+    };
+    draw();
+  }
 
 
   async function check(qi) {
@@ -2193,7 +2220,8 @@ async function startLesson(target) {
 // На компьютере экран пополам: слева маскот объясняет, справа редактор.
 // На телефоне маскот зовёт «Пишем код!», свайп вверх — и снизу выезжает редактор, маскот сверху подсказывает.
 const LANG_NAME = { html: 'HTML', css: 'CSS', js: 'JavaScript', jsx: 'React (JSX)', json: 'JSON', sh: 'терминал', git: 'Git' };
-function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'learn', preview = false }) {
+let ACTIVE_CODE = null; // открытый редактор контрольной: при окончании времени его закрывают и забирают код
+function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'learn', preview = false, exam = null }) {
   return new Promise((resolve) => {
     const wide = matchMedia('(min-width: 900px)').matches;
     const store = `ide:${lessonId}:${key}`;
@@ -2207,15 +2235,15 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
     el.innerHTML = `
       <div class="cs-guide">
         <div class="cs-head"><button class="pclose" data-close aria-label="Закрыть">${ic('close-circle')}</button>
-          <div class="grow"><small>${kind === 'hw' ? `${emo('🏠')} Домашка` : `${emo('💻')} Пишем код`}</small><b>${esc(task.title || '')}</b></div>
-          <span class="pill accent" data-noi18n data-prog>0/${steps.length}</span></div>
+          <div class="grow"><small>${kind === 'hw' ? `${emo('🏠')} Домашка` : exam ? `${emo('🛡️')} Контрольная · напиши код` : `${emo('💻')} Пишем код`}</small><b>${esc(task.title || '')}</b></div>
+          ${exam ? `<span class="pill accent" data-noi18n data-etimer>⏱ 0:00</span>` : `<span class="pill accent" data-noi18n data-prog>0/${steps.length}</span>`}</div>
         <div class="cs-talk"><div class="cs-m" data-m>${me('teach', wide ? 150 : 64)}</div><div class="speech" data-say></div></div>
         <div class="cs-show" data-show hidden></div>
         <ol class="cs-steps" data-steps>${steps.map((st, i) => `<li data-st="${i}"><i></i><span>${rich(st.say)}</span></li>`).join('')}</ol>
-        <div class="cs-act"><button class="btn ghost dim" data-hint>${emo('💡')} Подсказка</button><button class="btn" data-done disabled>${ic('check-circle')}Готово</button></div>
+        <div class="cs-act">${exam ? '' : `<button class="btn ghost dim" data-hint>${emo('💡')} Подсказка</button>`}<button class="btn" data-done ${exam ? '' : 'disabled'}>${ic('check-circle')}${exam ? 'Сохранить ответ' : 'Готово'}</button></div>
       </div>
       <div class="cs-ide" data-ide></div>
-      ${wide ? '' : `<div class="cs-intro" data-intro><div class="teach-row col">${me('talk', 150)}<div class="speech" data-isay></div></div>
+      ${wide || exam ? '' : `<div class="cs-intro" data-intro><div class="teach-row col">${me('talk', 150)}<div class="speech" data-isay></div></div>
         <div class="swipe-hint"><span class="finger">${emo('👆')}</span><i></i></div>
         <button class="btn block" data-go>${emo('💻')} Пишем код!</button></div>`}`;
     const $1 = (s) => $(s, el);
@@ -2241,6 +2269,7 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
     let passed = steps.map(() => false);
     let lastErr = '', errSince = 0, hintLevel = 0, typedAt = Date.now(), finished = false;
     const showCur = () => {
+      if (exam) return -1; // в контрольной шаги не отмечаются — верно или нет, видно только в конце
       const k = passed.indexOf(false);
       $1('[data-steps]').querySelectorAll('li').forEach((li, i) => { li.className = passed[i] ? 'ok' : i === k ? 'now' : ''; });
       $1('[data-prog]').textContent = `${passed.filter(Boolean).length}/${steps.length}`;
@@ -2264,6 +2293,7 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
         return;
       }
       lastErr = '';
+      if (exam) return;
       if (k === -1 && steps.length) {
         if (!finished) { finished = true; sfx.win(); setTimeout(confetti, 150); haptic('success'); }
         $1('[data-done]').disabled = false;
@@ -2273,11 +2303,18 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
       if (newly >= 0) { sfx.ok(); haptic('success'); say(`${['Отлично!', 'Супер!', 'Так держать!', 'В точку!'][newly % 4]} Теперь: ${steps[k].say}`, 'cheer', 'happy'); hintLevel = 0; $1('[data-show]').hidden = true; return; }
       say(steps[k].say, 'think');
     }
+    let examTick = 0;
+    if (exam) {
+      const tp = $1('[data-etimer]');
+      const tick = () => { const left = Math.max(0, exam.end() - Date.now()); tp.textContent = `⏱ ${Math.floor(left / 60000)}:${String(Math.floor(left / 1000) % 60).padStart(2, '0')}`; tp.classList.toggle('bad', left < 60000); };
+      tick();
+      examTick = setInterval(tick, 500);
+    }
     let timer = null;
     function schedule() { typedAt = Date.now(); clearTimeout(timer); timer = setTimeout(evaluate, 650); }
     // заскучал без дела — сам подсказывает
     const idle = setInterval(() => {
-      if (Date.now() - typedAt > 45000 && !finished && el.isConnected) { typedAt = Date.now(); const k = passed.indexOf(false); if (k >= 0) { say(`Я тут! Подсказка: ${steps[k].say}`, 'sleepy'); showSnippet(k); } }
+      if (!exam && Date.now() - typedAt > 45000 && !finished && el.isConnected) { typedAt = Date.now(); const k = passed.indexOf(false); if (k >= 0) { say(`Я тут! Подсказка: ${steps[k].say}`, 'sleepy'); showSnippet(k); } }
     }, 5000);
     function showSnippet(k) {
       const st = steps[k];
@@ -2286,7 +2323,7 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
       b.hidden = false;
       b.innerHTML = `<small>${esc(tr('Напиши так'))} · ${esc(st.file || '')}</small><pre class="code">${highlight(st.show)}</pre>`;
     }
-    $1('[data-hint]').onclick = () => {
+    if ($1('[data-hint]')) $1('[data-hint]').onclick = () => {
       const k = passed.indexOf(false);
       if (k < 0) return;
       hintLevel++;
@@ -2296,20 +2333,22 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
       else { say(`Смотри, пиши вот так в ${steps[k].file || 'файл'}:`, 'teach'); showSnippet(k); }
     };
     const close = (done) => {
-      clearInterval(idle); clearTimeout(timer); ide.destroy();
+      clearInterval(idle); clearTimeout(timer); clearInterval(examTick); ide.destroy();
+      if (ACTIVE_CODE?.el === el) ACTIVE_CODE = null;
       el.classList.add('leaving');
       setTimeout(() => { el.remove(); if (S.view) tg?.BackButton?.show(); }, wide ? 0 : 320);
-      resolve(Boolean(done));
+      resolve(exam ? (done ? ide.files() : null) : Boolean(done));
     };
+    if (exam) ACTIVE_CODE = { el, abort: () => { const f = ide.files(); close(false); return f; } };
     $1('[data-done]').onclick = async () => {
-      if (!preview) { try { await api('/code/done', { lessonId, task: key, files: ide.files() }); } catch { /* */ } }
+      if (!preview && !exam) { try { await api('/code/done', { lessonId, task: key, files: ide.files() }); } catch { /* */ } }
       close(true);
     };
     $1('[data-close]').onclick = async () => { if (finished || await confirmSheet('Выйти из редактора?', 'Код сохранится — продолжишь позже.', 'Выйти', true)) close(finished); };
     // старт
     const intro = task.intro || 'Давай теперь напишем с тобой код, который нам нужен!';
-    const begin = () => { el.classList.add('open'); setTimeout(() => { evaluate(); const k = passed.indexOf(false); say(k >= 0 ? `${intro}\n\nШаг 1: ${steps[k].say}` : intro, 'teach'); }, wide ? 0 : 380); };
-    if (wide) { begin(); return; }
+    const begin = () => { el.classList.add('open'); setTimeout(() => { evaluate(); const k = passed.indexOf(false); say(exam ? intro : k >= 0 ? `${intro}\n\nШаг 1: ${steps[k].say}` : intro, exam ? 'think' : 'teach'); }, wide || exam ? 0 : 380); };
+    if (wide || exam) { begin(); return; }
     speak($1('[data-isay]'), intro + ' ' + tr('Смахни вверх — откроем редактор!'), $1('.cs-intro .mascot'));
     let y0 = null;
     const intr = $1('[data-intro]');

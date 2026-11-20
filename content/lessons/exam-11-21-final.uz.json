@@ -1,6 +1,6 @@
 {
   "title": "Yakuniy test: 11–21-darslar",
-  "description": "Formalar va CSS dan DOM, hodisalar va fetch gacha. 15 daqiqa. Ball berilmaydi: har bir xato uchun −100 XP, testdan chiqish −2000 XP.",
+  "description": "Formalar va CSS dan DOM, hodisalar va fetch gacha. 25 daqiqa, 20 tadan 5 tasi — kod yozish. Ball berilmaydi: har bir xato uchun −100 XP, testdan chiqish −2000 XP.",
   "questions": [
     {
       "type": "choice",

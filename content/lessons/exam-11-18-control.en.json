@@ -1,6 +1,6 @@
 {
   "title": "Test: lessons 11–18",
-  "description": "Forms, CSS variables, JavaScript: variables, conditions, loops, functions, arrays, objects. 15 minutes. No points: −100 XP per mistake, leaving the test −2000 XP.",
+  "description": "Forms, CSS variables, JavaScript: variables, conditions, loops, functions, arrays, objects. 25 minutes, 5 of the 20 tasks are writing code. No points: −100 XP per mistake, leaving the test −2000 XP.",
   "questions": [
     {
       "type": "choice",

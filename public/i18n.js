@@ -25,6 +25,13 @@ const PHRASES = [
   ['ПОБЕДА!', 'VICTORY!', "G'ALABA!"], ['Я в тебя верил!', 'I believed in you!', 'Men senga ishongandim!'],
   ['Курс', 'Course', 'Kurs'],
   ['Дневник', 'Diary', 'Kundalik'],
+  ['Напиши код', 'Write code', 'Kod yoz'],
+  ['Открыть редактор', 'Open the editor', 'Muharrirni ochish'],
+  ['Изменить код', 'Edit the code', 'Kodni o\'zgartirish'],
+  ['Код сохранён', 'Code saved', 'Kod saqlandi'],
+  ['Сохранить ответ', 'Save the answer', 'Javobni saqlash'],
+  ['Контрольная · напиши код', 'Test · write code', 'Nazorat ishi · kod yoz'],
+  ['Напиши код в редакторе и нажми «Сохранить ответ», потом «Проверить».', 'Write the code in the editor and tap «Save the answer», then «Check».', 'Muharrirda kod yoz va «Javobni saqlash»ni bos, keyin «Tekshirish»ni.'],
   ['await можно писать только внутри async-функции', 'await can only be used inside an async function', "await faqat async-funksiya ichida yoziladi"],
   ['Пишем код', 'Writing code', 'Kod yozamiz'],
   ['Домашка', 'Homework', 'Uy vazifasi'],
@@ -416,6 +423,7 @@ const TOKENS = [
 ];
 
 const PATTERNS = [
+  [/^Задания «напиши код» в редакторе: (\d+) из (\d+)\. Какие именно — выпадает случайно\.$/, 'Write-the-code tasks in the editor: $1 of $2. Which ones — chosen at random.', 'Muharrirda «kod yoz» topshiriqlari: $2 tadan $1 tasi. Qaysilari — tasodifiy tushadi.'],
   [/^Нет «;» после (.+)$/, 'Missing «;» after $1', '$1 dan keyin «;» yo\'q'],
   [/^Опечатка: (\S+) — правильно (\S+)$/, 'Typo: $1 — should be $2', 'Xato yozilgan: $1 — to\'g\'risi $2'],
   [/^Неизвестное свойство (\S+)$/, 'Unknown property $1', 'Noma\'lum xossa $1'],

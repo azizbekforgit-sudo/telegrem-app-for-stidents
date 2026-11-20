@@ -1,0 +1,464 @@
+{
+ "lessonId": "exam-11-18-control",
+ "allow": [],
+ "topic": {
+  "ru": "Уроки 11–18",
+  "uz": "11–18-darslar",
+  "en": "Lessons 11–18"
+ },
+ "sections": {},
+ "homework": null,
+ "exam": {
+  "count": 5,
+  "pool": [
+   {
+    "replaces": 0,
+    "topic": {
+     "ru": "Урок 11",
+     "uz": "11-dars",
+     "en": "Lesson 11"
+    },
+    "task": {
+     "title": {
+      "ru": "Подпись и поле",
+      "uz": "Yorliq va maydon",
+      "en": "Label and field"
+     },
+     "intro": {
+      "ru": "Свяжи подпись «Почта» с полем email: клик по слову ставит курсор в поле.",
+      "uz": "«Pochta» yorlig'ini email maydoni bilan bog'la: so'zga bosish kursorni maydonga qo'yadi.",
+      "en": "Link the «Email» label to an email field: clicking the word puts the cursor in the field."
+     },
+     "allow": [
+      "html"
+     ],
+     "files": {
+      "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Форма</title>\n</head>\n<body>\n  \n</body>\n</html>\n"
+     },
+     "steps": [
+      {
+       "file": "index.html",
+       "re": "<label\\s+for=\"([\\w-]+)\"[^>]*>[^<]+</label>[\\s\\S]*<input[^>]*\\sid=\"\\1\"",
+       "say": {
+        "ru": "Подпись `<label for=\"…\">` и поле `<input>` с таким же `id`",
+        "uz": "`<label for=\"…\">` yorlig'i va xuddi shu `id` li `<input>` maydoni",
+        "en": "A `<label for=\"…\">` and an `<input>` with the same `id`"
+       }
+      },
+      {
+       "file": "index.html",
+       "re": "<input[^>]*type=\"email\"",
+       "say": {
+        "ru": "Поле типа email: `type=\"email\"`",
+        "uz": "email turidagi maydon: `type=\"email\"`",
+        "en": "An email field: `type=\"email\"`"
+       }
+      }
+     ],
+     "sample": "<label for=\"email\">Почта</label>\n<input id=\"email\" type=\"email\">",
+     "open": "index.html"
+    }
+   },
+   {
+    "replaces": 3,
+    "topic": {
+     "ru": "Урок 12",
+     "uz": "12-dars",
+     "en": "Lesson 12"
+    },
+    "task": {
+     "title": {
+      "ru": "Цвет из переменной",
+      "uz": "O'zgaruvchidan rang",
+      "en": "Color from a variable"
+     },
+     "intro": {
+      "ru": "Объяви переменную --accent так, чтобы заголовок .title мог её использовать, и покрась им заголовок.",
+      "uz": "--accent o'zgaruvchisini .title sarlavhasi foydalana oladigan qilib e'lon qil va uni shu rangga bo'ya.",
+      "en": "Declare --accent so the .title heading can use it, and color the heading with it."
+     },
+     "allow": [
+      "html",
+      "css"
+     ],
+     "files": {
+      "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <h2 class=\"title\">Заголовок</h2>\n</body>\n</html>\n",
+      "style.css": ""
+     },
+     "steps": [
+      {
+       "file": "style.css",
+       "re": ":root\\s*\\{[^}]*--accent\\s*:\\s*[^;}]+",
+       "say": {
+        "ru": "Объяви переменную глобально: `:root { --accent: … }`",
+        "uz": "O'zgaruvchini global e'lon qil: `:root { --accent: … }`",
+        "en": "Declare the variable globally: `:root { --accent: … }`"
+       }
+      },
+      {
+       "file": "style.css",
+       "re": "\\.title\\s*\\{[^}]*color\\s*:\\s*var\\(\\s*--accent\\s*\\)",
+       "say": {
+        "ru": "Используй её: `.title { color: var(--accent); }`",
+        "uz": "Undan foydalan: `.title { color: var(--accent); }`",
+        "en": "Use it: `.title { color: var(--accent); }`"
+       }
+      }
+     ],
+     "sample": ":root {\n  --accent: red;\n}\n.title {\n  color: var(--accent);\n}",
+     "open": "style.css"
+    }
+   },
+   {
+    "replaces": 5,
+    "topic": {
+     "ru": "Урок 12",
+     "uz": "12-dars",
+     "en": "Lesson 12"
+    },
+    "task": {
+     "title": {
+      "ru": "Бесконечное «дыхание»",
+      "uz": "Cheksiz «nafas olish»",
+      "en": "Endless «breathing»"
+     },
+     "intro": {
+      "ru": "Сделай, чтобы кнопка .btn бесконечно «дышала»: увеличивалась и возвращалась.",
+      "uz": ".btn tugmasi cheksiz «nafas olsin»: kattalashib, qaytib kelsin.",
+      "en": "Make the .btn button «breathe» forever: grow and come back."
+     },
+     "allow": [
+      "html",
+      "css"
+     ],
+     "files": {
+      "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <button class=\"btn\">Купить</button>\n</body>\n</html>\n",
+      "style.css": ""
+     },
+     "steps": [
+      {
+       "file": "style.css",
+       "re": "@keyframes\\s+[\\w-]+\\s*\\{[\\s\\S]*transform\\s*:\\s*scale",
+       "say": {
+        "ru": "Опиши анимацию: `@keyframes … { … transform: scale(…) }`",
+        "uz": "Animatsiyani yoz: `@keyframes … { … transform: scale(…) }`",
+        "en": "Describe the animation: `@keyframes … { … transform: scale(…) }`"
+       }
+      },
+      {
+       "file": "style.css",
+       "re": "\\.btn\\s*\\{[^}]*animation\\s*:[^;}]*infinite",
+       "say": {
+        "ru": "Включи её кнопке и сделай бесконечной: `animation: … infinite;`",
+        "uz": "Uni tugmaga yoq va cheksiz qil: `animation: … infinite;`",
+        "en": "Turn it on for the button and make it endless: `animation: … infinite;`"
+       }
+      }
+     ],
+     "sample": "@keyframes pulse {\n  0% { transform: scale(1); }\n  50% { transform: scale(1.1); }\n  100% { transform: scale(1); }\n}\n.btn {\n  animation: pulse 2s infinite;\n}",
+     "open": "style.css"
+    }
+   },
+   {
+    "replaces": 9,
+    "topic": {
+     "ru": "Урок 14",
+     "uz": "14-dars",
+     "en": "Lesson 14"
+    },
+    "task": {
+     "title": {
+      "ru": "Оценка по баллам",
+      "uz": "Ball bo'yicha baho",
+      "en": "A grade from points"
+     },
+     "intro": {
+      "ru": "По переменной score выведи «Отлично» (от 90), «Хорошо» (от 70) или «Подтянуть». Важен порядок проверок!",
+      "uz": "score o'zgaruvchisi bo'yicha «A'lo» (90 dan), «Yaxshi» (70 dan) yoki «Tortish kerak» chiqar. Tekshiruvlar tartibi muhim!",
+      "en": "Print «Excellent» (90+), «Good» (70+) or «Needs work» from score. The order of checks matters!"
+     },
+     "allow": [
+      "js"
+     ],
+     "files": {
+      "script.js": "// Напиши код здесь\nconst score = 95;\n"
+     },
+     "steps": [
+      {
+       "file": "script.js",
+       "re": "if\\s*\\(\\s*score\\s*>=\\s*90\\s*\\)[\\s\\S]*else\\s+if\\s*\\(\\s*score\\s*>=\\s*70\\s*\\)",
+       "say": {
+        "ru": "Сначала строгое условие `if (score >= 90)`, потом `else if (score >= 70)`",
+        "uz": "Avval qat'iy shart `if (score >= 90)`, keyin `else if (score >= 70)`",
+        "en": "The strict condition first `if (score >= 90)`, then `else if (score >= 70)`"
+       }
+      },
+      {
+       "file": "script.js",
+       "re": "else\\s*\\{[\\s\\S]*console\\.log",
+       "say": {
+        "ru": "И `else` для остального, везде — `console.log(…)`",
+        "uz": "Va qolgani uchun `else`, hamma joyda — `console.log(…)`",
+        "en": "And `else` for the rest, with `console.log(…)` everywhere"
+       }
+      }
+     ],
+     "sample": "if (score >= 90) {\n  console.log(\"Отлично\");\n} else if (score >= 70) {\n  console.log(\"Хорошо\");\n} else {\n  console.log(\"Подтянуть\");\n}"
+    }
+   },
+   {
+    "replaces": 11,
+    "topic": {
+     "ru": "Урок 15",
+     "uz": "15-dars",
+     "en": "Lesson 15"
+    },
+    "task": {
+     "title": {
+      "ru": "Кратные трём",
+      "uz": "Uchga karralilar",
+      "en": "Multiples of three"
+     },
+     "intro": {
+      "ru": "Выведи в консоль числа от 1 до 9, которые делятся на 3 без остатка.",
+      "uz": "1 dan 9 gacha 3 ga qoldiqsiz bo'linadigan sonlarni konsolga chiqar.",
+      "en": "Print to the console the numbers from 1 to 9 that divide by 3 with no remainder."
+     },
+     "allow": [
+      "js"
+     ],
+     "files": {
+      "script.js": "// Напиши код здесь\n"
+     },
+     "steps": [
+      {
+       "file": "script.js",
+       "re": "for\\s*\\(\\s*let\\s+i\\s*=\\s*1\\s*;\\s*i\\s*(<\\s*10|<=\\s*9)\\s*;\\s*i\\+\\+\\s*\\)",
+       "say": {
+        "ru": "Цикл `for (let i = 1; i < 10; i++)`",
+        "uz": "Tsikl `for (let i = 1; i < 10; i++)`",
+        "en": "A loop `for (let i = 1; i < 10; i++)`"
+       }
+      },
+      {
+       "file": "script.js",
+       "re": "if\\s*\\(\\s*i\\s*%\\s*3\\s*===?\\s*0\\s*\\)",
+       "say": {
+        "ru": "Условие через остаток: `if (i % 3 === 0)`",
+        "uz": "Qoldiq orqali shart: `if (i % 3 === 0)`",
+        "en": "A remainder condition: `if (i % 3 === 0)`"
+       }
+      },
+      {
+       "file": "script.js",
+       "re": "console\\.log\\(\\s*i\\s*\\)",
+       "say": {
+        "ru": "Выведи число: `console.log(i)`",
+        "uz": "Sonni chiqar: `console.log(i)`",
+        "en": "Print the number: `console.log(i)`"
+       }
+      }
+     ],
+     "sample": "for (let i = 1; i < 10; i++) {\n  if (i % 3 === 0) {\n    console.log(i);\n  }\n}"
+    }
+   },
+   {
+    "replaces": 13,
+    "topic": {
+     "ru": "Урок 16",
+     "uz": "16-dars",
+     "en": "Lesson 16"
+    },
+    "task": {
+     "title": {
+      "ru": "Функция add",
+      "uz": "add funksiyasi",
+      "en": "The add function"
+     },
+     "intro": {
+      "ru": "Напиши функцию add(a, b), которая ВОЗВРАЩАЕТ сумму, и выведи add(2, 3) в консоль.",
+      "uz": "Yig'indini QAYTARADIGAN add(a, b) funksiyasini yoz va add(2, 3) ni konsolga chiqar.",
+      "en": "Write a function add(a, b) that RETURNS the sum, and print add(2, 3) to the console."
+     },
+     "allow": [
+      "js"
+     ],
+     "files": {
+      "script.js": "// Напиши код здесь\n"
+     },
+     "steps": [
+      {
+       "file": "script.js",
+       "re": "function\\s+add\\s*\\(\\s*a\\s*,\\s*b\\s*\\)",
+       "say": {
+        "ru": "`function add(a, b) { … }`",
+        "uz": "`function add(a, b) { … }`",
+        "en": "`function add(a, b) { … }`"
+       }
+      },
+      {
+       "file": "script.js",
+       "re": "return\\s+a\\s*\\+\\s*b",
+       "say": {
+        "ru": "Верни результат: `return a + b;`",
+        "uz": "Natijani qaytar: `return a + b;`",
+        "en": "Return the result: `return a + b;`"
+       }
+      },
+      {
+       "file": "script.js",
+       "re": "console\\.log\\(\\s*add\\(\\s*2\\s*,\\s*3\\s*\\)\\s*\\)",
+       "say": {
+        "ru": "Вызови и выведи: `console.log(add(2, 3));`",
+        "uz": "Chaqir va chiqar: `console.log(add(2, 3));`",
+        "en": "Call and print: `console.log(add(2, 3));`"
+       }
+      }
+     ],
+     "sample": "function add(a, b) {\n  return a + b;\n}\nconsole.log(add(2, 3));"
+    }
+   },
+   {
+    "replaces": 16,
+    "topic": {
+     "ru": "Урок 17",
+     "uz": "17-dars",
+     "en": "Lesson 17"
+    },
+    "task": {
+     "title": {
+      "ru": "Удвоить через map",
+      "uz": "map bilan ikki baravar qilish",
+      "en": "Double with map"
+     },
+     "intro": {
+      "ru": "Через map сделай новый массив с удвоенными числами из nums и выведи его.",
+      "uz": "map orqali nums dagi sonlarni ikki baravar qilib yangi massiv yasa va uni chiqar.",
+      "en": "With map build a new array of doubled numbers from nums and print it."
+     },
+     "allow": [
+      "js"
+     ],
+     "files": {
+      "script.js": "// Напиши код здесь\nconst nums = [1, 2, 3];\n"
+     },
+     "steps": [
+      {
+       "file": "script.js",
+       "re": "const\\s+\\w+\\s*=\\s*nums\\.map\\(\\s*\\(?\\s*\\w+\\s*\\)?\\s*=>\\s*\\w+\\s*\\*\\s*2\\s*\\)",
+       "say": {
+        "ru": "Новый массив: `const doubled = nums.map((n) => n * 2);`",
+        "uz": "Yangi massiv: `const doubled = nums.map((n) => n * 2);`",
+        "en": "A new array: `const doubled = nums.map((n) => n * 2);`"
+       }
+      },
+      {
+       "file": "script.js",
+       "re": "console\\.log\\(\\s*\\w+\\s*\\)",
+       "say": {
+        "ru": "Выведи его: `console.log(doubled);`",
+        "uz": "Uni chiqar: `console.log(doubled);`",
+        "en": "Print it: `console.log(doubled);`"
+       }
+      }
+     ],
+     "sample": "const doubled = nums.map((n) => n * 2);\nconsole.log(doubled);"
+    }
+   },
+   {
+    "replaces": 17,
+    "topic": {
+     "ru": "Урок 17",
+     "uz": "17-dars",
+     "en": "Lesson 17"
+    },
+    "task": {
+     "title": {
+      "ru": "Дорогие цены",
+      "uz": "Qimmat narxlar",
+      "en": "Expensive prices"
+     },
+     "intro": {
+      "ru": "Оставь в prices только цены больше 8 через filter и выведи, сколько их.",
+      "uz": "prices dan filter orqali faqat 8 dan katta narxlarni qoldir va ularning sonini chiqar.",
+      "en": "Keep only the prices over 8 in prices with filter and print how many there are."
+     },
+     "allow": [
+      "js"
+     ],
+     "files": {
+      "script.js": "// Напиши код здесь\nconst prices = [5, 12, 8, 20];\n"
+     },
+     "steps": [
+      {
+       "file": "script.js",
+       "re": "prices\\.filter\\(\\s*\\(?\\s*\\w+\\s*\\)?\\s*=>\\s*\\w+\\s*>\\s*8\\s*\\)",
+       "say": {
+        "ru": "Отсей: `prices.filter((p) => p > 8)`",
+        "uz": "Elab ol: `prices.filter((p) => p > 8)`",
+        "en": "Sift: `prices.filter((p) => p > 8)`"
+       }
+      },
+      {
+       "file": "script.js",
+       "re": "\\.length",
+       "say": {
+        "ru": "Сколько их — `.length`",
+        "uz": "Nechta — `.length`",
+        "en": "How many — `.length`"
+       }
+      }
+     ],
+     "sample": "console.log(prices.filter((p) => p > 8).length);"
+    }
+   },
+   {
+    "replaces": 19,
+    "topic": {
+     "ru": "Урок 18",
+     "uz": "18-dars",
+     "en": "Lesson 18"
+    },
+    "task": {
+     "title": {
+      "ru": "Свойство через переменную",
+      "uz": "O'zgaruvchi orqali xossa",
+      "en": "A property through a variable"
+     },
+     "intro": {
+      "ru": "Выведи значение поля name объекта user, прочитав его через переменную key (а не через точку).",
+      "uz": "user obyektining name maydoni qiymatini key o'zgaruvchisi orqali (nuqta orqali emas) o'qib chiqar.",
+      "en": "Print the name field of user by reading it through the variable key (not with a dot)."
+     },
+     "allow": [
+      "js"
+     ],
+     "files": {
+      "script.js": "// Напиши код здесь\nconst user = { name: \"Аня\" };\nconst key = \"name\";\n"
+     },
+     "steps": [
+      {
+       "file": "script.js",
+       "re": "user\\[\\s*key\\s*\\]",
+       "say": {
+        "ru": "Квадратные скобки: `user[key]`",
+        "uz": "Kvadrat qavslar: `user[key]`",
+        "en": "Square brackets: `user[key]`"
+       }
+      },
+      {
+       "file": "script.js",
+       "re": "console\\.log\\(",
+       "say": {
+        "ru": "И выведи: `console.log(…)`",
+        "uz": "Va chiqar: `console.log(…)`",
+        "en": "And print: `console.log(…)`"
+       }
+      }
+     ],
+     "sample": "console.log(user[key]);"
+    }
+   }
+  ]
+ }
+}

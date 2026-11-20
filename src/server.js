@@ -35,6 +35,7 @@ console.log(`[store] ${store.backend}`);
 
 // Тесты, которые Claude готовит из конспектов, лежат в content/lessons/*.json — подхватываем при старте.
 const CODE = loadCode(path.join(root, 'content', 'code'));
+logic.setCode(CODE);
 const lessonsDir = path.join(root, 'content', 'lessons');
 const newPersonal = []; // личные задания, о которых бот напишет ученикам после запуска
 // Переводы урока лежат рядом: <id>.uz.json и <id>.en.json (те же поля title, description, questions, learn)

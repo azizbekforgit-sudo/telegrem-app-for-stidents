@@ -1054,3 +1054,8 @@ code { background: var(--card-2); padding: 1px 6px; border-radius: 7px; font-siz
 .ide-run[hidden], .ide-problems[hidden], .ide-console[hidden], .ide-run iframe[hidden] { display: none; }
 /* в коде символы не склеиваются (=== не превращается в один значок) */
 code, pre, .code, .ide, .ide textarea, .speech code { font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+
+/* вопрос «напиши код» в контрольной */
+.code-q { display: flex; flex-direction: column; gap: 10px; text-align: left; }
+.code-q .cs-steps { margin: 0; }
+.cs-head .pill.bad { background: color-mix(in srgb, var(--bad) 18%, var(--card)); color: var(--bad-d); }

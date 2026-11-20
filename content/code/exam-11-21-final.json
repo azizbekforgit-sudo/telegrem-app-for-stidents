@@ -1,0 +1,532 @@
+{
+ "lessonId": "exam-11-21-final",
+ "allow": [],
+ "topic": {
+  "ru": "Уроки 11–21",
+  "uz": "11–21-darslar",
+  "en": "Lessons 11–21"
+ },
+ "sections": {},
+ "homework": null,
+ "exam": {
+  "count": 5,
+  "pool": [
+   {
+    "replaces": 0,
+    "topic": {
+     "ru": "Урок 11",
+     "uz": "11-dars",
+     "en": "Lesson 11"
+    },
+    "task": {
+     "title": {
+      "ru": "Чекбокс внутри label",
+      "uz": "label ichidagi chekboks",
+      "en": "A checkbox inside a label"
+     },
+     "intro": {
+      "ru": "Сделай «Согласен» с галочкой так, чтобы клик по слову ставил галочку — без for и id.",
+      "uz": "«Roziman» ni belgi bilan shunday yasaki, so'zga bosish belgi qo'ysin — for va id siz.",
+      "en": "Build an «I agree» with a checkbox so a click on the word ticks it — without for and id."
+     },
+     "allow": [
+      "html"
+     ],
+     "files": {
+      "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Форма</title>\n</head>\n<body>\n  \n</body>\n</html>\n"
+     },
+     "steps": [
+      {
+       "file": "index.html",
+       "re": "<label[^>]*>[\\s\\S]*<input[^>]*type=\"checkbox\"[^>]*>[\\s\\S]*</label>",
+       "say": {
+        "ru": "Чекбокс `<input type=\"checkbox\">` лежит ВНУТРИ `<label>…</label>`",
+        "uz": "`<input type=\"checkbox\">` chekboksi `<label>…</label>` ICHIDA turadi",
+        "en": "The checkbox `<input type=\"checkbox\">` sits INSIDE `<label>…</label>`"
+       }
+      },
+      {
+       "file": "index.html",
+       "re": "<input[^>]*type=\"checkbox\"[^>]*>\\s*[^<\\s][^<]*</label>",
+       "say": {
+        "ru": "После чекбокса — текст подписи: «Согласен»",
+        "uz": "Chekboksdan keyin — yorliq matni: «Roziman»",
+        "en": "After the checkbox — the label text: «I agree»"
+       }
+      }
+     ],
+     "sample": "<label>\n  <input type=\"checkbox\"> Согласен\n</label>",
+     "open": "index.html"
+    }
+   },
+   {
+    "replaces": 1,
+    "topic": {
+     "ru": "Урок 12",
+     "uz": "12-dars",
+     "en": "Lesson 12"
+    },
+    "task": {
+     "title": {
+      "ru": "Увеличение при наведении",
+      "uz": "Olib borganda kattalashish",
+      "en": "Grow on hover"
+     },
+     "intro": {
+      "ru": "Блок .a должен плавно увеличиваться в 1.5 раза при наведении.",
+      "uz": ".a bloki ustiga olib borilganda 1.5 baravar silliq kattalashsin.",
+      "en": "The .a block should smoothly grow 1.5 times on hover."
+     },
+     "allow": [
+      "html",
+      "css"
+     ],
+     "files": {
+      "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Мой сайт</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"a\">A</div>\n  <div class=\"b\">B</div>\n</body>\n</html>\n",
+      "style.css": ""
+     },
+     "steps": [
+      {
+       "file": "style.css",
+       "re": "\\.a:hover\\s*\\{[^}]*transform\\s*:\\s*scale\\(\\s*1\\.5\\s*\\)",
+       "say": {
+        "ru": "При наведении: `.a:hover { transform: scale(1.5); }`",
+        "uz": "Olib borilganda: `.a:hover { transform: scale(1.5); }`",
+        "en": "On hover: `.a:hover { transform: scale(1.5); }`"
+       }
+      },
+      {
+       "file": "style.css",
+       "re": "\\.a\\s*\\{[^}]*transition\\s*:",
+       "say": {
+        "ru": "Плавность — в основное правило: `.a { transition: transform 0.3s; }`",
+        "uz": "Silliqlik — asosiy qoidada: `.a { transition: transform 0.3s; }`",
+        "en": "Smoothness goes in the main rule: `.a { transition: transform 0.3s; }`"
+       }
+      }
+     ],
+     "sample": ".a {\n  transition: transform 0.3s;\n}\n.a:hover {\n  transform: scale(1.5);\n}",
+     "open": "style.css"
+    }
+   },
+   {
+    "replaces": 6,
+    "topic": {
+     "ru": "Урок 17",
+     "uz": "17-dars",
+     "en": "Lesson 17"
+    },
+    "task": {
+     "title": {
+      "ru": "Умножить на 10",
+      "uz": "10 ga ko'paytirish",
+      "en": "Multiply by 10"
+     },
+     "intro": {
+      "ru": "Через map получи новый массив, где каждое число из nums умножено на 10, и выведи его.",
+      "uz": "map orqali nums dagi har bir son 10 ga ko'paytirilgan yangi massiv ol va uni chiqar.",
+      "en": "With map get a new array where every number from nums is multiplied by 10, and print it."
+     },
+     "allow": [
+      "js"
+     ],
+     "files": {
+      "script.js": "// Напиши код здесь\nconst nums = [1, 2, 3];\n"
+     },
+     "steps": [
+      {
+       "file": "script.js",
+       "re": "const\\s+\\w+\\s*=\\s*nums\\.map\\(\\s*\\(?\\s*\\w+\\s*\\)?\\s*=>\\s*\\w+\\s*\\*\\s*10\\s*\\)",
+       "say": {
+        "ru": "Новый массив: `nums.map((n) => n * 10)`",
+        "uz": "Yangi massiv: `nums.map((n) => n * 10)`",
+        "en": "A new array: `nums.map((n) => n * 10)`"
+       }
+      },
+      {
+       "file": "script.js",
+       "re": "console\\.log\\(\\s*\\w+\\s*\\)",
+       "say": {
+        "ru": "Выведи его: `console.log(…)`",
+        "uz": "Uni chiqar: `console.log(…)`",
+        "en": "Print it: `console.log(…)`"
+       }
+      }
+     ],
+     "sample": "const result = nums.map((n) => n * 10);\nconsole.log(result);"
+    }
+   },
+   {
+    "replaces": 7,
+    "topic": {
+     "ru": "Урок 17",
+     "uz": "17-dars",
+     "en": "Lesson 17"
+    },
+    "task": {
+     "title": {
+      "ru": "Первый взрослый",
+      "uz": "Birinchi katta",
+      "en": "The first adult"
+     },
+     "intro": {
+      "ru": "Найди в users первого человека старше 20 лет и выведи его имя.",
+      "uz": "users dan 20 yoshdan katta birinchi odamni top va uning ismini chiqar.",
+      "en": "Find the first person over 20 in users and print their name."
+     },
+     "allow": [
+      "js"
+     ],
+     "files": {
+      "script.js": "// Напиши код здесь\nconst users = [\n  { name: \"Аня\", age: 19 },\n  { name: \"Игорь\", age: 25 },\n  { name: \"Ира\", age: 30 },\n];\n"
+     },
+     "steps": [
+      {
+       "file": "script.js",
+       "re": "users\\.find\\(\\s*\\(?\\s*\\w+\\s*\\)?\\s*=>\\s*\\w+\\.age\\s*>\\s*20\\s*\\)",
+       "say": {
+        "ru": "Найди первого: `users.find((u) => u.age > 20)`",
+        "uz": "Birinchisini top: `users.find((u) => u.age > 20)`",
+        "en": "Find the first: `users.find((u) => u.age > 20)`"
+       }
+      },
+      {
+       "file": "script.js",
+       "re": "\\.name",
+       "say": {
+        "ru": "Возьми имя: `.name`",
+        "uz": "Ismni ol: `.name`",
+        "en": "Take the name: `.name`"
+       }
+      },
+      {
+       "file": "script.js",
+       "re": "console\\.log\\(",
+       "say": {
+        "ru": "Выведи в консоль",
+        "uz": "Konsolga chiqar",
+        "en": "Print it to the console"
+       }
+      }
+     ],
+     "sample": "console.log(users.find((u) => u.age > 20).name);"
+    }
+   },
+   {
+    "replaces": 9,
+    "topic": {
+     "ru": "Урок 19",
+     "uz": "19-dars",
+     "en": "Lesson 19"
+    },
+    "task": {
+     "title": {
+      "ru": "Поменять первый абзац",
+      "uz": "Birinchi abzatsni o'zgartirish",
+      "en": "Change the first paragraph"
+     },
+     "intro": {
+      "ru": "Поменяй текст только ПЕРВОГО абзаца .item на «X».",
+      "uz": "Faqat BIRINCHI .item abzatsining matnini «X» ga o'zgartir.",
+      "en": "Change the text of only the FIRST .item paragraph to «X»."
+     },
+     "allow": [
+      "html",
+      "css",
+      "js"
+     ],
+     "files": {
+      "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>JS</title>\n</head>\n<body>\n  <p class=\"item\">1</p>\n  <p class=\"item\">2</p>\n  <p class=\"item\">3</p>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n",
+      "script.js": ""
+     },
+     "steps": [
+      {
+       "file": "script.js",
+       "re": "document\\.querySelector\\(\\s*[\"\\']\\.item[\"\\']\\s*\\)",
+       "say": {
+        "ru": "Найди элемент: `document.querySelector(\".item\")`",
+        "uz": "Elementni top: `document.querySelector(\".item\")`",
+        "en": "Find the element: `document.querySelector(\".item\")`"
+       }
+      },
+      {
+       "file": "script.js",
+       "re": "\\.textContent\\s*=\\s*[\"\\'`]X[\"\\'`]",
+       "say": {
+        "ru": "Поменяй текст: `.textContent = \"X\";`",
+        "uz": "Matnni o'zgartir: `.textContent = \"X\";`",
+        "en": "Change the text: `.textContent = \"X\";`"
+       }
+      }
+     ],
+     "sample": "document.querySelector(\".item\").textContent = \"X\";",
+     "open": "script.js"
+    }
+   },
+   {
+    "replaces": 10,
+    "topic": {
+     "ru": "Урок 19",
+     "uz": "19-dars",
+     "en": "Lesson 19"
+    },
+    "task": {
+     "title": {
+      "ru": "Покрасить все абзацы",
+      "uz": "Barcha abzatslarni bo'yash",
+      "en": "Color every paragraph"
+     },
+     "intro": {
+      "ru": "Сделай ВСЕ абзацы .item красными: найди их списком и пройдись по каждому.",
+      "uz": "BARCHA .item abzatslarini qizil qil: ularni ro'yxat qilib top va har biri bo'ylab o't.",
+      "en": "Make ALL .item paragraphs red: find them as a list and go through each."
+     },
+     "allow": [
+      "html",
+      "css",
+      "js"
+     ],
+     "files": {
+      "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>JS</title>\n</head>\n<body>\n  <p class=\"item\">1</p>\n  <p class=\"item\">2</p>\n  <p class=\"item\">3</p>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n",
+      "script.js": ""
+     },
+     "steps": [
+      {
+       "file": "script.js",
+       "re": "querySelectorAll\\(\\s*[\"\\']\\.item[\"\\']\\s*\\)",
+       "say": {
+        "ru": "Найди все: `document.querySelectorAll(\".item\")`",
+        "uz": "Hammasini top: `document.querySelectorAll(\".item\")`",
+        "en": "Find all: `document.querySelectorAll(\".item\")`"
+       }
+      },
+      {
+       "file": "script.js",
+       "re": "\\.forEach\\(",
+       "say": {
+        "ru": "Пройдись по каждому: `.forEach(…)`",
+        "uz": "Har biri bo'ylab o't: `.forEach(…)`",
+        "en": "Go through each: `.forEach(…)`"
+       }
+      },
+      {
+       "file": "script.js",
+       "re": "\\.style\\.color\\s*=\\s*[\"\\']red[\"\\']",
+       "say": {
+        "ru": "Покрась: `el.style.color = \"red\";`",
+        "uz": "Bo'ya: `el.style.color = \"red\";`",
+        "en": "Color it: `el.style.color = \"red\";`"
+       }
+      }
+     ],
+     "sample": "document.querySelectorAll(\".item\").forEach((el) => {\n  el.style.color = \"red\";\n});",
+     "open": "script.js"
+    }
+   },
+   {
+    "replaces": 12,
+    "topic": {
+     "ru": "Урок 20",
+     "uz": "20-dars",
+     "en": "Lesson 20"
+    },
+    "task": {
+     "title": {
+      "ru": "Клик без скобок",
+      "uz": "Qavslarsiz bosish",
+      "en": "A click without brackets"
+     },
+     "intro": {
+      "ru": "Подключи функцию sayHi к клику по кнопке btn — чтобы она срабатывала ПО КЛИКУ, а не при загрузке.",
+      "uz": "sayHi funksiyasini btn tugmasi bosilishiga ulang — u yuklanishda emas, BOSILGANDA ishlasin.",
+      "en": "Attach the function sayHi to a click on btn — so it runs ON CLICK, not on load."
+     },
+     "allow": [
+      "html",
+      "css",
+      "js"
+     ],
+     "files": {
+      "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>JS</title>\n</head>\n<body>\n  <button class=\"btn\">Нажми</button>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n",
+      "script.js": "// Напиши код здесь\nfunction sayHi() {\n  console.log(\"Привет\");\n}\nconst btn = document.querySelector(\".btn\");\n"
+     },
+     "steps": [
+      {
+       "file": "script.js",
+       "re": "btn\\.addEventListener\\(\\s*[\"\\']click[\"\\']\\s*,\\s*sayHi\\s*\\)",
+       "say": {
+        "ru": "Слушай клик и передай функцию БЕЗ скобок: `btn.addEventListener(\"click\", sayHi);`",
+        "uz": "Bosishni tingla va funksiyani QAVSSIZ ber: `btn.addEventListener(\"click\", sayHi);`",
+        "en": "Listen for a click and pass the function WITHOUT brackets: `btn.addEventListener(\"click\", sayHi);`"
+       }
+      }
+     ],
+     "sample": "btn.addEventListener(\"click\", sayHi);",
+     "open": "script.js"
+    }
+   },
+   {
+    "replaces": 14,
+    "topic": {
+     "ru": "Урок 20",
+     "uz": "20-dars",
+     "en": "Lesson 20"
+    },
+    "task": {
+     "title": {
+      "ru": "Форма без перезагрузки",
+      "uz": "Qayta yuklanmaydigan forma",
+      "en": "A form without a reload"
+     },
+     "intro": {
+      "ru": "Форма form не должна перезагружать страницу при отправке: обработай submit и отмени действие по умолчанию.",
+      "uz": "form yuborilganda sahifani qayta yuklamasin: submit ni qayta ishla va standart amalni bekor qil.",
+      "en": "The form must not reload the page on submit: handle submit and cancel the default action."
+     },
+     "allow": [
+      "html",
+      "css",
+      "js"
+     ],
+     "files": {
+      "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>JS</title>\n</head>\n<body>\n  <form class=\"form\">\n    <input placeholder=\"Имя\">\n    <button>Отправить</button>\n  </form>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n",
+      "script.js": "// Напиши код здесь\nconst form = document.querySelector(\".form\");\n"
+     },
+     "steps": [
+      {
+       "file": "script.js",
+       "re": "form\\.addEventListener\\(\\s*[\"\\']submit[\"\\']\\s*,\\s*(function\\s*\\(\\s*e\\s*\\)|\\(?\\s*e\\s*\\)?\\s*=>)",
+       "say": {
+        "ru": "Слушай `\"submit\"` и прими `e`",
+        "uz": "`\"submit\"` ni tingla va `e` ni ol",
+        "en": "Listen for `\"submit\"` and take `e`"
+       }
+      },
+      {
+       "file": "script.js",
+       "re": "e\\.preventDefault\\(\\s*\\)",
+       "say": {
+        "ru": "Отмени перезагрузку: `e.preventDefault();`",
+        "uz": "Qayta yuklanishni bekor qil: `e.preventDefault();`",
+        "en": "Cancel the reload: `e.preventDefault();`"
+       }
+      }
+     ],
+     "sample": "form.addEventListener(\"submit\", function (e) {\n  e.preventDefault();\n});",
+     "open": "script.js"
+    }
+   },
+   {
+    "replaces": 15,
+    "topic": {
+     "ru": "Урок 20",
+     "uz": "20-dars",
+     "en": "Lesson 20"
+    },
+    "task": {
+     "title": {
+      "ru": "Добавить пункт в список",
+      "uz": "Ro'yxatga band qo'shish",
+      "en": "Add an item to the list"
+     },
+     "intro": {
+      "ru": "Создай новый <li> с текстом «Новая задача» и ДОБАВЬ его в список list, чтобы он появился на странице.",
+      "uz": "«Yangi vazifa» matnli yangi <li> yarat va uni sahifada paydo bo'lishi uchun list ro'yxatiga QO'SH.",
+      "en": "Create a new <li> with the text «New task» and ADD it to the list so it appears on the page."
+     },
+     "allow": [
+      "html",
+      "css",
+      "js"
+     ],
+     "files": {
+      "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>JS</title>\n</head>\n<body>\n  <ul class=\"list\"></ul>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n",
+      "script.js": "// Напиши код здесь\nconst list = document.querySelector(\".list\");\n"
+     },
+     "steps": [
+      {
+       "file": "script.js",
+       "re": "const\\s+(\\w+)\\s*=\\s*document\\.createElement\\(\\s*[\"\\']li[\"\\']\\s*\\)[\\s\\S]*\\.(append|appendChild)\\(\\s*\\1\\s*\\)",
+       "say": {
+        "ru": "Создай `<li>` и добавь в список: `list.append(li);`",
+        "uz": "`<li>` yarat va ro'yxatga qo'sh: `list.append(li);`",
+        "en": "Create an `<li>` and add it to the list: `list.append(li);`"
+       }
+      },
+      {
+       "file": "script.js",
+       "re": "\\.textContent\\s*=\\s*[\"\\'`][^\"\\'`]+[\"\\'`]",
+       "say": {
+        "ru": "Дай ему текст: `li.textContent = \"Новая задача\";`",
+        "uz": "Unga matn ber: `li.textContent = \"Yangi vazifa\";`",
+        "en": "Give it text: `li.textContent = \"New task\";`"
+       }
+      }
+     ],
+     "sample": "const li = document.createElement(\"li\");\nli.textContent = \"Новая задача\";\nlist.append(li);",
+     "open": "script.js"
+    }
+   },
+   {
+    "replaces": 19,
+    "topic": {
+     "ru": "Урок 21",
+     "uz": "21-dars",
+     "en": "Lesson 21"
+    },
+    "task": {
+     "title": {
+      "ru": "Имена из results",
+      "uz": "results dan ismlar",
+      "en": "Names from results"
+     },
+     "intro": {
+      "ru": "Загрузи персонажей с сервера и выведи имена из массива results (не из самого data).",
+      "uz": "Serverdan qahramonlarni yukla va results massividan ismlarni chiqar (data ning o'zidan emas).",
+      "en": "Load characters from the server and print the names from the results array (not from data itself)."
+     },
+     "allow": [
+      "html",
+      "css",
+      "js"
+     ],
+     "files": {
+      "index.html": "<!DOCTYPE html>\n<html>\n<head>\n  <title>JS</title>\n</head>\n<body>\n  <p>Загрузка…</p>\n  <script src=\"script.js\"></script>\n</body>\n</html>\n",
+      "script.js": ""
+     },
+     "steps": [
+      {
+       "file": "script.js",
+       "re": "fetch\\(\\s*[\"\\']https?://[^\"\\']+[\"\\']\\s*\\)",
+       "say": {
+        "ru": "Запрос: `fetch(\"https://rickandmortyapi.com/api/character\")`",
+        "uz": "So'rov: `fetch(\"https://rickandmortyapi.com/api/character\")`",
+        "en": "The request: `fetch(\"https://rickandmortyapi.com/api/character\")`"
+       }
+      },
+      {
+       "file": "script.js",
+       "re": "\\.json\\(\\s*\\)",
+       "say": {
+        "ru": "Ответ в данные: `response.json()`",
+        "uz": "Javobni ma'lumotga: `response.json()`",
+        "en": "Response to data: `response.json()`"
+       }
+      },
+      {
+       "file": "script.js",
+       "re": "\\.then\\(\\s*\\(?\\s*(\\w+)\\s*\\)?\\s*=>[\\s\\S]*\\1\\.results\\.forEach\\(",
+       "say": {
+        "ru": "Пройдись по массиву: `data.results.forEach(…)`",
+        "uz": "Massiv bo'ylab o't: `data.results.forEach(…)`",
+        "en": "Go through the array: `data.results.forEach(…)`"
+       }
+      }
+     ],
+     "sample": "fetch(\"https://rickandmortyapi.com/api/character\")\n  .then((response) => response.json())\n  .then((data) => {\n    data.results.forEach((c) => console.log(c.name));\n  });",
+     "open": "script.js"
+    }
+   }
+  ]
+ }
+}

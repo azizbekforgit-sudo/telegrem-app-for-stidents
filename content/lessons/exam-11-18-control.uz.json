@@ -1,6 +1,6 @@
 {
   "title": "Nazorat ishi: 11–18-darslar",
-  "description": "Formalar, CSS o'zgaruvchilari, JavaScript: o'zgaruvchilar, shartlar, tsikllar, funksiyalar, massivlar, obyektlar. 15 daqiqa. Ball berilmaydi: har bir xato uchun −100 XP, testdan chiqish −2000 XP.",
+  "description": "Formalar, CSS o'zgaruvchilari, JavaScript: o'zgaruvchilar, shartlar, tsikllar, funksiyalar, massivlar, obyektlar. 25 daqiqa, 20 tadan 5 tasi — kod yozish. Ball berilmaydi: har bir xato uchun −100 XP, testdan chiqish −2000 XP.",
   "questions": [
     {
       "type": "choice",

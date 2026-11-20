@@ -1,6 +1,7 @@
 // Вся предметная логика: ученики, группы, тесты, попытки, статистика.
 import crypto from 'node:crypto';
-import { checkAnswer, choicePerm, publicQuestion, validateLesson } from './grading.js';
+import { checkAnswer, choicePerm, cleanFiles, publicQuestion, validateLesson } from './grading.js';
+import { localize } from './code.js';
 import { buildLevel, LEVEL_XP, LEVEL_TIME } from './levels.js';
 
 const log = (tag, obj) => console.log(`[${tag}] ` + JSON.stringify(obj));
@@ -317,7 +318,7 @@ export function createLogic(store, { adminIds }) {
       strict: { perWrong: STRICT_WRONG, quit: lesson.questions.length * STRICT_WRONG, maxWarnings: STRICT_WARNINGS },
       resumed: { from: a.answers.length, warnings: a.warnings || 0 },
       lesson: { id: lesson.id, title: lesson.title, emoji: lesson.emoji, description: lesson.description },
-      questions: lesson.questions.map((q, i) => publicQuestion(q, `${a.id}:${i}`)),
+      questions: (a.qs || lesson.questions).map((q, i) => publicQuestion(q, `${a.id}:${i}`)),
     };
   }
   // content/resume.json: учитель возвращает ученика в контрольную с сохранёнными ответами и даёт время.
@@ -650,6 +651,7 @@ export function createLogic(store, { adminIds }) {
       case 'order': return Array.isArray(v) ? v.join(' ') : '—';
       case 'fill': return Array.isArray(v) ? v.join(', ') : String(v ?? '—');
       case 'match': return v && typeof v === 'object' ? q.pairs.map((p, i) => `${p[0]} → ${v[i] ?? '?'}`).join('; ') : '—';
+      case 'code': return v && typeof v === 'object' ? Object.entries(v).map(([f, c]) => `[${f}] ${String(c).replace(/\s+/g, ' ').slice(0, 400)}`).join(' | ') || '—' : '—';
       default: return String(v ?? '—');
     }
   }
@@ -752,6 +754,26 @@ export function createLogic(store, { adminIds }) {
   const STRICT_WRONG = 100; // штраф за ошибку в контрольной
   const STRICT_WARNINGS = 3; // столько предупреждений можно получить, следующее — тест сорван
 
+  // Задания «напиши код» для контрольных (content/code/<id>.json → exam.pool). На каждую попытку случайно берутся
+  // `count` заданий (5) и ставятся ВМЕСТО вопросов с номером `replaces`: вопросов по-прежнему столько же.
+  let CODE = {};
+  const setCode = (c) => { CODE = c || {}; };
+  const codeCountOf = (lessonId) => { const e = CODE[lessonId]?.exam; return e?.pool?.length ? Math.min(e.count || 5, e.pool.length) : 0; };
+  function strictBuild(lesson, lessonId, lang) {
+    const e = CODE[lessonId]?.exam;
+    if (!codeCountOf(lessonId)) return null;
+    const pool = e.pool.filter((p) => Number.isInteger(p.replaces) && lesson.questions[p.replaces]);
+    for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+    const qs = [...lesson.questions];
+    const items = lesson.questions.map((_, i) => ({ lessonId, index: i }));
+    for (const p of pool.slice(0, codeCountOf(lessonId))) {
+      const t = localize(p.task, lang);
+      qs[p.replaces] = { type: 'code', topic: localize(p.topic, lang), prompt: t.title, task: t };
+      items[p.replaces] = null; // нет исходного вопроса — в «работу над ошибками» не попадает
+    }
+    return { qs, items };
+  }
+
   function startAttempt(uid, { pubId, lessonId, mistakes, level }) {
     uid = String(uid);
     if (mistakes) {
@@ -806,11 +828,12 @@ export function createLogic(store, { adminIds }) {
     }
     const id = store.nextId('a');
     const built = lv ? buildLevel(lesson, lv, id) : null;
+    const sx = strict ? strictBuild(lesson, lesson.id, langOf(uid)) : null;
     const a = { id, lang: langOf(uid), pubId: pubId || null, lessonId: lesson.id, userId: uid, preview, practice, startedAt: Date.now(), finishedAt: null, answers: [], combo: 0, maxCombo: 0, xp: 0,
-      ...(lv ? { level: lv, qs: built.questions, items: built.src } : {}), ...(strict ? { strict: true, warnings: 0, total: lesson.questions.length } : {}), ...(S.lessons[lesson.id]?.timeLimit && !preview ? { deadline: Date.now() + (S.lessons[lesson.id].timeLimit + takeExtraTime(uid, lesson.id)) * 1000 } : {}) };
+      ...(lv ? { level: lv, qs: built.questions, items: built.src } : {}), ...(sx ? { qs: sx.qs, items: sx.items } : {}), ...(strict ? { strict: true, warnings: 0, total: lesson.questions.length } : {}), ...(S.lessons[lesson.id]?.timeLimit && !preview ? { deadline: Date.now() + (S.lessons[lesson.id].timeLimit + takeExtraTime(uid, lesson.id)) * 1000 } : {}) };
     S.attempts[a.id] = a;
     store.save();
-    const qs = built ? built.questions : lesson.questions;
+    const qs = built ? built.questions : sx ? sx.qs : lesson.questions;
     return {
       attemptId: a.id,
       preview,
@@ -860,6 +883,7 @@ export function createLogic(store, { adminIds }) {
     }
     if (!q || index !== a.answers.length) throw httpError(400, 'Неверный номер вопроса');
     if (a.deadline && Date.now() > a.deadline + 5000) throw httpError(400, 'Время вышло');
+    if (q.type === 'code') value = cleanFiles(value);
     const res = timeout ? { correct: false, correctText: checkAnswer(q, null).correctText } : checkAnswer(q, toOriginal(q, a, index, value));
     a.combo = res.correct ? a.combo + 1 : 0;
     a.maxCombo = Math.max(a.maxCombo, a.combo);
@@ -1071,7 +1095,7 @@ export function createLogic(store, { adminIds }) {
       ranking.push({ userId: uid, name: name(S.users[uid]), pct: b.pct, at: b.at });
       const f = firstAttempt(uid, pubId);
       // у попытки с уровнем номер ответа ≠ номер вопроса урока: переводим через items (вопросы из обучалки пропускаем)
-      f?.answers.forEach((x) => { const it = f.level ? f.items?.[x.index] : { index: x.index }; const row = it && perQ[it.index]; if (!row) return; row.total++; if (x.correct) row.correct++; });
+      f?.answers.forEach((x) => { const it = f.items ? f.items[x.index] : { index: x.index }; const row = it && perQ[it.index]; if (!row) return; row.total++; if (x.correct) row.correct++; });
     }
     ranking.sort((a, b) => b.pct - a.pct || a.at - b.at);
     return {
@@ -1310,7 +1334,7 @@ export function createLogic(store, { adminIds }) {
     const path = pubsForUser(uid).map((p) => {
       const l = loc(S.lessons[p.lessonId], langOf(uid));
       const b = best(uid, p.id);
-      return { pubId: p.id, title: l.title, emoji: l.emoji, description: l.description, questions: l.questions.length, topics: l.topics, groupId: p.groupId, groupName: p.userId ? 'Лично' : S.groups[p.groupId].name, personal: Boolean(p.userId), forYou: Boolean(S.lessons[p.lessonId].personal), order: S.lessons[p.lessonId].order ?? null, lessonId: p.lessonId, exam: l.kind === 'exam', strict: Boolean(S.lessons[p.lessonId].strict), timeLimit: S.lessons[p.lessonId].timeLimit || 0, levels: levelsOf(uid, p.lessonId), hasLearn: Boolean(l.learn) && !p.noLearn, learnDone: learnDone(uid, p.id), learnSections: l.learn?.sections.length || 0, publishedAt: p.publishedAt, best: b ? b.pct : null, stars: b ? (b.pct === 100 ? 3 : b.pct >= 80 ? 2 : b.pct >= 50 ? 1 : 0) : null };
+      return { pubId: p.id, title: l.title, emoji: l.emoji, description: l.description, questions: l.questions.length, topics: l.topics, groupId: p.groupId, groupName: p.userId ? 'Лично' : S.groups[p.groupId].name, personal: Boolean(p.userId), forYou: Boolean(S.lessons[p.lessonId].personal), order: S.lessons[p.lessonId].order ?? null, lessonId: p.lessonId, exam: l.kind === 'exam', strict: Boolean(S.lessons[p.lessonId].strict), codeCount: codeCountOf(p.lessonId), timeLimit: S.lessons[p.lessonId].timeLimit || 0, levels: levelsOf(uid, p.lessonId), hasLearn: Boolean(l.learn) && !p.noLearn, learnDone: learnDone(uid, p.id), learnSections: l.learn?.sections.length || 0, publishedAt: p.publishedAt, best: b ? b.pct : null, stars: b ? (b.pct === 100 ? 3 : b.pct >= 80 ? 2 : b.pct >= 50 ? 1 : 0) : null };
     });
     return {
       user: publicUser(u),
@@ -1350,6 +1374,7 @@ export function createLogic(store, { adminIds }) {
         hasLearn: Boolean(l.learn),
         exam: l.kind === 'exam',
         strict: Boolean(l.strict),
+        codeCount: codeCountOf(l.id),
         timeLimit: l.timeLimit || 0,
         learnSections: l.learn?.sections.length || 0,
       }));
@@ -1408,7 +1433,7 @@ export function createLogic(store, { adminIds }) {
 
   return {
     S, log, earnedXp, spentXp, levelsOf, parentsOverview, testStatus, attemptQuestion, finishedAt, totalXp, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
-    upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish, warn, forfeit, sweepStrict, removeLessons, resetAttempts, extendTime, resumeGrant, purgeUser,
+    upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish, warn, forfeit, sweepStrict, removeLessons, setCode, resetAttempts, extendTime, resumeGrant, purgeUser,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,
     startLearn, checkLearn, finishLearn, assignPersonal, report, teacherName,

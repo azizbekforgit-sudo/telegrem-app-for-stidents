@@ -11,6 +11,12 @@
 
 export const QUESTION_TYPES = ['choice', 'truefalse', 'input', 'order', 'match', 'fill'];
 
+// Вопрос «напиши код» (только в контрольных): { type: 'code', prompt, task: { title, intro, allow, files, steps: [{ say, file, re }], sample } }.
+// Верно, если выполнены ВСЕ шаги (регэкспы по файлам). Правильный код ученику не показывается.
+const cleanFiles = (v) => (v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).slice(0, 8).map(([k, x]) => [String(k).slice(0, 40), String(x).slice(0, 20000)])) : {});
+export { cleanFiles };
+const stripComments = (name, src) => (/\.html$/.test(name) ? src.replace(/<!--[\s\S]*?-->/g, '') : /\.css$/.test(name) ? src.replace(/\/\*[\s\S]*?\*\//g, '') : /\.jsx?$/.test(name) ? src.replace(/\/\*[\s\S]*?\*\/|(^|[^:])\/\/.*$/gm, '$1') : src);
+
 // Сколько пропусков ___ в тексте вопроса fill
 export function gapCount(text) {
   return (String(text || '').match(/___/g) || []).length;
@@ -68,6 +74,11 @@ export function publicQuestion(q, seedKey) {
       return { ...base, text: q.text, bank: shuffle([...q.answer, ...(q.extra || [])], seed) };
     case 'match':
       return { ...base, left: q.pairs.map((p) => p[0]), right: shuffle(q.pairs.map((p) => p[1]), seed) };
+    case 'code': {
+      const t = q.task;
+      // без регэкспов и образца: ученику уходят только условия
+      return { ...base, task: { title: t.title, intro: t.intro, allow: t.allow || [], files: t.files, open: t.open || null, extra: t.extra || [], steps: (t.steps || []).map((s) => ({ say: s.say, file: s.file })) } };
+    }
     default:
       return base;
   }
@@ -93,6 +104,13 @@ export function checkAnswer(q, answer) {
       const got = Array.isArray(answer) ? answer : [];
       const ok = q.answer.length === got.length && q.answer.every((w, i) => normalize(w) === normalize(got[i]));
       return { correct: ok, correctText: q.answer.length === 1 ? q.answer[0] : fillText(q.text, q.answer).replace(/\s*\n\s*/g, ' ') };
+    }
+    case 'code': {
+      const files = cleanFiles(answer);
+      const ok = (q.task.steps || []).every((st) => {
+        try { return st.out ? false : new RegExp(st.re, st.flags ?? 'i').test(stripComments(st.file, files[st.file] || '')) !== Boolean(st.not); } catch { return false; }
+      });
+      return { correct: ok, correctText: q.task.sample || '' };
     }
     case 'match': {
       // answer: { "<индекс левого>": "<текст правого>" }
