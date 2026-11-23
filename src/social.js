@@ -448,7 +448,7 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
       rated: Object.values(G().ratings).filter((r) => r.to === uid).length,
     };
   }
-  const decorOwned = (uid, prog = progressOf(uid)) => Object.entries(DECOR).filter(([, d]) => !d.rule || prog[d.rule[0]] >= d.rule[1]).map(([id]) => id);
+  const decorOwned = (uid, prog = progressOf(uid)) => Object.entries(DECOR).filter(([, d]) => user(uid)?.unlockAll || !d.rule || prog[d.rule[0]] >= d.rule[1]).map(([id]) => id);
   const clamp = (v, a, b) => Math.min(b, Math.max(a, Number(v) || 0));
   function cleanRoom(uid, r) {
     const b = builtOf(uid);

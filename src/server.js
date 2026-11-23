@@ -1,6 +1,6 @@
 // Точка входа: HTTP API для Mini App + Telegram-бот + планировщик напоминаний.
 import { loadCode, localize } from './code.js';
-import { createSocial } from './social.js';
+import { createSocial, ITEMS } from './social.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -334,6 +334,29 @@ function tasksOf(uid) {
   const house = { done: h.done.length, total: h.total, pet: h.pet };
   const pending = hw.filter((x) => !x.done).length + cls.filter((x) => !x.done).length + exams.filter((x) => !x.done).length + (house.done < house.total ? 1 : 0);
   return { hw, class: cls, exams, house, pending };
+}
+// Подарки ученику из content/grants.json: [{ id, userId | login, unlockAll?: true, setXp?: N, reason? }].
+// unlockAll — вся мебель и вся одежда открыты; setXp — XP становится ровно N (разница пишется бонусом).
+// Каждый id один раз (лог [grant]).
+{
+  const f = path.join(root, 'content', 'grants.json');
+  if (fs.existsSync(f)) for (const g of JSON.parse(fs.readFileSync(f, 'utf8'))) {
+    const key = 'grant:' + g.id;
+    logic.S.migrations ||= {};
+    if (logic.S.migrations[key]) continue;
+    const uid = g.userId || logic.S.accounts?.[String(g.login || '').trim().toLowerCase()]?.userId;
+    const u = uid && logic.S.users[uid];
+    if (!u) { console.error(`[grant] не найден ученик: ${g.login || g.userId}`); continue; }
+    if (g.unlockAll) { u.unlockAll = true; u.wardrobe ||= { owned: [], wear: {} }; u.wardrobe.owned = Object.keys(ITEMS); }
+    let diff = 0;
+    if (Number.isFinite(g.setXp)) {
+      diff = Math.trunc(g.setXp - logic.totalXp(u.id));
+      if (diff) { logic.S.bonuses ||= {}; logic.S.bonuses[key] = { id: key, userId: u.id, xp: diff, reason: String(g.reason || 'Подарок учителя').slice(0, 200), at: Date.now() }; }
+    }
+    logic.S.migrations[key] = Date.now();
+    store.save();
+    console.log('[grant] ' + JSON.stringify({ user: { id: u.id, name: logic.name(u) }, unlockAll: Boolean(g.unlockAll), xpDiff: diff, xpNow: logic.totalXp(u.id) }));
+  }
 }
 api.get('/tasks', h((req) => tasksOf(req.user.id)));
 api.get('/room', h((req) => social.room(req.user.id)));
