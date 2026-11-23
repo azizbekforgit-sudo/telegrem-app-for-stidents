@@ -2351,7 +2351,7 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
     };
     if (exam) ACTIVE_CODE = { el, abort: () => { const f = ide.files(); close(false); return f; } };
     $1('[data-done]').onclick = async () => {
-      if (onSubmit) { if (await onSubmit(ide.files())) close(true); return; }
+      if (onSubmit) { const bt = $1('[data-done]'); if (bt.dataset.busy) return; bt.dataset.busy = '1'; bt.disabled = true; try { if (await onSubmit(ide.files())) return close(true); } finally { delete bt.dataset.busy; bt.disabled = false; } return; }
       if (!preview && !exam) { try { await api('/code/done', { lessonId, task: key, files: ide.files() }); } catch { /* */ } }
       close(true);
     };
@@ -3665,58 +3665,6 @@ async function inboxSheet() {
 }
 
 // ───── страница ученика ─────
-async function viewPage(uid) {
-  const p = await api('/page/' + encodeURIComponent(uid));
-  const u = p.user;
-  const acc = accOf(u.prefs?.accent);
-  const stars = (n) => [1, 2, 3, 4, 5].map((i) => `<button class="star-btn ${n && i <= n ? 'on' : ''}" data-star="${i}" aria-label="${i}">★</button>`).join('');
-  const QUICK = ['Как дела? 👋', 'Что сейчас учишь? 📚', 'Как ты одел(а) питомца? 🎀', 'Поможешь мне с темой? 🤝'];
-  app.innerHTML = `<div class="topbar"><button class="back" data-back>${ic('alt-arrow-left')}Назад</button>${p.me ? '<span class="pill accent">Это ты</span>' : ''}</div>
-    <div class="page-hero" style="--pa:${acc.c};--pl:${acc.l}">
-      <div class="page-pet">${petHtml(u.prefs?.mascot, 'happy', 150, u.dress || u.wear)}</div>
-      <h1>${esc(u.name)}</h1>
-      <p class="muted small">${p.groups.map((g) => `${emo(g.emoji)} ${esc(g.name)}`).join(' · ')}</p>
-      <div class="tags" style="justify-content:center;margin-top:8px"><span class="pill gold">${emo(E.bolt)}<span data-noi18n>${p.xp} XP</span></span>${p.streak ? `<span class="pill">${emo(E.fire)}${p.streak}</span>` : ''}${p.rating.avg != null ? `<span class="pill">⭐ <span data-noi18n>${p.rating.avg} · ${p.rating.n}</span></span>` : ''}</div>
-    </div>
-    ${p.badges.length ? sectionTitle('🏅', 'Звания недели') + badgeChips(p.badges) : ''}
-    ${p.me ? `<div class="row" style="gap:8px;margin-top:14px"><button class="btn grow" data-wardrobe>${emo('👗')}Гардероб</button><button class="btn ghost grow" data-wish>${emo('🎀')}Попросить одежду</button></div>` : ''}
-    ${sectionTitle('🏠', `Дом для ${p.pet}`)}
-    ${p.room ? `<div class="room-wrap view">${roomScene(p.room, u.prefs?.mascot || 'kapi', { built: p.built })}</div>${p.me ? `<button class="btn block" data-myroom style="margin-top:10px">${emo('🛋️')} Обустроить дом</button>` : ''}` : ''}
-    ${p.house.files ? sectionTitle('💻', 'Сайт питомца (код)') : ''}
-    ${p.house.files ? `<div class="card house-frame"><iframe sandbox="allow-scripts" data-housef title="house"></iframe><p class="small muted center" style="margin-top:6px"><span data-noi18n>${p.house.done} / ${p.house.total}</span></p></div>`
-      : `<div class="card center muted small">${p.me ? 'Дом ещё пустой — открой испытание «Дом для питомца» на главной' : 'Дом ещё строится'}</div>`}
-    ${p.canRate ? `<div class="card rate-card" style="margin-top:14px"><b>${emo('⭐')} Поставь звёзды</b><p class="small muted">Раз в неделю, можно поменять. За звёзды одноклассник получает XP (до 150 в неделю).</p><div class="stars-row">${stars(p.rating.mine)}</div></div>` : ''}
-    ${p.canAsk ? `<div class="card ask-card" style="margin-top:14px"><b>${emo('💬')} Спросить</b><div class="chips">${QUICK.map((q) => `<button class="chip-btn" data-quick>${esc(q)}</button>`).join('')}</div>
-      <textarea maxlength="150" rows="2" placeholder="Свой вопрос…" data-askt></textarea><button class="btn block" data-ask>${ic('plain-2', 'sm')}Отправить</button></div>` : ''}
-    ${sectionTitle('💬', 'Вопросы и ответы')}
-    <div class="stack">${p.qa.length ? p.qa.map((q) => `<div class="card qa ${q.answer ? '' : 'pending'}"><div class="row" style="gap:10px;align-items:flex-start">${avatar(q.from)}<div class="grow"><b>${esc(q.from?.name || '')}</b><p data-noi18n>${esc(q.text)}</p>
-      ${q.answer ? `<div class="qa-a">${petHtml(u.prefs?.mascot, 'talk', 34, u.dress || u.wear, 'still')}<span data-noi18n>${esc(q.answer)}</span></div>` : '<p class="small muted">ждёт ответа</p>'}</div>
-      ${p.me || p.admin ? `<button class="btn ghost dim sm" data-qdel="${esc(q.id)}" aria-label="Удалить">${ic('trash-bin-trash', 'sm')}</button>` : ''}</div></div>`).join('') : `<p class="muted center small">${p.me ? 'Пока никто не спрашивал. Загляни в лигу и спроси одноклассников первым!' : 'Пока вопросов нет — спроси первым!'}</p>`}</div>`;
-  $('[data-back]').onclick = back;
-  const mr = $('[data-myroom]');
-  if (mr) mr.onclick = () => go('room');
-  const fr = $('[data-housef]');
-  if (fr) fr.srcdoc = housePose(buildPage(p.house.files), p.house.done);
-  const wb = $('[data-wardrobe]');
-  if (wb) wb.onclick = () => wardrobeSheet(() => viewPage(uid).catch(fail));
-  const ws = $('[data-wish]');
-  if (ws) ws.onclick = () => wishSheet();
-  $$('[data-star]').forEach((b) => (b.onclick = async () => {
-    haptic('light');
-    try { await api('/rate', { to: u.id, stars: Number(b.dataset.star) }); toast('Звёзды отправлены'); viewPage(uid).catch(fail); } catch (e) { fail(e); }
-  }));
-  const ta = $('[data-askt]');
-  $$('[data-quick]').forEach((b) => (b.onclick = () => { ta.value = b.textContent.trim(); ta.focus(); }));
-  const ak = $('[data-ask]');
-  if (ak) ak.onclick = async () => {
-    const t = ta.value.trim();
-    if (t.length < 2) return ta.focus();
-    ak.disabled = true;
-    try { await api('/ask', { to: u.id, text: t }); ta.value = ''; haptic('success'); toast('Вопрос отправлен — ответ появится здесь'); } catch (e) { fail(e); }
-    ak.disabled = false;
-  };
-  $$('[data-qdel]').forEach((b) => (b.onclick = async () => { try { await api('/questions/' + b.dataset.qdel, null, 'DELETE'); viewPage(uid).catch(fail); } catch (e) { fail(e); } }));
-}
 
 // ───── гардероб и просьба об одежде ─────
 function wishSheet() {
@@ -4011,218 +3959,6 @@ async function tabSocial() {
   $$('[data-page]').forEach((b) => (b.onclick = () => openView({ type: 'page', id: b.dataset.page, parent: null })));
 }
 
-// ── Профиль учителя ──
-async function tabTeacherProfile() {
-  const [o, so] = await Promise.all([loadOverview(), api('/admin/social'), refreshMe()]);
-  const u = S.me.user;
-  const t = o.totals;
-  const feat = (e, title, text, act = '') => `<div class="t-feat">${emo(e)}<div class="grow"><b>${title}</b><span>${text}</span></div>${act}</div>`;
-  const row = (attr, e, title, sub) => `<button class="t-row tap" ${attr}>${emo(e)}<div class="grow"><b>${title}</b>${sub ? `<span>${sub}</span>` : ''}</div>${ic('alt-arrow-right')}</button>`;
-  app.innerHTML = `<div class="t-profile">
-      <div class="t-pcover"></div>
-      <div class="t-pmain">
-        <button class="t-pava" data-look aria-label="Внешний вид">${me('teach', 132)}</button>
-        <div class="grow"><h1>${esc(u.name)}</h1><p><span class="pill gold">${emo(E.crown)}Учитель курса</span> <span class="muted">${u.email ? esc(u.email) : IN_TG ? 'через Telegram' : ''}</span></p></div>
-        <button class="btn ghost sm" data-look>${ic('pallete-2', 'sm')}Внешний вид</button>
-      </div>
-      <div class="t-pstats">
-        <div><b>${t.students}</b><span>учеников</span></div><div><b>${t.groups}</b><span>групп</span></div><div><b>${t.sent}</b><span>тестов отправлено</span></div><div><b>${pctText(t.avg)}</b><span>средний балл</span></div><div><b>${so.houses.length}</b><span>строят дом</span></div>
-      </div>
-    </div>
-    <div class="t-grid"><div class="t-col">
-      ${tCard(`${emo('✨')} Что умеет Зубрик сейчас`, `<div class="t-feats">
-        ${feat('🪪', 'Страницы учеников', 'Питомец в одежде, звания недели, дом и вопросы. Открой ученика в лиге → «Страница».')}
-        ${feat('💬', 'Вопросы и звёзды', 'Ученики спрашивают друг друга и ставят 1–5 звёзд раз в неделю: до 150 XP в неделю.')}
-        ${feat('🏅', 'Звания недели', 'Самый активный, снайпер, мастер кода, душа компании и ещё 5 — считаются сами.')}
-        ${feat('🎀', 'Гардероб и просьбы', 'Вещи за испытания и звания. Просьбы одежды приходят тебе в «Активность».', `<button class="link" data-gosocial>Открыть</button>`)}
-        ${feat('🏠', 'Дом для питомца', '4 испытания с кодом: табличка, обои, мебель, питомец говорит. Похвала за конкретное.')}
-        ${feat('🧠', 'Опрос интересов', 'Назови ученика Claude — после теста маскот спросит, что ему нравится.')}
-        ${feat('🛡️', 'Контрольные', 'Таймер, полный экран, −100 XP за ошибку и задания «напиши код».')}
-        ${feat('🧑‍💻', 'Мини VS Code', 'Код в каждой обучалке и домашка после теста.')}
-      </div>`)}
-    </div><div class="t-col">
-      ${tCard(`${emo('⚙️')} Настройки`, `<div class="t-list">
-        ${row('data-look', '🎨', 'Внешний вид и язык', 'Цвет, тема, напарник')}
-        ${row('data-tab2="path"', '🗺️', 'Путь как у учеников', 'Все уроки открыты, без очков')}
-        ${row('data-tleague2', '🏆', 'Общая лига', 'Топ всех учеников')}
-        ${row('data-parents', '👨‍👩‍👧', 'Родители', 'Кто чей родитель')}
-        ${row('data-tab2="bot"', '🤖', 'Бот и отчёты', 'Входы на сайт, отчёт Claude, рассылка')}
-        ${!IN_TG && SESSION ? row('data-logout', '🚪', 'Выйти', '') : ''}
-      </div>`)}
-      ${tCard(`${emo('💡')} Как работать с Claude`, `<ul class="t-tips">
-        <li>Пришли конспект — появится урок с обучалкой, тестом и кодом.</li>
-        <li>«Посмотри отчёт и сделай личные задания» — после кнопки «Отчёт Claude».</li>
-        <li>«Включи опрос для Наргизы» — маскот спросит об интересах.</li>
-        <li>«Добавь в гардероб …» — по просьбам учеников.</li>
-      </ul>`)}
-    </div></div>`;
-  $$('[data-look]').forEach((b) => (b.onclick = () => appearanceSheet(false)));
-  $$('[data-tab2]').forEach((b) => (b.onclick = () => go(b.dataset.tab2)));
-  $$('[data-gosocial]').forEach((b) => (b.onclick = () => go('social')));
-  $('[data-tleague2]').onclick = () => openView({ type: 'league', parent: null });
-  $('[data-parents]').onclick = () => openView({ type: 'parents' });
-  const lo = $('[data-logout]');
-  if (lo) lo.onclick = () => { api('/auth/logout', {}).catch(() => {}); setSession(''); loginScreen(); };
-}
-
-// ═══════════════ КАЛЕНДАРЬ ПОСЕЩАЕМОСТИ (один вид для ученика, родителя и учителя) ═══════════════
-// Пустой день — без фона. ✓ был (зелёный), ✕ не был (красный), пунктир — будет урок по расписанию,
-// ? — урок прошёл, но учитель ещё не отметил. Цветная цифра снизу — оценка за день.
-function attMap(days, grades) {
-  const by = {};
-  days.forEach((x) => (by[x.date] ||= { l: [], g: [] }).l.push(x));
-  grades.forEach((g) => (by[g.date] ||= { l: [], g: [] }).g.push(g));
-  return by;
-}
-function attState(x) {
-  if (!x?.l.length) return null;
-  if (x.l.some((l) => l.wait)) return 'wait';
-  if (x.l.some((l) => !l.present)) return 'miss';
-  return 'was';
-}
-function planDays(y, m, schedule, today) {
-  const out = {};
-  if (!schedule?.length) return out;
-  const n = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
-  for (let d = 1; d <= n; d++) {
-    const ds = ymd(y, m, d);
-    if (ds < today) continue;
-    const dow = ((new Date(Date.UTC(y, m, d)).getUTCDay() + 6) % 7) + 1;
-    const sl = schedule.filter((s) => s.dow === dow);
-    if (sl.length) out[ds] = sl;
-  }
-  return out;
-}
-function attCal(y, m, by, { today, schedule = [], selected = null } = {}) {
-  const plan = planDays(y, m, schedule, today);
-  return monthCal(y, m, (ds) => {
-    const x = by[ds];
-    const st = attState(x);
-    const gr = x?.g.length ? x.g[x.g.length - 1].value : null;
-    const cls = st ? 'a-' + st : plan[ds] ? 'a-plan' : gr != null ? 'a-grade' : '';
-    const icon = { was: '✓', miss: '✕', wait: '?' }[st] || '';
-    return { cls, html: `${icon ? `<i class="a-ic">${icon}</i>` : ''}${gr != null ? `<em class="a-gr" style="background:${gradeColor(gr)}">${gr}</em>` : ''}` };
-  }, { today, selected, cls: 'cal-att' });
-}
-function attSummary(y, m, by) {
-  const pre = ymd(y, m, 1).slice(0, 7);
-  const inMonth = Object.entries(by).filter(([d]) => d.startsWith(pre)).map(([, x]) => x);
-  const lessons = inMonth.flatMap((x) => x.l.filter((l) => !l.wait));
-  const was = lessons.filter((l) => l.present).length;
-  const n = lessons.length;
-  const pct = n ? Math.round((was / n) * 100) : null;
-  const grs = inMonth.flatMap((x) => x.g.map((g) => g.value));
-  const avg = grs.length ? Math.round((grs.reduce((a, b) => a + b, 0) / grs.length) * 10) / 10 : null;
-  return `<div class="att-sum">
-    <div class="att-headline">${n ? `<b>Был на ${was} из ${n}</b> <span>${n % 10 === 1 && n % 100 !== 11 ? 'урока' : 'уроков'} в этом месяце</span>` : '<b>В этом месяце уроков ещё не было</b>'}</div>
-    <div class="att-bar" role="img" aria-label="${pct ?? 0}%"><i style="width:${pct ?? 0}%"></i></div>
-    <div class="att-nums">
-      <div class="good"><b>${was}</b><span>был</span></div>
-      <div class="bad"><b>${n - was}</b><span>не был</span></div>
-      <div><b>${pct != null ? pct + '%' : '—'}</b><span>посещаемость</span></div>
-      <div><b>${avg ?? '—'}</b><span>средняя оценка</span></div>
-    </div></div>`;
-}
-function attList(y, m, by, { today, schedule = [], teacher = false } = {}) {
-  const pre = ymd(y, m, 1).slice(0, 7);
-  const plan = planDays(y, m, schedule, today);
-  const dates = [...new Set([...Object.keys(by).filter((d) => d.startsWith(pre)), ...Object.keys(plan)])].sort();
-  if (!dates.length) return `<p class="t-empty">${tr('В этом месяце уроков нет')}</p>`;
-  const L = curLang();
-  const t = (a) => `<span data-noi18n>${a}</span>`;
-  return `<div class="att-list">${dates.map((ds) => {
-    const x = by[ds] || { l: [], g: [] };
-    const d = Number(ds.slice(8));
-    const dow = (new Date(ds + 'T12:00:00Z').getUTCDay() + 6) % 7;
-    const st = attState(x) || (plan[ds] ? 'plan' : 'grade');
-    const head = { was: 'Был на уроке', miss: 'Не был на уроке', wait: 'Ждёт отметки', plan: 'Будет урок', grade: 'Оценка' }[st];
-    const l0 = x.l[0];
-    const time = l0 ? `${l0.start}${l0.end && l0.end !== l0.start ? '–' + l0.end : ''}` : plan[ds] ? `${plan[ds][0].start}–${plan[ds][0].end}` : '';
-    const grp = l0?.group?.name || plan[ds]?.[0]?.group?.name || '';
-    const reason = x.l.find((l) => l.reason)?.reason;
-    return `<button class="att-row a-${st}" data-aday="${ds}">
-      <div class="att-date ${ds === today ? 'today' : ''}"><b>${d}</b><span data-noi18n>${WEEKDAYS[L][dow]}</span></div>
-      <div class="att-mark">${{ was: '✓', miss: '✕', wait: '?', plan: '•', grade: '★' }[st]}</div>
-      <div class="grow"><b>${head}</b><span>${time ? t(time) : ''}${time && grp ? ' · ' : ''}${grp ? t(esc(grp)) : ''}</span>${reason ? `<span class="att-reason">💬 <span data-noi18n>${esc(reason)}</span></span>` : ''}</div>
-      ${x.g.map((g) => gradeChip(g.value)).join('')}${teacher && x.l.length ? ic('pen-2', 'sm') : ''}</button>`;
-  }).join('')}</div>`;
-}
-const attLegend = (teacher = false) => `<div class="att-legend"><span><i class="a-was">✓</i>был</span><span><i class="a-miss">✕</i>не был</span><span><i class="a-plan"></i>будет урок</span>${teacher ? '<span><i class="a-wait">?</i>ждёт отметки</span>' : ''}<span><em style="background:var(--good)">9</em>оценка</span></div>`;
-// Весь блок: стрелки месяца, сводка, календарь, легенда, список дней
-function attBlock(y, m, by, opts = {}) {
-  return `<div class="card att-card">${calNav(y, m)}${attSummary(y, m, by)}${attCal(y, m, by, opts)}${attLegend(opts.teacher)}</div>
-    <div class="section-title"><h2>${emo('📋')} ${tr('Уроки по дням')}</h2></div><div class="card att-list-card">${attList(y, m, by, opts)}</div>`;
-}
-
-// ───────── Журнал учителя → «По ученикам»: отдельный календарь каждого ученика ─────────
-function journalStudentDays(j, uid) {
-  const days = j.sessions.filter((s) => s.members.some((m) => m.id === uid)).map((s) => {
-    const me0 = s.members.find((m) => m.id === uid);
-    return { date: s.date, start: s.start, end: s.end, present: !me0.absent, wait: s.status !== 'done', group: s.group, reason: me0.reason, sid: s.id };
-  });
-  const grades = j.grades.filter((x) => x.userId === uid);
-  return { days, grades };
-}
-function journalStudentView(j, g, chips, modeSeg) {
-  const list = g.students;
-  if (!list.length) {
-    app.innerHTML = adminTop('Журнал') + chips + modeSeg + emptyState('sleepy', 'В группе пока нет учеников', 'Добавь учеников во вкладке «Группы».');
-    return bindJournalCommon(j, g);
-  }
-  if (!list.some((u) => u.id === JR.st)) JR.st = list[0].id;
-  const i = list.findIndex((u) => u.id === JR.st);
-  const u = list[i];
-  const { days, grades } = journalStudentDays(j, u.id);
-  const by = attMap(days, grades);
-  const pers = g.personal?.find((p) => p.id === u.id);
-  const schedule = (pers ? pers.schedule : g.schedule).map((s) => ({ ...s, group: { name: g.name, emoji: g.emoji } }));
-  const total = days.filter((d) => !d.wait);
-  const was = total.filter((d) => d.present).length;
-  app.innerHTML = adminTop('Журнал') + chips + modeSeg + `
-    <div class="st-switch">
-      <button class="iconbtn" data-stp="-1" aria-label="Предыдущий" ${i === 0 ? 'disabled' : ''}>${ic('alt-arrow-left')}</button>
-      <div class="st-strip">${list.map((x) => `<button class="st-chip ${x.id === u.id ? 'on' : ''}" data-stc="${esc(x.id)}">${avatar(x)}<span data-noi18n>${esc(firstName(x.name))}</span></button>`).join('')}</div>
-      <button class="iconbtn" data-stp="1" aria-label="Следующий" ${i === list.length - 1 ? 'disabled' : ''}>${ic('alt-arrow-right')}</button>
-    </div>
-    <div class="card st-hero">${avatar(u, 'lg')}<div class="grow"><h2 data-noi18n>${esc(u.name)}</h2>
-      <p class="small muted"><span data-noi18n>${i + 1} / ${list.length}</span> · ${tr('за всё время')}: <b class="good-t">${was}</b> ${tr('был')}, <b class="bad-t">${total.length - was}</b> ${tr('не был')}${u.avg != null ? ` · ${tr('средняя')} ${u.avg}` : ''}</p>
-      ${pers ? `<span class="pill">${emo('👤')} ${tr('Личное время')}</span>` : ''}</div>
-      <div class="row" style="gap:6px"><button class="iconbtn" data-gr1 aria-label="Оценка">${ic('star')}</button><button class="iconbtn" data-open1 aria-label="Ученик">${ic('user-rounded')}</button></div></div>
-    ${attBlock(JR.y, JR.m, by, { today: j.today, schedule, teacher: true })}`;
-  bindJournalCommon(j, g);
-  const sel = $('.st-chip.on');
-  if (sel) sel.scrollIntoView({ inline: 'center', block: 'nearest' });
-  $$('[data-stc]').forEach((b) => (b.onclick = () => { JR.st = b.dataset.stc; haptic('light'); tabJournal().catch(fail); }));
-  $$('[data-stp]').forEach((b) => (b.onclick = () => { const nx = list[i + Number(b.dataset.stp)]; if (nx) { JR.st = nx.id; haptic('light'); tabJournal().catch(fail); } }));
-  $('[data-gr1]').onclick = () => gradeSheet({ userId: u.id, date: JR.day, after: () => tabJournal() });
-  $('[data-open1]').onclick = () => openStudent(u.id);
-  const open = (ds) => { const x = by[ds]; if (x) { haptic('light'); studentDaySheet(ds, x, u); } };
-  $$('[data-day]').forEach((b) => (b.onclick = () => open(b.dataset.day)));
-  $$('[data-aday]').forEach((b) => (b.onclick = () => open(b.dataset.aday)));
-}
-function studentDaySheet(ds, x, u) {
-  openSheet(`<div class="stack"><h2>${emo('📅')} <span data-noi18n>${dmy(ds)} · ${esc(u.name)}</span></h2>
-    ${x.l.map((l) => `<div class="card day-lesson ${l.wait ? 'mark' : l.present ? 'good' : 'bad'}"><div class="row" style="gap:10px">${emo(l.group?.emoji || '📚')}<div class="grow"><b>${esc(l.group?.name || '')}</b><div class="small muted" data-noi18n>${l.start}${l.end && l.end !== l.start ? '–' + l.end : ''}</div></div></div>
-      <div class="seg" style="margin-top:10px"><button class="${!l.wait && l.present ? 'on good' : ''}" data-set="${l.sid}" data-v="1">✓ ${tr('Был')}</button><button class="${!l.wait && !l.present ? 'on bad' : ''}" data-set="${l.sid}" data-v="0">✕ ${tr('Не был')}</button></div>
-      ${l.wait ? `<p class="small muted" style="margin-top:6px">${tr('Урок ещё не отмечен: остальные ученики будут отмечены как пришедшие.')}</p>` : ''}
-      ${l.reason ? `<p class="small" style="margin-top:8px">💬 ${esc(l.reason)}</p>` : ''}</div>`).join('')}
-    ${x.g.length ? `<div class="card grades-list">${x.g.map((g) => `<div class="grow-row">${gradeChip(g.value)}<div class="grow"><b>${g.lesson ? `${emo(g.lesson.emoji)} ${esc(g.lesson.title)}` : esc(tr('Оценка учителя'))}</b><div class="small muted">+${g.xp} XP${g.comment ? ' · ' + esc(g.comment) : ''}</div></div></div>`).join('')}</div>` : ''}</div>`, (el, close) => {
-    $$('[data-set]', el).forEach((b) => (b.onclick = async () => {
-      const s = S.journal.sessions.find((z) => z.id === b.dataset.set);
-      if (!s) return;
-      let absent = s.status === 'done' ? s.members.filter((m) => m.absent).map((m) => m.id) : [];
-      absent = absent.filter((id) => id !== u.id);
-      if (b.dataset.v === '0') absent.push(u.id);
-      try { await api('/admin/sessions/' + s.id, { absent }); haptic('success'); close(); tabJournal().catch(fail); } catch (e) { fail(e); }
-    }));
-  });
-}
-function bindJournalCommon(j, g) {
-  bindAdminTop();
-  $$('[data-jg]').forEach((b) => (b.onclick = () => { JR.group = b.dataset.jg; haptic('light'); tabJournal().catch(fail); }));
-  $$('[data-jmode]').forEach((b) => (b.onclick = () => { JR.mode = b.dataset.jmode; haptic('light'); tabJournal().catch(fail); }));
-  $$('[data-cm]').forEach((b) => (b.onclick = () => { JR.m += Number(b.dataset.cm); if (JR.m < 0) { JR.m = 11; JR.y--; } if (JR.m > 11) { JR.m = 0; JR.y++; } tabJournal().catch(fail); }));
-}
 
 // ═══════════════ УЧЕНИК: оболочка как у учителя (меню слева / сверху) ═══════════════
 const S_NAV = [
@@ -4451,9 +4187,12 @@ async function tabRoom() {
   function addDecor(id, x, y) {
     if (placed.has(id)) { ROOM.sel = 'i:' + id; return render(); }
     const p = clampSpot(id, x, y);
-    R.items.push({ id, x: p.x, y: p.y, s: 1, r: 0, z: R.items.length + 1 });
+    const it = { id, x: p.x, y: p.y, s: 1, r: 0, z: R.items.length + 1 };
+    R.items.push(it);
     placed.add(id); ROOM.sel = 'i:' + id;
-    sfx.ok(); haptic('success'); render(); cheer(); save();
+    sfx.ok(); haptic('success'); render(); cheer();
+    const el = $(`[data-ri="${id}"]`);
+    if (isWallItem(id)) { swing(el); save(); } else physRun(el, it, id, { h: Math.max(6, p.y - y), onRest: save });
   }
   function addWear(id, x, y) {
     R.wear = R.wear.filter((w) => w.id !== id);
@@ -4513,23 +4252,48 @@ async function tabRoom() {
       if (ROOM.sel !== sel) { ROOM.sel = sel; $$('.ri.sel, .room-pet.sel, .w.free.sel').forEach((x) => x.classList.remove('sel')); el.classList.add('sel'); const tl = $('[data-tools]'); if (tl) tl.hidden = false; }
       const o = getObj();
       el.setPointerCapture(ev.pointerId);
+      cancelAnimationFrame(el._phys || 0);
       const s0 = { x: ev.clientX, y: ev.clientY };
-      let moved = false;
+      const kid = sel === 'pet' ? 'pet' : sel.slice(2);
+      const onFloor = sel === 'pet' || (sel.startsWith('i:') && !isWallItem(kid));
+      const vt = velTracker();
+      let moved = false, lift = { x: o.x, y: o.y };
       el.onpointermove = (e) => {
         if (!moved && Math.hypot(e.clientX - s0.x, e.clientY - s0.y) < 5) return;
         moved = true;
         const p = frame(e);
+        vt.add(p.x, p.y);
         if (sel.startsWith('w:')) { o.x = Math.round(Math.min(115, Math.max(-15, p.x)) * 10) / 10; o.y = Math.round(Math.min(115, Math.max(-20, p.y)) * 10) / 10; el.style.left = o.x + '%'; el.style.top = o.y + '%'; return; }
-        const c = clampSpot(sel === 'pet' ? 'pet' : sel.slice(2), p.x, p.y);
+        if (onFloor) {
+          // вещь в руке: её можно поднять над полом, тень остаётся на полу
+          const c = clampSpot(kid, p.x, p.y);
+          lift = { x: c.x, y: Math.max(8, Math.min(c.y, p.y)) };
+          el.style.left = lift.x + '%'; el.style.top = lift.y + '%';
+          el.style.setProperty('--s', o.s * depthOf(c.y)); el.style.zIndex = 2000; el.style.setProperty('--air', Math.min(1, (c.y - lift.y) / 18));
+          el.classList.add('held');
+          return;
+        }
+        const c = clampSpot(kid, p.x, p.y);
         o.x = Math.round(c.x * 10) / 10; o.y = Math.round(c.y * 10) / 10;
         el.style.left = o.x + '%'; el.style.top = o.y + '%';
-        if (sel === 'pet' || !isWallItem(sel.slice(2))) { el.style.setProperty('--s', o.s * depthOf(o.y)); el.style.zIndex = Math.round(o.y * 10) + (sel === 'pet' ? 1 : 0); }
       };
       el.onpointerup = (e) => {
         el.onpointermove = null; el.onpointerup = null;
+        el.classList.remove('held');
         if (sel.startsWith('w:') && moved && !onPet(e).inside) { R.wear = R.wear.filter((w) => w.id !== sel.slice(2)); worn.delete(sel.slice(2)); ROOM.sel = null; petSay(tr('Снял! Можешь надеть снова из «Одежды»')); render(); save(); return; }
-        if (moved) { haptic('light'); save(); return; }
-        if (sel === 'pet') { pose('talk', 2600); petSay(b.phrase || tr('Научи меня говорить — испытание «Голос»!'), 2600); }
+        if (moved && onFloor) {
+          // отпустил: падает на пол, а если швырнул — летит и скользит
+          const p = frame(e);
+          const ground = clampSpot(kid, lift.x, Math.max(p.y, RG.floorY + 6)).y;
+          o.x = lift.x; o.y = ground;
+          const v = vt.get();
+          physRun(el, o, kid, { h: Math.max(0, ground - lift.y), vh: Math.max(0, -v.vy) * 0.6, vx: Math.max(-2.2, Math.min(2.2, v.vx * 0.5)), vd: ground - lift.y < 2 ? Math.max(-2, Math.min(2, v.vy * 0.5)) : 0, onRest: save });
+          return;
+        }
+        if (moved) { haptic('light'); if (sel.startsWith('i:')) swing(el); save(); return; }
+        if (sel === 'pet') { physRun(el, o, 'pet', { vh: 3.4 }); pose('talk', 2600); petSay(b.phrase || tr('Научи меня говорить — испытание «Голос»!'), 2600); }
+        else if (onFloor) physRun(el, o, kid, { vh: 2.2, onRest: save });
+        else if (sel.startsWith('i:')) swing(el);
       };
     });
     $$('[data-ri]').forEach((el) => drag(el, 'i:' + el.dataset.ri, () => R.items.find((x) => x.id === el.dataset.ri), pct));
@@ -4558,8 +4322,213 @@ async function tabRoom() {
   // новинки из кода сохраняем сразу (сервер поставил их сам)
   if (JSON.stringify(R) !== JSON.stringify(d.room) || R.items.some((x) => x.id.startsWith('c')) || R.wall === 'code') save();
   render();
+  R.items.forEach((it, i) => { const el = $(`[data-ri="${it.id}"]`); if (!el) return; if (isWallItem(it.id)) setTimeout(() => swing(el), 150 + i * 80); else physRun(el, it, it.id, { h: 14 + Math.random() * 10 }); });
   if (S.roomFlash) { petSay(tr(S.roomFlash), 4200); pose('cheer', 2000); S.roomFlash = null; }
   else petSay(b.stage ? tr('Привет! Это мой дом. Поставь вещи как тебе нравится!') : tr('Мой дом ещё строится… Поможешь? Начни стройку кодом!'), 4000);
 }
 // старый «Гардероб» теперь живёт в комнате
 function wardrobeSheet() { ROOM.tab = 'clothes'; go('room'); }
+
+// ═══════════════ ФИЗИКА КОМНАТЫ ═══════════════
+// Вещь на полу имеет «землю» (точку на полу: x, yG) и высоту h над ней. Гравитация тянет вниз,
+// при ударе вещь подпрыгивает и сплющивается, по полу скользит с трением и отскакивает от стен.
+// Настенные вещи после установки качаются. Питомец прыгает по нажатию.
+const PHYS = { g: 0.34, bounce: 0.42, fric: 0.86, wallBounce: 0.5 };
+function physRun(el, o, id, { vx = 0, vd = 0, h = 0, vh = 0, onRest = null } = {}) {
+  if (!el) return;
+  cancelAnimationFrame(el._phys || 0);
+  let x = o.x, yG = clampSpot(id, o.x, o.y).y;
+  const pet = id === 'pet';
+  const frame = () => {
+    if (!el.isConnected) return;
+    vh -= PHYS.g; h += vh;
+    if (h <= 0) {
+      h = 0;
+      if (vh < -1.4) { vh = -vh * PHYS.bounce; el.classList.remove('squash'); void el.offsetWidth; el.classList.add('squash'); if (Math.abs(vh) > 1.2) haptic('light'); }
+      else vh = 0;
+    }
+    x += vx; yG += vd;
+    if (h > 0) vx *= 0.97;
+    if (h === 0) { vx *= PHYS.fric; vd *= PHYS.fric; }
+    const c = clampSpot(id, x, yG);
+    if (c.x !== x) { vx = -vx * PHYS.wallBounce; x = c.x; }
+    if (c.y !== yG) { vd = -vd * PHYS.wallBounce; yG = c.y; }
+    el.style.left = x + '%';
+    el.style.top = (yG - h) + '%';
+    el.style.setProperty('--s', (o.s || 1) * depthOf(yG));
+    el.style.zIndex = Math.round(yG * 10) + (pet ? 1 : 0);
+    el.style.setProperty('--air', Math.min(1, h / 18));
+    const rest = h === 0 && vh === 0 && Math.abs(vx) < 0.03 && Math.abs(vd) < 0.03;
+    if (rest) { o.x = Math.round(x * 10) / 10; o.y = Math.round(yG * 10) / 10; el._phys = 0; onRest?.(); return; }
+    el._phys = requestAnimationFrame(frame);
+  };
+  el._phys = requestAnimationFrame(frame);
+}
+const swing = (el) => { if (!el) return; el.classList.remove('swing'); void el.offsetWidth; el.classList.add('swing'); };
+// трекер скорости пальца: последние ~100 мс
+function velTracker() {
+  const pts = [];
+  return {
+    add(x, y) { const t = performance.now(); pts.push({ t, x, y }); while (pts.length > 2 && t - pts[0].t > 110) pts.shift(); },
+    get() { if (pts.length < 2) return { vx: 0, vy: 0 }; const a = pts[0], b = pts[pts.length - 1]; const dt = Math.max(16, b.t - a.t) / 16.7; return { vx: (b.x - a.x) / dt, vy: (b.y - a.y) / dt }; },
+  };
+}
+// Чужая комната (и своя на странице): трогать можно — вещи подпрыгивают, питомец прыгает и говорит; ничего не сохраняется
+function roomPlay(root, room, built) {
+  const sc = $('[data-room]', root);
+  if (!sc) return;
+  const say = $('[data-rsay]', root);
+  const items = [...$$('.ri', sc)];
+  room.items.forEach((it, i) => { const el = items[i]; if (!el) return; if (isWallItem(it.id)) setTimeout(() => swing(el), 200 + i * 90); else physRun(el, { ...it }, it.id, { h: 16 + Math.random() * 8, vh: 0 }); });
+  items.forEach((el, i) => (el.onclick = () => { const it = room.items[i]; if (!it) return; if (isWallItem(it.id)) swing(el); else physRun(el, { ...it }, it.id, { vh: 2.6, vx: (Math.random() - 0.5) * 0.6 }); }));
+  const pe = $('.room-pet', sc);
+  if (pe) pe.onclick = () => {
+    physRun(pe, { ...room.pet }, 'pet', { vh: 3.4 });
+    if (say) { say.textContent = built?.phrase || tr(ROOM_SAY[Math.floor(Math.random() * ROOM_SAY.length)]); say.style.left = Math.min(80, Math.max(20, room.pet.x)) + '%'; say.style.top = Math.max(4, room.pet.y - 34 * room.pet.s * depthOf(room.pet.y) - 6) + '%'; say.classList.remove('show'); void say.offsetWidth; say.classList.add('show'); }
+  };
+}
+
+// ═══════════════ СТРАНИЦА УЧЕНИКА (её видят одноклассники) ═══════════════
+async function viewPage(uid) {
+  const p = await api('/page/' + encodeURIComponent(uid));
+  const u = p.user;
+  const acc = accOf(u.prefs?.accent);
+  const stars = (n) => [1, 2, 3, 4, 5].map((i) => `<button class="star-btn ${n && i <= n ? 'on' : ''}" data-star="${i}" aria-label="${i}">★</button>`).join('');
+  const QUICK = ['Как дела? 👋', 'Что сейчас учишь? 📚', 'Как ты одел(а) питомца? 🎀', 'Поможешь мне с темой? 🤝'];
+  const st = p.stats || {};
+  const stat = (e, v, l) => `<div class="pg-stat">${emo(e)}<b data-noi18n>${v}</b><span>${l}</span></div>`;
+  const b = p.built || { stage: 0, total: 4 };
+  app.innerHTML = `<div class="topbar"><button class="back" data-back>${ic('alt-arrow-left')}Назад</button>${p.me ? '<span class="pill accent">Это ты</span>' : ''}</div>
+    <div class="pg">
+      <section class="pg-hero" style="--pa:${acc.c};--pl:${acc.l}">
+        <div class="room-wrap view">${p.room ? roomScene(p.room, u.prefs?.mascot || 'kapi', { built: p.built }) : ''}<div class="room-say" data-rsay></div></div>
+        <div class="pg-id">
+          <div class="pg-ava">${petHtml(u.prefs?.mascot, 'happy', 74, u.dress || u.wear, 'still')}</div>
+          <div class="grow"><h1>${esc(u.name)}</h1><p class="muted small">${p.groups.map((g) => `${emo(g.emoji)} ${esc(g.name)}`).join(' · ') || ''}${p.room ? ` · ${b.stage >= b.total ? 'дом построен' : `стройка ${b.stage}/${b.total}`}` : ''}</p></div>
+          ${p.rating.avg != null ? `<div class="pg-rate"><b data-noi18n>${p.rating.avg}</b><span>★ · ${p.rating.n}</span></div>` : ''}
+        </div>
+        <p class="pg-tip small muted">${emo('👆')} ${p.me ? 'Так твой дом видят одноклассники. Нажми на питомца или на вещи!' : 'Нажми на питомца или на вещи — они живые!'}</p>
+      </section>
+      <div class="pg-stats">${stat(E.bolt, p.xp, 'XP')}${stat(E.fire, p.streak || 0, 'дней подряд')}${stat('📝', st.tests ?? 0, 'тестов решено')}${stat('🏠', st.hw ?? 0, 'ДЗ сделано')}</div>
+      ${p.badges.length ? `<section class="t-card pg-sec"><div class="t-card-h"><h3>${emo('🏅')} Звания недели</h3></div>${badgeChips(p.badges)}</section>` : ''}
+      ${p.me ? `<div class="pg-actions"><button class="btn grow" data-myroom>${emo('🛋️')} Обустроить дом</button><button class="btn ghost grow" data-wish>${emo('🎀')} Попросить одежду</button></div>` : ''}
+      ${p.canRate || p.canAsk ? `<div class="pg-grid">
+        ${p.canRate ? `<section class="t-card pg-sec"><div class="t-card-h"><h3>${emo('⭐')} Оценить</h3><span class="small muted">раз в неделю</span></div>
+          <p class="small muted">Ставь звёзды за помощь и старание. За неделю можно оценить 5 одноклассников, звёзды дают им XP.</p><div class="stars-row">${stars(p.rating.mine)}</div></section>` : ''}
+        ${p.canAsk ? `<section class="t-card pg-sec ask-card"><div class="t-card-h"><h3>${emo('💬')} Спросить</h3></div><div class="chips">${QUICK.map((q) => `<button class="chip-btn" data-quick>${esc(q)}</button>`).join('')}</div>
+          <textarea maxlength="150" rows="2" placeholder="Свой вопрос…" data-askt></textarea><button class="btn block" data-ask>${ic('plain-2', 'sm')}Отправить</button></section>` : ''}
+      </div>` : !p.me && !p.admin ? `<p class="small muted center" style="margin-top:12px">${emo('ℹ️')} Оценивать можно только одноклассников из своей группы</p>` : ''}
+      <section class="t-card pg-sec"><div class="t-card-h"><h3>${emo('💬')} Вопросы и ответы</h3><span class="pill">${p.qa.length}</span></div>
+        <div class="pg-qa">${p.qa.length ? p.qa.map((q) => `<div class="qa ${q.answer ? '' : 'pending'}">${avatar(q.from)}<div class="grow"><b>${esc(q.from?.name || '')}</b><p data-noi18n>${esc(q.text)}</p>
+          ${q.answer ? `<div class="qa-a">${petHtml(u.prefs?.mascot, 'talk', 30, u.dress || u.wear, 'still')}<span data-noi18n>${esc(q.answer)}</span></div>` : '<p class="small muted">ждёт ответа</p>'}</div>
+          ${p.me || p.admin ? `<button class="iconbtn" data-qdel="${esc(q.id)}" aria-label="Удалить">${ic('trash-bin-trash', 'sm')}</button>` : ''}</div>`).join('') : `<p class="t-empty">${p.me ? 'Пока никто не спрашивал. Загляни в лигу и спроси одноклассников первым!' : 'Пока вопросов нет — спроси первым!'}</p>`}</div></section>
+      ${p.house.files ? `<details class="t-card pg-sec pg-code"><summary>${emo('💻')} Сайт питомца — код ${esc(u.name)}</summary><div class="house-frame"><iframe sandbox="allow-scripts" data-housef title="house"></iframe></div></details>` : ''}
+    </div>`;
+  $('[data-back]').onclick = back;
+  if (p.room) roomPlay(app, p.room, p.built);
+  const mr = $('[data-myroom]');
+  if (mr) mr.onclick = () => go('room');
+  const det = $('.pg-code');
+  if (det) det.ontoggle = () => { const fr = $('[data-housef]'); if (det.open && fr && !fr.srcdoc) fr.srcdoc = housePose(buildPage(p.house.files), p.house.done); };
+  const ws = $('[data-wish]');
+  if (ws) ws.onclick = () => wishSheet();
+  $$('[data-star]').forEach((x) => (x.onclick = async () => {
+    haptic('light');
+    try { await api('/rate', { to: u.id, stars: Number(x.dataset.star) }); toast('Звёзды отправлены'); viewPage(uid).catch(fail); } catch (e) { fail(e); }
+  }));
+  const ta = $('[data-askt]');
+  $$('[data-quick]').forEach((x) => (x.onclick = () => { ta.value = x.textContent.trim(); ta.focus(); }));
+  const ak = $('[data-ask]');
+  if (ak) ak.onclick = async () => {
+    const t = ta.value.trim();
+    if (t.length < 2) return ta.focus();
+    ak.disabled = true;
+    try { await api('/ask', { to: u.id, text: t }); ta.value = ''; haptic('success'); toast('Вопрос отправлен — ответ появится здесь'); } catch (e) { fail(e); }
+    ak.disabled = false;
+  };
+  $$('[data-qdel]').forEach((x) => (x.onclick = async () => { try { await api('/questions/' + x.dataset.qdel, null, 'DELETE'); viewPage(uid).catch(fail); } catch (e) { fail(e); } }));
+}
+
+// ═══════════════ ПРОФИЛЬ УЧИТЕЛЯ → «МОИ УЧЕНИКИ» ═══════════════
+// Всё, что нужно для работы: у кого сколько XP, тестов, долгов, ДЗ, посещаемость, оценки, когда заходил.
+const RST = { group: 'all', sort: 'attention', q: '' };
+const daysAgo = (t) => (t ? Math.floor((Date.now() - t) / 864e5) : null);
+function rosterFlags(s) {
+  const f = [];
+  if (s.debts.length) f.push(['bad', `${s.debts.length} ${plural(s.debts.length, 'долг', 'долга', 'долгов').replace(/^\d+ /, '')}`]);
+  const d = daysAgo(s.lastSeenAt);
+  if (d == null || d >= 3) f.push(['gold', d == null ? 'не заходил' : `не заходил ${d} дн.`]);
+  if (s.attendance?.pct != null && s.attendance.pct < 75) f.push(['bad', `посещ. ${s.attendance.pct}%`]);
+  if (s.grade != null && s.grade < 6) f.push(['gold', `оценка ${s.grade}`]);
+  if (s.tests.avg != null && s.tests.avg < 60) f.push(['gold', `тесты ${s.tests.avg}%`]);
+  return f;
+}
+async function tabTeacherProfile() {
+  const [o, list] = await Promise.all([loadOverview(), api('/admin/roster'), refreshMe()]);
+  const u = S.me.user;
+  const t = o.totals;
+  const groups = o.groups;
+  let rows = list.filter((s) => RST.group === 'all' || (RST.group === 'attention' ? rosterFlags(s).length : s.groupIds.includes(RST.group)));
+  if (RST.q) rows = rows.filter((s) => s.name.toLowerCase().includes(RST.q.toLowerCase()));
+  const score = (s) => rosterFlags(s).reduce((n, [k]) => n + (k === 'bad' ? 3 : 1), 0) * 100 + s.debts.length;
+  const sorters = {
+    attention: (a, b) => score(b) - score(a),
+    xp: (a, b) => b.xp - a.xp,
+    debts: (a, b) => b.debts.length - a.debts.length,
+    att: (a, b) => (a.attendance?.pct ?? 101) - (b.attendance?.pct ?? 101),
+    seen: (a, b) => (a.lastSeenAt || 0) - (b.lastSeenAt || 0),
+    name: (a, b) => a.name.localeCompare(b.name),
+  };
+  rows.sort(sorters[RST.sort] || sorters.attention);
+  const need = list.filter((s) => rosterFlags(s).length).length;
+  const debtsTotal = list.reduce((n, s) => n + s.debts.length, 0);
+  const attAvg = (() => { const a = list.map((s) => s.attendance?.pct).filter((x) => x != null); return a.length ? Math.round(a.reduce((x, y) => x + y, 0) / a.length) : null; })();
+  const active7 = list.filter((s) => daysAgo(s.lastSeenAt) != null && daysAgo(s.lastSeenAt) < 7).length;
+  const pctBar = (v, tone) => v == null ? '<span class="faint">—</span>' : `<div class="rb"><i style="width:${v}%;background:var(--${tone})"></i></div><span>${v}%</span>`;
+  const tone = (v, good, mid) => (v == null ? '' : v >= good ? 'good' : v >= mid ? 'gold' : 'bad');
+  const seen = (s) => { const d = daysAgo(s.lastSeenAt); return d == null ? '—' : d === 0 ? 'сегодня' : d === 1 ? 'вчера' : `${d} дн. назад`; };
+  const row = (s) => {
+    const fl = rosterFlags(s);
+    return `<button class="rs-row ${fl.some(([k]) => k === 'bad') ? 'warn' : ''}" data-st="${esc(s.id)}">
+      <div class="rs-who">${avatar(s)}<div class="grow"><b data-noi18n>${esc(s.name)}</b><span data-noi18n>${esc(s.groups.join(', ') || '—')}</span></div></div>
+      <div class="rs-c rs-xp"><b data-noi18n>${s.xp}</b><small>XP</small></div>
+      <div class="rs-c"><b data-noi18n>${s.tests.done}/${s.tests.given}</b><small>тесты${s.tests.avg != null ? ` · ${s.tests.avg}%` : ''}</small></div>
+      <div class="rs-c ${s.debts.length ? 'bad-t' : ''}" title="${esc(s.debts.join('\n'))}"><b data-noi18n>${s.debts.length}</b><small>долги</small></div>
+      <div class="rs-c rs-hw"><b data-noi18n>${s.hw ? `${s.hw.done}/${s.hw.total}` : '—'}</b><small>ДЗ</small></div>
+      <div class="rs-c rs-bar ${tone(s.attendance?.pct, 90, 75)}-t">${pctBar(s.attendance?.pct, tone(s.attendance?.pct, 90, 75) || 'faint')}<small>посещ.</small></div>
+      <div class="rs-c rs-grade ${s.grade != null && s.grade < 6 ? 'bad-t' : ''}"><b data-noi18n>${s.grade ?? '—'}</b><small>оценка</small></div>
+      <div class="rs-c rs-seen"><b>${seen(s)}</b><small>заходил</small></div>
+      <div class="rs-meta small muted">ДЗ <b data-noi18n>${s.hw ? `${s.hw.done}/${s.hw.total}` : '—'}</b> · оценка <b data-noi18n>${s.grade ?? '—'}</b> · заходил <b>${seen(s)}</b></div>
+      <div class="rs-flags">${fl.map(([k, x]) => `<span class="pill ${k}">${x}</span>`).join('') || '<span class="pill good">всё ок</span>'}</div>
+    </button>`;
+  };
+  app.innerHTML = `<div class="tp-head">
+      <div class="tp-ava">${me('teach', 64, 'quiet')}</div>
+      <div class="grow"><h1>${esc(u.name)}</h1><p class="small muted"><span class="pill gold">${emo(E.crown)}Учитель курса</span></p></div>
+      <div class="row tp-act"><button class="iconbtn" data-look aria-label="Внешний вид">${ic('pallete-2')}</button>${!IN_TG && SESSION ? `<button class="iconbtn" data-logout aria-label="Выйти">${ic('close-circle')}</button>` : ''}</div>
+    </div>
+    <div class="t-kpis">
+      <div class="t-kpi">${emo(E.student)}<div><b>${t.students}</b><span>учеников · ${active7} активны за неделю</span></div></div>
+      <div class="t-kpi ${need ? 'bad' : 'good'}">${emo('🚩')}<div><b>${need}</b><span>требуют внимания</span></div></div>
+      <div class="t-kpi ${debtsTotal ? 'bad' : ''}">${emo('📌')}<div><b>${debtsTotal}</b><span>нерешённых тестов</span></div></div>
+      <div class="t-kpi">${emo('✅')}<div><b>${attAvg != null ? attAvg + '%' : '—'}</b><span>посещаемость</span></div></div>
+    </div>
+    <section class="t-card rs-card">
+      <div class="t-card-h"><h3>${emo('🧑‍🎓')} Мои ученики</h3><span class="small muted">${rows.length} из ${list.length}</span></div>
+      <div class="rs-tools">
+        <div class="rs-groups"><button class="chip-btn ${RST.group === 'all' ? 'on' : ''}" data-rg="all">Все</button><button class="chip-btn ${RST.group === 'attention' ? 'on' : ''}" data-rg="attention">🚩 Внимание · ${need}</button>${groups.map((g) => `<button class="chip-btn ${RST.group === g.id ? 'on' : ''}" data-rg="${g.id}">${emo(g.emoji)} ${esc(g.name)}</button>`).join('')}</div>
+        <div class="row rs-right"><input class="input rs-q" placeholder="Поиск по имени" data-rq value="${esc(RST.q)}"><select class="input rs-sort" data-rsort>
+          ${[['attention', 'Сначала проблемные'], ['debts', 'Больше долгов'], ['att', 'Хуже посещаемость'], ['seen', 'Давно не заходил'], ['xp', 'Больше XP'], ['name', 'По имени']].map(([k, n]) => `<option value="${k}" ${RST.sort === k ? 'selected' : ''}>${n}</option>`).join('')}</select></div>
+      </div>
+      <div class="rs-head"><span>Ученик</span><span>XP</span><span>Тесты</span><span>Долги</span><span>ДЗ</span><span>Посещ.</span><span>Оценка</span><span>Заходил</span></div>
+      <div class="rs-list">${rows.map(row).join('') || '<p class="t-empty">Никого не нашли</p>'}</div>
+    </section>`;
+  $$('[data-look]').forEach((x) => (x.onclick = () => appearanceSheet(false)));
+  const lo = $('[data-logout]');
+  if (lo) lo.onclick = () => { api('/auth/logout', {}).catch(() => {}); setSession(''); loginScreen(); };
+  $$('[data-rg]').forEach((x) => (x.onclick = () => { RST.group = x.dataset.rg; haptic('light'); tabTeacherProfile().catch(fail); }));
+  $('[data-rsort]').onchange = (e) => { RST.sort = e.target.value; tabTeacherProfile().catch(fail); };
+  let qt = null;
+  $('[data-rq]').oninput = (e) => { clearTimeout(qt); qt = setTimeout(() => { RST.q = e.target.value; tabTeacherProfile().then(() => { const i = $('[data-rq]'); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }).catch(fail); }, 300); };
+  $$('[data-st]').forEach((x) => (x.onclick = () => openView({ type: 'student', id: x.dataset.st, parent: null })));
+}

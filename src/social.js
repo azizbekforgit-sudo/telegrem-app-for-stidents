@@ -101,6 +101,9 @@ export const FLOORS = ['wood', 'tiles', 'carpet', 'grass'];
 const PEER_XP_PER_STAR = 6; // 5★ = 30 XP
 const PEER_XP_WEEK_CAP = 150;
 const ASK_PER_DAY = 10;
+const RATE_PER_WEEK = 5;
+// осмысленный текст: хотя бы 2 слова и 6 букв, не «ъъъъъ»
+const meaningful = (t, minLetters = 6) => { const letters = (t.match(/\p{L}/gu) || []); return letters.length >= minLetters && new Set(letters.map((x) => x.toLowerCase())).size >= 4 && t.trim().split(/\s+/).length >= 2; };
 
 export function createSocial({ logic, store, code, notifyTeacher = async () => {} }) {
   const S = logic.S;
@@ -142,7 +145,7 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
     const q = G().questions[qid];
     if (!q || q.to !== String(uid)) throw httpError(404, 'Вопрос не найден');
     const t = clean(text, 200);
-    if (t.length < 1) throw httpError(400, 'Напиши ответ');
+    if (!((t.match(/\p{L}|\p{N}|\p{Extended_Pictographic}/gu) || []).length >= 2)) throw httpError(400, 'Напиши ответ словами');
     q.answer = t;
     q.answeredAt = Date.now();
     store.save();
@@ -168,8 +171,12 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
     if (!isStudent(to) || from.id === to.id) throw httpError(400, 'Так нельзя');
     const s = Math.round(Number(stars));
     if (!(s >= 1 && s <= 5)) throw httpError(400, 'Оценка от 1 до 5');
+    const mine = new Set(logic.userGroups(from.id).map((x) => x.id));
+    if (!logic.userGroups(to.id).some((x) => mine.has(x.id))) throw httpError(403, 'Звёзды можно ставить только одноклассникам из своей группы');
     const w = weekStart();
     const key = `${from.id}:${to.id}:${w}`;
+    const given = Object.values(g.ratings).filter((r) => r.from === from.id && r.week === w && r.to !== to.id).length;
+    if (!g.ratings[key] && given >= RATE_PER_WEEK) throw httpError(429, `За неделю можно оценить ${RATE_PER_WEEK} одноклассников — выбирай, кто правда помог`);
     g.ratings[key] = { from: from.id, to: to.id, week: w, stars: s, at: Date.now() };
     store.save();
     logic.log('rate', { from: logic.name(from), to: logic.name(to), stars: s });
@@ -314,7 +321,7 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
   }
   function reflect(uid, k, text) {
     const t = clean(text, 300);
-    if (t.length < 3) throw httpError(400, 'Напиши хотя бы пару слов');
+    if (!meaningful(t)) throw httpError(400, 'Напиши хотя бы одно настоящее предложение — своими словами');
     const id = `${uid}:${k}`;
     G().reflections[id] = { userId: String(uid), k: String(k), text: t, at: Date.now() };
     const got = grant(uid, 'heart', 'reflect');
@@ -370,11 +377,13 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
       house: { done: st.done.length, total: st.total, files: st.files },
       qa: qs,
       rating: ratingOf(u.id, viewer),
-      canRate: isStudent(user(viewer)) && !meView,
+      canRate: isStudent(user(viewer)) && !meView && logic.userGroups(u.id).some((x) => logic.userGroups(viewer).some((y) => y.id === x.id)),
       canAsk: (isStudent(user(viewer)) || logic.isAdmin(viewer)) && !meView,
       pet: petName(u.prefs?.mascot || 'kapi', lang),
       room: roomOf(u.id),
       built: builtOf(u.id),
+      stats: (() => { const pr = progressOf(u.id); return { tests: pr.tests, hw: pr.hw, house: pr.house, answers: pr.answers }; })(),
+      sameGroup: (() => { const mine = new Set(logic.userGroups(viewer).map((x) => x.id)); return logic.userGroups(u.id).some((x) => mine.has(x.id)); })(),
     };
   }
   // кратко для /me

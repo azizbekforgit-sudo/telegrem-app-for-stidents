@@ -17,6 +17,15 @@ import { createBot } from './bot.js';
 
 const PORT = Number(process.env.PORT || 3000);
 const BOT_TOKEN = process.env.BOT_TOKEN || '';
+// Токен бота никогда не печатаем: ошибки Telegram содержат полный URL запроса с токеном
+{
+  const tok = process.env.BOT_TOKEN;
+  if (tok) {
+    const util = await import('node:util');
+    const scrub = (a) => (typeof a === 'string' ? a : util.inspect(a, { depth: 4 })).split(tok).join('<BOT_TOKEN>');
+    for (const k of ['log', 'error', 'warn', 'info']) { const orig = console[k].bind(console); console[k] = (...args) => orig(...args.map(scrub)); }
+  }
+}
 const ADMIN_IDS = (process.env.ADMIN_IDS || '7183098167').split(',').map((s) => s.trim()).filter(Boolean);
 const PUBLIC_URL = (process.env.PUBLIC_URL || process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`).replace(/\/$/, '');
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || '';
@@ -387,6 +396,31 @@ adm.post('/logins', h(async () => {
 // ───────── журнал: расписание, посещаемость, оценки ─────────
 adm.get('/journal', h(() => journal.adminJournal()));
 adm.get('/social', h(() => social.adminFeed()));
+adm.get('/roster', h(() => {
+  const o = logic.adminOverview();
+  const gName = Object.fromEntries(o.groups.map((g) => [g.id, `${g.emoji} ${g.name}`]));
+  return o.students.map((s) => {
+    const u = logic.S.users[s.id];
+    const ts = logic.testStatus(s.id);
+    const done = ts.filter((t) => t.doneAt);
+    const debts = ts.filter((t) => !t.doneAt).map((t) => t.title('ru'));
+    const pcts = done.map((t) => t.pct).filter((x) => x != null);
+    let d = null;
+    try { d = journal.diary(s.id).stats; } catch { /* нет журнала */ }
+    let t = null;
+    try { t = tasksOf(s.id); } catch { /* */ }
+    const pr = social.progressOf(s.id);
+    const lastRes = Object.values(logic.S.attempts).filter((a) => a.userId === s.id && a.finishedAt && !a.preview).reduce((m, a) => Math.max(m, a.finishedAt), 0) || null;
+    return {
+      id: s.id, name: s.name, prefs: u?.prefs || null, groups: (s.groups || []).map((g) => gName[g]).filter(Boolean), groupIds: s.groups || [],
+      xp: logic.totalXp(s.id), streak: u?.streak || 0,
+      tests: { given: ts.length, done: done.length, avg: pcts.length ? Math.round(pcts.reduce((a, b) => a + b, 0) / pcts.length) : null }, debts,
+      hw: t ? { done: t.hw.filter((x) => x.done).length, total: t.hw.length } : null,
+      attendance: d ? { pct: d.attendance, missed: d.missed, lessons: d.lessons } : null, grade: d?.avgGrade ?? null,
+      house: pr.house, lastSeenAt: u?.lastSeenAt || null, lastResultAt: lastRes,
+    };
+  });
+}));
 adm.post('/wishes/:id', h((req) => social.wishDone(req.params.id, req.body?.done !== false)));
 adm.get('/students/:uid/diary', h((req) => journal.diary(req.params.uid)));
 adm.post('/groups/:gid/schedule', h((req) => ({ schedule: journal.setSchedule(req.params.gid, req.body?.slots) })));
