@@ -1673,3 +1673,6 @@ body.t-shell #app[data-w="narrow"] { max-width: 760px; }
   .rs-right { flex-direction: column; }
   .rs-sort { width: 100%; }
 }
+/* комната — свой слой: вещи и питомец никогда не вылезают поверх меню и шапки при прокрутке */
+.room-wrap { position: relative; isolation: isolate; z-index: 0; }
+.room { isolation: isolate; overflow: hidden; contain: paint; }
