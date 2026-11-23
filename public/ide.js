@@ -1,3 +1,4 @@
+import { stepOk } from './codecheck.js';
 // Мини-«VS Code» для обучалки: вкладки файлов, подсветка, подсказки при наборе (как IntelliSense),
 // живое превью / консоль, поиск ошибок и проверка шагов задания.
 import { tr } from './i18n.js';
@@ -245,14 +246,7 @@ export function wrongTopic(files, allow) {
 // ───────── проверка шагов задания ─────────
 const stripComments = (name, src) => (fileLang(name) === 'html' ? src.replace(/<!--[\s\S]*?-->/g, '') : fileLang(name) === 'css' ? src.replace(/\/\*[\s\S]*?\*\//g, '') : fileLang(name) === 'js' ? src.replace(/\/\*[\s\S]*?\*\/|(^|[^:])\/\/.*$/gm, '$1') : src);
 export function checkSteps(task, files, console_ = '') {
-  return (task.steps || []).map((st) => {
-    try {
-      if (st.out) return new RegExp(st.out, 'm').test(console_);
-      const src = stripComments(st.file, files[st.file] || '');
-      const ok = new RegExp(st.re, st.flags ?? 'i').test(src);
-      return st.not ? !ok : ok;
-    } catch { return false; }
-  });
+  return (task.steps || []).map((st) => stepOk(st, files, console_));
 }
 
 // ───────── превью: страница или консоль ─────────

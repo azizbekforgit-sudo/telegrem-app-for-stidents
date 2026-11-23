@@ -1029,6 +1029,7 @@ const ADMIN_TABS = [['dash', 'widget-5', 'Панель'], ['path', 'home-smile',
 
 function renderNav() {
   if (S.me.isAdmin) return teacherNav();
+  if (!S.me.isParent) return studentNav();
   const tabs = S.me.isAdmin ? ADMIN_TABS : S.me.isParent ? PARENT_TABS : STUDENT_TABS;
   nav.hidden = false;
   nav.innerHTML = `<div class="in">${tabs.map(([id, icon, t]) => `<button data-tab="${id}" class="${S.tab === id ? 'on' : ''}">${ic(icon)}${t}</button>`).join('')}</div>`;
@@ -1061,7 +1062,8 @@ async function route() {
   if (S.view?.type === 'parents') return viewParents();
   if (S.view?.type === 'page') return viewPage(S.view.id);
   if (S.me?.isAdmin) app.dataset.w = T_WIDE.has(S.tab) && !S.view ? 'wide' : 'narrow';
-  const r = { social: tabSocial, tprofile: tabTeacherProfile, home: tabHome, league: tabLeague, stats: tabStats, profile: tabProfile, dash: tabDash, groups: tabGroups, path: tabTeacherPath, journal: tabJournal, diary: tabDiary, shop: tabShop, tests: tabTests, bot: tabBot, phome: tabParentHome, kids: tabKids, pprofile: tabParentProfile }[S.tab];
+  if (S.me && !S.me.isAdmin && !S.me.isParent) app.dataset.w = ['room', 'tasks'].includes(S.tab) && !S.view ? 'wide' : 'narrow';
+  const r = { tasks: tabTasks, room: tabRoom, social: tabSocial, tprofile: tabTeacherProfile, home: tabHome, league: tabLeague, stats: tabStats, profile: tabProfile, dash: tabDash, groups: tabGroups, path: tabTeacherPath, journal: tabJournal, diary: tabDiary, shop: tabShop, tests: tabTests, bot: tabBot, phome: tabParentHome, kids: tabKids, pprofile: tabParentProfile }[S.tab];
   await r();
 }
 async function refreshMe() {
@@ -1073,6 +1075,7 @@ async function refreshMe() {
 function topbar(left = '') {
   const m = S.me;
   if (m.isParent) return parentTop();
+  if (document.body.classList.contains('s-shell')) return left ? `<div class="topbar"><div class="row">${left}</div></div>` : '';
   return `<div class="topbar"><div class="row">${left || (m.groups[0] ? `<span class="pill accent">${emo(m.groups[0].emoji)}${esc(m.groups[0].name)}</span>` : '<span class="pill">Без группы</span>')}</div>
     <div class="row" style="gap:6px"><span class="chip ${m.streak ? '' : 'off'}">${emo(E.fire)}${m.streak}</span><span class="chip">${emo(E.bolt)}${m.xp}</span></div></div>`;
 }
@@ -2291,13 +2294,15 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
       const k = showCur();
       const bad = probs.find((p) => p.sev >= 2);
       if (wrong) { say(`Стоп! Ты пишешь ${LANG_NAME[wrong.what] || wrong.what} в ${wrong.file} — это другой урок. Сейчас мы проходим «${topic}». Убери это.`, 'oops', 'angry'); haptic('error'); return; }
-      if (bad) {
+      // ошибка линтера только предупреждает: шаги всё равно проверяются (линтер может ошибаться)
+      if (bad && k !== -1 && newly < 0) {
         const key = bad.file + bad.msg;
         if (key !== lastErr) { lastErr = key; errSince = Date.now(); haptic('warning'); say(`Ой-ой! ${tr(bad.msg)}${bad.line ? ` (${bad.file}, строка ${bad.line})` : ''}`, 'oops', 'scared'); }
         else if (Date.now() - errSince > 20000) say(`Не сдавайся! Посмотри на строку ${bad.line || ''} в ${bad.file}: ${tr(bad.msg)}`, 'sad', 'angry');
+        if (!exam) $1('[data-done]').disabled = !preview;
         return;
       }
-      lastErr = '';
+      if (!bad) lastErr = '';
       if (exam) return;
       if (k === -1 && steps.length) {
         if (!finished) { finished = true; sfx.win(); setTimeout(confetti, 150); haptic('success'); }
@@ -2366,22 +2371,6 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
 }
 
 // После теста: маскот выходит и говорит «Время писать код!» — домашка из конспекта в редакторе
-async function homeworkCard(el, lessonId, preview) {
-  let c;
-  try { c = await api(`/code/${encodeURIComponent(lessonId)}`); } catch { return; }
-  if (!c?.homework || !el.isConnected) return;
-  const hw = c.homework;
-  const card = document.createElement('div');
-  card.className = 'card hw-card';
-  card.innerHTML = `<div class="teach-row">${me('talk', 96)}<div class="speech" data-hsay></div></div>
-    <button class="btn block" data-hw>${emo('💻')} Писать код</button>`;
-  const res = $('.result', el);
-  if (!res) return;
-  res.insertBefore(card, res.querySelector('.tiles3'));
-  speak($('[data-hsay]', card), `Время писать код! Домашка: **${hw.title}**. ${hw.intro || ''}`, $('.mascot', card));
-  card.classList.add('pop-in');
-  $('[data-hw]', card).onclick = () => codeSession({ task: hw, allow: c.allow, topic: c.topic, lessonId, key: 'hw', kind: 'hw', preview }).then((ok) => { if (ok) { $('[data-hw]', card).outerHTML = `<p class="center"><span class="pill good">✓ ${tr('Домашка готова!')}</span></p>`; } });
-}
 
 // ═══════════════ ОБУЧАЛКА ═══════════════
 async function startLearn(target) {
@@ -3601,6 +3590,7 @@ async function start() {
     renderNav();
     await route();
     if (S.me.isAdmin) refreshTeacherBadges();
+    else if (!S.me.isParent) refreshStudentBadges();
     if (!S.me.isAdmin && !p?.mascot) setTimeout(() => appearanceSheet(true), 400);
   } catch (e) {
     if (!IN_TG && !DEV_USER) return loginScreen();
@@ -3616,10 +3606,11 @@ const SLOT_NAME = { head: 'На голову', face: 'На глаза', neck: '�
 const HOUSE_POSE = ['sad', 'think', 'happy', 'cheer', 'love'];
 // питомец в одежде
 function petHtml(mascotId, emotion, size, wear = {}, cls = '', cond = null) {
+  if (Array.isArray(wear)) return petDressHtml(mascotId, emotion, size, wear, cls);
   const parts = ['head', 'face', 'neck'].filter((s) => wear?.[s] && WEAR_EMO[wear[s]]).map((s) => `<span class="w ${s}">${emo(WEAR_EMO[wear[s]])}</span>`).join('');
   return `<span class="pet-dress" style="width:${size}px;height:${size}px">${mascot(MASCOTS[mascotId] ? mascotId : 'kapi', emotion, size, cls, false, cond)}${parts}</span>`;
 }
-const myPet = (emotion, size, cls = '') => petHtml(LOOK.mascot, emotion, size, S.me?.social?.wear, cls, S.me?.shop ? PET_COND : null);
+const myPet = (emotion, size, cls = '') => petHtml(LOOK.mascot, emotion, size, S.me?.social?.dress || S.me?.social?.wear, cls, S.me?.shop ? PET_COND : null);
 // страница дома: питомец на портрете становится радостнее с каждым испытанием
 const housePose = (html, done) => html.replace(/\/m\/tg\/([a-z]+)-(sad|think|happy|cheer|love)\.jpg/g, (_, id) => `/m/tg/${id}-${HOUSE_POSE[Math.min(done, 4)]}.jpg`);
 const badgeChips = (list) => `<div class="badge-row">${list.map((b) => `<span class="badge-chip" title="${esc(b.about)}">${emo(b.emoji)}<b>${esc(b.name)}</b></span>`).join('')}</div>`;
@@ -3632,8 +3623,8 @@ function socialCards(m) {
   const hd = s.house;
   if (hd?.total) {
     const full = hd.done >= hd.total;
-    h += `<button class="card tap house-card ${full ? 'done' : ''}" data-house>${myPet(HOUSE_POSE[Math.min(hd.done, 4)], 78, 'still')}<div class="grow"><small>${full ? 'Дом построен!' : 'Испытание'}</small><b>Дом для ${esc(s.pet)}</b>
-      <span>${full ? 'Покажи его одноклассникам на своей странице' : `${esc(s.pet)} ждёт тебя: ${hd.done} из ${hd.total}`}</span>
+    h += `<button class="card tap house-card ${full ? 'done' : ''}" data-house>${myPet(HOUSE_POSE[Math.min(hd.done, 4)], 78, 'still')}<div class="grow"><small>Мини-игра</small><b>Дом для ${esc(s.pet)}</b>
+      <span>Расставь вещи и наряди питомца</span>
       <div class="hdots">${Array.from({ length: hd.total }, (_, i) => `<i class="${i < hd.done ? 'on' : ''}"></i>`).join('')}</div></div>${emo('🏠')}</button>`;
   }
   if (s.badges?.length) h += badgeChips(s.badges);
@@ -3646,7 +3637,7 @@ function bindSocial(m) {
   const ib = $('[data-inbox]');
   if (ib) ib.onclick = () => { haptic('light'); inboxSheet(); };
   const hs = $('[data-house]');
-  if (hs) hs.onclick = () => { haptic('medium'); houseSheet(); };
+  if (hs) hs.onclick = () => { haptic('medium'); go('room'); };
   const mp = $('[data-mypage]');
   if (mp) mp.onclick = () => { haptic('light'); openView({ type: 'page', id: m.user.id, parent: S.view }); };
   if (s.askInterest && !S.interestShown) { S.interestShown = true; setTimeout(() => interestFlow(), 700); }
@@ -3682,7 +3673,7 @@ async function viewPage(uid) {
   const QUICK = ['Как дела? 👋', 'Что сейчас учишь? 📚', 'Как ты одел(а) питомца? 🎀', 'Поможешь мне с темой? 🤝'];
   app.innerHTML = `<div class="topbar"><button class="back" data-back>${ic('alt-arrow-left')}Назад</button>${p.me ? '<span class="pill accent">Это ты</span>' : ''}</div>
     <div class="page-hero" style="--pa:${acc.c};--pl:${acc.l}">
-      <div class="page-pet">${petHtml(u.prefs?.mascot, 'happy', 150, u.wear)}</div>
+      <div class="page-pet">${petHtml(u.prefs?.mascot, 'happy', 150, u.dress || u.wear)}</div>
       <h1>${esc(u.name)}</h1>
       <p class="muted small">${p.groups.map((g) => `${emo(g.emoji)} ${esc(g.name)}`).join(' · ')}</p>
       <div class="tags" style="justify-content:center;margin-top:8px"><span class="pill gold">${emo(E.bolt)}<span data-noi18n>${p.xp} XP</span></span>${p.streak ? `<span class="pill">${emo(E.fire)}${p.streak}</span>` : ''}${p.rating.avg != null ? `<span class="pill">⭐ <span data-noi18n>${p.rating.avg} · ${p.rating.n}</span></span>` : ''}</div>
@@ -3690,6 +3681,8 @@ async function viewPage(uid) {
     ${p.badges.length ? sectionTitle('🏅', 'Звания недели') + badgeChips(p.badges) : ''}
     ${p.me ? `<div class="row" style="gap:8px;margin-top:14px"><button class="btn grow" data-wardrobe>${emo('👗')}Гардероб</button><button class="btn ghost grow" data-wish>${emo('🎀')}Попросить одежду</button></div>` : ''}
     ${sectionTitle('🏠', `Дом для ${p.pet}`)}
+    ${p.room ? `<div class="room-wrap view">${roomScene(p.room, u.prefs?.mascot || 'kapi')}</div>${p.me ? `<button class="btn block" data-myroom style="margin-top:10px">${emo('🛋️')} Обустроить дом</button>` : ''}` : ''}
+    ${p.house.files ? sectionTitle('💻', 'Сайт питомца (код)') : ''}
     ${p.house.files ? `<div class="card house-frame"><iframe sandbox="allow-scripts" data-housef title="house"></iframe><p class="small muted center" style="margin-top:6px"><span data-noi18n>${p.house.done} / ${p.house.total}</span></p></div>`
       : `<div class="card center muted small">${p.me ? 'Дом ещё пустой — открой испытание «Дом для питомца» на главной' : 'Дом ещё строится'}</div>`}
     ${p.canRate ? `<div class="card rate-card" style="margin-top:14px"><b>${emo('⭐')} Поставь звёзды</b><p class="small muted">Раз в неделю, можно поменять. За звёзды одноклассник получает XP (до 150 в неделю).</p><div class="stars-row">${stars(p.rating.mine)}</div></div>` : ''}
@@ -3697,9 +3690,11 @@ async function viewPage(uid) {
       <textarea maxlength="150" rows="2" placeholder="Свой вопрос…" data-askt></textarea><button class="btn block" data-ask>${ic('plain-2', 'sm')}Отправить</button></div>` : ''}
     ${sectionTitle('💬', 'Вопросы и ответы')}
     <div class="stack">${p.qa.length ? p.qa.map((q) => `<div class="card qa ${q.answer ? '' : 'pending'}"><div class="row" style="gap:10px;align-items:flex-start">${avatar(q.from)}<div class="grow"><b>${esc(q.from?.name || '')}</b><p data-noi18n>${esc(q.text)}</p>
-      ${q.answer ? `<div class="qa-a">${petHtml(u.prefs?.mascot, 'talk', 34, u.wear, 'still')}<span data-noi18n>${esc(q.answer)}</span></div>` : '<p class="small muted">ждёт ответа</p>'}</div>
+      ${q.answer ? `<div class="qa-a">${petHtml(u.prefs?.mascot, 'talk', 34, u.dress || u.wear, 'still')}<span data-noi18n>${esc(q.answer)}</span></div>` : '<p class="small muted">ждёт ответа</p>'}</div>
       ${p.me || p.admin ? `<button class="btn ghost dim sm" data-qdel="${esc(q.id)}" aria-label="Удалить">${ic('trash-bin-trash', 'sm')}</button>` : ''}</div></div>`).join('') : `<p class="muted center small">${p.me ? 'Пока никто не спрашивал. Загляни в лигу и спроси одноклассников первым!' : 'Пока вопросов нет — спроси первым!'}</p>`}</div>`;
   $('[data-back]').onclick = back;
+  const mr = $('[data-myroom]');
+  if (mr) mr.onclick = () => go('room');
   const fr = $('[data-housef]');
   if (fr) fr.srcdoc = housePose(buildPage(p.house.files), p.house.done);
   const wb = $('[data-wardrobe]');
@@ -4256,4 +4251,282 @@ function bindJournalCommon(j, g) {
   $$('[data-jg]').forEach((b) => (b.onclick = () => { JR.group = b.dataset.jg; haptic('light'); tabJournal().catch(fail); }));
   $$('[data-jmode]').forEach((b) => (b.onclick = () => { JR.mode = b.dataset.jmode; haptic('light'); tabJournal().catch(fail); }));
   $$('[data-cm]').forEach((b) => (b.onclick = () => { JR.m += Number(b.dataset.cm); if (JR.m < 0) { JR.m = 11; JR.y--; } if (JR.m > 11) { JR.m = 0; JR.y++; } tabJournal().catch(fail); }));
+}
+
+// ═══════════════ УЧЕНИК: оболочка как у учителя (меню слева / сверху) ═══════════════
+const S_NAV = [
+  ['Учёба', [['home', 'home-smile', 'Путь'], ['tasks', 'list-check', 'Задачи'], ['diary', 'calendar', 'Дневник']]],
+  ['Питомец', [['room', 'magic-stick-3', 'Дом питомца'], ['shop', 'shop', 'Магазин']]],
+  ['Класс', [['league', 'cup-star', 'Лига'], ['stats', 'chart-2', 'Прогресс']]],
+];
+let S_BADGE = { tasks: 0 };
+function studentNav() {
+  document.body.classList.add('t-shell', 's-shell');
+  const m = S.me;
+  const u = m.user;
+  const ava = petHtml(LOOK.mascot, 'happy', 42, m.social?.dress || m.social?.wear, 'still');
+  const item = ([id, icon, t]) => `<button data-tab="${id}" class="t-link ${S.tab === id ? 'on' : ''}">${ic(icon)}<span>${t}</span>${S_BADGE[id] ? `<i class="t-badge">${S_BADGE[id]}</i>` : ''}</button>`;
+  const chips = `<span class="chip ${m.streak ? '' : 'off'}">${emo(E.fire)}${m.streak}</span><span class="chip">${emo(E.bolt)}${m.xp}</span>`;
+  nav.hidden = false;
+  nav.innerHTML = `<div class="t-side">
+    <div class="t-brand"><img src="/brand/logo.svg" alt=""><b>Зубрик</b><span class="s-chips">${chips}</span>
+      <button class="t-me-mini" data-tab="profile" aria-label="Профиль"><span class="ava s-ava">${ava}</span></button></div>
+    <button class="t-me ${S.tab === 'profile' ? 'on' : ''}" data-tab="profile"><span class="ava s-ava">${ava}</span><div class="grow"><b class="ellipsis">${esc(u.name)}</b><span>${m.groups[0] ? `${esc(m.groups[0].name)}` : 'Мой профиль'}</span></div>${ic('alt-arrow-right')}</button>
+    <div class="s-stats">${chips}</div>
+    <div class="t-links">${S_NAV.map(([sec, items]) => `<div class="t-sec"><small>${sec}</small>${items.map(item).join('')}</div>`).join('')}</div>
+    <div class="t-foot"><button class="t-link" data-look>${ic('pallete-2')}<span>Внешний вид</span></button></div>
+  </div>`;
+  $$('[data-tab]', nav).forEach((b) => (b.onclick = () => { haptic('light'); go(b.dataset.tab); }));
+  $('[data-look]', nav).onclick = () => appearanceSheet(false);
+  const on = $('.t-link.on', nav);
+  if (on && innerWidth < 960) on.scrollIntoView({ inline: 'center', block: 'nearest' });
+  app.dataset.w = ['room', 'tasks'].includes(S.tab) && !S.view ? 'wide' : 'narrow';
+}
+async function refreshStudentBadges() {
+  try { const t = await api('/tasks'); S_BADGE.tasks = t.pending; if (!S.me.isAdmin && !S.me.isParent) studentNav(); } catch { /* не критично */ }
+}
+
+// ═══════════════ «ЗАДАЧИ»: ДЗ, классная работа, контрольные — по полочкам ═══════════════
+const TASKS = { shelf: 'todo' };
+async function tabTasks() {
+  const t = await api('/tasks');
+  S_BADGE.tasks = t.pending;
+  studentNav();
+  const all = [...t.hw, ...t.class, ...t.exams];
+  const todo = all.filter((x) => !x.done);
+  const shelves = [
+    ['todo', '⏳', 'Нерешённые', todo.length + (t.house.done < t.house.total ? 1 : 0)],
+    ['hw', '🏠', 'Домашка', t.hw.filter((x) => !x.done).length],
+    ['class', '🏫', 'Классная', t.class.filter((x) => !x.done).length],
+    ['exams', '🛡️', 'Контрольные', t.exams.filter((x) => !x.done).length],
+    ['done', '✅', 'Решённые', all.filter((x) => x.done).length],
+  ];
+  const list = { todo, hw: t.hw, class: t.class, exams: t.exams, done: all.filter((x) => x.done) }[TASKS.shelf] || todo;
+  const kindTag = { hw: ['🏠', 'ДЗ'], class: ['🏫', 'Классная'], exam: ['🛡️', 'Контрольная'] };
+  const card = (x) => {
+    const [e, k] = kindTag[x.kind];
+    const meta = x.kind === 'exam' ? [x.strict ? '−100 XP за ошибку' : '', x.timeLimit ? `${Math.round(x.timeLimit / 60)} мин` : '', `${x.questions} вопросов`].filter(Boolean).join(' · ') : `${esc(x.lesson)}${x.kind === 'class' ? ` · раздел ${x.section}` : ''} · ${plural(x.steps, 'шаг', 'шага', 'шагов')}`;
+    return `<div class="task-card ${x.done ? 'is-done' : ''} k-${x.kind}">
+      <div class="task-ic">${emo(x.kind === 'exam' ? x.emoji : e)}</div>
+      <div class="grow"><div class="task-tags"><span class="pill ${x.kind === 'exam' ? 'bad' : x.kind === 'hw' ? 'accent' : ''}">${k}</span>${x.done ? '<span class="pill good">✓ решено</span>' : x.later ? '<span class="pill gold">отложено</span>' : ''}</div>
+        <b>${esc(x.title)}</b><span class="small muted">${meta}</span>${x.intro && !x.done ? `<p class="small task-intro">${esc(x.intro)}</p>` : ''}</div>
+      <button class="btn ${x.done ? 'ghost' : ''} sm" data-task="${x.kind}|${esc(x.lessonId)}|${x.key || ''}|${x.pubId}">${x.done ? (x.kind === 'exam' ? 'Результат' : 'Ещё раз') : x.kind === 'exam' ? 'Начать' : 'Решить'}</button></div>`;
+  };
+  const houseCard = TASKS.shelf === 'todo' && t.house.done < t.house.total ? `<div class="task-card k-house"><div class="task-ic">${emo('🏡')}</div><div class="grow"><div class="task-tags"><span class="pill accent">Испытание</span></div><b>Дом для ${esc(t.house.pet)}</b><span class="small muted">${t.house.done} из ${t.house.total} · за каждое — вещь в дом</span></div><button class="btn sm" data-housego>Решить</button></div>` : '';
+  app.innerHTML = tHead('Задачи', t.pending ? `${plural(t.pending, 'задача ждёт', 'задачи ждут', 'задач ждут')} тебя` : 'Всё решено — ты молодец! 🎉') + `
+    <div class="shelves">${shelves.map(([id, e, n, c]) => `<button class="shelf ${TASKS.shelf === id ? 'on' : ''}" data-shelf="${id}">${emo(e)}<span>${n}</span>${c ? `<i>${c}</i>` : ''}</button>`).join('')}</div>
+    <div class="task-list">${houseCard}${list.map(card).join('') || (houseCard ? '' : emptyState(TASKS.shelf === 'done' ? 'think' : 'love', TASKS.shelf === 'done' ? 'Пока ничего не решено' : 'Здесь пусто', TASKS.shelf === 'hw' ? 'ДЗ появляется после каждого решённого теста.' : TASKS.shelf === 'class' ? 'Классная работа — код в обучалке урока.' : TASKS.shelf === 'exams' ? 'Контрольные присылает учитель.' : 'Новые задачи появятся после тестов и уроков.'))}</div>`;
+  $$('[data-shelf]').forEach((b) => (b.onclick = () => { TASKS.shelf = b.dataset.shelf; haptic('light'); tabTasks().catch(fail); }));
+  const hg = $('[data-housego]');
+  if (hg) hg.onclick = () => houseSheet();
+  $$('[data-task]').forEach((b) => (b.onclick = () => { const [kind, lessonId, key, pubId] = b.dataset.task.split('|'); openTask(kind, lessonId, key, pubId).catch(fail); }));
+}
+async function openTask(kind, lessonId, key, pubId) {
+  if (kind === 'exam') {
+    const m = S.me.path?.length ? S.me : await refreshMe();
+    const p = m.path.find((x) => x.pubId === pubId);
+    if (p) lessonSheet(p);
+    return;
+  }
+  const c = await api(`/code/${encodeURIComponent(lessonId)}`);
+  const task = kind === 'hw' ? c.homework : c.sections?.[key.slice(1)];
+  if (!task) return toast('Задание не найдено');
+  const ok = await codeSession({ task, allow: c.allow, topic: c.topic, lessonId, key, kind: kind === 'hw' ? 'hw' : 'learn' });
+  if (ok) { toast('Задача решена! ✓'); sfx.win(); }
+  if (S.tab === 'tasks') tabTasks().catch(fail);
+}
+
+// После теста: «Домашка — решишь сейчас или потом?»
+async function homeworkCard(el, lessonId, preview) {
+  let c;
+  try { c = await api(`/code/${encodeURIComponent(lessonId)}`); } catch { return; }
+  if (!c?.homework || !el.isConnected) return;
+  const hw = c.homework;
+  const res = $('.result', el);
+  if (!res) return;
+  const card = document.createElement('div');
+  card.className = 'card hw-card';
+  card.innerHTML = `<div class="hw-badge">${emo('🏠')} Домашнее задание</div>
+    <div class="teach-row">${me('talk', 92)}<div class="speech" data-hsay></div></div>
+    <ol class="hw-steps">${(hw.steps || []).map((s) => `<li>${rich(s.say)}</li>`).join('')}</ol>
+    <div class="row hw-act"><button class="btn grow" data-hwnow>${emo('💻')} Решить сейчас</button><button class="btn ghost grow" data-hwlater>${emo('⏰')} Потом</button></div>`;
+  res.insertBefore(card, res.firstChild?.nextSibling || null);
+  speak($('[data-hsay]', card), `Тест решён! Теперь домашка: **${hw.title}**. ${hw.intro || ''} Решишь сейчас или потом?`, $('.mascot', card));
+  card.classList.add('pop-in');
+  setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'center' }), 900);
+  const doneHtml = (t) => `<p class="center"><span class="pill good">${t}</span></p>`;
+  $('[data-hwnow]', card).onclick = () => codeSession({ task: hw, allow: c.allow, topic: c.topic, lessonId, key: 'hw', kind: 'hw', preview }).then((ok) => { if (ok) $('.hw-act', card).outerHTML = doneHtml(`✓ ${tr('Домашка готова!')}`); });
+  $('[data-hwlater]', card).onclick = async () => {
+    if (!preview) { try { await api('/tasks/later', { lessonId }); } catch { /* */ } }
+    haptic('light');
+    $('.hw-act', card).outerHTML = doneHtml(`⏰ ${tr('ДЗ ждёт тебя в «Задачах»')}`);
+    S_BADGE.tasks = (S_BADGE.tasks || 0) + 1;
+  };
+}
+
+// ═══════════════ ДОМ ПИТОМЦА: комната-мини-игра ═══════════════
+// Всё, что ученик заработал, он сам ставит куда хочет: мебель и украшения — в комнату,
+// одежду — на питомца (перетащил на него — надел, утащил с него — снял). Размер и поворот меняются.
+const ROOM = { tab: 'decor', sel: null };
+const ROOM_SAY = ['Ого, как уютно! 😍', 'Мне нравится! 💜', 'Красота!', 'Теперь это мой любимый уголок ✨', 'Ты лучший дизайнер!', 'Ура, обновка!'];
+function petDressHtml(petId, emotion, size, dress, cls = '', edit = false) {
+  const list = Array.isArray(dress) ? dress : [];
+  const parts = list.map((w) => `<span class="w free" ${edit ? `data-rw="${w.id}"` : ''} style="left:${w.x}%;top:${w.y}%;--s:${w.s || 1};--r:${w.r || 0}deg">${emo(WEAR_EMO[w.id] || '❓')}</span>`).join('');
+  return `<span class="pet-dress" style="width:${size}px;height:${size}px">${mascot(MASCOTS[petId] ? petId : 'kapi', emotion, size, cls)}${parts}</span>`;
+}
+function roomScene(r, petId, { edit = false, emotion = 'happy', decor = null } = {}) {
+  const DE = decor ? Object.fromEntries(decor.map((d) => [d.id, d.emoji])) : ROOM_EMO;
+  return `<div class="room wall-${r.wall} floor-${r.floor} ${edit ? 'edit' : ''}" data-room>
+    <div class="room-wall"><i class="room-base"></i></div><div class="room-floor"></div>
+    ${r.items.map((it) => `<div class="ri ${ROOM.sel === 'i:' + it.id && edit ? 'sel' : ''}" ${edit ? `data-ri="${it.id}"` : ''} style="left:${it.x}%;top:${it.y}%;--s:${it.s};--r:${it.r}deg;--fx:${it.f ? -1 : 1};z-index:${10 + (it.z || 0)}">${emo(DE[it.id] || '❓')}</div>`).join('')}
+    <div class="room-pet ${ROOM.sel === 'pet' && edit ? 'sel' : ''}" ${edit ? 'data-rpet' : ''} style="left:${r.pet.x}%;top:${r.pet.y}%;--s:${r.pet.s}">${petDressHtml(petId, emotion, 150, r.wear, 'still', edit)}</div>
+  </div>`;
+}
+const ROOM_EMO = { plant: '🪴', teddy: '🧸', picture: '🖼️', lamp: '💡', sofa: '🛋️', tv: '📺', bed: '🛏️', piano: '🎹', books: '📚', globe: '🌍', laptop: '💻', trophy: '🏆', clock: '⏰', guitar: '🎸', window: '🪟', candle: '🕯️', fish: '🐠', balloons: '🎈', rainbow: '🌈', star: '⭐', cup: '☕', bouquet: '💐' };
+const WALL_NAME = { mint: 'Мята', peach: 'Персик', sky: 'Небо', lilac: 'Сирень', lemon: 'Лимон', night: 'Ночь' };
+const FLOOR_NAME = { wood: 'Паркет', tiles: 'Плитка', carpet: 'Ковёр', grass: 'Трава' };
+
+async function tabRoom() {
+  const d = await api('/room');
+  const R = JSON.parse(JSON.stringify(d.room));
+  let saveT = null;
+  const save = () => { clearTimeout(saveT); saveT = setTimeout(() => api('/room', { room: R }).then((x) => { if (S.me?.social) S.me.social.dress = x.room.wear; }).catch(fail), 700); };
+  const placed = new Set(R.items.map((x) => x.id));
+  const worn = new Set(R.wear.map((x) => x.id));
+  const ownedDecor = d.decor.filter((x) => x.owned).length;
+  const ownedClothes = d.clothes.filter((x) => x.owned).length;
+  const petSay = (t) => { const b = $('[data-rsay]'); if (!b) return; b.textContent = t; b.classList.remove('show'); void b.offsetWidth; b.classList.add('show'); };
+
+  function trayHtml() {
+    if (ROOM.tab === 'walls') {
+      return `<div class="tray-sec"><small>Стены</small><div class="swatches">${d.walls.map((w) => `<button class="sw wall-${w} ${R.wall === w ? 'on' : ''}" data-wall="${w}"><i></i><span>${WALL_NAME[w]}</span></button>`).join('')}</div></div>
+        <div class="tray-sec"><small>Пол</small><div class="swatches">${d.floors.map((f) => `<button class="sw floor-${f} ${R.floor === f ? 'on' : ''}" data-floor="${f}"><i></i><span>${FLOOR_NAME[f]}</span></button>`).join('')}</div></div>`;
+    }
+    const list = ROOM.tab === 'decor' ? d.decor : d.clothes;
+    const used = ROOM.tab === 'decor' ? placed : worn;
+    return `<div class="tray-grid">${list.map((x) => x.owned
+      ? `<button class="tray-it ${used.has(x.id) ? 'used' : ''}" data-tray="${ROOM.tab}:${x.id}" title="${esc(x.name)}">${emo(x.emoji)}<span>${esc(x.name)}</span>${used.has(x.id) ? '<i class="tray-on">✓</i>' : ''}</button>`
+      : `<button class="tray-it locked" data-lock="${esc(x.how)}" title="${esc(x.name)}">${emo(x.emoji)}<span>${esc(x.name)}</span>${x.need ? `<b class="tray-prog"><i style="width:${Math.round((x.have / x.need) * 100)}%"></i></b><em>${x.have}/${x.need}</em>` : `<em>${ic('lock-keyhole', 'sm')}</em>`}</button>`).join('')}</div>`;
+  }
+  function render() {
+    app.innerHTML = tHead(`Дом для ${esc(d.pet)}`, 'Перетаскивай вещи куда хочешь: мебель — в комнату, одежду — прямо на питомца') + `
+      <div class="room-layout"><div class="room-col">
+        <div class="room-wrap">${roomScene(R, d.petId, { edit: true, decor: d.decor })}<div class="room-say" data-rsay></div></div>
+        <div class="room-tools" data-tools ${ROOM.sel ? '' : 'hidden'}>
+          <button data-act="smaller" aria-label="Меньше">➖</button><button data-act="bigger" aria-label="Больше">➕</button>
+          <button data-act="left" aria-label="Повернуть">↺</button><button data-act="right" aria-label="Повернуть">↻</button>
+          <button data-act="flip" aria-label="Отразить">⇋</button><button data-act="front" aria-label="Вперёд">⬆</button>
+          <button data-act="remove" class="del" aria-label="Убрать">${ic('trash-bin-trash', 'sm')}</button></div>
+        <p class="room-hint muted small">${ROOM.sel ? 'Двигай пальцем, меняй размер кнопками. Нажми на пустое место — готово.' : 'Нажми на вещь в комнате, чтобы двигать, крутить и менять размер.'}</p>
+      </div><div class="room-side">
+        <div class="seg room-tabs"><button class="${ROOM.tab === 'decor' ? 'on' : ''}" data-rtab="decor">${emo('🛋️')} Мебель <i>${ownedDecor}/${d.decor.length}</i></button><button class="${ROOM.tab === 'clothes' ? 'on' : ''}" data-rtab="clothes">${emo('🎀')} Одежда <i>${ownedClothes}/${d.clothes.length}</i></button><button class="${ROOM.tab === 'walls' ? 'on' : ''}" data-rtab="walls">${emo('🎨')} Обои</button></div>
+        <div class="tray" data-trayw>${trayHtml()}</div>
+        <div class="room-earn card"><b>${emo('🔓')} Как открыть новые вещи</b><span>Тесты, ДЗ и классная работа в «Задачах», испытания с кодом и серия дней открывают мебель. Одежда — за испытания и звания.</span>
+          <div class="row" style="gap:8px;margin-top:10px"><button class="btn sm grow" data-gotasks>${emo('📋')} Задачи</button><button class="btn sm ghost grow" data-houseq>${emo('💻')} Испытания с кодом</button></div></div>
+      </div></div>`;
+    bind();
+  }
+  const scene = () => $('[data-room]');
+  const pct = (ev) => { const b = scene().getBoundingClientRect(); return { x: ((ev.clientX - b.left) / b.width) * 100, y: ((ev.clientY - b.top) / b.height) * 100, inside: ev.clientX >= b.left && ev.clientX <= b.right && ev.clientY >= b.top && ev.clientY <= b.bottom }; };
+  const petBox = () => $('[data-rpet] .pet-dress').getBoundingClientRect();
+  const onPet = (ev) => { const b = petBox(); return { x: ((ev.clientX - b.left) / b.width) * 100, y: ((ev.clientY - b.top) / b.height) * 100, inside: ev.clientX >= b.left - 10 && ev.clientX <= b.right + 10 && ev.clientY >= b.top - 20 && ev.clientY <= b.bottom + 10 }; };
+  const selObj = () => (ROOM.sel === 'pet' ? R.pet : ROOM.sel?.startsWith('i:') ? R.items.find((x) => x.id === ROOM.sel.slice(2)) : ROOM.sel?.startsWith('w:') ? R.wear.find((x) => x.id === ROOM.sel.slice(2)) : null);
+  const pose = (emotion, ms = 1400) => { const p = $('[data-rpet] .pet-dress'); if (!p) return; const keep = p.innerHTML; p.firstElementChild.outerHTML = mascot(MASCOTS[d.petId] ? d.petId : 'kapi', emotion, 150, 'still'); setTimeout(() => { if (p.isConnected) p.innerHTML = keep; }, ms); };
+
+  function addDecor(id, x, y) {
+    if (placed.has(id)) return;
+    R.items.push({ id, x: Math.min(95, Math.max(5, x)), y: Math.min(96, Math.max(6, y)), s: 1, r: 0, z: R.items.length + 1 });
+    placed.add(id); ROOM.sel = 'i:' + id;
+    sfx.ok(); haptic('success'); render(); petSay(ROOM_SAY[Math.floor(Math.random() * ROOM_SAY.length)]); pose('love'); save();
+  }
+  function addWear(id, x, y) {
+    R.wear = R.wear.filter((w) => w.id !== id);
+    R.wear.push({ id, x: Math.min(110, Math.max(-10, x)), y: Math.min(110, Math.max(-20, y)), s: 1, r: 0 });
+    worn.add(id); ROOM.sel = 'w:' + id;
+    sfx.ok(); haptic('success'); render(); petSay(ROOM_SAY[Math.floor(Math.random() * ROOM_SAY.length)]); pose('cheer'); save();
+  }
+  const DEFAULT_WEAR = { bow: [62, 6], crown: [50, 2], tophat: [50, 0], cap: [50, 4], flower: [30, 10], glasses: [50, 38], scarf: [50, 70], medal: [50, 76], heart: [50, 74] };
+
+  function bind() {
+    $$('[data-rtab]').forEach((b) => (b.onclick = () => { ROOM.tab = b.dataset.rtab; haptic('light'); render(); }));
+    $$('[data-wall]').forEach((b) => (b.onclick = () => { R.wall = b.dataset.wall; haptic('light'); render(); save(); }));
+    $$('[data-floor]').forEach((b) => (b.onclick = () => { R.floor = b.dataset.floor; haptic('light'); render(); save(); }));
+    $$('[data-lock]').forEach((b) => (b.onclick = () => { haptic('warning'); toast(`${emo('🔒')} ${b.dataset.lock}`); }));
+    $('[data-gotasks]').onclick = () => go('tasks');
+    $('[data-houseq]').onclick = () => houseSheet();
+    // из ящика: тап — поставить на видное место, перетаскивание — куда отпустишь
+    $$('[data-tray]').forEach((b) => (b.onpointerdown = (ev) => {
+      const [kind, id] = b.dataset.tray.split(':');
+      const start = { x: ev.clientX, y: ev.clientY };
+      let ghost = null;
+      const move = (e) => {
+        if (!ghost && Math.hypot(e.clientX - start.x, e.clientY - start.y) > 8) {
+          ghost = document.createElement('div');
+          ghost.className = 'drag-ghost';
+          ghost.innerHTML = emo(kind === 'decor' ? ROOM_EMO[id] : WEAR_EMO[id]);
+          document.body.appendChild(ghost);
+          haptic('light');
+        }
+        if (ghost) { ghost.style.left = e.clientX + 'px'; ghost.style.top = e.clientY + 'px'; if (kind === 'clothes') $('[data-rpet]')?.classList.toggle('drop-ok', onPet(e).inside); }
+      };
+      const up = (e) => {
+        removeEventListener('pointermove', move); removeEventListener('pointerup', up);
+        $('[data-rpet]')?.classList.remove('drop-ok');
+        if (!ghost) { // тап
+          if (kind === 'decor') { if (placed.has(id)) { ROOM.sel = 'i:' + id; render(); } else addDecor(id, 25 + Math.random() * 50, ROOM_EMO[id] && d.decor.find((x) => x.id === id)?.layer === 'wall' ? 30 : 75); }
+          else { const p = DEFAULT_WEAR[id] || [50, 30]; addWear(id, p[0], p[1]); }
+          return;
+        }
+        ghost.remove();
+        if (kind === 'decor') { const p = pct(e); if (p.inside) addDecor(id, p.x, p.y); else toast('Отпусти вещь внутри комнаты'); }
+        else { const p = onPet(e); if (p.inside) addWear(id, p.x, p.y); else { haptic('warning'); petSay('Одежду надевают на меня — перетащи прямо на меня! 😄'); } }
+      };
+      addEventListener('pointermove', move); addEventListener('pointerup', up);
+    }));
+    // в комнате: выбрать и тащить
+    const drag = (el, sel, getObj, frame) => (el.onpointerdown = (ev) => {
+      ev.stopPropagation(); ev.preventDefault();
+      if (ROOM.sel !== sel) { ROOM.sel = sel; $$('.ri.sel, .room-pet.sel, .w.free.sel').forEach((x) => x.classList.remove('sel')); el.classList.add('sel'); const t = $('[data-tools]'); if (t) t.hidden = false; }
+      const o = getObj();
+      el.setPointerCapture(ev.pointerId);
+      let moved = false;
+      el.onpointermove = (e) => {
+        const p = frame(e);
+        o.x = Math.round(Math.min(115, Math.max(-15, p.x)) * 10) / 10; o.y = Math.round(Math.min(115, Math.max(-20, p.y)) * 10) / 10;
+        if (sel === 'pet' || sel.startsWith('i:')) { o.x = Math.min(97, Math.max(3, o.x)); o.y = Math.min(99, Math.max(5, o.y)); }
+        el.style.left = o.x + '%'; el.style.top = o.y + '%';
+        moved = true;
+      };
+      el.onpointerup = (e) => {
+        el.onpointermove = null; el.onpointerup = null;
+        if (sel.startsWith('w:') && moved && !onPet(e).inside) { R.wear = R.wear.filter((w) => w.id !== sel.slice(2)); worn.delete(sel.slice(2)); ROOM.sel = null; petSay('Снял! Можешь надеть снова из «Одежды»'); render(); save(); return; }
+        if (moved) { haptic('light'); save(); }
+      };
+    });
+    $$('[data-ri]').forEach((el) => drag(el, 'i:' + el.dataset.ri, () => R.items.find((x) => x.id === el.dataset.ri), pct));
+    const pe = $('[data-rpet]');
+    if (pe) drag(pe, 'pet', () => R.pet, pct);
+    $$('[data-rw]').forEach((el) => drag(el, 'w:' + el.dataset.rw, () => R.wear.find((x) => x.id === el.dataset.rw), onPet));
+    scene().onpointerdown = (ev) => { if (ev.target.closest('[data-ri], [data-rpet]')) return; if (ROOM.sel) { ROOM.sel = null; render(); } };
+    $$('[data-act]').forEach((b) => (b.onclick = () => {
+      const o = selObj();
+      if (!o) return;
+      const a = b.dataset.act;
+      if (a === 'bigger') o.s = Math.min(ROOM.sel === 'pet' ? 1.8 : 3, Math.round((o.s + 0.15) * 100) / 100);
+      if (a === 'smaller') o.s = Math.max(ROOM.sel === 'pet' ? 0.6 : 0.4, Math.round((o.s - 0.15) * 100) / 100);
+      if (a === 'left') o.r = ((o.r || 0) - 15);
+      if (a === 'right') o.r = ((o.r || 0) + 15);
+      if (a === 'flip' && ROOM.sel.startsWith('i:')) o.f = !o.f;
+      if (a === 'front' && ROOM.sel.startsWith('i:')) o.z = Math.max(0, ...R.items.map((x) => x.z || 0)) + 1;
+      if (a === 'remove') {
+        if (ROOM.sel === 'pet') return toast('Питомца убрать нельзя 🙂');
+        const id = ROOM.sel.slice(2);
+        if (ROOM.sel.startsWith('i:')) { R.items = R.items.filter((x) => x.id !== id); placed.delete(id); } else { R.wear = R.wear.filter((x) => x.id !== id); worn.delete(id); }
+        ROOM.sel = null;
+      }
+      haptic('light'); render(); save();
+    }));
+  }
+  render();
+  petSay(`Привет! Это мой дом. Поставь вещи как тебе нравится!`);
 }

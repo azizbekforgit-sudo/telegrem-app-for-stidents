@@ -1367,3 +1367,115 @@ body.t-shell #app[data-w="narrow"] { max-width: 760px; }
   .cal-att .cal-d span { font-size: 13px; }
 }
 @media (min-width: 700px) { .cal-att { max-width: 520px; margin: 10px auto 0; } .att-sum { max-width: 520px; margin-left: auto; margin-right: auto; } .att-legend { justify-content: center; } }
+
+/* ═══════════ УЧЕНИК: оболочка (та же, что у учителя) ═══════════ */
+#nav .s-ava { display: grid; place-items: center; overflow: hidden; background: var(--accent-l); border-radius: 50%; }
+#nav .t-me .s-ava { width: 46px; height: 46px; }
+#nav .t-me-mini .s-ava { width: 38px; height: 38px; }
+#nav .s-ava .pet-dress { transform: scale(.95); }
+.s-chips { display: none; margin-left: auto; gap: 6px; }
+.s-stats { display: flex; gap: 6px; padding: 4px 4px 0; }
+.s-stats .chip { flex: 1; justify-content: center; }
+@media (max-width: 959px) {
+  body.s-shell .s-chips { display: inline-flex; }
+  body.s-shell .s-stats { display: none; }
+  body.s-shell #nav .t-me-mini { margin-left: 6px; }
+}
+
+/* ═══════════ «Задачи» ═══════════ */
+.shelves { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.shelf { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 6px; border-radius: 18px; background: var(--card); border: 2px solid var(--line); font-weight: 800; font-size: 13px; color: var(--muted); transition: transform .15s, border-color .15s; }
+.shelf .emo { width: 30px; height: 30px; }
+.shelf i { position: absolute; top: -7px; right: -5px; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; background: var(--bad); color: #fff; font: 900 12px/22px Nunito, sans-serif; font-style: normal; }
+.shelf.on { border-color: var(--accent); background: var(--accent-l); color: var(--accent-d); transform: translateY(-2px); }
+.task-list { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 14px; }
+@media (min-width: 1100px) { .task-list { grid-template-columns: 1fr 1fr; } }
+.task-card { display: flex; align-items: flex-start; gap: 12px; padding: 14px; border-radius: 20px; background: var(--card); border: 1.5px solid var(--line); box-shadow: var(--shadow); }
+.task-card .btn { align-self: center; flex: none; }
+.task-ic { flex: none; width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; background: var(--accent-l); }
+.task-ic .emo { width: 32px; height: 32px; }
+.k-exam .task-ic { background: var(--bad-l); }
+.k-class .task-ic { background: #dff1ff; }
+.k-house .task-ic { background: var(--gold-l); }
+.task-card b { display: block; font-size: 15.5px; margin: 4px 0 2px; }
+.task-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.task-tags .pill { font-size: 11px; padding: 2px 8px; }
+.task-intro { margin-top: 6px; color: var(--text); opacity: .85; }
+.task-card.is-done { opacity: .7; }
+.task-card.is-done .task-ic { filter: grayscale(.4); }
+@media (max-width: 600px) {
+  .shelves { grid-template-columns: repeat(5, minmax(64px, 1fr)); overflow-x: auto; scrollbar-width: none; padding: 8px 2px 2px; }
+  .shelf { font-size: 11px; padding: 10px 4px; }
+  .task-card { flex-wrap: wrap; }
+  .task-card .btn { width: 100%; }
+}
+/* ДЗ после теста */
+.hw-card { text-align: left; border: 2px solid var(--accent); margin-bottom: 12px; }
+.hw-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: var(--accent); color: #fff; font-weight: 900; font-size: 12.5px; margin-bottom: 8px; }
+.hw-badge .emo { width: 18px; height: 18px; }
+.hw-steps { margin: 8px 0 12px; padding-left: 20px; font-size: 14px; font-weight: 700; display: flex; flex-direction: column; gap: 4px; }
+.hw-act { gap: 8px; }
+
+/* ═══════════ Дом питомца: комната ═══════════ */
+.room-layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 959px) { .room-layout { grid-template-columns: 1fr; } }
+.room-wrap { position: relative; }
+.room { position: relative; width: 100%; aspect-ratio: 4 / 3.3; border-radius: 26px; overflow: hidden; user-select: none; -webkit-user-select: none; touch-action: none; box-shadow: 0 18px 40px -26px rgba(40, 20, 60, .6), inset 0 0 0 2px rgba(255,255,255,.4); }
+.room-wrap.view .room { touch-action: auto; }
+.room-wall { position: absolute; inset: 0 0 38% 0; }
+.room-base { position: absolute; left: 0; right: 0; bottom: 0; height: 9px; background: rgba(0,0,0,.12); }
+.room-floor { position: absolute; inset: 62% 0 0 0; }
+.wall-mint .room-wall { background: repeating-linear-gradient(90deg, #c9f2e3 0 34px, #bdeed9 34px 68px); }
+.wall-peach .room-wall { background: radial-gradient(circle at 20px 20px, #ffd9c2 4px, transparent 5px) 0 0 / 40px 40px, #ffe9dc; }
+.wall-sky .room-wall { background: linear-gradient(#bfe4ff, #e5f4ff); }
+.wall-lilac .room-wall { background: repeating-linear-gradient(45deg, #e6dcff 0 16px, #ddd0ff 16px 32px); }
+.wall-lemon .room-wall { background: radial-gradient(circle at 15px 15px, #fff0a0 5px, transparent 6px) 0 0 / 30px 30px, #fff8d1; }
+.wall-night .room-wall { background: radial-gradient(1.5px 1.5px at 20% 30%, #fff, transparent), radial-gradient(1.5px 1.5px at 70% 20%, #fff, transparent), radial-gradient(1px 1px at 45% 60%, #fff, transparent), linear-gradient(#232b5a, #3a3f86); }
+.floor-wood .room-floor { background: repeating-linear-gradient(90deg, #d39b62 0 46px, #c58b52 46px 48px), #d39b62; }
+.floor-tiles .room-floor { background: conic-gradient(#f1f1f5 25%, #dcdce6 0 50%, #f1f1f5 0 75%, #dcdce6 0) 0 0 / 48px 48px; }
+.floor-carpet .room-floor { background: radial-gradient(ellipse at 50% 40%, #ff9fbf, #e86d98 70%); }
+.floor-grass .room-floor { background: repeating-linear-gradient(100deg, #7ccf5a 0 6px, #6cc24c 6px 12px); }
+.ri { position: absolute; width: calc(13% * var(--s, 1)); transform: translate(-50%, -50%) rotate(var(--r, 0deg)) scaleX(var(--fx, 1)); cursor: grab; transition: filter .15s; filter: drop-shadow(0 6px 6px rgba(0,0,0,.18)); }
+.ri .emo, .ri .emo-txt { width: 100%; height: auto; display: block; pointer-events: none; }
+.room-pet { position: absolute; width: calc(34% * var(--s, 1)); transform: translate(-50%, -88%); z-index: 50; cursor: grab; }
+.room-pet .pet-dress { width: 100% !important; height: auto !important; aspect-ratio: 1; display: block; }
+.room-pet .pet-dress > svg, .room-pet .pet-dress > img, .room-pet .pet-dress > .mascot { width: 100% !important; height: 100% !important; }
+.room-pet::after { content: ''; position: absolute; left: 18%; right: 18%; bottom: -2%; height: 9%; border-radius: 50%; background: rgba(0,0,0,.18); z-index: -1; }
+.room.edit .ri.sel, .room.edit .room-pet.sel, .room.edit .w.free.sel { outline: 3px dashed #fff; outline-offset: 3px; border-radius: 12px; filter: drop-shadow(0 0 10px var(--accent)); }
+.room-pet.drop-ok .pet-dress { filter: drop-shadow(0 0 14px var(--accent)) brightness(1.08); }
+.pet-dress > .w.free { position: absolute; width: calc(36% * var(--s, 1)); transform: translate(-50%, -50%) rotate(var(--r, 0deg)); z-index: 3; pointer-events: auto; cursor: grab; }
+.pet-dress > .w.free .emo, .pet-dress > .w.free .emo-txt { width: 100%; height: auto; display: block; pointer-events: none; }
+.room-say { position: absolute; left: 50%; top: 12px; transform: translate(-50%, -8px); max-width: 80%; padding: 8px 14px; border-radius: 16px; background: #fff; color: #2f2437; font-weight: 800; font-size: 14px; box-shadow: 0 8px 20px -10px rgba(0,0,0,.4); opacity: 0; pointer-events: none; z-index: 80; text-align: center; }
+.room-say.show { animation: roomSay 3.2s ease forwards; }
+@keyframes roomSay { 0% { opacity: 0; transform: translate(-50%, -8px); } 10%, 80% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; transform: translate(-50%, 0); } }
+.room-tools { display: flex; justify-content: center; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+.room-tools button { width: 46px; height: 46px; border-radius: 14px; background: var(--card); border: 1.5px solid var(--line); font-size: 19px; font-weight: 900; box-shadow: 0 3px 0 var(--line); }
+.room-tools button:active { transform: translateY(2px); box-shadow: none; }
+.room-tools button.del { color: var(--bad-d); }
+.room-hint { text-align: center; margin-top: 8px; }
+.room-tabs button i { font-style: normal; font-size: 11px; opacity: .7; }
+.tray { margin-top: 10px; }
+.tray-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; }
+.tray-it { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 4px 8px; border-radius: 16px; background: var(--card); border: 2px solid var(--line); font-size: 11.5px; font-weight: 800; color: var(--muted); touch-action: none; cursor: grab; text-align: center; line-height: 1.15; }
+.tray-it .emo { width: 40px; height: 40px; pointer-events: none; }
+.tray-it:not(.locked):hover { border-color: var(--accent); transform: translateY(-2px); }
+.tray-it.used { border-color: var(--good); background: var(--good-l); }
+.tray-on { position: absolute; top: 4px; right: 6px; font-style: normal; color: var(--good-d); font-weight: 900; }
+.tray-it.locked { cursor: pointer; touch-action: auto; }
+.tray-it.locked .emo { filter: grayscale(1); opacity: .35; }
+.tray-it em { font-style: normal; font-size: 11px; color: var(--muted); display: inline-flex; }
+.tray-prog { display: block; width: 70%; height: 5px; border-radius: 3px; background: var(--track); overflow: hidden; }
+.tray-prog i { display: block; height: 100%; background: var(--accent); }
+.tray-sec small { display: block; font-weight: 800; color: var(--muted); margin: 6px 0; }
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); gap: 8px; }
+.sw { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px; border-radius: 14px; border: 2px solid var(--line); background: var(--card); font-size: 12px; font-weight: 800; }
+.sw i { display: block; width: 100%; height: 40px; border-radius: 10px; }
+.sw.on { border-color: var(--accent); }
+.sw.wall-mint i { background: #c9f2e3; } .sw.wall-peach i { background: #ffe0cc; } .sw.wall-sky i { background: #cfeaff; } .sw.wall-lilac i { background: #e1d6ff; } .sw.wall-lemon i { background: #fff3b0; } .sw.wall-night i { background: #2b3270; }
+.sw.floor-wood i { background: #d39b62; } .sw.floor-tiles i { background: conic-gradient(#f1f1f5 25%, #dcdce6 0 50%, #f1f1f5 0 75%, #dcdce6 0) 0 0 / 20px 20px; } .sw.floor-carpet i { background: #f08aad; } .sw.floor-grass i { background: #74c853; }
+.room-earn { margin-top: 12px; display: block; }
+.room-earn b { display: flex; align-items: center; gap: 6px; }
+.room-earn span { display: block; font-size: 13px; color: var(--muted); margin-top: 4px; font-weight: 700; }
+.drag-ghost { position: fixed; z-index: 9999; width: 64px; height: 64px; transform: translate(-50%, -60%) scale(1.15); pointer-events: none; filter: drop-shadow(0 10px 14px rgba(0,0,0,.3)); }
+.drag-ghost .emo { width: 100%; height: 100%; }
+.room-tools[hidden] { display: none; }

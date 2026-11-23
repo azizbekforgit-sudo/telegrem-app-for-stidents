@@ -1,3 +1,4 @@
+import { stepOk } from '../public/codecheck.js';
 // Типы вопросов, их «публичный» вид для ученика (без ответов) и проверка.
 //
 //   choice    { prompt, options: [..], answer: <индекс> }
@@ -108,7 +109,7 @@ export function checkAnswer(q, answer) {
     case 'code': {
       const files = cleanFiles(answer);
       const ok = (q.task.steps || []).every((st) => {
-        try { return st.out ? false : new RegExp(st.re, st.flags ?? 'i').test(stripComments(st.file, files[st.file] || '')) !== Boolean(st.not); } catch { return false; }
+        return st.out ? false : stepOk(st, files);
       });
       return { correct: ok, correctText: q.task.sample || '' };
     }

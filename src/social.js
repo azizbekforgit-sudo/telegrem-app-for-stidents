@@ -57,6 +57,47 @@ export function personalize(v, ctx, inRe = false) {
   return v;
 }
 
+
+// ───────── Комната питомца: мебель и украшения (мини-игра «Дом питомца») ─────────
+// Вещи открываются за учёбу: тесты, ДЗ, классную работу, испытания с кодом, серию дней, ответы одноклассникам.
+// layer: wall — висит на стене, floor — стоит на полу (влияет только на подсказку, ставить можно куда угодно)
+const T3 = (ru, uz, en) => ({ ru, uz, en });
+export const DECOR = {
+  plant: { emoji: '🪴', layer: 'floor', name: T3('Цветок в горшке', 'Tuvakdagi gul', 'Potted plant'), rule: null },
+  teddy: { emoji: '🧸', layer: 'floor', name: T3('Плюшевый мишка', 'Ayiqcha', 'Teddy bear'), rule: null },
+  picture: { emoji: '🖼️', layer: 'wall', name: T3('Картина', 'Rasm', 'Picture'), rule: ['tests', 1] },
+  lamp: { emoji: '💡', layer: 'wall', name: T3('Лампа', 'Chiroq', 'Lamp'), rule: ['tests', 3] },
+  sofa: { emoji: '🛋️', layer: 'floor', name: T3('Диван', 'Divan', 'Sofa'), rule: ['tests', 5] },
+  tv: { emoji: '📺', layer: 'floor', name: T3('Телевизор', 'Televizor', 'TV'), rule: ['tests', 8] },
+  bed: { emoji: '🛏️', layer: 'floor', name: T3('Кровать', 'Karavot', 'Bed'), rule: ['tests', 12] },
+  piano: { emoji: '🎹', layer: 'floor', name: T3('Пианино', 'Pianino', 'Piano'), rule: ['tests', 20] },
+  books: { emoji: '📚', layer: 'floor', name: T3('Стопка книг', 'Kitoblar', 'Books'), rule: ['hw', 1] },
+  globe: { emoji: '🌍', layer: 'floor', name: T3('Глобус', 'Globus', 'Globe'), rule: ['hw', 3] },
+  laptop: { emoji: '💻', layer: 'floor', name: T3('Ноутбук', 'Noutbuk', 'Laptop'), rule: ['hw', 6] },
+  trophy: { emoji: '🏆', layer: 'floor', name: T3('Кубок', 'Kubok', 'Trophy'), rule: ['hw', 10] },
+  clock: { emoji: '⏰', layer: 'wall', name: T3('Часы', 'Soat', 'Clock'), rule: ['class', 3] },
+  guitar: { emoji: '🎸', layer: 'floor', name: T3('Гитара', 'Gitara', 'Guitar'), rule: ['class', 8] },
+  window: { emoji: '🪟', layer: 'wall', name: T3('Окно', 'Deraza', 'Window'), rule: ['house', 1] },
+  candle: { emoji: '🕯️', layer: 'floor', name: T3('Свеча', 'Sham', 'Candle'), rule: ['house', 2] },
+  fish: { emoji: '🐠', layer: 'floor', name: T3('Аквариум', 'Akvarium', 'Aquarium'), rule: ['house', 3] },
+  balloons: { emoji: '🎈', layer: 'wall', name: T3('Шарики', 'Sharlar', 'Balloons'), rule: ['house', 4] },
+  rainbow: { emoji: '🌈', layer: 'wall', name: T3('Радуга', 'Kamalak', 'Rainbow'), rule: ['streak', 3] },
+  star: { emoji: '⭐', layer: 'wall', name: T3('Звезда', 'Yulduz', 'Star'), rule: ['streak', 7] },
+  cup: { emoji: '☕', layer: 'floor', name: T3('Кружка какао', 'Kakao krujkasi', 'Cocoa mug'), rule: ['answers', 3] },
+  bouquet: { emoji: '💐', layer: 'floor', name: T3('Букет', 'Guldasta', 'Bouquet'), rule: ['rated', 3] },
+};
+const RULE_TXT = {
+  tests: T3('Реши тестов: {n}', 'Testlar yech: {n}', 'Solve tests: {n}'),
+  hw: T3('Сделай ДЗ: {n}', 'Uy vazifasi: {n}', 'Do homework: {n}'),
+  class: T3('Классная работа: {n}', 'Sinf ishi: {n}', 'Classwork: {n}'),
+  house: T3('Испытаний с кодом: {n}', 'Kodli sinovlar: {n}', 'Code challenges: {n}'),
+  streak: T3('Серия дней: {n}', 'Kunlar seriyasi: {n}', 'Day streak: {n}'),
+  answers: T3('Ответь одноклассникам: {n}', 'Sinfdoshlarga javob: {n}', 'Answer classmates: {n}'),
+  rated: T3('Звёзды от одноклассников: {n}', 'Sinfdoshlardan yulduz: {n}', 'Stars from classmates: {n}'),
+};
+export const WALLS = ['mint', 'peach', 'sky', 'lilac', 'lemon', 'night'];
+export const FLOORS = ['wood', 'tiles', 'carpet', 'grass'];
+
 const PEER_XP_PER_STAR = 6; // 5★ = 30 XP
 const PEER_XP_WEEK_CAP = 150;
 const ASK_PER_DAY = 10;
@@ -73,7 +114,7 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
   const students = () => Object.values(S.users).filter(isStudent);
   const langOf = (uid) => user(uid)?.prefs?.lang || 'ru';
   const L = (v, lang) => (v && typeof v === 'object' ? v[lang] || v.ru : v);
-  const brief = (u) => (u ? { id: u.id, name: logic.name(u), prefs: u.prefs || null, wear: u.wardrobe?.wear || {} } : null);
+  const brief = (u) => (u ? { id: u.id, name: logic.name(u), prefs: u.prefs || null, wear: u.wardrobe?.wear || {}, dress: u.room?.wear || null } : null);
   const nextId = (p) => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   // неделя с понедельника 00:00 по Ташкенту
   const weekStart = (t = Date.now()) => { const d = new Date(t + TZ_MS); const day = (d.getUTCDay() + 6) % 7; return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - day) - TZ_MS; };
@@ -332,6 +373,7 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
       canRate: isStudent(user(viewer)) && !meView,
       canAsk: (isStudent(user(viewer)) || logic.isAdmin(viewer)) && !meView,
       pet: petName(u.prefs?.mascot || 'kapi', lang),
+      room: roomOf(u.id),
     };
   }
   // кратко для /me
@@ -339,7 +381,74 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
     const u = user(uid);
     if (!isStudent(u)) return null;
     const st = houseState(u.id);
-    return { inbox: inbox(u.id).length, house: { done: st.done.length, total: st.total }, badges: badgesOf(u.id, langOf(uid)), wear: u.wardrobe?.wear || {}, askInterest: shouldAsk(u.id), pet: petName(u.prefs?.mascot || 'kapi', langOf(uid)) };
+    return { inbox: inbox(u.id).length, house: { done: st.done.length, total: st.total }, badges: badgesOf(u.id, langOf(uid)), wear: u.wardrobe?.wear || {}, dress: u.room?.wear || null, askInterest: shouldAsk(u.id), pet: petName(u.prefs?.mascot || 'kapi', langOf(uid)) };
+  }
+
+
+  // ───────── комната питомца ─────────
+  function progressOf(uid) {
+    uid = String(uid);
+    const lessons = new Set(Object.values(S.attempts).filter((a) => a.userId === uid && a.finishedAt && !a.preview && a.kind !== 'mistakes').map((a) => a.lessonId));
+    const code = Object.keys(S.code || {}).filter((k) => k.startsWith(uid + ':'));
+    return {
+      tests: lessons.size,
+      hw: code.filter((k) => k.endsWith(':hw')).length,
+      class: code.filter((k) => /:s\d+$/.test(k)).length,
+      house: houseState(uid).done.length,
+      streak: Math.max(user(uid)?.streak || 0, user(uid)?.bestStreak || 0),
+      answers: Object.values(G().questions).filter((q) => q.to === uid && q.answer).length,
+      rated: Object.values(G().ratings).filter((r) => r.to === uid).length,
+    };
+  }
+  const decorOwned = (uid, prog = progressOf(uid)) => Object.entries(DECOR).filter(([, d]) => !d.rule || prog[d.rule[0]] >= d.rule[1]).map(([id]) => id);
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, Number(v) || 0));
+  function cleanRoom(uid, r) {
+    const owned = new Set(decorOwned(uid));
+    syncBadgeItems(uid);
+    const clothes = new Set(user(uid)?.wardrobe?.owned || []);
+    const seen = new Set();
+    const items = (Array.isArray(r?.items) ? r.items : []).slice(0, 40).filter((x) => owned.has(x?.id) && !seen.has(x.id) && seen.add(x.id))
+      .map((x, i) => ({ id: x.id, x: clamp(x.x, 0, 100), y: clamp(x.y, 0, 100), s: clamp(x.s || 1, 0.4, 3), r: clamp(x.r, -180, 180), z: clamp(x.z ?? i, 0, 99), f: Boolean(x.f) }));
+    const seenW = new Set();
+    const wear = (Array.isArray(r?.wear) ? r.wear : []).slice(0, 12).filter((x) => clothes.has(x?.id) && !seenW.has(x.id) && seenW.add(x.id))
+      .map((x) => ({ id: x.id, x: clamp(x.x, -20, 120), y: clamp(x.y, -30, 120), s: clamp(x.s || 1, 0.3, 2.5), r: clamp(x.r, -180, 180) }));
+    const p = r?.pet || {};
+    return { wall: WALLS.includes(r?.wall) ? r.wall : 'mint', floor: FLOORS.includes(r?.floor) ? r.floor : 'wood', items, wear, pet: { x: clamp(p.x ?? 50, 5, 95), y: clamp(p.y ?? 72, 10, 98), s: clamp(p.s || 1, 0.6, 1.8) } };
+  }
+  function roomOf(uid) {
+    const u = user(uid);
+    if (u?.room) return u.room;
+    // первый раз: надетое раньше (слоты) переносим на питомца примерно на свои места
+    const legacy = u?.wardrobe?.wear || {};
+    const pos = { head: { x: 50, y: 2 }, face: { x: 50, y: 36 }, neck: { x: 50, y: 66 } };
+    return { wall: 'mint', floor: 'wood', items: [{ id: 'plant', x: 14, y: 70, s: 1, r: 0, z: 1 }], wear: Object.entries(legacy).map(([slot, id]) => ({ id, ...pos[slot], s: 1, r: 0 })), pet: { x: 50, y: 72, s: 1 } };
+  }
+  function room(uid) {
+    syncBadgeItems(uid);
+    const lang = langOf(uid);
+    const prog = progressOf(uid);
+    const owned = new Set(decorOwned(uid, prog));
+    const clothes = new Set(user(uid)?.wardrobe?.owned || []);
+    return {
+      room: roomOf(uid), progress: prog, pet: petName(user(uid)?.prefs?.mascot || 'kapi', lang), petId: user(uid)?.prefs?.mascot || 'kapi',
+      decor: Object.entries(DECOR).map(([id, d]) => ({ id, emoji: d.emoji, layer: d.layer, name: L(d.name, lang), owned: owned.has(id),
+        how: d.rule ? L(RULE_TXT[d.rule[0]], lang).replace('{n}', d.rule[1]) : '', have: d.rule ? Math.min(prog[d.rule[0]], d.rule[1]) : 0, need: d.rule ? d.rule[1] : 0 })),
+      clothes: Object.entries(ITEMS).map(([id, it]) => ({ id, emoji: it.emoji, name: L(it.name, lang), how: L(it.how, lang), owned: clothes.has(id) })),
+      walls: WALLS, floors: FLOORS,
+    };
+  }
+  function saveRoom(uid, r) {
+    const u = user(uid);
+    if (!isStudent(u)) throw httpError(403, 'Комната есть только у учеников');
+    const before = u.room;
+    u.room = cleanRoom(uid, r);
+    // для старых мест (страницы, лига) — надетое тоже в слотах
+    u.wardrobe ||= { owned: [], wear: {} };
+    u.wardrobe.wear = {};
+    for (const w of u.room.wear) { const sl = ITEMS[w.id]?.slot; if (sl && !u.wardrobe.wear[sl]) u.wardrobe.wear[sl] = w.id; }
+    store.save();
+    if (!before || before.items?.length !== u.room.items.length || before.wear?.length !== u.room.wear.length) logic.log('room', { user: { id: u.id, name: logic.name(u) }, items: u.room.items.map((x) => x.id), wear: u.room.wear.map((x) => x.id) });
+    return { ok: true, room: u.room };
   }
 
   // ───────── сводка для учителя ─────────
@@ -370,5 +479,5 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
     return { ok: true };
   }
 
-  return { ask, answer, removeQuestion, inbox, rate, peerXp, ratingOf, badgesOf, wardrobe, wear, wish, grant, house, houseDone, reflect, armInterest, shouldAsk, saveInterests, page, summary, personalize, ctxOf, HOUSE, adminFeed, wishDone };
+  return { ask, answer, removeQuestion, inbox, rate, peerXp, ratingOf, badgesOf, wardrobe, wear, wish, grant, house, houseDone, reflect, armInterest, shouldAsk, saveInterests, page, summary, personalize, ctxOf, HOUSE, adminFeed, wishDone, room, saveRoom, progressOf };
 }

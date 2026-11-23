@@ -294,6 +294,50 @@ api.post('/attempts', h((req) => logic.startAttempt(req.user.id, req.body || {})
 const codeFor = (lessonId, lang) => { const c = CODE[lessonId]; return c ? localize({ allow: c.allow || [], topic: c.topic || '', sections: c.sections || {}, homework: c.homework || null }, lang) : null; };
 api.post('/learn/start', h((req) => { const r = logic.startLearn(req.user.id, req.body || {}); return { ...r, code: codeFor(r.lesson.id, req.user.prefs?.lang || 'ru') }; }));
 api.get('/code/:lessonId', h((req) => codeFor(req.params.lessonId, req.user.prefs?.lang || 'ru') || { none: true }));
+// «Задачи» ученика по полочкам: ДЗ после теста, классная работа (код в обучалке), контрольные, испытания дома.
+// Отдельно от «Пути»: здесь видно, что решено, а что ждёт.
+function tasksOf(uid) {
+  const lang = logic.S.users[uid]?.prefs?.lang || 'ru';
+  const home = logic.home(uid);
+  const done = (lessonId, key) => logic.S.code?.[`${uid}:${lessonId}:${key}`]?.at || null;
+  const later = logic.S.users[uid]?.hwLater || {};
+  const hw = [], cls = [], exams = [];
+  for (const p of home.path || []) {
+    if (p.exam) {
+      exams.push({ kind: 'exam', pubId: p.pubId, lessonId: p.lessonId, title: p.title, emoji: p.emoji, strict: p.strict, timeLimit: p.timeLimit, questions: p.questions, codeCount: p.codeCount, done: p.best != null, best: p.best, at: p.publishedAt });
+      continue;
+    }
+    const c = codeFor(p.lessonId, lang);
+    if (!c) continue;
+    const tested = p.best != null || Object.values(logic.S.attempts).some((a) => a.userId === String(uid) && a.lessonId === p.lessonId && a.finishedAt && !a.preview);
+    if (c.homework && (tested || done(p.lessonId, 'hw'))) {
+      hw.push({ kind: 'hw', key: 'hw', pubId: p.pubId, lessonId: p.lessonId, order: p.order, lesson: p.title, emoji: p.emoji, title: c.homework.title, intro: c.homework.intro || '', steps: c.homework.steps?.length || 0, done: done(p.lessonId, 'hw'), later: later[p.lessonId] || null });
+    }
+    if (p.learnDone || Object.keys(c.sections || {}).some((k) => done(p.lessonId, 's' + k))) {
+      for (const [k, t] of Object.entries(c.sections || {})) {
+        cls.push({ kind: 'class', key: 's' + k, pubId: p.pubId, lessonId: p.lessonId, order: p.order, lesson: p.title, emoji: p.emoji, title: t.title, intro: t.intro || '', steps: t.steps?.length || 0, section: Number(k) + 1, done: done(p.lessonId, 's' + k) });
+      }
+    }
+  }
+  const byOrder = (a, b) => Boolean(a.done) - Boolean(b.done) || (b.order ?? 0) - (a.order ?? 0);
+  hw.sort(byOrder); cls.sort(byOrder); exams.sort((a, b) => Boolean(a.done) - Boolean(b.done) || b.at - a.at);
+  const h = social.house(uid);
+  const house = { done: h.done.length, total: h.total, pet: h.pet };
+  const pending = hw.filter((x) => !x.done).length + cls.filter((x) => !x.done).length + exams.filter((x) => !x.done).length + (house.done < house.total ? 1 : 0);
+  return { hw, class: cls, exams, house, pending };
+}
+api.get('/tasks', h((req) => tasksOf(req.user.id)));
+api.get('/room', h((req) => social.room(req.user.id)));
+api.post('/room', h((req) => social.saveRoom(req.user.id, req.body?.room)));
+api.post('/tasks/later', h((req) => {
+  const u = logic.S.users[req.user.id];
+  const id = String(req.body?.lessonId || '').slice(0, 80);
+  u.hwLater ||= {};
+  u.hwLater[id] = Date.now();
+  store.save();
+  console.log('[hw-later] ' + JSON.stringify({ user: { id: u.id, name: logic.name(u) }, lesson: id }));
+  return { ok: true };
+}));
 api.post('/code/done', h((req) => {
   const { lessonId, task, files } = req.body || {};
   const key = `${req.user.id}:${String(lessonId).slice(0, 80)}:${String(task).slice(0, 20)}`;
