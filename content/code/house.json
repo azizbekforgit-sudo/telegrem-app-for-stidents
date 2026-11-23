@@ -72,7 +72,7 @@
      }
     },
     "reflect": {
-     "ru": "Где ты видела вывески и надписи, как эта? Что бы ты написала на двери своей комнаты?",
+     "ru": "Где ты видел(а) вывески и надписи, как эта? Что бы ты написала на двери своей комнаты?",
      "uz": "Bunday lavha va yozuvlarni qayerda ko'rgansan? O'z xonang eshigiga nima yozgan bo'larding?",
      "en": "Where have you seen signs like this? What would you write on your own room's door?"
     }
@@ -122,7 +122,7 @@
      }
     },
     "reflect": {
-     "ru": "Если бы ты делала сайт для себя — какого цвета он был бы и почему?",
+     "ru": "Если бы ты делал(а) сайт для себя — какого цвета он был бы и почему?",
      "uz": "O'zing uchun sayt qilsang — u qanday rangda bo'lardi va nega?",
      "en": "If you made a website for yourself — what color would it be and why?"
     }
@@ -182,7 +182,7 @@
      }
     },
     "reflect": {
-     "ru": "Какую комнату, магазин или игру ты бы хотела сделать на своём сайте?",
+     "ru": "Какую комнату, магазин или игру ты бы хотел(а) сделать на своём сайте?",
      "uz": "O'z saytingda qanday xona, do'kon yoki o'yin qilishni xohlarding?",
      "en": "What room, shop or game would you like to make on your own site?"
     }
@@ -258,7 +258,7 @@
      }
     },
     "reflect": {
-     "ru": "Что ещё ты бы хотела, чтобы делал твой сайт, когда на него нажимают?",
+     "ru": "Что ещё ты бы хотел(а), чтобы делал твой сайт, когда на него нажимают?",
      "uz": "Saytingga bosilganda u yana nima qilishini xohlarding?",
      "en": "What else would you like your site to do when someone clicks it?"
     }
