@@ -276,7 +276,7 @@ export function buildPage(files) {
 
 // ───────── сам редактор ─────────
 // files: { name: text }, allow: ['html','css','js'], onChange(files, name), onBlocked(kind), canRun: показывать ли превью
-export function createIde(host, { files, open, allow = [], onChange, onBlocked, onConsole, title = 'VS Code', extraFiles = [] }) {
+export function createIde(host, { files, open, allow = [], onChange, onBlocked, onConsole, title = 'VS Code', extraFiles = [], mapPage = null }) {
   const F = { ...files };
   let cur = open && F[open] != null ? open : Object.keys(F)[0];
   let sug = null, sel = 0;
@@ -350,7 +350,7 @@ export function createIde(host, { files, open, allow = [], onChange, onBlocked, 
     $('[data-pt="run"]').hidden = false;
     consoleText = '';
     $('[data-cons]').textContent = '';
-    frame.srcdoc = buildPage(F);
+    frame.srcdoc = mapPage ? mapPage(buildPage(F)) : buildPage(F);
     const onlyJs = F['index.html'] == null;
     frame.hidden = onlyJs;
     $('[data-cons]').hidden = !(F['script.js'] != null);

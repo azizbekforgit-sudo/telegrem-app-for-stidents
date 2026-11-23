@@ -1061,7 +1061,10 @@ export function createLogic(store, { adminIds }) {
   const bonusXp = (uid) => Object.values(S.bonuses || {}).filter((b) => b.userId === String(uid)).reduce((s, b) => s + b.xp, 0)
     + Object.values(S.grades || {}).filter((g) => g.userId === String(uid)).reduce((s, g) => s + (g.xp || 0), 0);
   // Один XP на всё: заработано минус потрачено в магазине. Это число видно в общей лиге, в лиге группы, вверху экрана и в магазине.
-  const earnedXp = (uid) => countedAttempts(uid).reduce((s, a) => s + (a.xp || 0), 0) + learnXp(uid) + bonusXp(uid);
+  // XP из других модулей (оценки одноклассников — social.js)
+  let extraXp = () => 0;
+  const setExtraXp = (fn) => { extraXp = fn; };
+  const earnedXp = (uid) => countedAttempts(uid).reduce((s, a) => s + (a.xp || 0), 0) + learnXp(uid) + bonusXp(uid) + extraXp(uid);
   const spentXp = (uid) => Object.values(S.purchases || {}).filter((p) => p.userId === String(uid)).reduce((s, p) => s + (p.price || 0), 0);
   const totalXp = (uid) => earnedXp(uid) - spentXp(uid);
   // лига группы показывает тот же XP, что и общая
@@ -1432,7 +1435,7 @@ export function createLogic(store, { adminIds }) {
   }
 
   return {
-    S, log, earnedXp, spentXp, levelsOf, parentsOverview, testStatus, attemptQuestion, finishedAt, totalXp, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
+    S, log, earnedXp, spentXp, setExtraXp, levelsOf, parentsOverview, testStatus, attemptQuestion, finishedAt, totalXp, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
     upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish, warn, forfeit, sweepStrict, removeLessons, setCode, resetAttempts, extendTime, resumeGrant, purgeUser,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,

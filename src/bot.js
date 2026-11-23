@@ -509,5 +509,5 @@ export function createBot({ token, logic, journal, nudges, store, appUrl, adminI
     console.log(`[bot] @${bot.botInfo.username} готов`);
   }
 
-  return { bot, setup, notifyPublish, notifyPersonal, announce, tickReminders, onRoleChosen, sendLogin, notifyBonus, notifyAccess, notifyGrade, onAttendance, tickAttendance, tickNudges, sendMascot, notifyParentsDebts };
+  return { bot, setup, notifyPublish, notifyPersonal, announce, tickReminders, onRoleChosen, sendLogin, notifyBonus, notifyAccess, notifyGrade, onAttendance, tickAttendance, tickNudges, sendMascot, notifyParentsDebts, notifyAdmins };
 }

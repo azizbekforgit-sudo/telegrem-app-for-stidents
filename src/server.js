@@ -1,5 +1,6 @@
 // Точка входа: HTTP API для Mini App + Telegram-бот + планировщик напоминаний.
 import { loadCode, localize } from './code.js';
+import { createSocial } from './social.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -36,6 +37,14 @@ console.log(`[store] ${store.backend}`);
 // Тесты, которые Claude готовит из конспектов, лежат в content/lessons/*.json — подхватываем при старте.
 const CODE = loadCode(path.join(root, 'content', 'code'));
 logic.setCode(CODE);
+// Общение и «свой путь»: страницы, вопросы, оценки друг другу, звания, одежда питомцев, «Дом для питомца», опрос интересов
+const social = createSocial({ logic, store, code: () => CODE, notifyTeacher: (text) => tg?.notifyAdmins(text) });
+logic.setExtraXp((uid) => social.peerXp(uid));
+// Опрос интересов: учитель называет ученика → запись в content/interest.json [{ id, userId }]; каждый id один раз
+{
+  const f = path.join(root, 'content', 'interest.json');
+  if (fs.existsSync(f)) for (const r of JSON.parse(fs.readFileSync(f, 'utf8'))) { const x = social.armInterest('interest:' + r.id, r.userId); if (x) console.log('[interest-arm] ' + JSON.stringify(x)); }
+}
 const lessonsDir = path.join(root, 'content', 'lessons');
 const newPersonal = []; // личные задания, о которых бот напишет ученикам после запуска
 // Переводы урока лежат рядом: <id>.uz.json и <id>.en.json (те же поля title, description, questions, learn)
@@ -203,7 +212,21 @@ api.post('/auth/logout', h((req) => (logic.logout(req.session), { ok: true })));
 // ───────── ученик ─────────
 // Главная + магазин: баланс XP, свои маскоты, зелья, состояние маскота
 const withShop = (uid, m) => (m && !m.isAdmin && !m.isParent && !m.needRole ? { ...m, shop: { balance: shop.balance(uid), owned: shop.owned(uid), potions: logic.S.users[uid]?.potions || 0, pet: shop.pet(uid) } } : m);
-api.get('/me', h((req) => withShop(req.user.id, logic.home(req.user.id))));
+api.get('/me', h((req) => { const m = withShop(req.user.id, logic.home(req.user.id)); const soc = m && !m.isAdmin && !m.isParent && !m.needRole ? social.summary(req.user.id) : null; return soc ? { ...m, social: soc } : m; }));
+// ───── общение учеников ─────
+api.get('/page/:uid', h((req) => social.page(req.user.id, req.params.uid)));
+api.get('/inbox', h((req) => social.inbox(req.user.id)));
+api.post('/ask', h((req) => social.ask(req.user.id, req.body?.to, req.body?.text)));
+api.post('/answer', h((req) => social.answer(req.user.id, req.body?.id, req.body?.text)));
+api.delete('/questions/:id', h((req) => social.removeQuestion(req.user.id, req.params.id)));
+api.post('/rate', h((req) => social.rate(req.user.id, req.body?.to, req.body?.stars)));
+api.get('/wardrobe', h((req) => social.wardrobe(req.user.id)));
+api.post('/wardrobe/wear', h((req) => social.wear(req.user.id, req.body?.slot, req.body?.item || null)));
+api.post('/wish', h((req) => social.wish(req.user.id, req.body?.text)));
+api.get('/house', h((req) => social.house(req.user.id)));
+api.post('/house/done', h((req) => social.houseDone(req.user.id, req.body?.k, req.body?.files)));
+api.post('/reflect', h((req) => social.reflect(req.user.id, req.body?.k, req.body?.text)));
+api.post('/me/interests', h((req) => social.saveInterests(req.user.id, req.body?.answers)));
 api.post('/me/prefs', h((req) => {
   const p = { ...(req.body || {}) };
   // чужого (не купленного) маскота выбрать нельзя

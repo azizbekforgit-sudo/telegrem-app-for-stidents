@@ -3,12 +3,33 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { checkSteps } from '../public/ide.js';
+import { personalize } from '../src/social.js';
 
 const dir = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'content', 'code');
 let bad = 0;
 const tri = (v, where) => { if (!v || typeof v !== 'object' || !v.ru || !v.uz || !v.en) { console.log(`✗ ${where}: нужен текст { ru, uz, en }`); bad++; } };
 for (const f of fs.existsSync(dir) ? fs.readdirSync(dir).filter((x) => x.endsWith('.json')) : []) {
   const c = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'));
+  if (c.house) {
+    // «Дом для питомца»: проверяем на примере (Капи, ученица Аня), все три языка
+    let files = null;
+    for (const lang of ['ru', 'uz', 'en']) {
+      files = null;
+      for (const [i, raw] of c.house.challenges.entries()) {
+        const t = personalize(raw, { lang, pet: 'Капи', petId: 'kapi', name: 'Аня' });
+        if (lang === 'ru') { tri(raw.title, `${f} испытание ${i + 1} title`); tri(raw.intro, `${f} испытание ${i + 1} intro`); tri(raw.reflect, `${f} испытание ${i + 1} reflect`); if (raw.praise) tri(raw.praise.text, `${f} испытание ${i + 1} praise`); }
+        files = { ...(files || t.files || {}), ...(t.addFiles || {}) };
+        for (const [k, st] of t.steps.entries()) {
+          if (lang === 'ru') tri(raw.steps[k].say, `${f} испытание ${i + 1} шаг ${k + 1}`);
+          try { new RegExp(st.re, st.flags ?? 'i'); } catch (e) { console.log(`✗ ${f} испытание ${i + 1} шаг ${k + 1}: ${e.message}`); bad++; }
+          if (files[st.file] == null) { console.log(`✗ ${f} испытание ${i + 1} шаг ${k + 1}: нет файла ${st.file}`); bad++; }
+        }
+        if (checkSteps(t, files, '').every(Boolean)) { console.log(`✗ ${f} испытание ${i + 1} (${lang}): стартовый код уже решает задание`); bad++; }
+      }
+    }
+    console.log(`✓ ${f} — «Дом для питомца»: ${c.house.challenges.length} испытания`);
+    continue;
+  }
   const lessonFile = path.join(dir, '..', 'lessons', `${c.lessonId}.json`);
   if (!fs.existsSync(lessonFile)) { console.log(`✗ ${f}: нет урока ${c.lessonId}`); bad++; continue; }
   const lesson = JSON.parse(fs.readFileSync(lessonFile, 'utf8'));
