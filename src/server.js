@@ -342,6 +342,8 @@ adm.post('/logins', h(async () => {
 }));
 // ───────── журнал: расписание, посещаемость, оценки ─────────
 adm.get('/journal', h(() => journal.adminJournal()));
+adm.get('/social', h(() => social.adminFeed()));
+adm.post('/wishes/:id', h((req) => social.wishDone(req.params.id, req.body?.done !== false)));
 adm.get('/students/:uid/diary', h((req) => journal.diary(req.params.uid)));
 adm.post('/groups/:gid/schedule', h((req) => ({ schedule: journal.setSchedule(req.params.gid, req.body?.slots) })));
 adm.post('/groups/:gid/sessions', h((req) => journal.sessionOut(journal.startSession(req.params.gid, req.body || {}))));

@@ -342,5 +342,33 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
     return { inbox: inbox(u.id).length, house: { done: st.done.length, total: st.total }, badges: badgesOf(u.id, langOf(uid)), wear: u.wardrobe?.wear || {}, askInterest: shouldAsk(u.id), pet: petName(u.prefs?.mascot || 'kapi', langOf(uid)) };
   }
 
-  return { ask, answer, removeQuestion, inbox, rate, peerXp, ratingOf, badgesOf, wardrobe, wear, wish, grant, house, houseDone, reflect, armInterest, shouldAsk, saveInterests, page, summary, personalize, ctxOf, HOUSE };
+  // ───────── сводка для учителя ─────────
+  function adminFeed() {
+    const g = G();
+    const nm = (uid) => logic.name(user(uid)) || '—';
+    const ws = weekStart();
+    const wishes = Object.values(g.wishes).sort((a, b) => b.at - a.at).slice(0, 30).map((w) => ({ id: w.id, userId: w.userId, name: nm(w.userId), prefs: user(w.userId)?.prefs || null, pet: petName(w.pet), text: w.text, at: w.at, done: Boolean(w.done) }));
+    const interests = Object.entries(g.interests).sort((a, b) => b[1].at - a[1].at).map(([uid, r]) => ({ userId: uid, name: nm(uid), prefs: user(uid)?.prefs || null, ...r }));
+    const reflections = Object.values(g.reflections).sort((a, b) => b.at - a.at).slice(0, 30).map((r) => ({ ...r, name: nm(r.userId), prefs: user(r.userId)?.prefs || null }));
+    const waiting = students().filter((u) => u.interestAsk && !u.interestAsk.doneAt).map((u) => ({ userId: u.id, name: nm(u.id) }));
+    const houses = students().map((u) => ({ userId: u.id, name: nm(u.id), prefs: u.prefs || null, done: houseState(u.id).done.length })).filter((x) => x.done).sort((a, b) => b.done - a.done);
+    return {
+      wishes, interests, reflections, waiting, houses,
+      week: {
+        questions: Object.values(g.questions).filter((q) => q.at >= ws).length,
+        answers: Object.values(g.questions).filter((q) => q.answeredAt && q.answeredAt >= ws).length,
+        ratings: Object.values(g.ratings).filter((r) => r.week === ws).length,
+      },
+      total: houseState("0").total,
+    };
+  }
+  function wishDone(id, done = true) {
+    const w = G().wishes[id];
+    if (!w) throw httpError(404, 'Просьба не найдена');
+    w.done = Boolean(done);
+    store.save();
+    return { ok: true };
+  }
+
+  return { ask, answer, removeQuestion, inbox, rate, peerXp, ratingOf, badgesOf, wardrobe, wear, wish, grant, house, houseDone, reflect, armInterest, shouldAsk, saveInterests, page, summary, personalize, ctxOf, HOUSE, adminFeed, wishDone };
 }

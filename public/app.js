@@ -1028,6 +1028,7 @@ const PARENT_TABS = [['phome', 'home-smile', 'Главная'], ['league', 'cup-
 const ADMIN_TABS = [['dash', 'widget-5', 'Панель'], ['path', 'home-smile', 'Путь'], ['groups', 'users-group-rounded', 'Группы'], ['journal', 'calendar', 'Журнал'], ['tests', 'notebook-bookmark', 'Тесты'], ['bot', 'chat-round-dots', 'Бот']];
 
 function renderNav() {
+  if (S.me.isAdmin) return teacherNav();
   const tabs = S.me.isAdmin ? ADMIN_TABS : S.me.isParent ? PARENT_TABS : STUDENT_TABS;
   nav.hidden = false;
   nav.innerHTML = `<div class="in">${tabs.map(([id, icon, t]) => `<button data-tab="${id}" class="${S.tab === id ? 'on' : ''}">${ic(icon)}${t}</button>`).join('')}</div>`;
@@ -1059,7 +1060,8 @@ async function route() {
   if (S.view?.type === 'league') return viewLeague();
   if (S.view?.type === 'parents') return viewParents();
   if (S.view?.type === 'page') return viewPage(S.view.id);
-  const r = { home: tabHome, league: tabLeague, stats: tabStats, profile: tabProfile, dash: tabDash, groups: tabGroups, path: tabTeacherPath, journal: tabJournal, diary: tabDiary, shop: tabShop, tests: tabTests, bot: tabBot, phome: tabParentHome, kids: tabKids, pprofile: tabParentProfile }[S.tab];
+  if (S.me?.isAdmin) app.dataset.w = T_WIDE.has(S.tab) && !S.view ? 'wide' : 'narrow';
+  const r = { social: tabSocial, tprofile: tabTeacherProfile, home: tabHome, league: tabLeague, stats: tabStats, profile: tabProfile, dash: tabDash, groups: tabGroups, path: tabTeacherPath, journal: tabJournal, diary: tabDiary, shop: tabShop, tests: tabTests, bot: tabBot, phome: tabParentHome, kids: tabKids, pprofile: tabParentProfile }[S.tab];
   await r();
 }
 async function refreshMe() {
@@ -2500,34 +2502,11 @@ async function loadOverview() {
   return S.overview;
 }
 function adminTop(title) {
-  return `<div class="topbar"><h2>${title}</h2><div class="row" style="gap:8px"><span class="pill gold">${emo(E.crown)}Учитель</span><button class="iconbtn" data-look aria-label="Внешний вид">${ic('pallete-2')}</button></div></div>`;
+  return tHead(title);
 }
 function bindAdminTop() {
   const b = $('[data-look]');
   if (b) b.onclick = () => appearanceSheet(false);
-}
-
-async function tabDash() {
-  const [o] = await Promise.all([loadOverview(), refreshMe()]);
-  const t = o.totals;
-  app.innerHTML = adminTop('Панель') + `
-    <div class="hero">${me('peace', 104)}<div class="grow"><h1>Привет, ${esc(firstName(S.me.user.name))}!</h1><div class="say">${o.unassigned.length ? `${plural(o.unassigned.length, 'новый ученик ждёт', 'новых ученика ждут', 'новых учеников ждут')} группу` : t.sent ? `Средний балл по курсу — ${pctText(t.avg)}` : 'Создай группу и отправь первый тест'}</div></div></div>
-    <div class="tiles" style="margin-top:14px">
-      <div class="tile">${emo(E.student)}<div><b>${t.students}</b><span>учеников</span></div></div>
-      <div class="tile">${emo(E.people)}<div><b>${t.groups}</b><span>групп</span></div></div>
-      <div class="tile">${emo(E.outbox)}<div><b>${t.sent}</b><span>тестов отправлено</span></div></div>
-      <div class="tile">${emo(E.target)}<div><b>${pctText(t.avg)}</b><span>средний балл</span></div></div>
-    </div>
-    <button class="card tap row league-banner" data-globalleague style="margin-top:12px;gap:12px;width:100%">${emo(E.trophy, { anim: true, cls: 'lg' })}<div class="grow" style="text-align:left"><b>Общая лига</b><div class="small muted">Топ всех учеников по очкам</div></div><span class="faint">${ic('alt-arrow-right')}</span></button>
-    ${o.unassigned.length ? sectionTitle(E.newb, 'Новые ученики', `<span class="pill bad">${o.unassigned.length}</span>`) + `<div class="card" style="padding:6px 8px">${o.unassigned.map((u) => `<div class="item">${avatar(u)}<div class="grow"><b class="ellipsis" style="display:block">${esc(u.name)}</b><div class="small muted">${u.username ? '@' + esc(u.username) + ' · ' : ''}${ago(u.joinedAt)}</div></div><button class="btn sm" data-assign="${u.id}">В группу</button></div>`).join('')}</div>` : ''}
-    ${sectionTitle(E.people, 'Группы', `<button class="link" data-newgroup>${ic('add-circle', 'sm')}Создать</button>`)}
-    ${o.groups.length ? `<div class="stack">${o.groups.map(groupCardHtml).join('')}</div>` : `<div class="card center stack"><p class="muted">Групп пока нет</p><button class="btn" data-newgroup>${ic('add-circle')}Создать первую группу</button></div>`}
-    ${o.feed.length ? sectionTitle(E.bolt, 'Последние результаты') + `<div class="card" style="padding:6px 8px">${o.feed.map(feedItem).join('')}</div>` : ''}`;
-  bindAdminTop();
-  bindGroupCards();
-  $$('[data-newgroup]').forEach((b) => (b.onclick = () => groupForm()));
-  $$('[data-assign]').forEach((b) => (b.onclick = () => assignSheet(b.dataset.assign)));
-  $('[data-globalleague]').onclick = () => openView({ type: 'league', parent: null });
 }
 
 function groupCardHtml(g) {
@@ -2585,7 +2564,7 @@ function groupForm(after, existing) {
 async function tabGroups() {
   const o = await loadOverview();
   app.innerHTML = adminTop('Группы') + `<div class="row" style="margin-top:10px;gap:8px"><button class="btn grow" data-newgroup>${ic('add-circle')}Создать группу</button><button class="btn ghost grow" data-parents>${emo('👨‍👩‍👧')}Родители</button></div>
-    <div class="stack" style="margin-top:16px">${o.groups.map(groupCardHtml).join('') || emptyState('think', 'Групп пока нет', 'Создай группу и добавь туда учеников. Ученики сначала запускают бота командой /start.')}</div>
+    <div class="stack t-cards" style="margin-top:16px">${o.groups.map(groupCardHtml).join('') || emptyState('think', 'Групп пока нет', 'Создай группу и добавь туда учеников. Ученики сначала запускают бота командой /start.')}</div>
     ${sectionTitle(E.student, 'Все ученики', `<span class="pill">${o.students.length}</span>`)}
     <div class="card" style="padding:6px 8px">${o.students.length ? o.students.map((u) => `<div class="item tap" data-student="${u.id}">${avatar(u)}<div class="grow"><b class="ellipsis" style="display:block">${esc(u.name)}</b><div class="small muted">${u.groups.map((gid) => o.groups.find((g) => g.id === gid)).filter(Boolean).map((g) => esc(g.name)).join(', ') || '<span style="color:var(--bad-d)">без группы</span>'}</div></div><span class="faint">${ic('alt-arrow-right')}</span></div>`).join('') : '<p class="muted center small" style="padding:14px">Пока никто не запускал бота. Отправь ученикам ссылку на бота — после /start они появятся здесь.</p>'}</div>`;
   bindAdminTop();
@@ -3256,7 +3235,7 @@ async function tabTests() {
   app.innerHTML = adminTop('Тесты') + `
     <div class="hero" style="margin-top:8px">${me('wow', 96)}<div class="grow"><div class="say"><b>Как появляются тесты:</b> пришли конспект урока Claude — он сделает тест в стиле Duolingo. Тест появится здесь черновиком. Ученики его не видят, пока ты не нажмёшь «Отправить».</div></div></div>
     <button class="btn block" data-grantmany style="margin-top:14px">${ic('users-group-rounded')}Выдать доступ ученикам</button>
-    <div class="stack" style="margin-top:16px">${o.lessons.filter((l) => !l.course).map(lessonCardHtml).join('') || emptyState('sleepy', 'Тестов пока нет', 'Жду конспект — пришли его Claude.')}</div>
+    <div class="stack t-cards" style="margin-top:16px">${o.lessons.filter((l) => !l.course).map(lessonCardHtml).join('') || emptyState('sleepy', 'Тестов пока нет', 'Жду конспект — пришли его Claude.')}</div>
     ${o.hiddenLessons?.length ? `<button class="link small" data-hidden style="display:block;margin:18px auto 0">${ic('eye', 'sm')}Скрытые тесты (${o.hiddenLessons.length})</button>` : ''}`;
   bindAdminTop();
   $$('[data-preview]').forEach((b) => (b.onclick = () => startLesson({ lessonId: b.dataset.preview })));
@@ -3629,6 +3608,7 @@ async function start() {
     S.tab = S.me.isAdmin ? 'dash' : S.me.isParent ? 'phome' : 'home';
     renderNav();
     await route();
+    if (S.me.isAdmin) refreshTeacherBadges();
     if (!S.me.isAdmin && !p?.mascot) setTimeout(() => appearanceSheet(true), 400);
   } catch (e) {
     if (!IN_TG && !DEV_USER) return loginScreen();
@@ -3924,4 +3904,205 @@ function interestFlow() {
     b.onclick = () => { ov.classList.add('bye'); setTimeout(() => ov.remove(), 400); };
     pc.appendChild(b);
   }
+}
+
+// ═══════════════ УЧИТЕЛЬ: оболочка (меню слева / сверху), «Сегодня», «Активность», профиль ═══════════════
+const T_NAV = [
+  ['Главное', [['dash', 'widget-5', 'Сегодня'], ['social', 'star', 'Активность'], ['path', 'home-smile', 'Путь']]],
+  ['Ученики', [['groups', 'users-group-rounded', 'Группы'], ['journal', 'calendar', 'Журнал']]],
+  ['Учёба', [['tests', 'notebook-bookmark', 'Тесты'], ['bot', 'chat-round-dots', 'Бот и отчёты']]],
+];
+const T_WIDE = new Set(['dash', 'social', 'tprofile', 'tests', 'groups']);
+let T_BADGE = { groups: 0, social: 0 };
+const DOW_RU = ['', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+
+function teacherNav() {
+  document.body.classList.add('t-shell');
+  const u = S.me.user;
+  const item = ([id, icon, t]) => `<button data-tab="${id}" class="t-link ${S.tab === id ? 'on' : ''}">${ic(icon)}<span>${t}</span>${T_BADGE[id] ? `<i class="t-badge">${T_BADGE[id]}</i>` : ''}</button>`;
+  nav.hidden = false;
+  nav.innerHTML = `<div class="t-side">
+    <div class="t-brand"><img src="/brand/logo.svg" alt=""><b>Зубрик</b><span class="pill gold">${emo(E.crown)}Учитель</span>
+      <button class="t-me-mini" data-tab="tprofile" aria-label="Профиль">${avatar({ ...u, prefs: { ...(u.prefs || {}), mascot: LOOK.mascot, accent: LOOK.accent } })}</button></div>
+    <button class="t-me ${S.tab === 'tprofile' ? 'on' : ''}" data-tab="tprofile">${avatar({ ...u, prefs: { ...(u.prefs || {}), mascot: LOOK.mascot, accent: LOOK.accent } })}<div class="grow"><b class="ellipsis">${esc(u.name)}</b><span>Мой профиль</span></div>${ic('alt-arrow-right')}</button>
+    <div class="t-links">${T_NAV.map(([sec, items]) => `<div class="t-sec"><small>${sec}</small>${items.map(item).join('')}</div>`).join('')}</div>
+    <div class="t-foot"><button class="t-link" data-look>${ic('pallete-2')}<span>Внешний вид</span></button><button class="t-link" data-tleague>${ic('cup-star')}<span>Общая лига</span></button></div>
+  </div>`;
+  $$('[data-tab]', nav).forEach((b) => (b.onclick = () => { haptic('light'); go(b.dataset.tab); }));
+  $('[data-look]', nav).onclick = () => appearanceSheet(false);
+  $('[data-tleague]', nav).onclick = () => openView({ type: 'league', parent: null });
+  const on = $('.t-link.on', nav);
+  if (on && innerWidth < 960) on.scrollIntoView({ inline: 'center', block: 'nearest' });
+  app.dataset.w = T_WIDE.has(S.tab) && !S.view ? 'wide' : 'narrow';
+}
+async function refreshTeacherBadges() {
+  try {
+    const [o, so] = await Promise.all([S.overview ? Promise.resolve(S.overview) : loadOverview(), api('/admin/social')]);
+    const seen = Number(localStorage.getItem('t-social-seen') || 0);
+    T_BADGE = { groups: o.unassigned.length, social: so.wishes.filter((w) => !w.done).length + so.interests.filter((x) => x.at > seen).length };
+    if (S.me?.isAdmin) teacherNav();
+  } catch { /* не критично */ }
+}
+
+function tHead(title, sub = '', actions = '') {
+  return `<header class="t-head"><div class="grow"><h1>${title}</h1>${sub ? `<p class="muted">${sub}</p>` : ''}</div>${actions ? `<div class="row t-head-act">${actions}</div>` : ''}</header>`;
+}
+const tCard = (title, body, extra = '', cls = '') => `<section class="t-card ${cls}"><div class="t-card-h"><h3>${title}</h3>${extra}</div>${body}</section>`;
+const tEmpty = (text) => `<p class="t-empty">${text}</p>`;
+function greet() {
+  const h = new Date(Date.now() + 5 * 3600e3).getUTCHours();
+  return h < 5 ? 'Доброй ночи' : h < 12 ? 'Доброе утро' : h < 18 ? 'Добрый день' : 'Добрый вечер';
+}
+function todayLabel() {
+  const loc = { en: 'en-GB', uz: 'uz-Latn-UZ' }[LOOK.lang] || 'ru-RU';
+  try { return new Date().toLocaleDateString(loc, { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Asia/Tashkent' }); } catch { return new Date().toLocaleDateString(); }
+}
+
+async function tabDash() {
+  const [o, j, so] = await Promise.all([loadOverview(), api('/admin/journal'), api('/admin/social'), refreshMe()]);
+  const t = o.totals;
+  const dow = ((new Date(Date.now() + 5 * 3600e3).getUTCDay() + 6) % 7) + 1;
+  const todaySessions = j.sessions.filter((s) => s.date === j.today);
+  const slots = j.groups.flatMap((g) => g.schedule.filter((s) => s.dow === dow).map((s) => ({ ...s, g, sess: todaySessions.find((x) => x.groupId === g.id && x.start === s.start) }))).sort((a, b) => a.start.localeCompare(b.start));
+  const dayFeed = o.feed.filter((f) => Date.now() - f.at < 864e5);
+  const wishes = so.wishes.filter((w) => !w.done);
+  const seen = Number(localStorage.getItem('t-social-seen') || 0);
+  const freshInterests = so.interests.filter((x) => x.at > seen);
+  const todo = o.unassigned.length + wishes.length + freshInterests.length;
+  T_BADGE = { groups: o.unassigned.length, social: wishes.length + freshInterests.length };
+  teacherNav();
+
+  const kpi = (e, v, l, tone = '') => `<div class="t-kpi ${tone}">${emo(e)}<div><b>${v}</b><span>${l}</span></div></div>`;
+  const lessonsCard = tCard(`${emo('🗓️')} Уроки сегодня`, slots.length ? `<div class="t-list">${slots.map((s) => {
+    const st = s.sess ? (s.sess.status === 'done' ? `<span class="pill good">отмечен</span>` : '<span class="pill gold">ждёт отметки</span>') : '<span class="pill">по расписанию</span>';
+    return `<button class="t-row tap" data-jgroup="${s.g.id}"><div class="t-time"><b>${s.start}</b><span>${s.end}</span></div><div class="grow"><b>${emo(s.g.emoji)} ${esc(s.g.name)}</b><span>${plural(s.g.size, 'ученик', 'ученика', 'учеников')}</span></div>${st}</button>`;
+  }).join('')}</div>` : tEmpty(j.groups.some((g) => g.schedule.length) ? 'Сегодня уроков по расписанию нет — можно выдохнуть ☕' : 'Расписание не задано. Журнал → группа → «Время»'), `<button class="link" data-gojournal>Журнал ${ic('alt-arrow-right', 'sm')}</button>`);
+  const waitCard = tCard(`${emo('🔔')} Ждут тебя`, todo ? `<div class="t-list">
+      ${o.unassigned.map((u) => `<div class="t-row">${avatar(u)}<div class="grow"><b>${esc(u.name)}</b><span>новый ученик · ${ago(u.joinedAt)}</span></div><button class="btn sm" data-assign="${u.id}">В группу</button></div>`).join('')}
+      ${wishes.slice(0, 4).map((w) => `<div class="t-row">${avatar({ name: w.name, id: w.userId, prefs: w.prefs })}<div class="grow"><b>${esc(w.name)} · ${emo('🎀')} просит одежду</b><span data-noi18n>«${esc(w.text)}»</span></div><button class="iconbtn" data-wdone="${w.id}" aria-label="Готово">${ic('check-circle')}</button></div>`).join('')}
+      ${freshInterests.slice(0, 3).map((x) => `<button class="t-row tap" data-gosocial>${avatar({ name: x.name, id: x.userId, prefs: x.prefs })}<div class="grow"><b>${esc(x.name)} · ${emo('🧠')} рассказал(а) о себе</b><span data-noi18n>${esc([...(x.likes || []), x.other].filter(Boolean).join(', ') || x.dream || '')}</span></div>${ic('alt-arrow-right')}</button>`).join('')}
+    </div>` : tEmpty('Всё разобрано — никто не ждёт 🎉'), todo ? `<span class="pill bad">${todo}</span>` : '');
+  const feedCard = tCard(`${emo(E.bolt)} Последние результаты`, o.feed.length ? `<div class="t-list feed">${o.feed.slice(0, 8).map(feedItem).join('')}</div>` : tEmpty('Пока никто не решал тесты'));
+  const groupsCard = tCard(`${emo(E.people)} Группы`, o.groups.length ? `<div class="t-list">${o.groups.map((g) => `<button class="t-row tap" data-group="${g.id}">${donut(g.avg, { size: 44, stroke: 6, label: g.avg == null ? '—' : g.avg + '' })}<div class="grow"><b>${emo(g.emoji)} ${esc(g.name)}</b><span>${plural(g.members.length, 'ученик', 'ученика', 'учеников')} · ${plural(g.tests, 'тест', 'теста', 'тестов')}</span></div>${ic('alt-arrow-right')}</button>`).join('')}</div>` : `<button class="btn block" data-newgroup>${ic('add-circle')}Создать первую группу</button>`, `<button class="link" data-newgroup>${ic('add-circle', 'sm')}Создать</button>`);
+  const socCard = tCard(`${emo('💬')} Ученики на этой неделе`, `<div class="t-mini">
+      <div><b>${so.week.questions}</b><span>вопросов друг другу</span></div><div><b>${so.week.ratings}</b><span>оценок звёздами</span></div><div><b>${so.houses.length}</b><span>строят дом питомцу</span></div></div>`, `<button class="link" data-gosocial>Подробнее ${ic('alt-arrow-right', 'sm')}</button>`);
+
+  app.innerHTML = `<div class="t-hello">
+      <div class="t-hello-m">${me(todo ? 'talk' : 'peace', 112, 'quiet')}</div>
+      <div class="grow"><small data-noi18n>${todayLabel()}</small><h1>${greet()}, ${esc(firstName(S.me.user.name))}!</h1>
+        <p>${todo ? `<span>${plural(todo, 'дело ждёт', 'дела ждут', 'дел ждут')} тебя.</span> ` : ''}<span>${slots.length ? `Сегодня ${plural(slots.length, 'урок', 'урока', 'уроков')}, первый в ${slots[0].start}.` : 'Сегодня уроков нет.'}</span></p></div>
+    </div>
+    <div class="t-actions">
+      <button class="t-act" data-grant>${emo('🔓')}<span>Выдать доступ</span></button>
+      <button class="t-act" data-grade>${emo('⭐')}<span>Поставить оценку</span></button>
+      <button class="t-act" data-newgroup>${emo('➕')}<span>Новая группа</span></button>
+      <button class="t-act" data-report>${emo('🤖')}<span>Отчёт Claude</span></button>
+    </div>
+    <div class="t-kpis">${kpi(E.student, t.students, 'учеников')}${kpi(E.people, t.groups, 'групп')}${kpi(E.target, pctText(t.avg), 'средний балл')}${kpi(E.bolt, dayFeed.length, 'тестов за сутки', dayFeed.length ? 'good' : '')}</div>
+    ${innerWidth >= 960 ? `<div class="t-grid"><div class="t-col">${lessonsCard}${feedCard}</div><div class="t-col">${waitCard}${socCard}${groupsCard}</div></div>` : `<div class="t-grid"><div class="t-col">${todo ? waitCard : ''}${lessonsCard}${groupsCard}${feedCard}${socCard}${todo ? '' : waitCard}</div></div>`}`;
+  bindTeacherDash();
+}
+function bindTeacherDash() {
+  bindGroupCards();
+  $$('[data-newgroup]').forEach((b) => (b.onclick = () => groupForm()));
+  $$('[data-assign]').forEach((b) => (b.onclick = () => assignSheet(b.dataset.assign)));
+  $$('[data-gosocial]').forEach((b) => (b.onclick = () => go('social')));
+  $$('[data-gojournal], [data-jgroup]').forEach((b) => (b.onclick = () => go('journal')));
+  $$('[data-wdone]').forEach((b) => (b.onclick = async () => { try { await api('/admin/wishes/' + b.dataset.wdone, { done: true }); haptic('success'); toast('Отмечено'); route().catch(fail); } catch (e) { fail(e); } }));
+  const g = $('[data-grant]'); if (g) g.onclick = () => grantStudentsSheet();
+  const gr = $('[data-grade]'); if (gr) gr.onclick = () => gradeSheet({ after: () => route().catch(fail) });
+  const rp = $('[data-report]');
+  if (rp) rp.onclick = async () => {
+    if (!(await confirmSheet('Отправить отчёт Claude?', 'Claude увидит оценки и ошибки каждого ученика и сделает личные задания.', 'Отправить'))) return;
+    try { const r = await api('/admin/report', {}); haptic('success'); toast(`Отчёт отправлен: ${r.students}`); } catch (e) { fail(e); }
+  };
+}
+
+// ── «Активность»: просьбы одежды, интересы, рефлексии, «Дом для питомца» ──
+async function tabSocial() {
+  const so = await api('/admin/social');
+  const seen = Number(localStorage.getItem('t-social-seen') || 0);
+  try { localStorage.setItem('t-social-seen', String(Date.now())); } catch { /* приватный режим */ }
+  T_BADGE.social = so.wishes.filter((w) => !w.done).length;
+  teacherNav();
+  const ava = (x) => avatar({ name: x.name, id: x.userId, prefs: x.prefs });
+  const chips = (arr) => (arr || []).filter(Boolean).map((v) => `<span class="chip-tag" data-noi18n>${esc(v)}</span>`).join('');
+  app.innerHTML = tHead('Активность', 'Что ученики делают между тестами: просьбы, интересы, размышления и «Дом для питомца»') + `
+    <div class="t-kpis">
+      <div class="t-kpi">${emo('💬')}<div><b>${so.week.questions}</b><span>вопросов за неделю</span></div></div>
+      <div class="t-kpi">${emo('✅')}<div><b>${so.week.answers}</b><span>ответов</span></div></div>
+      <div class="t-kpi">${emo('⭐')}<div><b>${so.week.ratings}</b><span>оценок звёздами</span></div></div>
+      <div class="t-kpi">${emo('🏠')}<div><b>${so.houses.filter((h) => h.done >= so.total).length}</b><span>домов построено</span></div></div>
+    </div>
+    <div class="t-grid"><div class="t-col">
+      ${tCard(`${emo('🎀')} Просьбы одежды`, so.wishes.length ? `<div class="t-list">${so.wishes.map((w) => `<div class="t-row ${w.done ? 'is-done' : ''}">${ava(w)}<div class="grow"><b>${esc(w.name)} · ${esc(w.pet)}</b><span data-noi18n>«${esc(w.text)}»</span><span>${ago(w.at)}</span></div>${w.done ? '<span class="pill good">готово</span>' : `<button class="btn sm ghost" data-wdone="${w.id}">${ic('check-circle', 'sm')}Готово</button>`}</div>`).join('')}</div>
+        <p class="t-note">Напиши Claude, какую вещь добавить в гардероб, — потом отметь просьбу «Готово».</p>` : tEmpty('Просьб пока нет. Ученики просят одежду на своей странице → «Попросить одежду».'))}
+      ${tCard(`${emo('💭')} «Зачем мне это» — ответы учеников`, so.reflections.length ? `<div class="t-list">${so.reflections.map((r) => `<div class="t-row">${ava(r)}<div class="grow"><b>${esc(r.name)} · испытание ${esc(r.k)}</b><span data-noi18n>«${esc(r.text)}»</span><span>${ago(r.at)}</span></div></div>`).join('')}</div>` : tEmpty('Ответы появятся после испытаний «Дом для питомца».'))}
+    </div><div class="t-col">
+      ${tCard(`${emo('🧠')} Интересы учеников`, so.interests.length ? `<div class="t-list">${so.interests.map((x) => `<div class="t-row top ${x.at > seen ? 'is-new' : ''}">${ava(x)}<div class="grow"><b>${esc(x.name)}${x.at > seen ? ' <span class="pill accent">новое</span>' : ''}</b>
+          <div class="chip-tags">${chips([...(x.likes || []), x.other])}</div>
+          ${x.make?.length ? `<span>Хочет сделать: <b data-noi18n>${esc(x.make.join(', '))}</b></span>` : ''}
+          ${x.mood?.length ? `<span>Учёба: <b data-noi18n>${esc(x.mood.join(', '))}</b></span>` : ''}
+          ${x.blocks?.length ? `<span>Мешает: <b data-noi18n>${esc(x.blocks.join(', '))}</b></span>` : ''}
+          ${x.dream ? `<span>Мечта: <b data-noi18n>«${esc(x.dream)}»</b></span>` : ''}</div></div>`).join('')}</div>
+        <p class="t-note">Попроси Claude: «сделай задания по интересам» — и он сделает личные задания в их теме.</p>` : tEmpty('Опрос включается по твоей просьбе: напиши Claude «включи опрос для …».'))}
+      ${so.waiting.length ? tCard(`${emo('⏳')} Опрос включён, ждём тест`, `<div class="chip-tags">${chips(so.waiting.map((w) => w.name))}</div><p class="t-note">Маскот выглянет после следующего решённого теста.</p>`) : ''}
+      ${tCard(`${emo('🏠')} «Дом для питомца»`, so.houses.length ? `<div class="t-list">${so.houses.map((h) => `<button class="t-row tap" data-page="${h.userId}">${ava(h)}<div class="grow"><b>${esc(h.name)}</b><div class="hdots">${Array.from({ length: so.total }, (_, i) => `<i class="${i < h.done ? 'on' : ''}"></i>`).join('')}</div></div><span class="pill ${h.done >= so.total ? 'good' : ''}">${h.done}/${so.total}</span></button>`).join('')}</div>` : tEmpty('Пока никто не начал. Карточка испытания есть у учеников на главной.'))}
+    </div></div>`;
+  $$('[data-wdone]').forEach((b) => (b.onclick = async () => { try { await api('/admin/wishes/' + b.dataset.wdone, { done: true }); haptic('success'); route().catch(fail); } catch (e) { fail(e); } }));
+  $$('[data-page]').forEach((b) => (b.onclick = () => openView({ type: 'page', id: b.dataset.page, parent: null })));
+}
+
+// ── Профиль учителя ──
+async function tabTeacherProfile() {
+  const [o, so] = await Promise.all([loadOverview(), api('/admin/social'), refreshMe()]);
+  const u = S.me.user;
+  const t = o.totals;
+  const feat = (e, title, text, act = '') => `<div class="t-feat">${emo(e)}<div class="grow"><b>${title}</b><span>${text}</span></div>${act}</div>`;
+  const row = (attr, e, title, sub) => `<button class="t-row tap" ${attr}>${emo(e)}<div class="grow"><b>${title}</b>${sub ? `<span>${sub}</span>` : ''}</div>${ic('alt-arrow-right')}</button>`;
+  app.innerHTML = `<div class="t-profile">
+      <div class="t-pcover"></div>
+      <div class="t-pmain">
+        <button class="t-pava" data-look aria-label="Внешний вид">${me('teach', 132)}</button>
+        <div class="grow"><h1>${esc(u.name)}</h1><p><span class="pill gold">${emo(E.crown)}Учитель курса</span> <span class="muted">${u.email ? esc(u.email) : IN_TG ? 'через Telegram' : ''}</span></p></div>
+        <button class="btn ghost sm" data-look>${ic('pallete-2', 'sm')}Внешний вид</button>
+      </div>
+      <div class="t-pstats">
+        <div><b>${t.students}</b><span>учеников</span></div><div><b>${t.groups}</b><span>групп</span></div><div><b>${t.sent}</b><span>тестов отправлено</span></div><div><b>${pctText(t.avg)}</b><span>средний балл</span></div><div><b>${so.houses.length}</b><span>строят дом</span></div>
+      </div>
+    </div>
+    <div class="t-grid"><div class="t-col">
+      ${tCard(`${emo('✨')} Что умеет Зубрик сейчас`, `<div class="t-feats">
+        ${feat('🪪', 'Страницы учеников', 'Питомец в одежде, звания недели, дом и вопросы. Открой ученика в лиге → «Страница».')}
+        ${feat('💬', 'Вопросы и звёзды', 'Ученики спрашивают друг друга и ставят 1–5 звёзд раз в неделю: до 150 XP в неделю.')}
+        ${feat('🏅', 'Звания недели', 'Самый активный, снайпер, мастер кода, душа компании и ещё 5 — считаются сами.')}
+        ${feat('🎀', 'Гардероб и просьбы', 'Вещи за испытания и звания. Просьбы одежды приходят тебе в «Активность».', `<button class="link" data-gosocial>Открыть</button>`)}
+        ${feat('🏠', 'Дом для питомца', '4 испытания с кодом: табличка, обои, мебель, питомец говорит. Похвала за конкретное.')}
+        ${feat('🧠', 'Опрос интересов', 'Назови ученика Claude — после теста маскот спросит, что ему нравится.')}
+        ${feat('🛡️', 'Контрольные', 'Таймер, полный экран, −100 XP за ошибку и задания «напиши код».')}
+        ${feat('🧑‍💻', 'Мини VS Code', 'Код в каждой обучалке и домашка после теста.')}
+      </div>`)}
+    </div><div class="t-col">
+      ${tCard(`${emo('⚙️')} Настройки`, `<div class="t-list">
+        ${row('data-look', '🎨', 'Внешний вид и язык', 'Цвет, тема, напарник')}
+        ${row('data-tab2="path"', '🗺️', 'Путь как у учеников', 'Все уроки открыты, без очков')}
+        ${row('data-tleague2', '🏆', 'Общая лига', 'Топ всех учеников')}
+        ${row('data-parents', '👨‍👩‍👧', 'Родители', 'Кто чей родитель')}
+        ${row('data-tab2="bot"', '🤖', 'Бот и отчёты', 'Входы на сайт, отчёт Claude, рассылка')}
+        ${!IN_TG && SESSION ? row('data-logout', '🚪', 'Выйти', '') : ''}
+      </div>`)}
+      ${tCard(`${emo('💡')} Как работать с Claude`, `<ul class="t-tips">
+        <li>Пришли конспект — появится урок с обучалкой, тестом и кодом.</li>
+        <li>«Посмотри отчёт и сделай личные задания» — после кнопки «Отчёт Claude».</li>
+        <li>«Включи опрос для Наргизы» — маскот спросит об интересах.</li>
+        <li>«Добавь в гардероб …» — по просьбам учеников.</li>
+      </ul>`)}
+    </div></div>`;
+  $$('[data-look]').forEach((b) => (b.onclick = () => appearanceSheet(false)));
+  $$('[data-tab2]').forEach((b) => (b.onclick = () => go(b.dataset.tab2)));
+  $$('[data-gosocial]').forEach((b) => (b.onclick = () => go('social')));
+  $('[data-tleague2]').onclick = () => openView({ type: 'league', parent: null });
+  $('[data-parents]').onclick = () => openView({ type: 'parents' });
+  const lo = $('[data-logout]');
+  if (lo) lo.onclick = () => { api('/auth/logout', {}).catch(() => {}); setSession(''); loginScreen(); };
 }
