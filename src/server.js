@@ -78,6 +78,22 @@ for (const row of (process.env.SEED_ACCOUNTS || '').split(';').map((x) => x.trim
   if (logic.ensureAccount({ email, password, name })) console.log(`[accounts] ${email}`);
 }
 
+// Входы на сайт из content/accounts.json: [{ id, login, name, salt, hash }] (пароль только хешем scrypt); каждый id один раз
+{
+  const f = path.join(root, 'content', 'accounts.json');
+  if (fs.existsSync(f)) for (const r of JSON.parse(fs.readFileSync(f, 'utf8'))) {
+    const key = 'account:' + r.id;
+    logic.S.migrations ||= {};
+    if (logic.S.migrations[key]) continue;
+    const login = String(r.login || '').trim().toLowerCase();
+    if (logic.S.accounts?.[login]) { console.log(`[accounts-file] логин занят: ${login}`); logic.S.migrations[key] = Date.now(); continue; }
+    const acc = logic.ensureAccount({ email: login, name: r.name, salt: r.salt, hash: r.hash });
+    logic.S.migrations[key] = Date.now();
+    store.save();
+    console.log('[accounts-file] ' + JSON.stringify({ login, name: r.name, userId: acc?.userId }));
+  }
+}
+
 // Бонусные баллы из content/bonuses.json: [{ id, login | userId, xp, reason }]. Каждый id начисляется один раз
 const bonusFile = path.join(root, 'content', 'bonuses.json');
 if (fs.existsSync(bonusFile)) {

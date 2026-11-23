@@ -150,17 +150,17 @@ export function createLogic(store, { adminIds }) {
   const sha = (t) => crypto.createHash('sha256').update(String(t)).digest('hex');
   const hashPw = (pw, salt) => crypto.scryptSync(String(pw), salt, 32).toString('hex');
   const SESSION_DAYS = 120;
-  function ensureAccount({ email, password, name }) {
+  function ensureAccount({ email, password, name, salt, hash }) {
     S.accounts ||= {};
     const key = String(email || '').trim().toLowerCase();
-    if (!key || !password) return null;
+    if (!key || !(password || (salt && hash))) return null;
     let acc = S.accounts[key];
     if (!acc) {
       const userId = 'w' + crypto.randomBytes(4).toString('hex');
       acc = S.accounts[key] = { userId, createdAt: Date.now() };
       S.users[userId] = { id: userId, firstName: name || key.split('@')[0], lastName: '', username: '', email: key, joinedAt: Date.now(), streak: 0, lastDay: null };
     }
-    if (!acc.hash || hashPw(password, acc.salt) !== acc.hash) {
+    if (salt && hash) { acc.salt = salt; acc.hash = hash; } else if (!acc.hash || hashPw(password, acc.salt) !== acc.hash) {
       acc.salt = crypto.randomBytes(16).toString('hex');
       acc.hash = hashPw(password, acc.salt);
     }
