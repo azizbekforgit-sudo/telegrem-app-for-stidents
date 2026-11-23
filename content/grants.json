@@ -1,1 +1,15 @@
-[{ "id": "2026-11-23-azi-all", "userId": "w62a5b4f6", "unlockAll": true, "setXp": 5000, "reason": "Подарок учителя: всё открыто" }]
+[
+ {
+  "id": "2026-11-23-azi-all",
+  "userId": "w62a5b4f6",
+  "unlockAll": true,
+  "setXp": 5000,
+  "reason": "Подарок учителя: всё открыто"
+ },
+ {
+  "id": "2026-11-23-azi-mascots",
+  "userId": "w62a5b4f6",
+  "allMascots": true,
+  "reason": "Подарок учителя: все маскоты"
+ }
+]

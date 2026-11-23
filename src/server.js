@@ -7,7 +7,7 @@ import crypto from 'node:crypto';
 import express from 'express';
 import { webhookCallback } from 'grammy';
 import { createStore } from './store.js';
-import { createLogic, httpError } from './logic.js';
+import { createLogic, httpError, MASCOT_IDS } from './logic.js';
 import { createJournal } from './journal.js';
 import { createNudges } from './nudge.js';
 import { createShop } from './shop.js';
@@ -348,6 +348,7 @@ function tasksOf(uid) {
     const u = uid && logic.S.users[uid];
     if (!u) { console.error(`[grant] не найден ученик: ${g.login || g.userId}`); continue; }
     if (g.unlockAll) { u.unlockAll = true; u.wardrobe ||= { owned: [], wear: {} }; u.wardrobe.owned = Object.keys(ITEMS); }
+    if (g.allMascots) u.owned = [...new Set([...(u.owned || []), ...MASCOT_IDS])];
     let diff = 0;
     if (Number.isFinite(g.setXp)) {
       diff = Math.trunc(g.setXp - logic.totalXp(u.id));
@@ -355,7 +356,7 @@ function tasksOf(uid) {
     }
     logic.S.migrations[key] = Date.now();
     store.save();
-    console.log('[grant] ' + JSON.stringify({ user: { id: u.id, name: logic.name(u) }, unlockAll: Boolean(g.unlockAll), xpDiff: diff, xpNow: logic.totalXp(u.id) }));
+    console.log('[grant] ' + JSON.stringify({ user: { id: u.id, name: logic.name(u) }, unlockAll: Boolean(g.unlockAll), mascots: g.allMascots ? (u.owned || []).length : undefined, xpDiff: diff, xpNow: logic.totalXp(u.id) }));
   }
 }
 api.get('/tasks', h((req) => tasksOf(req.user.id)));
