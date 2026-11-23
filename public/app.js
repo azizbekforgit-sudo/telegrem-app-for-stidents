@@ -1752,17 +1752,11 @@ async function mountKidDiaries(root, kids) {
       const t = byDay[d.today];
       const todayLine = t?.lessons.length ? (t.lessons.some((l) => !l.present) ? '<span class="pill bad">Сегодня не был на уроке</span>' : '<span class="pill good">Сегодня был на уроке</span>') : '<span class="pill">Сегодня урока не было</span>';
       const st = d.stats;
-      const cal = monthCal(KD.y, KD.m, (ds) => {
-        const x = byDay[ds];
-        if (!x) return null;
-        const miss = x.lessons.some((l) => !l.present), was = x.lessons.some((l) => l.present);
-        return { cls: miss ? 'bad' : was ? 'good' : '', html: x.grades.length ? gradeChip(x.grades[x.grades.length - 1].value, 'mini') : '' };
-      }, { today: d.today });
+      const cal = attCal(KD.y, KD.m, attMap(d.days, d.grades), { today: d.today, schedule: d.schedule });
       const last = d.grades.slice(-3).reverse();
       return `<div class="card kid-diary" data-kid="${i}" style="margin-top:14px"><div class="row between" style="gap:8px"><h3>${emo('📒')} <span data-noi18n>${esc(c.name)}</span></h3>${todayLine}</div>
         <div class="kd-stats"><div><b>${st.attendance != null ? st.attendance + '%' : '—'}</b><span>посещаемость</span></div><div><b data-noi18n>${st.present}/${st.lessons}</b><span>был на уроках</span></div><div><b>${st.missed}</b><span>пропусков</span></div><div><b>${st.avgGrade ?? '—'}</b><span>средний балл</span></div></div>
-        ${calNav(KD.y, KD.m)}${cal}
-        <div class="cal-legend"><span><i class="good"></i>был</span><span><i class="bad"></i>не был</span><span>${gradeChip(8, 'mini')} оценка</span></div>
+        ${calNav(KD.y, KD.m)}${attSummary(KD.y, KD.m, attMap(d.days, d.grades))}${cal}${attLegend()}
         ${last.length ? `<div class="grades-list" style="padding:0;margin-top:8px">${last.map(gradeRow).join('')}</div>` : ''}</div>`;
     }).join('');
     $$('[data-cm]', root).forEach((b) => (b.onclick = () => { KD.m += Number(b.dataset.cm); if (KD.m < 0) { KD.m = 11; KD.y--; } if (KD.m > 11) { KD.m = 0; KD.y++; } haptic('light'); draw(); }));
@@ -2741,10 +2735,10 @@ function monthName(y, m) {
   const loc = { ru: 'ru-RU', uz: 'uz-Latn-UZ', en: 'en-US' }[curLang()];
   try { const s = new Intl.DateTimeFormat(loc, { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(Date.UTC(y, m, 1))); return s[0].toUpperCase() + s.slice(1); } catch { return `${m + 1}.${y}`; }
 }
-function monthCal(y, m, cell, { today, selected } = {}) {
+function monthCal(y, m, cell, { today, selected, cls: calCls = '' } = {}) {
   const first = (new Date(Date.UTC(y, m, 1)).getUTCDay() + 6) % 7;
   const days = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
-  let html = `<div class="cal" data-noi18n><div class="cal-h">${WEEKDAYS[curLang()].map((w) => `<b>${w}</b>`).join('')}</div><div class="cal-g">`;
+  let html = `<div class="cal ${calCls}" data-noi18n><div class="cal-h">${WEEKDAYS[curLang()].map((w) => `<b>${w}</b>`).join('')}</div><div class="cal-g">`;
   for (let i = 0; i < first; i++) html += '<i></i>';
   for (let d = 1; d <= days; d++) {
     const ds = ymd(y, m, d);
@@ -2786,12 +2780,7 @@ function renderDiary(d, { path = [], self = false, who = null, root = app, onBac
   const st = d.stats;
   const next = nextLesson(d.schedule, d.tzMin);
   const draw = () => {
-    const cal = monthCal(DIARY.y, DIARY.m, (ds) => {
-      const x = byDay[ds];
-      if (!x) return null;
-      const miss = x.lessons.some((l) => !l.present), was = x.lessons.some((l) => l.present);
-      return { cls: miss ? 'bad' : was ? 'good' : '', html: x.grades.length ? gradeChip(x.grades[x.grades.length - 1].value, 'mini') : '' };
-    }, { today: d.today });
+    const by = attMap(d.days, d.grades);
     const recent = d.grades.slice(-8).reverse();
     root.innerHTML = (onBack ? `<div class="topbar"><button class="back" data-back>${ic('alt-arrow-left')}Назад</button></div>` : self ? topbar() : '') + `
       ${who ? `<h1 style="margin-top:8px">${emo('📒')} Дневник: ${esc(who)}</h1>` : ''}
@@ -2805,12 +2794,11 @@ function renderDiary(d, { path = [], self = false, who = null, root = app, onBac
         <div class="tile">${emo(E.bolt)}<div><b>${st.gradeXp}</b><span>XP за оценки</span></div></div>
       </div>
       ${next ? `<div class="card next-lesson">${ic('clock-circle')}<div class="grow"><small>Следующий урок</small><b data-noi18n>${esc(next.text)}</b></div>${emo(next.group.emoji || '📚')}</div>` : ''}
-      <div class="card" style="margin-top:12px">${calNav(DIARY.y, DIARY.m)}${cal}
-        <div class="cal-legend"><span><i class="good"></i>был</span><span><i class="bad"></i>не был</span><span>${gradeChip(8, 'mini')} оценка</span></div></div>
+      ${attBlock(DIARY.y, DIARY.m, by, { today: d.today, schedule: d.schedule })}
       ${recent.length ? sectionTitle('⭐', 'Оценки') + `<div class="card grades-list">${recent.map(gradeRow).join('')}</div>` : ''}`;
     if (self) speak($('[data-say]', root), mood.say, $('.hero .mascot', root));
     $$('[data-cm]', root).forEach((b) => (b.onclick = () => { DIARY.m += Number(b.dataset.cm); if (DIARY.m < 0) { DIARY.m = 11; DIARY.y--; } if (DIARY.m > 11) { DIARY.m = 0; DIARY.y++; } haptic('light'); draw(); }));
-    $$('[data-day]', root).forEach((b) => (b.onclick = () => { const x = byDay[b.dataset.day]; if (x) { haptic('light'); daySheet(b.dataset.day, x); } }));
+    $$('[data-day], [data-aday]', root).forEach((b) => (b.onclick = () => { const k = b.dataset.day || b.dataset.aday; const x = byDay[k]; if (x) { haptic('light'); daySheet(k, x); } }));
     const rt = $('[data-retry]', root);
     if (rt) rt.onclick = () => { haptic('medium'); lowPub.hasLearn ? learnSheet(lowPub) : lessonSheet(lowPub); };
     const gp = $('[data-gopath]', root);
@@ -2846,7 +2834,7 @@ function nextLesson(schedule, tzMin = 300) {
 }
 
 // ───────── ЖУРНАЛ (учитель) ─────────
-const JR = { group: null, y: null, m: null, day: null };
+const JR = { group: null, y: null, m: null, day: null, mode: 'group', st: null };
 async function tabJournal() {
   const j = await api('/admin/journal');
   S.journal = j;
@@ -2859,6 +2847,8 @@ async function tabJournal() {
     bindAdminTop();
     return;
   }
+  const modeSeg = `<div class="seg jr-mode" style="margin-top:12px"><button class="${JR.mode !== 'student' ? 'on' : ''}" data-jmode="group">${emo('👥')} ${tr('Вся группа')}</button><button class="${JR.mode === 'student' ? 'on' : ''}" data-jmode="student">${emo('🧑‍🎓')} ${tr('По ученикам')}</button></div>`;
+  if (JR.mode === 'student') return journalStudentView(j, g, chips, modeSeg);
   const L = curLang();
   const slotsTxt = (sl) => sl.map((s) => `${WEEKDAYS[L][s.dow - 1]} ${s.start}–${s.end}`).join(' · ');
   const sched = [g.schedule.length ? slotsTxt(g.schedule) : '', ...(g.personal || []).map((p) => `${p.name}: ${slotsTxt(p.schedule)}`)].filter(Boolean).join('\n');
@@ -2867,19 +2857,23 @@ async function tabJournal() {
   const byDay = {};
   sessions.forEach((s) => (byDay[s.date] ||= { s: [], g: [] }).s.push(s));
   grades.forEach((x) => (byDay[x.date] ||= { s: [], g: [] }).g.push(x));
+  const gPlan = planDays(JR.y, JR.m, g.schedule, j.today);
   const cal = monthCal(JR.y, JR.m, (ds) => {
     const x = byDay[ds];
-    if (!x) return null;
-    const abs = x.s.reduce((n, s) => n + s.members.filter((m) => m.absent).length, 0);
+    if (!x) return gPlan[ds] ? { cls: 'a-plan' } : null;
     const pend = x.s.some((s) => s.status !== 'done');
-    return { cls: pend ? 'mark' : abs ? 'bad' : x.s.length ? 'good' : '', html: `${abs ? `<em class="abs">${abs}</em>` : ''}${x.g.length ? `<em class="gr">★${x.g.length}</em>` : ''}` };
-  }, { today: j.today, selected: JR.day });
+    const done = x.s.filter((s) => s.status === 'done');
+    const tot = done.reduce((n, s) => n + s.members.length, 0);
+    const abs = done.reduce((n, s) => n + s.members.filter((m) => m.absent).length, 0);
+    const cls = pend ? 'a-wait' : !x.s.length ? 'a-grade' : abs ? 'a-miss' : 'a-was';
+    return { cls, html: `${pend ? '<i class="a-ic">?</i>' : x.s.length ? `<i class="a-ic a-cnt">${tot - abs}/${tot}</i>` : ''}${x.g.length ? `<em class="a-gr" style="background:var(--gold-d)">★${x.g.length}</em>` : ''}` };
+  }, { today: j.today, selected: JR.day, cls: 'cal-att' });
   const day = byDay[JR.day] || { s: [], g: [] };
   const roster = g.students.map((u) => `<div class="jr-row" data-st="${esc(u.id)}">${avatar(u)}<div class="grow" style="min-width:0"><b class="ellipsis" style="display:block">${esc(u.name)}</b>
       <div class="jr-marks"><span class="plus">＋${u.plus}</span><span class="minus">−${u.minus}</span>${u.grades.map((v) => gradeChip(v, 'mini')).join('')}</div></div>
       <div class="jr-avg">${u.avg != null ? gradeChip(Math.round(u.avg)) + `<small>${u.avg}</small>` : '<span class="faint small">—</span>'}</div>
       <button class="iconbtn" data-gr="${esc(u.id)}" aria-label="Оценка">${ic('star', 'sm')}</button></div>`).join('');
-  app.innerHTML = adminTop('Журнал') + chips + `
+  app.innerHTML = adminTop('Журнал') + chips + modeSeg + `
     <div class="card jr-head" style="margin-top:12px"><div class="row" style="gap:10px">${emo(g.emoji, { cls: 'lg' })}<div class="grow"><h2>${esc(g.name)}</h2>
       <div class="small muted" style="white-space:pre-line">${sched ? `<span data-noi18n>${esc(sched)}</span>` : 'Время уроков не задано'}</div></div>
       <button class="btn ghost sm" data-time>${ic('clock-circle', 'sm')}Время</button></div>
@@ -2887,17 +2881,15 @@ async function tabJournal() {
     <div class="card" style="margin-top:12px;padding:4px 10px"><div class="jr-legend"><span class="plus">＋ был</span><span class="minus">− не был</span><span>⭐ оценки</span></div>${roster || '<p class="muted center small" style="padding:12px">В группе пока нет учеников</p>'}</div>
     <div class="row" style="gap:8px;margin-top:12px"><button class="btn grow" data-grade>${ic('star')}Поставить оценку</button><button class="btn ghost grow" data-startnow>${ic('add-circle')}Отметить урок</button></div>
     <div class="card" style="margin-top:12px">${calNav(JR.y, JR.m)}${cal}
-      <div class="cal-legend"><span><i class="good"></i>все были</span><span><i class="bad"></i>есть пропуски</span><span><i class="mark"></i>ждёт отметки</span></div></div>
+      <div class="att-legend"><span><i class="a-was">5/5</i>все были</span><span><i class="a-miss">4/5</i>есть пропуски</span><span><i class="a-wait">?</i>ждёт отметки</span><span><i class="a-plan"></i>будет урок</span></div></div>
     <div class="section-title"><h2>${emo('📅')} <span data-noi18n>${dmy(JR.day)}</span></h2></div>
     ${day.s.map(sessionCard).join('') || `<p class="muted small center" style="margin:6px 0 10px">${JR.day === j.today ? 'Сегодня уроков по расписанию нет — или ещё не начались.' : 'В этот день уроков не было.'}</p>`}
     ${day.g.length ? `<div class="card grades-list" style="margin-top:10px">${day.g.map((x) => `<div class="grow-row">${gradeChip(x.value)}<div class="grow"><b>${esc(x.name)}</b><div class="small muted">${x.lesson ? `${emo(x.lesson.emoji)} ${esc(x.lesson.title)} · ` : ''}+${x.xp} XP${x.comment ? ' · ' + esc(x.comment) : ''}</div></div><button class="iconbtn" data-delgrade="${x.id}" aria-label="Удалить">${ic('trash-bin-trash', 'sm')}</button></div>`).join('')}</div>` : ''}
     ${g.schedule.length || g.personal?.length ? '' : `<div class="card hint-card" style="margin-top:12px">${me('think', 70, 'still')}<div class="grow small">Нажми <b>«Время»</b> и задай дни и часы уроков — и в начале каждого урока бот спросит тебя, кого нет.</div></div>`}`;
-  bindAdminTop();
-  $$('[data-jg]').forEach((b) => (b.onclick = () => { JR.group = b.dataset.jg; haptic('light'); tabJournal().catch(fail); }));
+  bindJournalCommon(j, g);
   $('[data-time]').onclick = () => scheduleSheet(g.id, () => tabJournal());
   $$('[data-st]').forEach((r) => (r.onclick = (e) => { if (e.target.closest('[data-gr]')) return; openStudent(r.dataset.st); }));
   $$('[data-gr]').forEach((b) => (b.onclick = () => gradeSheet({ userId: b.dataset.gr, date: JR.day })));
-  $$('[data-cm]').forEach((b) => (b.onclick = () => { JR.m += Number(b.dataset.cm); if (JR.m < 0) { JR.m = 11; JR.y--; } if (JR.m > 11) { JR.m = 0; JR.y++; } tabJournal().catch(fail); }));
   $$('[data-day]').forEach((b) => (b.onclick = () => { JR.day = b.dataset.day; haptic('light'); tabJournal().catch(fail); }));
   $('[data-grade]').onclick = () => gradeSheet({ date: JR.day, only: g.students.map((u) => u.id) });
   $('[data-startnow]').onclick = () => markGroupLesson(g);
@@ -4105,4 +4097,163 @@ async function tabTeacherProfile() {
   $('[data-parents]').onclick = () => openView({ type: 'parents' });
   const lo = $('[data-logout]');
   if (lo) lo.onclick = () => { api('/auth/logout', {}).catch(() => {}); setSession(''); loginScreen(); };
+}
+
+// ═══════════════ КАЛЕНДАРЬ ПОСЕЩАЕМОСТИ (один вид для ученика, родителя и учителя) ═══════════════
+// Пустой день — без фона. ✓ был (зелёный), ✕ не был (красный), пунктир — будет урок по расписанию,
+// ? — урок прошёл, но учитель ещё не отметил. Цветная цифра снизу — оценка за день.
+function attMap(days, grades) {
+  const by = {};
+  days.forEach((x) => (by[x.date] ||= { l: [], g: [] }).l.push(x));
+  grades.forEach((g) => (by[g.date] ||= { l: [], g: [] }).g.push(g));
+  return by;
+}
+function attState(x) {
+  if (!x?.l.length) return null;
+  if (x.l.some((l) => l.wait)) return 'wait';
+  if (x.l.some((l) => !l.present)) return 'miss';
+  return 'was';
+}
+function planDays(y, m, schedule, today) {
+  const out = {};
+  if (!schedule?.length) return out;
+  const n = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+  for (let d = 1; d <= n; d++) {
+    const ds = ymd(y, m, d);
+    if (ds < today) continue;
+    const dow = ((new Date(Date.UTC(y, m, d)).getUTCDay() + 6) % 7) + 1;
+    const sl = schedule.filter((s) => s.dow === dow);
+    if (sl.length) out[ds] = sl;
+  }
+  return out;
+}
+function attCal(y, m, by, { today, schedule = [], selected = null } = {}) {
+  const plan = planDays(y, m, schedule, today);
+  return monthCal(y, m, (ds) => {
+    const x = by[ds];
+    const st = attState(x);
+    const gr = x?.g.length ? x.g[x.g.length - 1].value : null;
+    const cls = st ? 'a-' + st : plan[ds] ? 'a-plan' : gr != null ? 'a-grade' : '';
+    const icon = { was: '✓', miss: '✕', wait: '?' }[st] || '';
+    return { cls, html: `${icon ? `<i class="a-ic">${icon}</i>` : ''}${gr != null ? `<em class="a-gr" style="background:${gradeColor(gr)}">${gr}</em>` : ''}` };
+  }, { today, selected, cls: 'cal-att' });
+}
+function attSummary(y, m, by) {
+  const pre = ymd(y, m, 1).slice(0, 7);
+  const inMonth = Object.entries(by).filter(([d]) => d.startsWith(pre)).map(([, x]) => x);
+  const lessons = inMonth.flatMap((x) => x.l.filter((l) => !l.wait));
+  const was = lessons.filter((l) => l.present).length;
+  const n = lessons.length;
+  const pct = n ? Math.round((was / n) * 100) : null;
+  const grs = inMonth.flatMap((x) => x.g.map((g) => g.value));
+  const avg = grs.length ? Math.round((grs.reduce((a, b) => a + b, 0) / grs.length) * 10) / 10 : null;
+  return `<div class="att-sum">
+    <div class="att-headline">${n ? `<b>Был на ${was} из ${n}</b> <span>${n % 10 === 1 && n % 100 !== 11 ? 'урока' : 'уроков'} в этом месяце</span>` : '<b>В этом месяце уроков ещё не было</b>'}</div>
+    <div class="att-bar" role="img" aria-label="${pct ?? 0}%"><i style="width:${pct ?? 0}%"></i></div>
+    <div class="att-nums">
+      <div class="good"><b>${was}</b><span>был</span></div>
+      <div class="bad"><b>${n - was}</b><span>не был</span></div>
+      <div><b>${pct != null ? pct + '%' : '—'}</b><span>посещаемость</span></div>
+      <div><b>${avg ?? '—'}</b><span>средняя оценка</span></div>
+    </div></div>`;
+}
+function attList(y, m, by, { today, schedule = [], teacher = false } = {}) {
+  const pre = ymd(y, m, 1).slice(0, 7);
+  const plan = planDays(y, m, schedule, today);
+  const dates = [...new Set([...Object.keys(by).filter((d) => d.startsWith(pre)), ...Object.keys(plan)])].sort();
+  if (!dates.length) return `<p class="t-empty">${tr('В этом месяце уроков нет')}</p>`;
+  const L = curLang();
+  const t = (a) => `<span data-noi18n>${a}</span>`;
+  return `<div class="att-list">${dates.map((ds) => {
+    const x = by[ds] || { l: [], g: [] };
+    const d = Number(ds.slice(8));
+    const dow = (new Date(ds + 'T12:00:00Z').getUTCDay() + 6) % 7;
+    const st = attState(x) || (plan[ds] ? 'plan' : 'grade');
+    const head = { was: 'Был на уроке', miss: 'Не был на уроке', wait: 'Ждёт отметки', plan: 'Будет урок', grade: 'Оценка' }[st];
+    const l0 = x.l[0];
+    const time = l0 ? `${l0.start}${l0.end && l0.end !== l0.start ? '–' + l0.end : ''}` : plan[ds] ? `${plan[ds][0].start}–${plan[ds][0].end}` : '';
+    const grp = l0?.group?.name || plan[ds]?.[0]?.group?.name || '';
+    const reason = x.l.find((l) => l.reason)?.reason;
+    return `<button class="att-row a-${st}" data-aday="${ds}">
+      <div class="att-date ${ds === today ? 'today' : ''}"><b>${d}</b><span data-noi18n>${WEEKDAYS[L][dow]}</span></div>
+      <div class="att-mark">${{ was: '✓', miss: '✕', wait: '?', plan: '•', grade: '★' }[st]}</div>
+      <div class="grow"><b>${head}</b><span>${time ? t(time) : ''}${time && grp ? ' · ' : ''}${grp ? t(esc(grp)) : ''}</span>${reason ? `<span class="att-reason">💬 <span data-noi18n>${esc(reason)}</span></span>` : ''}</div>
+      ${x.g.map((g) => gradeChip(g.value)).join('')}${teacher && x.l.length ? ic('pen-2', 'sm') : ''}</button>`;
+  }).join('')}</div>`;
+}
+const attLegend = (teacher = false) => `<div class="att-legend"><span><i class="a-was">✓</i>был</span><span><i class="a-miss">✕</i>не был</span><span><i class="a-plan"></i>будет урок</span>${teacher ? '<span><i class="a-wait">?</i>ждёт отметки</span>' : ''}<span><em style="background:var(--good)">9</em>оценка</span></div>`;
+// Весь блок: стрелки месяца, сводка, календарь, легенда, список дней
+function attBlock(y, m, by, opts = {}) {
+  return `<div class="card att-card">${calNav(y, m)}${attSummary(y, m, by)}${attCal(y, m, by, opts)}${attLegend(opts.teacher)}</div>
+    <div class="section-title"><h2>${emo('📋')} ${tr('Уроки по дням')}</h2></div><div class="card att-list-card">${attList(y, m, by, opts)}</div>`;
+}
+
+// ───────── Журнал учителя → «По ученикам»: отдельный календарь каждого ученика ─────────
+function journalStudentDays(j, uid) {
+  const days = j.sessions.filter((s) => s.members.some((m) => m.id === uid)).map((s) => {
+    const me0 = s.members.find((m) => m.id === uid);
+    return { date: s.date, start: s.start, end: s.end, present: !me0.absent, wait: s.status !== 'done', group: s.group, reason: me0.reason, sid: s.id };
+  });
+  const grades = j.grades.filter((x) => x.userId === uid);
+  return { days, grades };
+}
+function journalStudentView(j, g, chips, modeSeg) {
+  const list = g.students;
+  if (!list.length) {
+    app.innerHTML = adminTop('Журнал') + chips + modeSeg + emptyState('sleepy', 'В группе пока нет учеников', 'Добавь учеников во вкладке «Группы».');
+    return bindJournalCommon(j, g);
+  }
+  if (!list.some((u) => u.id === JR.st)) JR.st = list[0].id;
+  const i = list.findIndex((u) => u.id === JR.st);
+  const u = list[i];
+  const { days, grades } = journalStudentDays(j, u.id);
+  const by = attMap(days, grades);
+  const pers = g.personal?.find((p) => p.id === u.id);
+  const schedule = (pers ? pers.schedule : g.schedule).map((s) => ({ ...s, group: { name: g.name, emoji: g.emoji } }));
+  const total = days.filter((d) => !d.wait);
+  const was = total.filter((d) => d.present).length;
+  app.innerHTML = adminTop('Журнал') + chips + modeSeg + `
+    <div class="st-switch">
+      <button class="iconbtn" data-stp="-1" aria-label="Предыдущий" ${i === 0 ? 'disabled' : ''}>${ic('alt-arrow-left')}</button>
+      <div class="st-strip">${list.map((x) => `<button class="st-chip ${x.id === u.id ? 'on' : ''}" data-stc="${esc(x.id)}">${avatar(x)}<span data-noi18n>${esc(firstName(x.name))}</span></button>`).join('')}</div>
+      <button class="iconbtn" data-stp="1" aria-label="Следующий" ${i === list.length - 1 ? 'disabled' : ''}>${ic('alt-arrow-right')}</button>
+    </div>
+    <div class="card st-hero">${avatar(u, 'lg')}<div class="grow"><h2 data-noi18n>${esc(u.name)}</h2>
+      <p class="small muted"><span data-noi18n>${i + 1} / ${list.length}</span> · ${tr('за всё время')}: <b class="good-t">${was}</b> ${tr('был')}, <b class="bad-t">${total.length - was}</b> ${tr('не был')}${u.avg != null ? ` · ${tr('средняя')} ${u.avg}` : ''}</p>
+      ${pers ? `<span class="pill">${emo('👤')} ${tr('Личное время')}</span>` : ''}</div>
+      <div class="row" style="gap:6px"><button class="iconbtn" data-gr1 aria-label="Оценка">${ic('star')}</button><button class="iconbtn" data-open1 aria-label="Ученик">${ic('user-rounded')}</button></div></div>
+    ${attBlock(JR.y, JR.m, by, { today: j.today, schedule, teacher: true })}`;
+  bindJournalCommon(j, g);
+  const sel = $('.st-chip.on');
+  if (sel) sel.scrollIntoView({ inline: 'center', block: 'nearest' });
+  $$('[data-stc]').forEach((b) => (b.onclick = () => { JR.st = b.dataset.stc; haptic('light'); tabJournal().catch(fail); }));
+  $$('[data-stp]').forEach((b) => (b.onclick = () => { const nx = list[i + Number(b.dataset.stp)]; if (nx) { JR.st = nx.id; haptic('light'); tabJournal().catch(fail); } }));
+  $('[data-gr1]').onclick = () => gradeSheet({ userId: u.id, date: JR.day, after: () => tabJournal() });
+  $('[data-open1]').onclick = () => openStudent(u.id);
+  const open = (ds) => { const x = by[ds]; if (x) { haptic('light'); studentDaySheet(ds, x, u); } };
+  $$('[data-day]').forEach((b) => (b.onclick = () => open(b.dataset.day)));
+  $$('[data-aday]').forEach((b) => (b.onclick = () => open(b.dataset.aday)));
+}
+function studentDaySheet(ds, x, u) {
+  openSheet(`<div class="stack"><h2>${emo('📅')} <span data-noi18n>${dmy(ds)} · ${esc(u.name)}</span></h2>
+    ${x.l.map((l) => `<div class="card day-lesson ${l.wait ? 'mark' : l.present ? 'good' : 'bad'}"><div class="row" style="gap:10px">${emo(l.group?.emoji || '📚')}<div class="grow"><b>${esc(l.group?.name || '')}</b><div class="small muted" data-noi18n>${l.start}${l.end && l.end !== l.start ? '–' + l.end : ''}</div></div></div>
+      <div class="seg" style="margin-top:10px"><button class="${!l.wait && l.present ? 'on good' : ''}" data-set="${l.sid}" data-v="1">✓ ${tr('Был')}</button><button class="${!l.wait && !l.present ? 'on bad' : ''}" data-set="${l.sid}" data-v="0">✕ ${tr('Не был')}</button></div>
+      ${l.wait ? `<p class="small muted" style="margin-top:6px">${tr('Урок ещё не отмечен: остальные ученики будут отмечены как пришедшие.')}</p>` : ''}
+      ${l.reason ? `<p class="small" style="margin-top:8px">💬 ${esc(l.reason)}</p>` : ''}</div>`).join('')}
+    ${x.g.length ? `<div class="card grades-list">${x.g.map((g) => `<div class="grow-row">${gradeChip(g.value)}<div class="grow"><b>${g.lesson ? `${emo(g.lesson.emoji)} ${esc(g.lesson.title)}` : esc(tr('Оценка учителя'))}</b><div class="small muted">+${g.xp} XP${g.comment ? ' · ' + esc(g.comment) : ''}</div></div></div>`).join('')}</div>` : ''}</div>`, (el, close) => {
+    $$('[data-set]', el).forEach((b) => (b.onclick = async () => {
+      const s = S.journal.sessions.find((z) => z.id === b.dataset.set);
+      if (!s) return;
+      let absent = s.status === 'done' ? s.members.filter((m) => m.absent).map((m) => m.id) : [];
+      absent = absent.filter((id) => id !== u.id);
+      if (b.dataset.v === '0') absent.push(u.id);
+      try { await api('/admin/sessions/' + s.id, { absent }); haptic('success'); close(); tabJournal().catch(fail); } catch (e) { fail(e); }
+    }));
+  });
+}
+function bindJournalCommon(j, g) {
+  bindAdminTop();
+  $$('[data-jg]').forEach((b) => (b.onclick = () => { JR.group = b.dataset.jg; haptic('light'); tabJournal().catch(fail); }));
+  $$('[data-jmode]').forEach((b) => (b.onclick = () => { JR.mode = b.dataset.jmode; haptic('light'); tabJournal().catch(fail); }));
+  $$('[data-cm]').forEach((b) => (b.onclick = () => { JR.m += Number(b.dataset.cm); if (JR.m < 0) { JR.m = 11; JR.y--; } if (JR.m > 11) { JR.m = 0; JR.y++; } tabJournal().catch(fail); }));
 }

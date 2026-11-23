@@ -6,6 +6,28 @@ export const LANGS = [['ru', 'Русский'], ['uz', "O'zbekcha"], ['en', 'Eng
 
 // [русский, английский, узбекский]
 const PHRASES = [
+  ['урока в этом месяце', 'lessons this month', 'ta darsdan, shu oyda'],
+  ['уроков в этом месяце', 'lessons this month', 'ta darsdan, shu oyda'],
+  ['В этом месяце уроков ещё не было', 'No lessons this month yet', 'Bu oyda hali dars bo\'lmadi'],
+  ['В этом месяце уроков нет', 'No lessons this month', 'Bu oyda dars yo\'q'],
+  ['средняя оценка', 'average grade', 'o\'rtacha baho'],
+  ['Был на уроке', 'Was at the lesson', 'Darsda edi'],
+  ['Не был на уроке', 'Missed the lesson', 'Darsda bo\'lmadi'],
+  ['Ждёт отметки', 'Awaiting marks', 'Belgilash kutilmoqda'],
+  ['Будет урок', 'Upcoming lesson', 'Dars bo\'ladi'],
+  ['будет урок', 'upcoming lesson', 'dars bo\'ladi'],
+  ['Уроки по дням', 'Lessons by day', 'Kunlar bo\'yicha darslar'],
+  ['Вся группа', 'Whole group', 'Butun guruh'],
+  ['По ученикам', 'By student', 'O\'quvchilar bo\'yicha'],
+  ['за всё время', 'all time', 'butun vaqt'],
+  ['средняя', 'average', 'o\'rtacha'],
+  ['Личное время', 'Personal schedule', 'Shaxsiy vaqt'],
+  ['Был', 'Present', 'Keldi'],
+  ['Не был', 'Absent', 'Kelmadi'],
+  ['Урок ещё не отмечен: остальные ученики будут отмечены как пришедшие.', 'The lesson is not marked yet: the other students will be marked as present.', 'Dars hali belgilanmagan: qolgan o\'quvchilar kelgan deb belgilanadi.'],
+  ['Предыдущий', 'Previous', 'Oldingi'],
+  ['Следующий', 'Next', 'Keyingi'],
+  ['Добавь учеников во вкладке «Группы».', 'Add students in the «Groups» tab.', 'O\'quvchilarni «Guruhlar» bo\'limida qo\'shing.'],
   ['Главное', 'Main', 'Asosiy'],
   ['Учёба', 'Learning', 'O\'qish'],
   ['Активность', 'Activity', 'Faollik'],
@@ -609,6 +631,7 @@ const TOKENS = [
 ];
 
 const PATTERNS = [
+  [/^Был на (\d+) из (\d+)$/, 'Attended $1 of $2', '$2 tadan $1'],
   [/^(Доброе утро|Добрый день|Добрый вечер|Доброй ночи), (.+)!$/, (m, a, n) => ({ 'Доброе утро': 'Good morning', 'Добрый день': 'Good afternoon', 'Добрый вечер': 'Good evening', 'Доброй ночи': 'Good night' }[a] + ', ' + n + '!'), (m, a, n) => ({ 'Доброе утро': 'Xayrli tong', 'Добрый день': 'Xayrli kun', 'Добрый вечер': 'Xayrli kech', 'Доброй ночи': 'Xayrli tun' }[a] + ', ' + n + '!')],
   [/^(\d+) (?:дело ждёт|дела ждут|дел ждут) тебя\.$/, '$1 things are waiting for you.', '$1 ta ish sizni kutmoqda.'],
   [/^Сегодня (\d+) (?:урок|урока|уроков), первый в (\d\d:\d\d)\.$/, '$1 lesson(s) today, the first at $2.', 'Bugun $1 ta dars, birinchisi $2 da.'],
