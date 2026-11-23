@@ -3681,7 +3681,7 @@ async function viewPage(uid) {
     ${p.badges.length ? sectionTitle('🏅', 'Звания недели') + badgeChips(p.badges) : ''}
     ${p.me ? `<div class="row" style="gap:8px;margin-top:14px"><button class="btn grow" data-wardrobe>${emo('👗')}Гардероб</button><button class="btn ghost grow" data-wish>${emo('🎀')}Попросить одежду</button></div>` : ''}
     ${sectionTitle('🏠', `Дом для ${p.pet}`)}
-    ${p.room ? `<div class="room-wrap view">${roomScene(p.room, u.prefs?.mascot || 'kapi')}</div>${p.me ? `<button class="btn block" data-myroom style="margin-top:10px">${emo('🛋️')} Обустроить дом</button>` : ''}` : ''}
+    ${p.room ? `<div class="room-wrap view">${roomScene(p.room, u.prefs?.mascot || 'kapi', { built: p.built })}</div>${p.me ? `<button class="btn block" data-myroom style="margin-top:10px">${emo('🛋️')} Обустроить дом</button>` : ''}` : ''}
     ${p.house.files ? sectionTitle('💻', 'Сайт питомца (код)') : ''}
     ${p.house.files ? `<div class="card house-frame"><iframe sandbox="allow-scripts" data-housef title="house"></iframe><p class="small muted center" style="margin-top:6px"><span data-noi18n>${p.house.done} / ${p.house.total}</span></p></div>`
       : `<div class="card center muted small">${p.me ? 'Дом ещё пустой — открой испытание «Дом для питомца» на главной' : 'Дом ещё строится'}</div>`}
@@ -3719,33 +3719,6 @@ async function viewPage(uid) {
 }
 
 // ───── гардероб и просьба об одежде ─────
-async function wardrobeSheet(after) {
-  let w;
-  try { w = await api('/wardrobe'); } catch (e) { return fail(e); }
-  openSheet('<div data-ward></div>', (el, close) => {
-    const box = $('[data-ward]', el);
-    const draw = () => {
-      box.innerHTML = `<div class="stack"><h2 class="center">${emo('👗')} Гардероб</h2><div class="center">${petHtml(LOOK.mascot, 'happy', 140, w.wear)}</div>
-        ${['head', 'face', 'neck'].map((slot) => `<div><small class="muted">${SLOT_NAME[slot]}</small><div class="wardrobe">${w.items.filter((i) => i.slot === slot).map((i) => `<button class="ward ${w.wear[slot] === i.id ? 'on' : ''} ${i.owned ? '' : 'locked'}" data-item="${i.id}" data-slot="${slot}">${emo(i.emoji)}<b>${esc(i.name)}</b>${i.owned ? '' : `<span>${ic('lock-keyhole', 'sm')}${esc(i.how)}</span>`}</button>`).join('')}</div></div>`).join('')}
-        <button class="btn ghost block" data-wish2>${emo('🎀')}Попросить одежду</button></div>`;
-      $$('[data-item]', box).forEach((b) => (b.onclick = async () => {
-        const it = w.items.find((i) => i.id === b.dataset.item);
-        if (!it.owned) { haptic('warning'); return toast(it.how, true); }
-        const slot = b.dataset.slot;
-        try {
-          const r = await api('/wardrobe/wear', { slot, item: w.wear[slot] === it.id ? null : it.id });
-          w.wear = r.wear;
-          if (S.me?.social) S.me.social.wear = r.wear;
-          haptic('success');
-          draw();
-          after?.();
-        } catch (e) { fail(e); }
-      }));
-      $('[data-wish2]', box).onclick = () => { close(); wishSheet(); };
-    };
-    draw();
-  });
-}
 function wishSheet() {
   openSheet(`<div class="stack"><h2 class="center">${emo('🎀')} Попросить одежду</h2><p class="muted center small">Что ты хочешь для своего питомца? Учитель получит твою просьбу, и вещь может появиться в гардеробе.</p>
     <textarea maxlength="200" rows="3" placeholder="Например: шапка-ушанка, розовый бант, плащ супергероя" data-w></textarea><button class="btn block" data-ws>${ic('plain-2', 'sm')}Отправить учителю</button></div>`,
@@ -3796,7 +3769,7 @@ async function startHouse(k) {
 function houseWin(h, c, sent) {
   let praise = '';
   if (c.praise) {
-    try { const m = new RegExp(c.praise.re, 'i').exec(sent.files[c.praise.file] || ''); praise = c.praise.text.replace('{1}', (m?.[1] || '').trim().slice(0, 40) || '…'); } catch { /* */ }
+    try { const m = new RegExp(c.praise.re, 'i').exec(sent.files[c.praise.file] || ''); praise = c.praise.text.replace('{1}', (m?.[c.praise.group || 1] || '').trim().slice(0, 40) || '…'); } catch { /* */ }
   }
   const total = h.total;
   const doneNow = new Set([...h.done, c.k]).size;
@@ -3805,9 +3778,10 @@ function houseWin(h, c, sent) {
   setTimeout(confetti, 200);
   openSheet(`<div class="stack center"><div>${myPet(HOUSE_POSE[Math.min(doneNow, 4)], 150)}</div><h2>${doneNow >= total ? 'Дом построен!' : 'Получилось!'}</h2>
     <div class="speech" data-say style="text-align:left"></div>
-    ${reward ? `<div class="card reward-card">${emo(reward, { cls: 'lg' })}<div class="grow" style="text-align:left"><b>Новая вещь для питомца!</b><span class="small muted">Надень её в гардеробе</span></div></div>` : ''}
+    ${reward ? `<div class="card reward-card">${emo(reward, { cls: 'lg' })}<div class="grow" style="text-align:left"><b>Новая вещь для питомца!</b><span class="small muted">Надень её в «Доме питомца»</span></div></div>` : ''}
     <div class="card reflect-card" style="text-align:left"><b>${emo('💭')} Один вопрос</b><p data-noi18n>${esc(c.reflect)}</p><textarea maxlength="300" rows="2" placeholder="Напиши одно предложение — как думаешь ты сам(а)" data-rt></textarea><button class="btn block" data-rs>${ic('plain-2', 'sm')}Ответить</button></div>
-    <div class="row" style="gap:8px">${doneNow < total ? `<button class="btn ghost grow" data-nexth>${ic('play', 'sm')}Следующее испытание</button>` : `<button class="btn ghost grow" data-seepage>${emo('🏠')}Посмотреть дом</button>`}${reward ? `<button class="btn ghost grow" data-towar>${emo('👗')}Гардероб</button>` : ''}</div></div>`,
+    <button class="btn block" data-toroom>${emo('🏠')} Смотреть, что построилось</button>
+    ${doneNow < total ? `<button class="btn ghost block" data-nexth>${ic('play', 'sm')}Следующее испытание</button>` : ''}</div>`,
   (el, close) => {
     speak($('[data-say]', el), praise || 'Отлично! Ты сделал(а) это сам(а).', null);
     $('[data-rs]', el).onclick = async () => {
@@ -3821,10 +3795,7 @@ function houseWin(h, c, sent) {
     };
     const nh = $('[data-nexth]', el);
     if (nh) nh.onclick = () => { close(); startHouse(c.k + 1); };
-    const sp = $('[data-seepage]', el);
-    if (sp) sp.onclick = () => { close(); openView({ type: 'page', id: S.me.user.id, parent: S.view }); };
-    const tw = $('[data-towar]', el);
-    if (tw) tw.onclick = () => { close(); wardrobeSheet(); };
+    $('[data-toroom]', el).onclick = () => { close(); S.roomFlash = ['Смотри — табличка с твоим текстом уже на стене! 🪧', 'Стены теперь твоего цвета! 🎨', 'Твоя мебель уже в комнате — расставь её! 🛋️', 'Нажми на меня — я скажу твою фразу! 💬'][c.k - 1] || null; ROOM.tab = reward ? 'clothes' : 'decor'; go('room'); };
   });
   refreshMe().catch(() => {});
 }
@@ -4365,142 +4336,200 @@ async function homeworkCard(el, lessonId, preview) {
 }
 
 // ═══════════════ ДОМ ПИТОМЦА: комната-мини-игра ═══════════════
-// Всё, что ученик заработал, он сам ставит куда хочет: мебель и украшения — в комнату,
-// одежду — на питомца (перетащил на него — надел, утащил с него — снял). Размер и поворот меняются.
+// Комната объёмная: задняя стена, боковые стены, пол в перспективе, окно, дверь, лампа.
+// Что ученик написал кодом в испытаниях, то и построено: табличка (h1 и цвет), обои (background),
+// мебель из .furniture, фраза питомца (textContent). Без испытаний — стройка: серые стены, леса.
+// Вещи на полу ставятся только на пол: дальше — меньше и за другими; настенные — только на стену.
+// Одежду перетаскивают прямо на питомца, утащил с него — снял.
 const ROOM = { tab: 'decor', sel: null };
 const ROOM_SAY = ['Ого, как уютно! 😍', 'Мне нравится! 💜', 'Красота!', 'Теперь это мой любимый уголок ✨', 'Ты лучший дизайнер!', 'Ура, обновка!'];
+const ROOM_EMO = { plant: '🪴', teddy: '🧸', picture: '🖼️', lamp: '💡', sofa: '🛋️', tv: '📺', bed: '🛏️', piano: '🎹', books: '📚', globe: '🌍', laptop: '💻', trophy: '🏆', clock: '⏰', guitar: '🎸', window: '🪟', candle: '🕯️', fish: '🐠', balloons: '🎈', rainbow: '🌈', star: '⭐', cup: '☕', bouquet: '💐' };
+const ROOM_WALL = new Set(['picture', 'lamp', 'clock', 'window', 'balloons', 'rainbow', 'star']);
+const WALL_NAME = { mint: 'Мята', peach: 'Персик', sky: 'Небо', lilac: 'Сирень', lemon: 'Лимон', night: 'Ночь', code: 'Мои обои из кода' };
+const FLOOR_NAME = { wood: 'Паркет', tiles: 'Плитка', carpet: 'Ковёр', grass: 'Трава' };
+const BUILD_STEPS = [['🪧', 'Табличка'], ['🎨', 'Обои'], ['🛋️', 'Мебель'], ['💬', 'Голос']];
+// геометрия комнаты в % от сцены
+const RG = { wallTop: 7, floorY: 60, side: 13 };
+const isWallItem = (id) => ROOM_WALL.has(id);
+function clampSpot(id, x, y) {
+  if (id !== 'pet' && isWallItem(id)) return { x: Math.min(84, Math.max(16, x)), y: Math.min(52, Math.max(13, y)) };
+  const yy = Math.min(98, Math.max(RG.floorY + 6, y));
+  const edge = RG.side * (1 - (yy - RG.floorY) / (100 - RG.floorY)) + 4;
+  return { x: Math.min(100 - edge, Math.max(edge, x)), y: yy };
+}
+const depthOf = (y) => 0.7 + 0.5 * Math.max(0, Math.min(1, (y - RG.floorY) / (100 - RG.floorY)));
 function petDressHtml(petId, emotion, size, dress, cls = '', edit = false) {
   const list = Array.isArray(dress) ? dress : [];
   const parts = list.map((w) => `<span class="w free" ${edit ? `data-rw="${w.id}"` : ''} style="left:${w.x}%;top:${w.y}%;--s:${w.s || 1};--r:${w.r || 0}deg">${emo(WEAR_EMO[w.id] || '❓')}</span>`).join('');
   return `<span class="pet-dress" style="width:${size}px;height:${size}px">${mascot(MASCOTS[petId] ? petId : 'kapi', emotion, size, cls)}${parts}</span>`;
 }
-function roomScene(r, petId, { edit = false, emotion = 'happy', decor = null } = {}) {
-  const DE = decor ? Object.fromEntries(decor.map((d) => [d.id, d.emoji])) : ROOM_EMO;
-  return `<div class="room wall-${r.wall} floor-${r.floor} ${edit ? 'edit' : ''}" data-room>
-    <div class="room-wall"><i class="room-base"></i></div><div class="room-floor"></div>
-    ${r.items.map((it) => `<div class="ri ${ROOM.sel === 'i:' + it.id && edit ? 'sel' : ''}" ${edit ? `data-ri="${it.id}"` : ''} style="left:${it.x}%;top:${it.y}%;--s:${it.s};--r:${it.r}deg;--fx:${it.f ? -1 : 1};z-index:${10 + (it.z || 0)}">${emo(DE[it.id] || '❓')}</div>`).join('')}
-    <div class="room-pet ${ROOM.sel === 'pet' && edit ? 'sel' : ''}" ${edit ? 'data-rpet' : ''} style="left:${r.pet.x}%;top:${r.pet.y}%;--s:${r.pet.s}">${petDressHtml(petId, emotion, 150, r.wear, 'still', edit)}</div>
+function roomScene(r, petId, { edit = false, emotion = 'happy', built = null } = {}) {
+  const b = built || { stage: 4, furniture: [] };
+  const E2 = { ...ROOM_EMO, ...Object.fromEntries((b.furniture || []).map((e, i) => ['c' + (i + 1), e])) };
+  const wallCss = r.wall === 'code' && b.wall ? ` style="--wall-code:${esc(b.wall)}"` : '';
+  const item = (it) => {
+    const wall = isWallItem(it.id);
+    const ds = wall ? 1 : depthOf(it.y);
+    const z = wall ? 5 + (it.z || 0) : Math.round(it.y * 10);
+    return `<div class="ri ${wall ? 'on-wall' : 'on-floor'} ${ROOM.sel === 'i:' + it.id && edit ? 'sel' : ''}" ${edit ? `data-ri="${it.id}"` : ''} style="left:${it.x}%;top:${it.y}%;--s:${it.s * ds};--r:${it.r}deg;--fx:${it.f ? -1 : 1};z-index:${z}">${emo(E2[it.id] || '❓')}</div>`;
+  };
+  const pz = Math.round(r.pet.y * 10) + 1;
+  return `<div class="room v2 st-${Math.min(b.stage, 4)} wall-${r.wall} floor-${r.floor} ${edit ? 'edit' : ''}" data-room${wallCss}>
+    <div class="rm-ceil"></div><div class="rm-left"></div><div class="rm-right"></div>
+    <div class="rm-back"><i class="rm-window"><b></b></i><i class="rm-door"><b></b></i>
+      ${b.stage >= 1 && b.sign ? `<div class="rm-sign" style="--ink:${esc(b.sign.color)}"><span data-noi18n>${esc(b.sign.text)}</span></div>` : '<div class="rm-sign empty"><span>?</span></div>'}
+      <i class="rm-base"></i></div>
+    <div class="rm-floor"></div><i class="rm-lamp"></i><i class="rm-light"></i>
+    ${b.stage < 1 ? `<div class="rm-build"><i class="tape"></i><span class="cone c1">${emo('🚧')}</span><span class="cone c2">${emo('🧱')}</span><span class="cone c3">${emo('🏗️')}</span></div>` : ''}
+    ${r.items.map(item).join('')}
+    <div class="room-pet ${ROOM.sel === 'pet' && edit ? 'sel' : ''}" ${edit ? 'data-rpet' : ''} style="left:${r.pet.x}%;top:${r.pet.y}%;--s:${r.pet.s * depthOf(r.pet.y)};z-index:${pz}">${petDressHtml(petId, emotion, 150, r.wear, 'still', edit)}</div>
   </div>`;
 }
-const ROOM_EMO = { plant: '🪴', teddy: '🧸', picture: '🖼️', lamp: '💡', sofa: '🛋️', tv: '📺', bed: '🛏️', piano: '🎹', books: '📚', globe: '🌍', laptop: '💻', trophy: '🏆', clock: '⏰', guitar: '🎸', window: '🪟', candle: '🕯️', fish: '🐠', balloons: '🎈', rainbow: '🌈', star: '⭐', cup: '☕', bouquet: '💐' };
-const WALL_NAME = { mint: 'Мята', peach: 'Персик', sky: 'Небо', lilac: 'Сирень', lemon: 'Лимон', night: 'Ночь' };
-const FLOOR_NAME = { wood: 'Паркет', tiles: 'Плитка', carpet: 'Ковёр', grass: 'Трава' };
 
 async function tabRoom() {
   const d = await api('/room');
   const R = JSON.parse(JSON.stringify(d.room));
+  const b = d.built;
+  const codeDecor = (b.furniture || []).map((e, i) => ({ id: 'c' + (i + 1), emoji: e, layer: 'floor', name: tr('Мебель из твоего кода'), owned: true, code: true }));
+  const decor = [...codeDecor, ...d.decor];
+  const EMO_OF = Object.fromEntries(decor.map((x) => [x.id, x.emoji]));
   let saveT = null;
-  const save = () => { clearTimeout(saveT); saveT = setTimeout(() => api('/room', { room: R }).then((x) => { if (S.me?.social) S.me.social.dress = x.room.wear; }).catch(fail), 700); };
+  const save = () => { clearTimeout(saveT); saveT = setTimeout(() => api('/room', { room: R }).then((x) => { if (S.me?.social) S.me.social.dress = x.room.wear; }).catch(fail), 600); };
   const placed = new Set(R.items.map((x) => x.id));
   const worn = new Set(R.wear.map((x) => x.id));
-  const ownedDecor = d.decor.filter((x) => x.owned).length;
-  const ownedClothes = d.clothes.filter((x) => x.owned).length;
-  const petSay = (t) => { const b = $('[data-rsay]'); if (!b) return; b.textContent = t; b.classList.remove('show'); void b.offsetWidth; b.classList.add('show'); };
+  // облачко появляется над головой питомца (там, где он сейчас стоит)
+  const petSay = (t, ms = 3200) => { const el = $('[data-rsay]'); if (!el) return; el.textContent = t; el.style.setProperty('--dur', ms + 'ms'); el.style.left = Math.min(80, Math.max(20, R.pet.x)) + '%'; el.style.top = Math.max(4, R.pet.y - 34 * R.pet.s * depthOf(R.pet.y) - 6) + '%'; el.classList.remove('show'); void el.offsetWidth; el.classList.add('show'); };
+  const nextC = b.next;
 
+  function buildBar() {
+    const doneAll = b.stage >= b.total;
+    return `<div class="build-bar ${doneAll ? 'done' : ''}">
+      <div class="build-steps">${BUILD_STEPS.map(([e, n], i) => `<div class="bs ${i < b.stage ? 'ok' : i === b.stage ? 'cur' : ''}">${emo(e)}<span>${n}</span>${i < b.stage ? '<i>✓</i>' : ''}</div>`).join('<b class="bs-line"></b>')}</div>
+      ${doneAll ? `<button class="btn ghost sm" data-redo>${emo('🛠️')} Перестроить кодом</button>` : `<button class="btn sm" data-build>${emo('💻')} ${b.stage ? 'Строить дальше' : 'Начать стройку'}</button>`}
+    </div>`;
+  }
   function trayHtml() {
     if (ROOM.tab === 'walls') {
-      return `<div class="tray-sec"><small>Стены</small><div class="swatches">${d.walls.map((w) => `<button class="sw wall-${w} ${R.wall === w ? 'on' : ''}" data-wall="${w}"><i></i><span>${WALL_NAME[w]}</span></button>`).join('')}</div></div>
+      const walls = [...(b.wall ? ['code'] : []), ...d.walls];
+      return `<div class="tray-sec"><small>Стены</small><div class="swatches">${walls.map((w) => `<button class="sw wall-${w} ${R.wall === w ? 'on' : ''}" data-wall="${w}"><i ${w === 'code' ? `style="background:${esc(b.wall)}"` : ''}></i><span>${WALL_NAME[w]}</span></button>`).join('')}</div>
+        ${b.wall ? '' : `<p class="small muted" style="margin-top:6px">${emo('💡')} В испытании «Обои» ты сам напишешь цвет стен кодом</p>`}</div>
         <div class="tray-sec"><small>Пол</small><div class="swatches">${d.floors.map((f) => `<button class="sw floor-${f} ${R.floor === f ? 'on' : ''}" data-floor="${f}"><i></i><span>${FLOOR_NAME[f]}</span></button>`).join('')}</div></div>`;
     }
-    const list = ROOM.tab === 'decor' ? d.decor : d.clothes;
+    const list = ROOM.tab === 'decor' ? decor : d.clothes;
     const used = ROOM.tab === 'decor' ? placed : worn;
-    return `<div class="tray-grid">${list.map((x) => x.owned
-      ? `<button class="tray-it ${used.has(x.id) ? 'used' : ''}" data-tray="${ROOM.tab}:${x.id}" title="${esc(x.name)}">${emo(x.emoji)}<span>${esc(x.name)}</span>${used.has(x.id) ? '<i class="tray-on">✓</i>' : ''}</button>`
+    return `${ROOM.tab === 'decor' && !codeDecor.length ? `<p class="tray-tip">${emo('💻')} В испытании «Мебель» ты сам выберешь 3 вещи кодом — и они встанут сюда</p>` : ''}
+      <div class="tray-grid">${list.map((x) => x.owned
+      ? `<button class="tray-it ${used.has(x.id) ? 'used' : ''} ${x.code ? 'from-code' : ''}" data-tray="${ROOM.tab}:${x.id}" title="${esc(x.name)}">${emo(x.emoji)}<span>${esc(x.name)}</span>${x.code ? '<i class="tray-code">&lt;/&gt;</i>' : ''}${used.has(x.id) ? '<i class="tray-on">✓</i>' : ''}</button>`
       : `<button class="tray-it locked" data-lock="${esc(x.how)}" title="${esc(x.name)}">${emo(x.emoji)}<span>${esc(x.name)}</span>${x.need ? `<b class="tray-prog"><i style="width:${Math.round((x.have / x.need) * 100)}%"></i></b><em>${x.have}/${x.need}</em>` : `<em>${ic('lock-keyhole', 'sm')}</em>`}</button>`).join('')}</div>`;
   }
   function render() {
-    app.innerHTML = tHead(`Дом для ${esc(d.pet)}`, 'Перетаскивай вещи куда хочешь: мебель — в комнату, одежду — прямо на питомца') + `
+    app.innerHTML = tHead(`Дом для ${esc(d.pet)}`, b.stage < b.total ? 'Строй дом кодом и обустраивай его: всё, что ты напишешь, появится здесь' : 'Перетаскивай вещи: мебель — в комнату, одежду — прямо на питомца') + buildBar() + `
       <div class="room-layout"><div class="room-col">
-        <div class="room-wrap">${roomScene(R, d.petId, { edit: true, decor: d.decor })}<div class="room-say" data-rsay></div></div>
+        <div class="room-wrap">${roomScene(R, d.petId, { edit: true, built: b })}<div class="room-say" data-rsay></div></div>
         <div class="room-tools" data-tools ${ROOM.sel ? '' : 'hidden'}>
           <button data-act="smaller" aria-label="Меньше">➖</button><button data-act="bigger" aria-label="Больше">➕</button>
-          <button data-act="left" aria-label="Повернуть">↺</button><button data-act="right" aria-label="Повернуть">↻</button>
-          <button data-act="flip" aria-label="Отразить">⇋</button><button data-act="front" aria-label="Вперёд">⬆</button>
+          <button data-act="left" aria-label="Повернуть влево">↺</button><button data-act="right" aria-label="Повернуть вправо">↻</button>
+          <button data-act="flip" aria-label="Отразить">⇋</button>
           <button data-act="remove" class="del" aria-label="Убрать">${ic('trash-bin-trash', 'sm')}</button></div>
-        <p class="room-hint muted small">${ROOM.sel ? 'Двигай пальцем, меняй размер кнопками. Нажми на пустое место — готово.' : 'Нажми на вещь в комнате, чтобы двигать, крутить и менять размер.'}</p>
+        <p class="room-hint muted small">${ROOM.sel ? 'Двигай пальцем, меняй размер кнопками. Нажми на пустое место — готово.' : b.phrase ? 'Нажми на питомца — он скажет твою фразу. Нажми на вещь, чтобы двигать её.' : 'Нажми на вещь в комнате, чтобы двигать, крутить и менять размер.'}</p>
       </div><div class="room-side">
-        <div class="seg room-tabs"><button class="${ROOM.tab === 'decor' ? 'on' : ''}" data-rtab="decor">${emo('🛋️')} Мебель <i>${ownedDecor}/${d.decor.length}</i></button><button class="${ROOM.tab === 'clothes' ? 'on' : ''}" data-rtab="clothes">${emo('🎀')} Одежда <i>${ownedClothes}/${d.clothes.length}</i></button><button class="${ROOM.tab === 'walls' ? 'on' : ''}" data-rtab="walls">${emo('🎨')} Обои</button></div>
-        <div class="tray" data-trayw>${trayHtml()}</div>
+        <div class="seg room-tabs"><button class="${ROOM.tab === 'decor' ? 'on' : ''}" data-rtab="decor">${emo('🛋️')} Мебель <i>${decor.filter((x) => x.owned).length}/${decor.length}</i></button><button class="${ROOM.tab === 'clothes' ? 'on' : ''}" data-rtab="clothes">${emo('🎀')} Одежда <i>${d.clothes.filter((x) => x.owned).length}/${d.clothes.length}</i></button><button class="${ROOM.tab === 'walls' ? 'on' : ''}" data-rtab="walls">${emo('🎨')} Обои</button></div>
+        <div class="tray">${trayHtml()}</div>
         <div class="room-earn card"><b>${emo('🔓')} Как открыть новые вещи</b><span>Тесты, ДЗ и классная работа в «Задачах», испытания с кодом и серия дней открывают мебель. Одежда — за испытания и звания.</span>
-          <div class="row" style="gap:8px;margin-top:10px"><button class="btn sm grow" data-gotasks>${emo('📋')} Задачи</button><button class="btn sm ghost grow" data-houseq>${emo('💻')} Испытания с кодом</button></div></div>
+          <button class="btn sm block" data-gotasks style="margin-top:10px">${emo('📋')} Задачи</button></div>
       </div></div>`;
     bind();
   }
   const scene = () => $('[data-room]');
-  const pct = (ev) => { const b = scene().getBoundingClientRect(); return { x: ((ev.clientX - b.left) / b.width) * 100, y: ((ev.clientY - b.top) / b.height) * 100, inside: ev.clientX >= b.left && ev.clientX <= b.right && ev.clientY >= b.top && ev.clientY <= b.bottom }; };
+  const pct = (ev) => { const r = scene().getBoundingClientRect(); return { x: ((ev.clientX - r.left) / r.width) * 100, y: ((ev.clientY - r.top) / r.height) * 100, inside: ev.clientX >= r.left && ev.clientX <= r.right && ev.clientY >= r.top && ev.clientY <= r.bottom }; };
   const petBox = () => $('[data-rpet] .pet-dress').getBoundingClientRect();
-  const onPet = (ev) => { const b = petBox(); return { x: ((ev.clientX - b.left) / b.width) * 100, y: ((ev.clientY - b.top) / b.height) * 100, inside: ev.clientX >= b.left - 10 && ev.clientX <= b.right + 10 && ev.clientY >= b.top - 20 && ev.clientY <= b.bottom + 10 }; };
+  const onPet = (ev) => { const r = petBox(); return { x: ((ev.clientX - r.left) / r.width) * 100, y: ((ev.clientY - r.top) / r.height) * 100, inside: ev.clientX >= r.left - 12 && ev.clientX <= r.right + 12 && ev.clientY >= r.top - 24 && ev.clientY <= r.bottom + 8 }; };
   const selObj = () => (ROOM.sel === 'pet' ? R.pet : ROOM.sel?.startsWith('i:') ? R.items.find((x) => x.id === ROOM.sel.slice(2)) : ROOM.sel?.startsWith('w:') ? R.wear.find((x) => x.id === ROOM.sel.slice(2)) : null);
-  const pose = (emotion, ms = 1400) => { const p = $('[data-rpet] .pet-dress'); if (!p) return; const keep = p.innerHTML; p.firstElementChild.outerHTML = mascot(MASCOTS[d.petId] ? d.petId : 'kapi', emotion, 150, 'still'); setTimeout(() => { if (p.isConnected) p.innerHTML = keep; }, ms); };
+  const pose = (emotion, ms = 1400) => { const p = $('[data-rpet] .pet-dress'); if (!p?.firstElementChild) return; const keep = p.innerHTML; p.firstElementChild.outerHTML = mascot(MASCOTS[d.petId] ? d.petId : 'kapi', emotion, 150, 'still'); setTimeout(() => { if (p.isConnected) p.innerHTML = keep; }, ms); };
+  const cheer = () => { petSay(tr(ROOM_SAY[Math.floor(Math.random() * ROOM_SAY.length)])); pose('love'); };
 
   function addDecor(id, x, y) {
-    if (placed.has(id)) return;
-    R.items.push({ id, x: Math.min(95, Math.max(5, x)), y: Math.min(96, Math.max(6, y)), s: 1, r: 0, z: R.items.length + 1 });
+    if (placed.has(id)) { ROOM.sel = 'i:' + id; return render(); }
+    const p = clampSpot(id, x, y);
+    R.items.push({ id, x: p.x, y: p.y, s: 1, r: 0, z: R.items.length + 1 });
     placed.add(id); ROOM.sel = 'i:' + id;
-    sfx.ok(); haptic('success'); render(); petSay(ROOM_SAY[Math.floor(Math.random() * ROOM_SAY.length)]); pose('love'); save();
+    sfx.ok(); haptic('success'); render(); cheer(); save();
   }
   function addWear(id, x, y) {
     R.wear = R.wear.filter((w) => w.id !== id);
     R.wear.push({ id, x: Math.min(110, Math.max(-10, x)), y: Math.min(110, Math.max(-20, y)), s: 1, r: 0 });
     worn.add(id); ROOM.sel = 'w:' + id;
-    sfx.ok(); haptic('success'); render(); petSay(ROOM_SAY[Math.floor(Math.random() * ROOM_SAY.length)]); pose('cheer'); save();
+    sfx.ok(); haptic('success'); render(); petSay(tr(ROOM_SAY[Math.floor(Math.random() * ROOM_SAY.length)])); pose('cheer'); save();
   }
-  const DEFAULT_WEAR = { bow: [62, 6], crown: [50, 2], tophat: [50, 0], cap: [50, 4], flower: [30, 10], glasses: [50, 38], scarf: [50, 70], medal: [50, 76], heart: [50, 74] };
+  const DEFAULT_WEAR = { bow: [64, 8], crown: [50, 2], tophat: [50, 0], cap: [50, 4], flower: [30, 12], glasses: [50, 40], scarf: [50, 72], medal: [50, 78], heart: [50, 76] };
+  const freeSpot = (id) => (isWallItem(id) ? { x: 22 + Math.random() * 30, y: 22 + Math.random() * 20 } : { x: 20 + Math.random() * 60, y: 72 + Math.random() * 20 });
 
   function bind() {
-    $$('[data-rtab]').forEach((b) => (b.onclick = () => { ROOM.tab = b.dataset.rtab; haptic('light'); render(); }));
-    $$('[data-wall]').forEach((b) => (b.onclick = () => { R.wall = b.dataset.wall; haptic('light'); render(); save(); }));
-    $$('[data-floor]').forEach((b) => (b.onclick = () => { R.floor = b.dataset.floor; haptic('light'); render(); save(); }));
-    $$('[data-lock]').forEach((b) => (b.onclick = () => { haptic('warning'); toast(`${emo('🔒')} ${b.dataset.lock}`); }));
+    $$('[data-rtab]').forEach((x) => (x.onclick = () => { ROOM.tab = x.dataset.rtab; haptic('light'); render(); }));
+    $$('[data-wall]').forEach((x) => (x.onclick = () => { R.wall = x.dataset.wall; haptic('light'); render(); save(); }));
+    $$('[data-floor]').forEach((x) => (x.onclick = () => { R.floor = x.dataset.floor; haptic('light'); render(); save(); }));
+    $$('[data-lock]').forEach((x) => (x.onclick = () => { haptic('warning'); toast(`🔒 ${x.dataset.lock}`); }));
     $('[data-gotasks]').onclick = () => go('tasks');
-    $('[data-houseq]').onclick = () => houseSheet();
-    // из ящика: тап — поставить на видное место, перетаскивание — куда отпустишь
-    $$('[data-tray]').forEach((b) => (b.onpointerdown = (ev) => {
-      const [kind, id] = b.dataset.tray.split(':');
+    const bb = $('[data-build]');
+    if (bb) bb.onclick = () => startHouse(nextC);
+    const rd = $('[data-redo]');
+    if (rd) rd.onclick = () => houseSheet();
+    // из ящика: тап — поставить, перетаскивание — куда отпустишь
+    $$('[data-tray]').forEach((t) => (t.onpointerdown = (ev) => {
+      const [kind, id] = t.dataset.tray.split(':');
       const start = { x: ev.clientX, y: ev.clientY };
       let ghost = null;
       const move = (e) => {
         if (!ghost && Math.hypot(e.clientX - start.x, e.clientY - start.y) > 8) {
           ghost = document.createElement('div');
           ghost.className = 'drag-ghost';
-          ghost.innerHTML = emo(kind === 'decor' ? ROOM_EMO[id] : WEAR_EMO[id]);
+          ghost.innerHTML = emo(kind === 'decor' ? EMO_OF[id] : WEAR_EMO[id]);
           document.body.appendChild(ghost);
           haptic('light');
         }
-        if (ghost) { ghost.style.left = e.clientX + 'px'; ghost.style.top = e.clientY + 'px'; if (kind === 'clothes') $('[data-rpet]')?.classList.toggle('drop-ok', onPet(e).inside); }
+        if (ghost) {
+          ghost.style.left = e.clientX + 'px'; ghost.style.top = e.clientY + 'px';
+          if (kind === 'clothes') $('[data-rpet]')?.classList.toggle('drop-ok', onPet(e).inside);
+          else scene().dataset.drop = pct(e).inside ? (isWallItem(id) ? 'wall' : 'floor') : '';
+        }
       };
       const up = (e) => {
         removeEventListener('pointermove', move); removeEventListener('pointerup', up);
         $('[data-rpet]')?.classList.remove('drop-ok');
-        if (!ghost) { // тап
-          if (kind === 'decor') { if (placed.has(id)) { ROOM.sel = 'i:' + id; render(); } else addDecor(id, 25 + Math.random() * 50, ROOM_EMO[id] && d.decor.find((x) => x.id === id)?.layer === 'wall' ? 30 : 75); }
-          else { const p = DEFAULT_WEAR[id] || [50, 30]; addWear(id, p[0], p[1]); }
+        if (scene()) scene().dataset.drop = '';
+        if (!ghost) {
+          if (kind === 'decor') { const p = freeSpot(id); addDecor(id, p.x, p.y); } else { const p = DEFAULT_WEAR[id] || [50, 30]; addWear(id, p[0], p[1]); }
           return;
         }
         ghost.remove();
-        if (kind === 'decor') { const p = pct(e); if (p.inside) addDecor(id, p.x, p.y); else toast('Отпусти вещь внутри комнаты'); }
-        else { const p = onPet(e); if (p.inside) addWear(id, p.x, p.y); else { haptic('warning'); petSay('Одежду надевают на меня — перетащи прямо на меня! 😄'); } }
+        if (kind === 'decor') { const p = pct(e); if (p.inside) addDecor(id, p.x, p.y); else toast(tr('Отпусти вещь внутри комнаты')); }
+        else { const p = onPet(e); if (p.inside) addWear(id, p.x, p.y); else { haptic('warning'); petSay(tr('Одежду надевают на меня — перетащи прямо на меня! 😄')); } }
       };
       addEventListener('pointermove', move); addEventListener('pointerup', up);
     }));
-    // в комнате: выбрать и тащить
+    // в комнате: выбрать и тащить (пол — только по полу, стена — только по стене)
     const drag = (el, sel, getObj, frame) => (el.onpointerdown = (ev) => {
       ev.stopPropagation(); ev.preventDefault();
-      if (ROOM.sel !== sel) { ROOM.sel = sel; $$('.ri.sel, .room-pet.sel, .w.free.sel').forEach((x) => x.classList.remove('sel')); el.classList.add('sel'); const t = $('[data-tools]'); if (t) t.hidden = false; }
+      if (ROOM.sel !== sel) { ROOM.sel = sel; $$('.ri.sel, .room-pet.sel, .w.free.sel').forEach((x) => x.classList.remove('sel')); el.classList.add('sel'); const tl = $('[data-tools]'); if (tl) tl.hidden = false; }
       const o = getObj();
       el.setPointerCapture(ev.pointerId);
+      const s0 = { x: ev.clientX, y: ev.clientY };
       let moved = false;
       el.onpointermove = (e) => {
-        const p = frame(e);
-        o.x = Math.round(Math.min(115, Math.max(-15, p.x)) * 10) / 10; o.y = Math.round(Math.min(115, Math.max(-20, p.y)) * 10) / 10;
-        if (sel === 'pet' || sel.startsWith('i:')) { o.x = Math.min(97, Math.max(3, o.x)); o.y = Math.min(99, Math.max(5, o.y)); }
-        el.style.left = o.x + '%'; el.style.top = o.y + '%';
+        if (!moved && Math.hypot(e.clientX - s0.x, e.clientY - s0.y) < 5) return;
         moved = true;
+        const p = frame(e);
+        if (sel.startsWith('w:')) { o.x = Math.round(Math.min(115, Math.max(-15, p.x)) * 10) / 10; o.y = Math.round(Math.min(115, Math.max(-20, p.y)) * 10) / 10; el.style.left = o.x + '%'; el.style.top = o.y + '%'; return; }
+        const c = clampSpot(sel === 'pet' ? 'pet' : sel.slice(2), p.x, p.y);
+        o.x = Math.round(c.x * 10) / 10; o.y = Math.round(c.y * 10) / 10;
+        el.style.left = o.x + '%'; el.style.top = o.y + '%';
+        if (sel === 'pet' || !isWallItem(sel.slice(2))) { el.style.setProperty('--s', o.s * depthOf(o.y)); el.style.zIndex = Math.round(o.y * 10) + (sel === 'pet' ? 1 : 0); }
       };
       el.onpointerup = (e) => {
         el.onpointermove = null; el.onpointerup = null;
-        if (sel.startsWith('w:') && moved && !onPet(e).inside) { R.wear = R.wear.filter((w) => w.id !== sel.slice(2)); worn.delete(sel.slice(2)); ROOM.sel = null; petSay('Снял! Можешь надеть снова из «Одежды»'); render(); save(); return; }
-        if (moved) { haptic('light'); save(); }
+        if (sel.startsWith('w:') && moved && !onPet(e).inside) { R.wear = R.wear.filter((w) => w.id !== sel.slice(2)); worn.delete(sel.slice(2)); ROOM.sel = null; petSay(tr('Снял! Можешь надеть снова из «Одежды»')); render(); save(); return; }
+        if (moved) { haptic('light'); save(); return; }
+        if (sel === 'pet') { pose('talk', 2600); petSay(b.phrase || tr('Научи меня говорить — испытание «Голос»!'), 2600); }
       };
     });
     $$('[data-ri]').forEach((el) => drag(el, 'i:' + el.dataset.ri, () => R.items.find((x) => x.id === el.dataset.ri), pct));
@@ -4508,25 +4537,29 @@ async function tabRoom() {
     if (pe) drag(pe, 'pet', () => R.pet, pct);
     $$('[data-rw]').forEach((el) => drag(el, 'w:' + el.dataset.rw, () => R.wear.find((x) => x.id === el.dataset.rw), onPet));
     scene().onpointerdown = (ev) => { if (ev.target.closest('[data-ri], [data-rpet]')) return; if (ROOM.sel) { ROOM.sel = null; render(); } };
-    $$('[data-act]').forEach((b) => (b.onclick = () => {
+    $$('[data-act]').forEach((x) => (x.onclick = () => {
       const o = selObj();
       if (!o) return;
-      const a = b.dataset.act;
-      if (a === 'bigger') o.s = Math.min(ROOM.sel === 'pet' ? 1.8 : 3, Math.round((o.s + 0.15) * 100) / 100);
+      const a = x.dataset.act;
+      if (a === 'bigger') o.s = Math.min(ROOM.sel === 'pet' ? 1.6 : 2.6, Math.round((o.s + 0.15) * 100) / 100);
       if (a === 'smaller') o.s = Math.max(ROOM.sel === 'pet' ? 0.6 : 0.4, Math.round((o.s - 0.15) * 100) / 100);
-      if (a === 'left') o.r = ((o.r || 0) - 15);
-      if (a === 'right') o.r = ((o.r || 0) + 15);
+      if (a === 'left') o.r = (o.r || 0) - 15;
+      if (a === 'right') o.r = (o.r || 0) + 15;
       if (a === 'flip' && ROOM.sel.startsWith('i:')) o.f = !o.f;
-      if (a === 'front' && ROOM.sel.startsWith('i:')) o.z = Math.max(0, ...R.items.map((x) => x.z || 0)) + 1;
       if (a === 'remove') {
-        if (ROOM.sel === 'pet') return toast('Питомца убрать нельзя 🙂');
+        if (ROOM.sel === 'pet') return toast(tr('Питомца убрать нельзя 🙂'));
         const id = ROOM.sel.slice(2);
-        if (ROOM.sel.startsWith('i:')) { R.items = R.items.filter((x) => x.id !== id); placed.delete(id); } else { R.wear = R.wear.filter((x) => x.id !== id); worn.delete(id); }
+        if (ROOM.sel.startsWith('i:')) { R.items = R.items.filter((y) => y.id !== id); placed.delete(id); } else { R.wear = R.wear.filter((y) => y.id !== id); worn.delete(id); }
         ROOM.sel = null;
       }
       haptic('light'); render(); save();
     }));
   }
+  // новинки из кода сохраняем сразу (сервер поставил их сам)
+  if (JSON.stringify(R) !== JSON.stringify(d.room) || R.items.some((x) => x.id.startsWith('c')) || R.wall === 'code') save();
   render();
-  petSay(`Привет! Это мой дом. Поставь вещи как тебе нравится!`);
+  if (S.roomFlash) { petSay(tr(S.roomFlash), 4200); pose('cheer', 2000); S.roomFlash = null; }
+  else petSay(b.stage ? tr('Привет! Это мой дом. Поставь вещи как тебе нравится!') : tr('Мой дом ещё строится… Поможешь? Начни стройку кодом!'), 4000);
 }
+// старый «Гардероб» теперь живёт в комнате
+function wardrobeSheet() { ROOM.tab = 'clothes'; go('room'); }

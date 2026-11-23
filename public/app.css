@@ -1479,3 +1479,103 @@ body.t-shell #app[data-w="narrow"] { max-width: 760px; }
 .drag-ghost { position: fixed; z-index: 9999; width: 64px; height: 64px; transform: translate(-50%, -60%) scale(1.15); pointer-events: none; filter: drop-shadow(0 10px 14px rgba(0,0,0,.3)); }
 .drag-ghost .emo { width: 100%; height: 100%; }
 .room-tools[hidden] { display: none; }
+
+/* ═══════════ Дом питомца v2: объёмная комната ═══════════ */
+.room.v2 { aspect-ratio: 4 / 3.15; container-type: inline-size; background: #efe6d8; border-radius: 26px;
+  --wall: #cdeee0; --floor: #d6a06a; --plank: #c48c55; }
+.room.v2.wall-mint { --wall: repeating-linear-gradient(90deg, #d3f1e4 0 6.5cqw, #c6ebdb 6.5cqw 13cqw); }
+.room.v2.wall-peach { --wall: radial-gradient(circle at 1.6cqw 1.6cqw, #ffcfb4 .45cqw, transparent .55cqw) 0 0 / 3.4cqw 3.4cqw, #ffe8da; }
+.room.v2.wall-sky { --wall: radial-gradient(ellipse 5cqw 2cqw at 30% 30%, #fff8 60%, transparent 62%), radial-gradient(ellipse 6cqw 2.2cqw at 72% 55%, #fff8 60%, transparent 62%), linear-gradient(#b7defc, #e2f2ff); }
+.room.v2.wall-lilac { --wall: repeating-linear-gradient(45deg, #e8deff 0 1.6cqw, #ddd0ff 1.6cqw 3.2cqw); }
+.room.v2.wall-lemon { --wall: radial-gradient(circle at 1.4cqw 1.4cqw, #ffe773 .5cqw, transparent .6cqw) 0 0 / 2.8cqw 2.8cqw, #fff6c9; }
+.room.v2.wall-night { --wall: radial-gradient(.25cqw .25cqw at 20% 30%, #fff, transparent), radial-gradient(.2cqw .2cqw at 70% 18%, #fff, transparent), radial-gradient(.2cqw .2cqw at 46% 62%, #fffc, transparent), radial-gradient(.3cqw .3cqw at 85% 45%, #fff, transparent), linear-gradient(#26306a, #3d4391); }
+.room.v2.wall-code { --wall: var(--wall-code); }
+.room.v2.floor-wood { --floor: repeating-linear-gradient(90deg, #d8a46c 0 9cqw, #c38b53 9cqw 9.3cqw); }
+.room.v2.floor-tiles { --floor: conic-gradient(#f4f4f8 25%, #dcdce8 0 50%, #f4f4f8 0 75%, #dcdce8 0) 0 0 / 9cqw 9cqw; }
+.room.v2.floor-carpet { --floor: radial-gradient(ellipse 55% 60% at 50% 55%, #ffb3cc 0 60%, #f28fb0 61% 66%, #ffb3cc 67%), #ffb3cc; }
+.room.v2.floor-grass { --floor: repeating-linear-gradient(100deg, #84d464 0 1cqw, #74c856 1cqw 2cqw); }
+/* стройка: голый бетон, вместо окна доски, двери нет */
+.room.v2.st-0 { --wall: radial-gradient(#0000000d 1px, transparent 1.5px) 0 0 / 1.2cqw 1.2cqw, linear-gradient(#cfcac3, #bdb7ae); --floor: radial-gradient(#00000014 1px, transparent 1.6px) 0 0 / 1.4cqw 1.4cqw, #b5aca0; }
+
+.room.v2 .rm-ceil, .room.v2 .rm-left, .room.v2 .rm-right, .room.v2 .rm-floor { position: absolute; inset: 0; }
+.room.v2 .rm-ceil { clip-path: polygon(0 0, 100% 0, 87% 7%, 13% 7%); background: linear-gradient(#fffaf2, #f1e9dc); }
+.room.v2 .rm-left { clip-path: polygon(0 0, 13% 7%, 13% 60%, 0 100%); background: var(--wall); }
+.room.v2 .rm-right { clip-path: polygon(100% 0, 87% 7%, 87% 60%, 100% 100%); background: var(--wall); }
+.room.v2 .rm-left::after, .room.v2 .rm-right::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(40, 20, 10, .22), rgba(40, 20, 10, .08)); }
+.room.v2 .rm-right::after { background: linear-gradient(270deg, rgba(40, 20, 10, .28), rgba(40, 20, 10, .1)); }
+.room.v2 .rm-back { position: absolute; left: 13%; right: 13%; top: 7%; height: 53%; background: var(--wall); box-shadow: inset 2.2cqw 0 2.4cqw -2cqw rgba(0,0,0,.25), inset -2.2cqw 0 2.4cqw -2cqw rgba(0,0,0,.25), inset 0 1.6cqw 2cqw -1.6cqw rgba(0,0,0,.2); }
+.room.v2 .rm-base { position: absolute; left: 0; right: 0; bottom: 0; height: 5%; background: linear-gradient(#fff, #e7ddd0); box-shadow: 0 -1px 0 rgba(0,0,0,.08); }
+.room.v2 .rm-floor { clip-path: polygon(13% 60%, 87% 60%, 100% 100%, 0 100%); overflow: hidden; }
+.room.v2 .rm-floor::before { content: ''; position: absolute; left: -40%; right: -40%; top: 60%; bottom: -10%; background: var(--floor); transform-origin: 50% 0; transform: perspective(28cqw) rotateX(52deg); }
+.room.v2 .rm-floor::after { content: ''; position: absolute; inset: 60% 0 0 0; background: linear-gradient(rgba(30, 15, 5, .28), transparent 55%), radial-gradient(ellipse 60% 40% at 50% 100%, rgba(255,255,255,.18), transparent); }
+/* окно */
+.room.v2 .rm-window { position: absolute; left: 8%; top: 14%; width: 23%; height: 42%; border-radius: 1cqw 1cqw .4cqw .4cqw; background: linear-gradient(#8fd3ff, #d8f1ff 70%, #bfe8c9 71%, #9fdcab); border: .9cqw solid #fff; box-shadow: 0 .6cqw 1.2cqw -.4cqw rgba(0,0,0,.3), inset 0 0 0 .3cqw #e9e1d4; }
+.room.v2 .rm-window::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent calc(50% - .35cqw), #fff calc(50% - .35cqw) calc(50% + .35cqw), transparent 0), linear-gradient(transparent calc(48% - .35cqw), #fff calc(48% - .35cqw) calc(48% + .35cqw), transparent 0); }
+.room.v2 .rm-window b { position: absolute; left: 12%; top: 14%; width: 22%; aspect-ratio: 1; border-radius: 50%; background: #ffe066; box-shadow: 0 0 2cqw #ffe066; }
+.room.v2.wall-night .rm-window { background: linear-gradient(#141a3d, #2b3470); }
+.room.v2.wall-night .rm-window b { background: #f4f1d0; box-shadow: 0 0 2cqw #f4f1d0aa; }
+.room.v2.st-0 .rm-window { background: repeating-linear-gradient(-12deg, #c79a62 0 2.2cqw, #a97b45 2.2cqw 2.5cqw); border-color: #9c9389; }
+.room.v2.st-0 .rm-window b, .room.v2.st-0 .rm-window::before { display: none; }
+/* дверь */
+.room.v2 .rm-door { position: absolute; right: 8%; bottom: 5%; width: 17%; height: 62%; border-radius: 1.2cqw 1.2cqw 0 0; background: linear-gradient(90deg, #b9783f, #d4935a 40%, #b9783f); box-shadow: inset 0 0 0 .6cqw #9b5f2c, 0 .4cqw 1cqw -.4cqw rgba(0,0,0,.35); }
+.room.v2 .rm-door::before { content: ''; position: absolute; left: 16%; right: 16%; top: 10%; height: 34%; border-radius: .6cqw; box-shadow: inset 0 0 0 .4cqw #a8682f; }
+.room.v2 .rm-door b { position: absolute; right: 12%; top: 54%; width: 1.4cqw; aspect-ratio: 1; border-radius: 50%; background: #ffd34d; box-shadow: 0 0 0 .25cqw #c99a1f; }
+.room.v2.st-0 .rm-door { background: rgba(0,0,0,.25); box-shadow: inset 0 0 2cqw rgba(0,0,0,.4); }
+.room.v2.st-0 .rm-door::before, .room.v2.st-0 .rm-door b { display: none; }
+/* табличка над дверью — текст и цвет ученика из испытания 1 */
+.room.v2 .rm-sign { position: absolute; right: 3.5%; top: 6%; width: 26%; min-height: 11%; padding: .7cqw 1cqw; display: grid; place-items: center; border-radius: .9cqw; background: linear-gradient(#f3d39c, #e2b673); box-shadow: inset 0 0 0 .35cqw #c58f45, 0 .8cqw 1.2cqw -.6cqw rgba(0,0,0,.45); transform: rotate(-2deg); z-index: 2; }
+.room.v2 .rm-sign::before, .room.v2 .rm-sign::after { content: ''; position: absolute; top: -2.2cqw; width: .25cqw; height: 2.4cqw; background: #7a5a3a; }
+.room.v2 .rm-sign::before { left: 18%; transform: rotate(14deg); } .room.v2 .rm-sign::after { right: 18%; transform: rotate(-14deg); }
+.room.v2 .rm-sign span { color: var(--ink, #5b3a1e); font: 900 clamp(8px, 2.1cqw, 17px)/1.1 Nunito, sans-serif; text-align: center; word-break: break-word; text-shadow: 0 1px 0 rgba(255,255,255,.5); }
+.room.v2 .rm-sign.empty { background: rgba(255,255,255,.35); box-shadow: inset 0 0 0 .3cqw rgba(0,0,0,.18); border: .25cqw dashed rgba(0,0,0,.25); transform: none; }
+.room.v2 .rm-sign.empty span { color: rgba(0,0,0,.35); font-size: clamp(10px, 3cqw, 22px); }
+/* лампа и свет */
+.room.v2 .rm-lamp { position: absolute; left: 50%; top: 0; width: 7%; height: 15%; transform: translateX(-50%); z-index: 3; background: linear-gradient(#7a6a5a, #7a6a5a) 50% 0 / .25cqw 60% no-repeat; }
+.room.v2 .rm-lamp::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 45%; border-radius: 50% 50% 10% 10% / 90% 90% 10% 10%; background: linear-gradient(#ffcf6b, #f5a524); box-shadow: 0 1.4cqw 3cqw .6cqw rgba(255, 210, 110, .55); }
+.room.v2 .rm-light { position: absolute; inset: 0; pointer-events: none; z-index: 1; background: radial-gradient(ellipse 45% 55% at 50% 20%, rgba(255, 236, 190, .35), transparent 70%); }
+.room.v2.st-0 .rm-lamp::after { background: #8d857b; box-shadow: none; }
+.room.v2.st-0 .rm-light { display: none; }
+/* стройка: лента и конусы */
+.room.v2 .rm-build { position: absolute; inset: 0; pointer-events: none; z-index: 4; }
+.room.v2 .rm-build .tape { position: absolute; left: 10%; right: 10%; top: 46%; height: 3.2%; background: repeating-linear-gradient(-45deg, #ffcc00 0 2cqw, #222 2cqw 4cqw); transform: rotate(-4deg); box-shadow: 0 .4cqw .8cqw rgba(0,0,0,.25); }
+.room.v2 .rm-build .cone { position: absolute; width: 9%; }
+.room.v2 .rm-build .cone .emo { width: 100%; height: auto; }
+.room.v2 .rm-build .c1 { left: 20%; top: 66%; } .room.v2 .rm-build .c2 { left: 66%; top: 70%; } .room.v2 .rm-build .c3 { left: 42%; top: 62%; width: 12%; }
+/* вещи: на полу стоят «ногами» (якорь снизу), на стене висят по центру */
+.room.v2 .ri { width: calc(13% * var(--s, 1)); }
+.room.v2 .ri.on-floor { transform: translate(-50%, -92%) rotate(var(--r, 0deg)) scaleX(var(--fx, 1)); }
+.room.v2 .ri.on-floor::after { content: ''; position: absolute; left: 12%; right: 12%; bottom: 2%; height: 12%; border-radius: 50%; background: rgba(0,0,0,.18); z-index: -1; filter: blur(1px); }
+.room.v2 .ri.on-wall { width: calc(11% * var(--s, 1)); transform: translate(-50%, -50%) rotate(var(--r, 0deg)) scaleX(var(--fx, 1)); filter: drop-shadow(0 .5cqw .6cqw rgba(0,0,0,.25)); }
+.room.v2 .room-pet { width: calc(30% * var(--s, 1)); transform: translate(-50%, -94%); }
+.room.v2[data-drop="floor"] .rm-floor::after { background: linear-gradient(rgba(30,15,5,.2), transparent 55%), rgba(120, 220, 120, .28); }
+.room.v2[data-drop="wall"] .rm-back { outline: .6cqw dashed rgba(255,255,255,.9); outline-offset: -1.2cqw; }
+.room.v2::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; box-shadow: inset 0 0 6cqw rgba(30, 15, 5, .18); z-index: 900; }
+.room-say { animation-duration: var(--dur, 3.2s) !important; z-index: 950; }
+
+/* полоса стройки над комнатой */
+.build-bar { display: flex; align-items: center; gap: 12px; margin: 0 0 14px; padding: 12px 14px; border-radius: 20px; background: var(--card); border: 1.5px solid var(--line); box-shadow: var(--shadow); }
+.build-bar.done { background: linear-gradient(135deg, var(--good-l), var(--card)); }
+.build-steps { flex: 1; display: flex; align-items: center; min-width: 0; }
+.build-steps .bs { position: relative; flex: none; display: flex; flex-direction: column; align-items: center; gap: 2px; width: 62px; font-size: 11px; font-weight: 800; color: var(--muted); }
+.build-steps .bs .emo { width: 34px; height: 34px; padding: 6px; border-radius: 50%; background: var(--track); box-sizing: content-box; filter: grayscale(1); opacity: .55; }
+.build-steps .bs.ok .emo { background: var(--good-l); filter: none; opacity: 1; }
+.build-steps .bs.cur .emo { background: var(--accent-l); filter: none; opacity: 1; box-shadow: 0 0 0 3px var(--accent); animation: bsPulse 1.6s ease-in-out infinite; }
+.build-steps .bs.ok { color: var(--good-d); } .build-steps .bs.cur { color: var(--accent-d); }
+.build-steps .bs i { position: absolute; top: -2px; right: 8px; width: 18px; height: 18px; border-radius: 50%; background: var(--good); color: #fff; font: 900 11px/18px Nunito, sans-serif; font-style: normal; text-align: center; }
+.build-steps .bs-line { flex: 1; height: 4px; min-width: 8px; margin-bottom: 16px; border-radius: 2px; background: var(--track); }
+@keyframes bsPulse { 50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 30%, transparent); } }
+.tray-tip { margin: 0 0 8px; padding: 10px 12px; border-radius: 14px; background: var(--accent-l); color: var(--accent-d); font-size: 13px; font-weight: 800; }
+.tray-it.from-code { border-color: var(--accent); }
+.tray-code { position: absolute; top: 4px; left: 6px; font: 900 10px/1 'JetBrains Mono', monospace; font-style: normal; color: var(--accent-d); }
+@media (max-width: 600px) {
+  .build-bar { flex-direction: column; align-items: stretch; }
+  .build-bar .btn { width: 100%; }
+  .build-steps .bs { width: 54px; font-size: 10px; }
+  .build-steps .bs .emo { width: 26px; height: 26px; }
+}
+.room-wrap .room-say { transform: translate(-50%, -100%); width: max-content; max-width: 62%; }
+@keyframes roomSay { 0% { opacity: 0; transform: translate(-50%, calc(-100% + 8px)); } 10%, 80% { opacity: 1; transform: translate(-50%, -100%); } 100% { opacity: 0; transform: translate(-50%, -100%); } }
+.room-wrap .room-say::after { content: ''; position: absolute; left: 50%; bottom: -7px; transform: translateX(-50%) rotate(45deg); width: 14px; height: 14px; background: #fff; border-radius: 3px; }
+.room-wrap .room-say { max-width: 46%; font-size: 13px; padding: 7px 11px; }
+.room.v2 .rm-sign { width: 30%; right: 2.5%; top: 2.5%; }
+@media (max-width: 600px) { .room.v2 .rm-sign span { font-size: clamp(9px, 2.6cqw, 14px); } }

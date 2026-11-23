@@ -280,7 +280,7 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
   function houseState(uid) {
     const list = HOUSE();
     const done = list.map((c, i) => (S.code?.[`${uid}:house:h${i + 1}`]?.at ? i + 1 : 0)).filter(Boolean);
-    const last = done.length ? S.code[`${uid}:house:h${Math.max(...done)}`] : null;
+    const last = done.map((k) => S.code[`${uid}:house:h${k}`]).sort((a, b) => b.at - a.at)[0] || null;
     return { done, total: list.length, files: last?.files || null };
   }
   function house(uid) {
@@ -374,6 +374,7 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
       canAsk: (isStudent(user(viewer)) || logic.isAdmin(viewer)) && !meView,
       pet: petName(u.prefs?.mascot || 'kapi', lang),
       room: roomOf(u.id),
+      built: builtOf(u.id),
     };
   }
   // кратко для /me
@@ -384,6 +385,44 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
     return { inbox: inbox(u.id).length, house: { done: st.done.length, total: st.total }, badges: badgesOf(u.id, langOf(uid)), wear: u.wardrobe?.wear || {}, dress: u.room?.wear || null, askInterest: shouldAsk(u.id), pet: petName(u.prefs?.mascot || 'kapi', langOf(uid)) };
   }
 
+
+
+  // ───────── что построено кодом (испытания «Дом для питомца») → видно в комнате ─────────
+  const safeCss = (v) => { v = String(v || '').trim().replace(/\s*!important$/i, ''); return v && v.length <= 140 && /^[#a-z0-9(),.%\s+-]+$/i.test(v) && !/url|expression|var\(/i.test(v) ? v : null; };
+  const textOf = (html) => String(html || '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+  function builtOf(uid) {
+    const st = houseState(uid);
+    const f = st.files || {};
+    const html = (f['index.html'] || '').replace(/<!--[\s\S]*?-->/g, '');
+    const css = (f['style.css'] || '').replace(/\/\*[\s\S]*?\*\//g, '');
+    const js = (f['script.js'] || '').replace(/\/\*[\s\S]*?\*\/|(^|[^:])\/\/.*$/gm, '$1');
+    // как в CSS: из всех правил с этим селектором побеждает последнее значение свойства
+    const rule = (sel, prop) => {
+      let val = null;
+      for (const m of css.matchAll(new RegExp(`(?:^|[}\\s,])${sel}\\s*(?:,[^{]*)?\\{([^}]*)\\}`, 'gi'))) {
+        for (const p of m[1].matchAll(new RegExp(`(?:^|;|\\s)${prop}\\s*:\\s*([^;]+)`, 'gi'))) val = p[1];
+      }
+      return val;
+    };
+    const has = (k) => st.done.includes(k);
+    const h1 = /<h1[^>]*>([\s\S]*?)<\/h1>/i.exec(html);
+    const sign = has(1) && h1 ? { text: textOf(h1[1]).slice(0, 40), color: safeCss(rule('h1', 'color')) || '#5b3a1e' } : null;
+    const wall = has(2) ? safeCss(rule('\\.room', 'background(?:-color)?')) || safeCss(rule('body', 'background(?:-color)?')) : null;
+    // всё, что внутри блока .furniture (вложенные теги считаем по глубине)
+    const fz = (() => {
+      const m = /<([a-z]+)[^>]*class\s*=\s*["']?[^"'>]*\bfurniture\b[^>]*>/i.exec(html);
+      if (!m) return null;
+      let depth = 1, i = m.index + m[0].length;
+      const tagRe = new RegExp(`<(/?)${m[1]}\\b[^>]*>`, 'gi');
+      tagRe.lastIndex = i;
+      for (let t; (t = tagRe.exec(html));) { depth += t[1] ? -1 : 1; if (!depth) return [null, html.slice(i, t.index)]; }
+      return [null, html.slice(i, i + 800)];
+    })();
+    const furniture = has(3) && fz ? [...fz[1].matchAll(/<([a-z]+)[^>]*>([^<]{1,8})<\/\1>/gi)].map((m) => m[2].trim()).filter((x) => x && /\p{Extended_Pictographic}/u.test(x)).slice(0, 6) : [];
+    const ph = /textContent\s*=\s*(["'`])([^"'`]{1,80})\1/.exec(js);
+    const phrase = has(4) && ph ? ph[2].trim() : null;
+    return { stage: st.done.length, total: st.total, next: st.done.length < st.total ? Math.min(...Array.from({ length: st.total }, (_, i) => i + 1).filter((k) => !has(k))) : null, sign, wall, furniture, phrase };
+  }
 
   // ───────── комната питомца ─────────
   function progressOf(uid) {
@@ -403,7 +442,8 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
   const decorOwned = (uid, prog = progressOf(uid)) => Object.entries(DECOR).filter(([, d]) => !d.rule || prog[d.rule[0]] >= d.rule[1]).map(([id]) => id);
   const clamp = (v, a, b) => Math.min(b, Math.max(a, Number(v) || 0));
   function cleanRoom(uid, r) {
-    const owned = new Set(decorOwned(uid));
+    const b = builtOf(uid);
+    const owned = new Set([...decorOwned(uid), ...b.furniture.map((_, i) => 'c' + (i + 1))]);
     syncBadgeItems(uid);
     const clothes = new Set(user(uid)?.wardrobe?.owned || []);
     const seen = new Set();
@@ -413,7 +453,7 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
     const wear = (Array.isArray(r?.wear) ? r.wear : []).slice(0, 12).filter((x) => clothes.has(x?.id) && !seenW.has(x.id) && seenW.add(x.id))
       .map((x) => ({ id: x.id, x: clamp(x.x, -20, 120), y: clamp(x.y, -30, 120), s: clamp(x.s || 1, 0.3, 2.5), r: clamp(x.r, -180, 180) }));
     const p = r?.pet || {};
-    return { wall: WALLS.includes(r?.wall) ? r.wall : 'mint', floor: FLOORS.includes(r?.floor) ? r.floor : 'wood', items, wear, pet: { x: clamp(p.x ?? 50, 5, 95), y: clamp(p.y ?? 72, 10, 98), s: clamp(p.s || 1, 0.6, 1.8) } };
+    return { wall: WALLS.includes(r?.wall) || (r?.wall === 'code' && b.wall) ? r.wall : 'mint', floor: FLOORS.includes(r?.floor) ? r.floor : 'wood', items, wear, pet: { x: clamp(p.x ?? 50, 5, 95), y: clamp(p.y ?? 72, 10, 98), s: clamp(p.s || 1, 0.6, 1.8) } };
   }
   function roomOf(uid) {
     const u = user(uid);
@@ -421,7 +461,7 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
     // первый раз: надетое раньше (слоты) переносим на питомца примерно на свои места
     const legacy = u?.wardrobe?.wear || {};
     const pos = { head: { x: 50, y: 2 }, face: { x: 50, y: 36 }, neck: { x: 50, y: 66 } };
-    return { wall: 'mint', floor: 'wood', items: [{ id: 'plant', x: 14, y: 70, s: 1, r: 0, z: 1 }], wear: Object.entries(legacy).map(([slot, id]) => ({ id, ...pos[slot], s: 1, r: 0 })), pet: { x: 50, y: 72, s: 1 } };
+    return { wall: 'mint', floor: 'wood', items: [{ id: 'plant', x: 22, y: 80, s: 1, r: 0, z: 1 }], wear: Object.entries(legacy).map(([slot, id]) => ({ id, ...pos[slot], s: 1, r: 0 })), pet: { x: 50, y: 72, s: 1 } };
   }
   function room(uid) {
     syncBadgeItems(uid);
@@ -429,8 +469,14 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
     const prog = progressOf(uid);
     const owned = new Set(decorOwned(uid, prog));
     const clothes = new Set(user(uid)?.wardrobe?.owned || []);
+    const b = builtOf(uid);
+    const rm = JSON.parse(JSON.stringify(roomOf(uid)));
+    // новая мебель из кода сама встаёт в комнату, обои из кода включаются один раз
+    b.furniture.forEach((e, i) => { const id = 'c' + (i + 1); if (!rm.items.some((x) => x.id === id) && !(user(uid)?.roomSeen || []).includes(id)) rm.items.push({ id, x: 30 + i * 20, y: 86, s: 1, r: 0, z: 5 + i }); });
+    if (b.wall && !(user(uid)?.roomSeen || []).includes('wall')) rm.wall = 'code';
     return {
-      room: roomOf(uid), progress: prog, pet: petName(user(uid)?.prefs?.mascot || 'kapi', lang), petId: user(uid)?.prefs?.mascot || 'kapi',
+      built: b,
+      room: rm, progress: prog, pet: petName(user(uid)?.prefs?.mascot || 'kapi', lang), petId: user(uid)?.prefs?.mascot || 'kapi',
       decor: Object.entries(DECOR).map(([id, d]) => ({ id, emoji: d.emoji, layer: d.layer, name: L(d.name, lang), owned: owned.has(id),
         how: d.rule ? L(RULE_TXT[d.rule[0]], lang).replace('{n}', d.rule[1]) : '', have: d.rule ? Math.min(prog[d.rule[0]], d.rule[1]) : 0, need: d.rule ? d.rule[1] : 0 })),
       clothes: Object.entries(ITEMS).map(([id, it]) => ({ id, emoji: it.emoji, name: L(it.name, lang), how: L(it.how, lang), owned: clothes.has(id) })),
@@ -442,6 +488,8 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
     if (!isStudent(u)) throw httpError(403, 'Комната есть только у учеников');
     const before = u.room;
     u.room = cleanRoom(uid, r);
+    const b = builtOf(uid);
+    u.roomSeen = [...new Set([...(u.roomSeen || []), ...b.furniture.map((_, i) => 'c' + (i + 1)), ...(b.wall ? ['wall'] : [])])];
     // для старых мест (страницы, лига) — надетое тоже в слотах
     u.wardrobe ||= { owned: [], wear: {} };
     u.wardrobe.wear = {};

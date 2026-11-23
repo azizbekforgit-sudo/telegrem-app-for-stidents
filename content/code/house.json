@@ -143,7 +143,7 @@
     "steps": [
      {
       "file": "index.html",
-      "re": "class=\"furniture\"[^>]*>\\s*(<span[^>]*>[^<]+</span>\\s*){3,}",
+      "re": "class=[\"']?furniture[\"']?[^>]*>\\s*(<(span|div|p|i|b|em|strong)[^>]*>[^<]+</\\2>\\s*){3,}",
       "say": {
        "ru": "Внутри `<div class=\"furniture\">` поставь три `<span>` с эмодзи — какие хочешь: `<span>🛋️</span>`",
        "uz": "`<div class=\"furniture\">` ichiga emoji bilan uchta `<span>` qo'y — xohlaganingni: `<span>🛋️</span>`",
@@ -174,12 +174,13 @@
     ],
     "praise": {
      "file": "index.html",
-     "re": "class=\"furniture\"[^>]*>\\s*<span[^>]*>([^<]+)</span>",
+     "re": "class=[\"']?furniture[\"']?[^>]*>\\s*<([a-z]+)[^>]*>([^<]+)</\\1>",
      "text": {
       "ru": "«{1}» — отличный выбор! {pet} уже устроился рядом.",
       "uz": "«{1}» — ajoyib tanlov! {pet} allaqachon yoniga joylashdi.",
       "en": "«{1}» — great choice! {pet} has already settled in next to it."
-     }
+     },
+     "group": 2
     },
     "reflect": {
      "ru": "Какую комнату, магазин или игру ты бы хотел(а) сделать на своём сайте?",
