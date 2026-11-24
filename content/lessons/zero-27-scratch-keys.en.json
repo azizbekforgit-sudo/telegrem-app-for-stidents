@@ -1,0 +1,188 @@
+{
+ "title": "Lesson 27. Keyboard controls",
+ "description": "Your hero from lesson 16 and arrow-key controls: x and y",
+ "questions": [
+  {
+   "type": "match",
+   "topic": "x and y",
+   "prompt": "Match the command with where the hero goes",
+   "pairs": [
+    [
+     "change x by 10",
+     "Right"
+    ],
+    [
+     "change x by -10",
+     "Left"
+    ],
+    [
+     "change y by 10",
+     "Up"
+    ],
+    [
+     "change y by -10",
+     "Down"
+    ]
+   ],
+   "explain": "x right-left, y up-down."
+  },
+  {
+   "type": "choice",
+   "topic": "x and y",
+   "prompt": "Which command goes with the left arrow?",
+   "options": [
+    "change x by -10",
+    "change x by 10",
+    "change y by 10",
+    "say \"Hello!\""
+   ],
+   "answer": 0,
+   "explain": "Minus x means left."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Events",
+   "prompt": "In games the player usually controls the hero.",
+   "answer": true,
+   "explain": "Through event blocks."
+  },
+  {
+   "type": "fill",
+   "topic": "x and y",
+   "prompt": "Fill in the blank",
+   "text": "x is right-___, y is up-___.",
+   "answer": [
+    "left",
+    "down"
+   ],
+   "extra": [
+    "forward",
+    "back",
+    "around"
+   ],
+   "explain": "The two axes of the screen."
+  },
+  {
+   "type": "order",
+   "topic": "Your own hero",
+   "prompt": "Put in order how to upload your hero",
+   "tokens": [
+    "Choose a sprite",
+    "Upload sprite",
+    "Pictures folder",
+    "My hero"
+   ],
+   "extra": [
+    "Bin"
+   ],
+   "explain": "The hero from lesson 16 comes alive."
+  },
+  {
+   "type": "choice",
+   "topic": "Your own hero",
+   "prompt": "The hero is too big on stage. What now?",
+   "options": [
+    "Set a smaller size, e.g. 30",
+    "Delete the hero",
+    "Redraw it",
+    "Nothing can be done"
+   ],
+   "answer": 0,
+   "explain": "The Size box under the stage."
+  },
+  {
+   "type": "truefalse",
+   "topic": "x and y",
+   "prompt": "Minus y moves the hero up.",
+   "answer": false,
+   "explain": "Minus y is down."
+  },
+  {
+   "type": "choice",
+   "topic": "Your own hero",
+   "prompt": "Where do you pick the game background?",
+   "options": [
+    "\"Choose a backdrop\" at the bottom right",
+    "In Word",
+    "In the Bin",
+    "In the Calculator"
+   ],
+   "answer": 0,
+   "explain": "Forest, space, city — your choice."
+  }
+ ],
+ "learn": {
+  "intro": "In games the player controls the hero! Today your hero comes alive and obeys the arrow keys.",
+  "sections": [
+   {
+    "title": "Events",
+    "slides": [
+     {
+      "text": "Event blocks **\"when key pressed\"** — like \"when the bell rings — we go on break\".",
+      "emoji": "🔔"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Events",
+      "prompt": "What is the \"when key pressed\" block like?",
+      "options": [
+       "When the bell rings — break time",
+       "A wastebasket",
+       "A notebook"
+      ],
+      "answer": 0,
+      "explain": "An event starts an action."
+     }
+    ]
+   },
+   {
+    "title": "Your own hero",
+    "slides": [
+     {
+      "text": "Under the stage: \"Choose a sprite\" → **\"Upload sprite\"** → your Pictures folder → \"My hero\". Remember the hero you drew? It comes alive in the game!",
+      "emoji": "🦸"
+     },
+     {
+      "text": "Drawing too big? Set the sprite size smaller, e.g. **30**. Background — \"Choose a backdrop\" (forest, space, city)."
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Your own hero",
+      "prompt": "You can upload your Paint hero into Scratch as a sprite.",
+      "answer": true,
+      "explain": "\"Upload sprite\" → Pictures."
+     }
+    ]
+   },
+   {
+    "title": "x and y",
+    "slides": [
+     {
+      "text": "**x** is right-left, **y** is up-down. Plus means right or up, minus means left or down.",
+      "emoji": "➕",
+      "code": "when right arrow key pressed\nchange x by 10\n\nwhen left arrow key pressed\nchange x by -10",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "x and y",
+      "prompt": "What does \"change y by 10\" do?",
+      "options": [
+       "The hero moves up",
+       "The hero moves left",
+       "Nothing"
+      ],
+      "answer": 0,
+      "explain": "y is up-down; plus is up."
+     }
+    ]
+   }
+  ]
+ }
+}

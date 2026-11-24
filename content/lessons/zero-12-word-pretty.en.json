@@ -1,0 +1,185 @@
+{
+ "title": "Lesson 12. Pretty text",
+ "description": "Bold, italic, underline, centring and lists",
+ "questions": [
+  {
+   "type": "match",
+   "topic": "B, I, U",
+   "prompt": "Match the button with how text looks",
+   "pairs": [
+    [
+     "Bold",
+     "Thick letters"
+    ],
+    [
+     "Italic",
+     "Leaning letters"
+    ],
+    [
+     "Underline",
+     "Line under the word"
+    ]
+   ],
+   "explain": "Three magic buttons."
+  },
+  {
+   "type": "choice",
+   "topic": "Alignment",
+   "prompt": "Where do we put the story title?",
+   "options": [
+    "In the centre",
+    "At the very bottom",
+    "In the Bin",
+    "In the right corner"
+   ],
+   "answer": 0,
+   "explain": "Centred, big and bold."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Lists",
+   "prompt": "Each Enter in a list adds a new bullet.",
+   "answer": true,
+   "explain": "And two Enters end the list."
+  },
+  {
+   "type": "choice",
+   "topic": "Lists",
+   "prompt": "Which button makes a bulleted list?",
+   "options": [
+    "Bullets",
+    "Bold",
+    "Colour",
+    "Size"
+   ],
+   "answer": 0,
+   "explain": "Bullets are list dots."
+  },
+  {
+   "type": "fill",
+   "topic": "B, I, U",
+   "prompt": "Fill in the blank",
+   "text": "Thick letters, as if shouting, are ___.",
+   "answer": [
+    "bold"
+   ],
+   "extra": [
+    "italic",
+    "list",
+    "centre"
+   ],
+   "explain": "B — bold."
+  },
+  {
+   "type": "order",
+   "topic": "Alignment",
+   "prompt": "Put in order how to style the title",
+   "tokens": [
+    "Select the title",
+    "Centre it",
+    "Make it bigger",
+    "Make it bold"
+   ],
+   "extra": [
+    "Delete"
+   ],
+   "explain": "Select first, then decorate."
+  },
+  {
+   "type": "choice",
+   "topic": "B, I, U",
+   "prompt": "What do we do with the key word in a sentence?",
+   "options": [
+    "Make it bold or italic",
+    "Delete it",
+    "Hide it",
+    "Make it tiny"
+   ],
+   "answer": 0,
+   "explain": "That makes it stand out."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Lists",
+   "prompt": "A list is handy when listing, e.g. what your pet loves.",
+   "answer": true,
+   "explain": "Like a shopping list."
+  }
+ ],
+ "learn": {
+  "intro": "Today we write \"My favourite pet\" and decorate it like a real book!",
+  "sections": [
+   {
+    "title": "B, I, U",
+    "slides": [
+     {
+      "text": "**B** — bold: letters are thick, as if shouting. **I** — italic: letters lean, as if in the wind. **U** — underline: a line under the word.",
+      "emoji": "🅱️"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "B, I, U",
+      "prompt": "Which button makes letters lean?",
+      "options": [
+       "Italic",
+       "Bold",
+       "Underline"
+      ],
+      "answer": 0,
+      "explain": "Italic — like in the wind."
+     }
+    ]
+   },
+   {
+    "title": "Alignment",
+    "slides": [
+     {
+      "text": "We put the title **in the centre**, like in a book. We make it bigger and bold.",
+      "emoji": "🎯"
+     },
+     {
+      "text": "The key word in each sentence — bold or italic."
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Alignment",
+      "prompt": "A title is usually centred.",
+      "answer": true,
+      "explain": "Like in a book."
+     }
+    ]
+   },
+   {
+    "title": "Lists",
+    "slides": [
+     {
+      "text": "When listing things, a **bulleted list** is handy — the \"Bullets\" button. Like a shopping list.",
+      "emoji": "📋"
+     },
+     {
+      "text": "Each Enter — a new bullet. Enter twice — the list ends.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Lists",
+      "prompt": "How do you end a list?",
+      "options": [
+       "Press Enter twice",
+       "Press Backspace",
+       "Close Word"
+      ],
+      "answer": 0,
+      "explain": "Two Enters end the list."
+     }
+    ]
+   }
+  ]
+ }
+}

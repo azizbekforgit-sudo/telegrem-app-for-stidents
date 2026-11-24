@@ -1,0 +1,181 @@
+{
+ "title": "Lesson 23. Project and presentation talk",
+ "description": "Finish the presentation with a checklist, rehearse and present",
+ "questions": [
+  {
+   "type": "order",
+   "topic": "Rehearsal",
+   "prompt": "Build the start of the talk",
+   "tokens": [
+    "Hello!",
+    "My name is Aziz.",
+    "My topic is the panda."
+   ],
+   "extra": [
+    "Bye!"
+   ],
+   "explain": "Greet, introduce yourself, name the topic."
+  },
+  {
+   "type": "choice",
+   "topic": "Checklist",
+   "prompt": "How many slides should the project have?",
+   "options": [
+    "4–6",
+    "1",
+    "50",
+    "0"
+   ],
+   "answer": 0,
+   "explain": "The checklist says 4–6."
+  },
+  {
+   "type": "truefalse",
+   "topic": "The talk",
+   "prompt": "While presenting we speak loudly and stand straight.",
+   "answer": true,
+   "explain": "Then everyone hears and sees you."
+  },
+  {
+   "type": "match",
+   "topic": "Checklist",
+   "prompt": "Match the checklist item with an example",
+   "pairs": [
+    [
+     "Cover",
+     "Topic and name"
+    ],
+    [
+     "Every slide",
+     "Title and picture"
+    ],
+    [
+     "Last slide",
+     "Thank you for listening!"
+    ]
+   ],
+   "explain": "Check everything before the talk."
+  },
+  {
+   "type": "choice",
+   "topic": "Rehearsal",
+   "prompt": "How many sentences per slide?",
+   "options": [
+    "1–2 in your own words",
+    "None",
+    "Read the whole slide",
+    "20"
+   ],
+   "answer": 0,
+   "explain": "The slide helps; you do the telling."
+  },
+  {
+   "type": "fill",
+   "topic": "Rehearsal",
+   "prompt": "Fill in the blank",
+   "text": "At the end we say: \"Thank you for ___!\"",
+   "answer": [
+    "listening"
+   ],
+   "extra": [
+    "password",
+    "mistakes",
+    "computer"
+   ],
+   "explain": "A polite ending."
+  },
+  {
+   "type": "truefalse",
+   "topic": "The talk",
+   "prompt": "After the talk the audience can ask a question.",
+   "answer": true,
+   "explain": "Like real listeners."
+  },
+  {
+   "type": "choice",
+   "topic": "The talk",
+   "prompt": "If parents can't come, what do we do?",
+   "options": [
+    "Record a video and send it",
+    "Cancel everything",
+    "Delete the presentation",
+    "Nothing"
+   ],
+   "answer": 0,
+   "explain": "The video shows them the talk."
+  }
+ ],
+ "learn": {
+  "intro": "Today you're a real speaker! We finish the presentation and present it to an audience.",
+  "sections": [
+   {
+    "title": "Checklist",
+    "slides": [
+     {
+      "text": "Check: a cover with the topic and name; 4–6 slides; a title and picture on each; little text; the last slide says \"Thank you for listening!\".",
+      "emoji": "✅"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Checklist",
+      "prompt": "What goes on the last slide?",
+      "options": [
+       "Thank you for listening!",
+       "A password",
+       "Nothing"
+      ],
+      "answer": 0,
+      "explain": "A nice way to finish."
+     }
+    ]
+   },
+   {
+    "title": "Rehearsal",
+    "slides": [
+     {
+      "text": "A real speaker **doesn't read from the slide** — they tell it, and the slide helps. 1–2 sentences of your own per slide.",
+      "quote": true
+     },
+     {
+      "text": "Stand straight, speak loudly, look at the audience. Start: \"Hello! My name is… My topic is…\". End: \"Thank you for listening!\"",
+      "emoji": "🗣️"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Rehearsal",
+      "prompt": "A good speaker reads all the text off the slide.",
+      "answer": false,
+      "explain": "We tell it in our own words."
+     }
+    ]
+   },
+   {
+    "title": "The talk",
+    "slides": [
+     {
+      "text": "Present to parents (or record a video). After that, the audience asks a question like real listeners.",
+      "emoji": "👏"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "The talk",
+      "prompt": "Where do you look while presenting?",
+      "options": [
+       "At the audience",
+       "Only at the floor",
+       "Only at the screen"
+      ],
+      "answer": 0,
+      "explain": "At the audience, not just the screen."
+     }
+    ]
+   }
+  ]
+ }
+}

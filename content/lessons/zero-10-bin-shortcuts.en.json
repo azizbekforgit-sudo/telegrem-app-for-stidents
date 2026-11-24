@@ -1,0 +1,200 @@
+{
+ "title": "Lesson 10. Recycle Bin, shortcuts and a mini exam",
+ "description": "Delete and restore files, Ctrl + C, V, Z, S and the files exam",
+ "questions": [
+  {
+   "type": "match",
+   "topic": "Shortcuts",
+   "prompt": "Match the shortcut with what it does",
+   "pairs": [
+    [
+     "Ctrl + C",
+     "Copy"
+    ],
+    [
+     "Ctrl + V",
+     "Paste"
+    ],
+    [
+     "Ctrl + Z",
+     "Undo"
+    ],
+    [
+     "Ctrl + S",
+     "Save"
+    ]
+   ],
+   "explain": "Four pro superpowers."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Recycle Bin",
+   "prompt": "A deleted file disappears forever right away.",
+   "answer": false,
+   "explain": "It falls into the Bin and can be restored."
+  },
+  {
+   "type": "choice",
+   "topic": "Recycle Bin",
+   "prompt": "What must you not do without a grown-up?",
+   "options": [
+    "Empty the Recycle Bin",
+    "Open Notepad",
+    "Create a folder",
+    "Type your name"
+   ],
+   "answer": 0,
+   "explain": "After emptying, the file can't come back."
+  },
+  {
+   "type": "choice",
+   "topic": "Shortcuts",
+   "prompt": "What does Ctrl + V do?",
+   "options": [
+    "Pastes the copy",
+    "Saves",
+    "Undoes",
+    "Deletes"
+   ],
+   "answer": 0,
+   "explain": "V is next to C — paste the copy."
+  },
+  {
+   "type": "order",
+   "topic": "Mini exam",
+   "prompt": "Put the mini-exam tasks in order",
+   "tokens": [
+    "Create a folder",
+    "Save a file",
+    "Rename",
+    "Copy",
+    "Delete the copy",
+    "Restore from the Bin"
+   ],
+   "extra": [],
+   "explain": "Just like on the teacher's sheet."
+  },
+  {
+   "type": "choice",
+   "topic": "Recycle Bin",
+   "prompt": "Which key deletes a selected file?",
+   "options": [
+    "Delete",
+    "Enter",
+    "Shift",
+    "Space"
+   ],
+   "answer": 0,
+   "explain": "Delete sends the file to the Bin."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Shortcuts",
+   "prompt": "You can press Ctrl + Z several times — it undoes one action each time.",
+   "answer": true,
+   "explain": "That is how we removed pastes one by one."
+  },
+  {
+   "type": "fill",
+   "topic": "Shortcuts",
+   "prompt": "Fill in the blank",
+   "text": "Copy — Ctrl + ___, paste — Ctrl + ___",
+   "answer": [
+    "C",
+    "V"
+   ],
+   "extra": [
+    "Z",
+    "S",
+    "A"
+   ],
+   "explain": "C — copy, V — next to it."
+  }
+ ],
+ "learn": {
+  "intro": "Today we learn you can't break a computer by deleting a file, get superpowers and pass an exam!",
+  "sections": [
+   {
+    "title": "Recycle Bin",
+    "slides": [
+     {
+      "text": "A deleted file doesn't vanish forever — it falls into the **Recycle Bin**, like paper in a wastebasket. Until it's emptied, you can take it back.",
+      "emoji": "🗑️"
+     },
+     {
+      "text": "Delete: right-click → Delete or the **Delete** key. Restore: open the Bin → right-click → **Restore**."
+     },
+     {
+      "text": "You can't break a computer by deleting a file. Just **never empty the Bin without a grown-up**.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Recycle Bin",
+      "prompt": "How do you get a file back from the Bin?",
+      "options": [
+       "Right-click → Restore",
+       "Empty the Bin",
+       "Press Enter"
+      ],
+      "answer": 0,
+      "explain": "Restore puts the file back."
+     }
+    ]
+   },
+   {
+    "title": "Shortcuts",
+    "slides": [
+     {
+      "text": "Pro secret combos are like superpowers: **Ctrl + C** — copy, **Ctrl + V** — paste.",
+      "emoji": "🦸"
+     },
+     {
+      "text": "**Ctrl + Z** is a time machine: it undoes the last action. **Ctrl + S** saves.",
+      "emoji": "⏪"
+     }
+    ],
+    "check": [
+     {
+      "type": "fill",
+      "topic": "Shortcuts",
+      "prompt": "Fill in the blank",
+      "text": "Time machine — Ctrl + ___",
+      "answer": [
+       "Z"
+      ],
+      "extra": [
+       "S",
+       "C",
+       "V"
+      ],
+      "explain": "Ctrl + Z undoes the last thing."
+     }
+    ]
+   },
+   {
+    "title": "Mini exam",
+    "slides": [
+     {
+      "text": "Mini exam: make an Exam folder → save a My day file in it → rename it → copy it to the desktop → delete the copy → restore it from the Bin.",
+      "emoji": "🎓"
+     },
+     {
+      "text": "You do it all yourself, no hints. If it doesn't work — we'll practise and you'll retake it perfectly!"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Mini exam",
+      "prompt": "In the mini exam the teacher gives all the hints.",
+      "answer": false,
+      "explain": "It is a check — you do it all yourself."
+     }
+    ]
+   }
+  ]
+ }
+}

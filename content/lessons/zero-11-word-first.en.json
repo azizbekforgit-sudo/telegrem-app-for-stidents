@@ -1,0 +1,195 @@
+{
+ "title": "Lesson 11. Your first Word document",
+ "description": "Create a document, select text, change font, size and colour",
+ "questions": [
+  {
+   "type": "match",
+   "topic": "Font, size, colour",
+   "prompt": "Match the button with what it changes",
+   "pairs": [
+    [
+     "Font",
+     "Handwriting"
+    ],
+    [
+     "Size",
+     "How big letters are"
+    ],
+    [
+     "Colour",
+     "Coloured pen"
+    ]
+   ],
+   "explain": "Three main beauty buttons."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Font, size, colour",
+   "prompt": "Even if the text is not selected, the colour still changes.",
+   "answer": false,
+   "explain": "Select first, then change."
+  },
+  {
+   "type": "choice",
+   "topic": "Selecting",
+   "prompt": "How do you know the text is selected?",
+   "options": [
+    "It turned blue",
+    "It disappeared",
+    "It went bold",
+    "The computer beeps"
+   ],
+   "answer": 0,
+   "explain": "A blue background means selected."
+  },
+  {
+   "type": "choice",
+   "topic": "Font, size, colour",
+   "prompt": "What happens with a bigger size number?",
+   "options": [
+    "Letters get bigger",
+    "Letters turn red",
+    "The text is deleted",
+    "Nothing"
+   ],
+   "answer": 0,
+   "explain": "Bigger number — bigger letters."
+  },
+  {
+   "type": "order",
+   "topic": "Font, size, colour",
+   "prompt": "Put in order how to make your name red",
+   "tokens": [
+    "Select your name",
+    "Click \"Colour\"",
+    "Pick red"
+   ],
+   "extra": [
+    "Press Delete"
+   ],
+   "explain": "Select → colour → red."
+  },
+  {
+   "type": "choice",
+   "topic": "Notepad and Word",
+   "prompt": "How do you save \"About me\" into your folder?",
+   "options": [
+    "File → Save As → your folder",
+    "Close without saving",
+    "Press Ctrl + A",
+    "Turn off the computer"
+   ],
+   "answer": 0,
+   "explain": "Like Notepad — remember where you save."
+  },
+  {
+   "type": "fill",
+   "topic": "Selecting",
+   "prompt": "Fill in the blank",
+   "text": "First ___, then change.",
+   "answer": [
+    "select"
+   ],
+   "extra": [
+    "save",
+    "close",
+    "delete"
+   ],
+   "explain": "The main Word rule."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Notepad and Word",
+   "prompt": "Word is a pretty notebook with coloured pens and pictures.",
+   "answer": true,
+   "explain": "Notepad is the simple one."
+  }
+ ],
+ "learn": {
+  "intro": "Notepad is a simple squared notebook. Word is a pretty notebook with coloured pens! Today we make text beautiful.",
+  "sections": [
+   {
+    "title": "Notepad and Word",
+    "slides": [
+     {
+      "text": "In **Word** you can make text pretty: colours, sizes, pictures. Open Word → \"New document\".",
+      "emoji": "🖍️"
+     },
+     {
+      "text": "At the top there's a ribbon with buttons. There are many, but we need only a few."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Notepad and Word",
+      "prompt": "How is Word different from Notepad?",
+      "options": [
+       "You can make text pretty in it",
+       "You can't type in it",
+       "No difference"
+      ],
+      "answer": 0,
+      "explain": "Word is a notebook with coloured pens."
+     }
+    ]
+   },
+   {
+    "title": "Selecting",
+    "slides": [
+     {
+      "text": "To change text we first **select** it — show the computer which piece we change. Click before the word, hold the button and drag to the end.",
+      "emoji": "🟦"
+     },
+     {
+      "text": "The text turned blue — it is selected. **Ctrl + A** selects everything."
+     }
+    ],
+    "check": [
+     {
+      "type": "fill",
+      "topic": "Selecting",
+      "prompt": "Fill in the blank",
+      "text": "Select all: Ctrl + ___",
+      "answer": [
+       "A"
+      ],
+      "extra": [
+       "S",
+       "Z",
+       "V"
+      ],
+      "explain": "A — all."
+     }
+    ]
+   },
+   {
+    "title": "Font, size, colour",
+    "slides": [
+     {
+      "text": "**Font** is handwriting. **Size** — the bigger the number, the bigger the letters. **Colour** — the letter A with a coloured bar, like a coloured pen.",
+      "emoji": "🎨"
+     },
+     {
+      "text": "The main rule: **select first, then change**. If you didn't select — nothing changes.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Font, size, colour",
+      "prompt": "What must you do before changing the colour?",
+      "options": [
+       "Select the text",
+       "Close Word",
+       "Press Enter"
+      ],
+      "answer": 0,
+      "explain": "Select first, then change."
+     }
+    ]
+   }
+  ]
+ }
+}

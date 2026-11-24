@@ -1,0 +1,186 @@
+{
+ "title": "Lesson 28. If — then",
+ "description": "The condition \"if touching…, then…\": the hero collects apples",
+ "questions": [
+  {
+   "type": "order",
+   "topic": "The apple's program",
+   "prompt": "Build the apple's program",
+   "tokens": [
+    "When flag clicked",
+    "Show",
+    "Go to random position",
+    "Forever",
+    "If touching the hero"
+   ],
+   "extra": [],
+   "explain": "\"If\" inside \"forever\"."
+  },
+  {
+   "type": "match",
+   "topic": "Condition",
+   "prompt": "Match the \"if\" with the \"then\"",
+   "pairs": [
+    [
+     "If it rains",
+     "Take an umbrella"
+    ],
+    [
+     "If the light is green",
+     "Cross the road"
+    ],
+    [
+     "If the hero touches the apple",
+     "The apple disappears"
+    ]
+   ],
+   "explain": "Condition and action."
+  },
+  {
+   "type": "choice",
+   "topic": "The apple's program",
+   "prompt": "What happens when the hero touches the apple?",
+   "options": [
+    "A sound and the apple jumps elsewhere",
+    "The game closes",
+    "The hero vanishes forever",
+    "Nothing"
+   ],
+   "answer": 0,
+   "explain": "An endless apple hunt."
+  },
+  {
+   "type": "truefalse",
+   "topic": "The apple's program",
+   "prompt": "In the \"touching\" block you must choose your own hero.",
+   "answer": true,
+   "explain": "Otherwise it won't work."
+  },
+  {
+   "type": "fill",
+   "topic": "Condition",
+   "prompt": "Fill in the blank",
+   "text": "___ it rains, ___ take an umbrella.",
+   "answer": [
+    "If",
+    "then"
+   ],
+   "extra": [
+    "Always",
+    "later",
+    "never"
+   ],
+   "explain": "That is \"if — then\"."
+  },
+  {
+   "type": "choice",
+   "topic": "The apple",
+   "prompt": "Which sprite do we add second?",
+   "options": [
+    "An apple",
+    "A bin",
+    "A mouse",
+    "Nothing"
+   ],
+   "answer": 0,
+   "explain": "Or any food or star from the library."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Condition",
+   "prompt": "A computer can make decisions using conditions.",
+   "answer": true,
+   "explain": "The \"if — then\" block."
+  },
+  {
+   "type": "choice",
+   "topic": "The apple's program",
+   "prompt": "How do you save the game?",
+   "options": [
+    "Games → \"Apple hunt\"",
+    "Don't save",
+    "Into the Bin",
+    "On a friend's desktop"
+   ],
+   "answer": 0,
+   "explain": "Into your Games folder."
+  }
+ ],
+ "learn": {
+  "intro": "A computer can decide like us: if it rains, take an umbrella. Today we teach the game to decide!",
+  "sections": [
+   {
+    "title": "Condition",
+    "slides": [
+     {
+      "text": "In life: if it rains, **then** we take an umbrella. If the light is green, **then** we cross. The computer can do this too — the **\"if — then\"** block.",
+      "emoji": "☔"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Condition",
+      "prompt": "What does the \"if — then\" block do?",
+      "options": [
+       "Checks a condition and acts only if it is true",
+       "Always repeats everything",
+       "Turns off the game"
+      ],
+      "answer": 0,
+      "explain": "If the condition is true — do it."
+     }
+    ]
+   },
+   {
+    "title": "The apple",
+    "slides": [
+     {
+      "text": "Add a second sprite — an **apple** (or food, a star). Right now the hero passes through it — nothing happens.",
+      "emoji": "🍏"
+     },
+     {
+      "text": "Teach the game: **if** the hero touches the apple, **then** the apple disappears."
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "The apple",
+      "prompt": "Without a condition the hero just passes through the apple.",
+      "answer": true,
+      "explain": "The condition teaches the game to react."
+     }
+    ]
+   },
+   {
+    "title": "The apple's program",
+    "slides": [
+     {
+      "text": "The apple's program: when the hero touches it — a \"pop\" sound and the apple jumps elsewhere. An endless hunt!",
+      "emoji": "🎯",
+      "code": "when green flag clicked\nshow\ngo to random position\nforever\n    if touching \"My hero\" then\n        play sound \"pop\"\n        go to random position"
+     },
+     {
+      "text": "Not working? Check that \"touching\" has your hero selected and that \"if\" is **inside \"forever\"**.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "The apple's program",
+      "prompt": "Where must the \"if\" block be?",
+      "options": [
+       "Inside \"forever\"",
+       "At the very end, alone",
+       "In the Bin"
+      ],
+      "answer": 0,
+      "explain": "Then the game checks all the time."
+     }
+    ]
+   }
+  ]
+ }
+}

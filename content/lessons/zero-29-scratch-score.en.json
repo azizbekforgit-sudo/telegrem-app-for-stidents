@@ -1,0 +1,185 @@
+{
+ "title": "Lesson 29. The score",
+ "description": "The \"Score\" variable: count apples and add a win",
+ "questions": [
+  {
+   "type": "choice",
+   "topic": "Score",
+   "prompt": "Which block adds one point?",
+   "options": [
+    "Change \"Score\" by 1",
+    "Set \"Score\" to 0",
+    "Say \"Victory!\"",
+    "Show"
+   ],
+   "answer": 0,
+   "explain": "\"Change by 1\" adds one."
+  },
+  {
+   "type": "match",
+   "topic": "Score",
+   "prompt": "Match the block with what it does",
+   "pairs": [
+    [
+     "Set \"Score\" to 0",
+     "Empty box at the start"
+    ],
+    [
+     "Change \"Score\" by 1",
+     "One more apple"
+    ],
+    [
+     "Wait until \"Score\" = 10",
+     "Wait for the win"
+    ]
+   ],
+   "explain": "Three score blocks."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Variable",
+   "prompt": "You make a variable in the orange \"Variables\" blocks.",
+   "answer": true,
+   "explain": "\"Make a variable\" → name → OK."
+  },
+  {
+   "type": "order",
+   "topic": "Winning",
+   "prompt": "Build the victory program",
+   "tokens": [
+    "When flag clicked",
+    "Wait until \"Score\" = 10",
+    "Say \"Victory!\""
+   ],
+   "extra": [
+    "Set \"Score\" to 0"
+   ],
+   "explain": "Wait for 10 points — victory."
+  },
+  {
+   "type": "fill",
+   "topic": "Score",
+   "prompt": "Fill in the blank",
+   "text": "At the start: set \"Score\" to ___.",
+   "answer": [
+    "0"
+   ],
+   "extra": [
+    "1",
+    "10",
+    "100"
+   ],
+   "explain": "An empty box — zero."
+  },
+  {
+   "type": "choice",
+   "topic": "Winning",
+   "prompt": "What does the enemy do in the ⭐⭐ task?",
+   "options": [
+    "Touching it resets the score to 0",
+    "Gives 100 points",
+    "Nothing",
+    "Turns off the computer"
+   ],
+   "answer": 0,
+   "explain": "Avoid the enemy."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Variable",
+   "prompt": "A score counter appears on the stage after making the variable.",
+   "answer": true,
+   "explain": "You can see how many apples you got."
+  },
+  {
+   "type": "choice",
+   "topic": "Variable",
+   "prompt": "What is the variable called in our game?",
+   "options": [
+    "Score",
+    "Cat",
+    "Flag",
+    "Backdrop"
+   ],
+   "answer": 0,
+   "explain": "The \"Score\" box."
+  }
+ ],
+ "learn": {
+  "intro": "A game needs a score! Today we teach the computer to remember a number — and the game will know when you win.",
+  "sections": [
+   {
+    "title": "Variable",
+    "slides": [
+     {
+      "text": "A **variable** is a little box labelled \"Score\" with a number inside. You can put a new number in or add to it.",
+      "emoji": "📦"
+     },
+     {
+      "text": "Orange \"Variables\" blocks → **\"Make a variable\"** → name it \"Score\" → OK. A counter appears on the stage."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Variable",
+      "prompt": "What is a variable?",
+      "options": [
+       "A box where the computer remembers a number",
+       "The hero's picture",
+       "The power button"
+      ],
+      "answer": 0,
+      "explain": "The \"Score\" box with a number."
+     }
+    ]
+   },
+   {
+    "title": "Score",
+    "slides": [
+     {
+      "text": "At the start the box is empty: **\"set Score to 0\"**. Inside \"if touching the hero\" — **\"change Score by 1\"**.",
+      "emoji": "➕",
+      "code": "when green flag clicked\nset \"Score\" to 0\n...\n    if touching \"My hero\" then\n        change \"Score\" by 1"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Score",
+      "prompt": "At the start of the game the score should be set to 0.",
+      "answer": true,
+      "explain": "Otherwise the last game's score stays."
+     }
+    ]
+   },
+   {
+    "title": "Winning",
+    "slides": [
+     {
+      "text": "Victory for the hero: wait until the score is 10, then say \"Victory!\".",
+      "emoji": "🏆",
+      "code": "when green flag clicked\nwait until \"Score\" = 10\nsay \"Victory!\" for 2 seconds"
+     },
+     {
+      "text": "Star tasks: ⭐ the apple appears faster with each point; ⭐⭐ add an enemy — touching it resets the score to 0."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Winning",
+      "prompt": "When does the hero say \"Victory!\"?",
+      "options": [
+       "When the score reaches 10",
+       "Right at the start",
+       "Never"
+      ],
+      "answer": 0,
+      "explain": "\"Wait until Score = 10\"."
+     }
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,185 @@
+{
+ "title": "Lesson 22. Pictures and slide order",
+ "description": "Little text, lots of pictures; inserting pictures, slide order and transitions",
+ "questions": [
+  {
+   "type": "choice",
+   "topic": "The main rule",
+   "prompt": "What is a slide's main rule?",
+   "options": [
+    "Little text, lots of pictures",
+    "Lots of text, few pictures",
+    "Only text",
+    "Write nothing"
+   ],
+   "answer": 0,
+   "explain": "A slide is like a poster."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Order and transitions",
+   "prompt": "You can reorder slides by dragging them on the left.",
+   "answer": true,
+   "explain": "Like a deck of cards."
+  },
+  {
+   "type": "match",
+   "topic": "Order and transitions",
+   "prompt": "Match the word with its meaning",
+   "pairs": [
+    [
+     "Transition",
+     "How a slide appears"
+    ],
+    [
+     "Small slides on the left",
+     "A deck of cards"
+    ],
+    [
+     "Slide",
+     "Poster"
+    ]
+   ],
+   "explain": "Images help you remember."
+  },
+  {
+   "type": "choice",
+   "topic": "Pictures on slides",
+   "prompt": "How do you shrink a slide picture without spoiling it?",
+   "options": [
+    "Drag a corner",
+    "Drag a side",
+    "Press Delete",
+    "Press F5"
+   ],
+   "answer": 0,
+   "explain": "Like Word — a corner."
+  },
+  {
+   "type": "fill",
+   "topic": "Order and transitions",
+   "prompt": "Fill in the blank",
+   "text": "A calm transition: \"___\".",
+   "answer": [
+    "Fade"
+   ],
+   "extra": [
+    "Explosion",
+    "Spin",
+    "Jump"
+   ],
+   "explain": "A calm effect doesn't distract."
+  },
+  {
+   "type": "order",
+   "topic": "Pictures on slides",
+   "prompt": "Put in order how to add a picture to a slide",
+   "tokens": [
+    "Insert",
+    "Pictures",
+    "Your folder",
+    "Shrink by a corner"
+   ],
+   "extra": [
+    "F5"
+   ],
+   "explain": "Insert → shrink → place."
+  },
+  {
+   "type": "choice",
+   "topic": "The main rule",
+   "prompt": "Which slides do we add in this lesson?",
+   "options": [
+    "\"What it eats\" and \"A fun fact\"",
+    "\"Password\" and \"Address\"",
+    "Only empty ones",
+    "None"
+   ],
+   "answer": 0,
+   "explain": "Slides 4 and 5."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Pictures on slides",
+   "prompt": "If you lack pictures, you can find and save them online.",
+   "answer": true,
+   "explain": "Like in lesson 18."
+  }
+ ],
+ "learn": {
+  "intro": "Today the presentation comes alive: we add pictures, order and nice transitions!",
+  "sections": [
+   {
+    "title": "The main rule",
+    "slides": [
+     {
+      "text": "The main rule: **little text, lots of pictures**. A slide is like a poster: a big picture and a few words. You tell the details.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "The main rule",
+      "prompt": "It is better to put lots of long text on a slide.",
+      "answer": false,
+      "explain": "Little text, lots of pictures."
+     }
+    ]
+   },
+   {
+    "title": "Pictures on slides",
+    "slides": [
+     {
+      "text": "The **Insert → Pictures** tab → your Pictures folder. A picture on every slide.",
+      "emoji": "🖼️"
+     },
+     {
+      "text": "Shrink it by a **corner**, like in Word, and drag it to a free spot."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Pictures on slides",
+      "prompt": "How do you put a picture on a slide?",
+      "options": [
+       "Insert → Pictures",
+       "File → Print",
+       "Press F5"
+      ],
+      "answer": 0,
+      "explain": "Same as Word."
+     }
+    ]
+   },
+   {
+    "title": "Order and transitions",
+    "slides": [
+     {
+      "text": "On the left are small slides — like a deck of cards. You can **drag** them to change the order.",
+      "emoji": "🃏"
+     },
+     {
+      "text": "**Transitions** are how slides appear. Pick a calm effect like \"Fade\": if everything spins and jumps, the audience watches the effect instead of listening to you.",
+      "emoji": "✨"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Order and transitions",
+      "prompt": "Which transition is best?",
+      "options": [
+       "A calm one, like Fade",
+       "The bounciest",
+       "A wild new one on each slide"
+      ],
+      "answer": 0,
+      "explain": "The audience should listen to you."
+     }
+    ]
+   }
+  ]
+ }
+}

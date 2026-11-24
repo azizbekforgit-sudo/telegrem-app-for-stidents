@@ -1,0 +1,184 @@
+{
+ "title": "17-dars. Internet va brauzer",
+ "description": "Brauzer, sayt manzili, «Orqaga» va «Yangilash» tugmalari, yorliqlar",
+ "questions": [
+  {
+   "type": "match",
+   "topic": "Manzil va tugmalar",
+   "prompt": "Brauzer tugmasini vazifasi bilan bog'la",
+   "pairs": [
+    [
+     "Orqaga strelka",
+     "Oldingi sahifa"
+    ],
+    [
+     "Dumaloq strelka",
+     "Yangilash"
+    ],
+    [
+     "Plyus",
+     "Yangi yorliq"
+    ],
+    [
+     "Yorliqdagi xoch",
+     "Yorliqni yopish"
+    ]
+   ],
+   "explain": "Brauzerning asosiy tugmalari."
+  },
+  {
+   "type": "choice",
+   "topic": "Manzil va tugmalar",
+   "prompt": "Sayt manzili qayerga yoziladi?",
+   "options": [
+    "Yuqoridagi manzil satriga",
+    "Bloknotga",
+    "Ish stoliga",
+    "Savatga"
+   ],
+   "answer": 0,
+   "explain": "Manzilni yozib, Enter ni bosamiz."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Internet va brauzer",
+   "prompt": "Internet ulkan kutubxonaga o'xshaydi.",
+   "answer": true,
+   "explain": "Millionlab kitob, multfilm va o'yinlar."
+  },
+  {
+   "type": "fill",
+   "topic": "Manzil va tugmalar",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "Manzilni yozdingmi — ___ ni bos.",
+   "answer": [
+    "Enter"
+   ],
+   "extra": [
+    "Shift",
+    "Backspace",
+    "Delete"
+   ],
+   "explain": "Enter — «u yerga bor»."
+  },
+  {
+   "type": "choice",
+   "topic": "Yorliqlar",
+   "prompt": "Brauzer yorliqlari nimaga o'xshaydi?",
+   "options": [
+    "Kitobdagi xatcho'plarga",
+    "Axlat chelagiga",
+    "G'ildirakchaga",
+    "Liftga"
+   ],
+   "answer": 0,
+   "explain": "Har bir sayt — o'z yorlig'ida."
+  },
+  {
+   "type": "order",
+   "topic": "Yorliqlar",
+   "prompt": "«Uchta yorliq» o'yinini yig'",
+   "tokens": [
+    "3 ta yorliq ochish",
+    "Buyruq bo'yicha almashish",
+    "Bitta yorliqni yopish",
+    "Brauzerni yopish"
+   ],
+   "extra": [],
+   "explain": "Darsdagi o'yindagidek."
+  },
+  {
+   "type": "choice",
+   "topic": "Manzil va tugmalar",
+   "prompt": "Dumaloq strelka nima qiladi?",
+   "options": [
+    "Sahifani qaytadan yuklaydi",
+    "Brauzerni yopadi",
+    "Saytni o'chiradi",
+    "Chop etadi"
+   ],
+   "answer": 0,
+   "explain": "Bu «yangilash»."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Yorliqlar",
+   "prompt": "Bitta yorliqni undagi xoch bilan yopsa bo'ladi.",
+   "answer": true,
+   "explain": "Qolganlari ochiq qoladi."
+  }
+ ],
+ "learn": {
+  "intro": "Internet — millionlab kitob, multfilm va o'yinlar bor ulkan kutubxona. Bugun unga chipta olamiz!",
+  "sections": [
+   {
+    "title": "Internet va brauzer",
+    "slides": [
+     {
+      "text": "Internet-kutubxonaga kirish uchun dastur kerak — **brauzer**. Bu kutubxonaga chipta kabi.",
+      "emoji": "🎫"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Internet va brauzer",
+      "prompt": "Brauzer nima?",
+      "options": [
+       "Dastur — internetga chipta",
+       "Sichqoncha qismi",
+       "Rasmlar papkasi"
+      ],
+      "answer": 0,
+      "explain": "Brauzer orqali saytlarni ochamiz."
+     }
+    ]
+   },
+   {
+    "title": "Manzil va tugmalar",
+    "slides": [
+     {
+      "text": "Har bir saytning uy kabi **manzili** bor. Uni yuqoridagi manzil satriga yozamiz, **Enter** ni bosamiz — saytga mehmonga keldik.",
+      "emoji": "🏡"
+     },
+     {
+      "text": "**Orqaga strelka** — oldingi sahifaga qaytish. **Dumaloq strelka** — yangilash. Kursor **kaftga** aylandi — demak, bu havola, bossa bo'ladi.",
+      "emoji": "👆"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Manzil va tugmalar",
+      "prompt": "Kursor kaftga aylansa — uni bossa bo'ladi.",
+      "answer": true,
+      "explain": "Bu havola."
+     }
+    ]
+   },
+   {
+    "title": "Yorliqlar",
+    "slides": [
+     {
+      "text": "Bir nechta saytni birdan ochsa bo'ladi — har biri o'z **yorlig'ida**, kitobdagi xatcho'plar kabi. **Plyus** — yangi yorliq, yorliqdagi **xoch** — uni yopish.",
+      "emoji": "📑"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Yorliqlar",
+      "prompt": "Yangi yorliqni qanday ochamiz?",
+      "options": [
+       "Plyusni bosish",
+       "Xochni bosish",
+       "Brauzerni o'chirish"
+      ],
+      "answer": 0,
+      "explain": "Plyus — yangi yorliq."
+     }
+    ]
+   }
+  ]
+ }
+}

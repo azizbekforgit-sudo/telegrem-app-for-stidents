@@ -1,0 +1,193 @@
+{
+ "title": "25-dars. Scratch bilan tanishuv",
+ "description": "Sahna, sprayt, bloklar va birinchi dastur: mushuk yuradi va «Salom!» deydi",
+ "questions": [
+  {
+   "type": "match",
+   "topic": "Scratch ekrani",
+   "prompt": "Scratch qismini nima ekanligi bilan bog'la",
+   "pairs": [
+    [
+     "Sahna",
+     "Teatr"
+    ],
+    [
+     "Sprayt",
+     "Aktyor"
+    ],
+    [
+     "Bloklar",
+     "Buyruqlar"
+    ],
+    [
+     "Yashil bayroqcha",
+     "«Boshladik!»"
+    ]
+   ],
+   "explain": "Bu Scratch ekrani."
+  },
+  {
+   "type": "choice",
+   "topic": "Birinchi dastur",
+   "prompt": "Qaysi blok dasturni ishga tushiradi?",
+   "options": [
+    "Yashil bayroqcha bosilganda",
+    "10 qadam yur",
+    "«Salom!» de",
+    "Miyov"
+   ],
+   "answer": 0,
+   "explain": "Sariq hodisa bloki."
+  },
+  {
+   "type": "order",
+   "topic": "Birinchi dastur",
+   "prompt": "Birinchi dasturni yig'",
+   "tokens": [
+    "Bayroqcha bosilganda",
+    "10 qadam yur",
+    "«Salom!» de"
+   ],
+   "extra": [
+    "O'chirish"
+   ],
+   "explain": "Avval hodisa, keyin buyruqlar."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Scratch ekrani",
+   "prompt": "Ko'k bloklar harakat uchun javob beradi.",
+   "answer": true,
+   "explain": "Binafsha — tashqi ko'rinish, sariq — hodisalar."
+  },
+  {
+   "type": "choice",
+   "topic": "Birinchi dastur",
+   "prompt": "Bloklar o'rnini almashtirsak nima bo'ladi?",
+   "options": [
+    "Mushuk boshqa tartibda bajaradi",
+    "Hech narsa o'zgarmaydi",
+    "Kompyuter o'chadi",
+    "Mushuk yo'qoladi"
+   ],
+   "answer": 0,
+   "explain": "Dastur — tartib bilan buyruqlar."
+  },
+  {
+   "type": "fill",
+   "topic": "Tajribalar",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "Mushuk «___» ovozini chiqaradi.",
+   "answer": [
+    "miyov"
+   ],
+   "extra": [
+    "vov",
+    "pip",
+    "ku-ku"
+   ],
+   "explain": "Ovozlar — pushti bloklar."
+  },
+  {
+   "type": "choice",
+   "topic": "Tajribalar",
+   "prompt": "Mushuk sahna chetiga qochdi. Nima qilamiz?",
+   "options": [
+    "Uni sichqoncha bilan orqaga sudraymiz",
+    "Scratch ni o'chiramiz",
+    "Kompyuterni o'chiramiz",
+    "Qaytishini kutamiz"
+   ],
+   "answer": 0,
+   "explain": "Spraytni sichqoncha bilan surish mumkin."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Birinchi dastur",
+   "prompt": "Bloklarni «chiq» etguncha bir-birining ostiga ulash kerak.",
+   "answer": true,
+   "explain": "Aks holda dastur yig'ilmaydi."
+  }
+ ],
+ "learn": {
+  "intro": "Scratch da buyruqlar — konstruktor detallaridek rangli bloklar. Bosh qahramon — mushuk!",
+  "sections": [
+   {
+    "title": "Scratch ekrani",
+    "slides": [
+     {
+      "text": "**Sahna** (o'ng yuqorida) — qahramon chiqish qiladigan teatr. **Sprayt** (mushuk) — aktyor. **Bloklar** (chapda) — turli rangli buyruqlar. O'rtada — dastur maydoni.",
+      "emoji": "🎭"
+     },
+     {
+      "text": "Ko'k bloklar — harakat, binafsha — tashqi ko'rinish, sariq — hodisalar. **Yashil bayroqcha** — «Boshladik!» tugmasi.",
+      "emoji": "🚩"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Scratch ekrani",
+      "prompt": "Sprayt nima?",
+      "options": [
+       "Qahramon — teatr aktyori",
+       "O'chirish tugmasi",
+       "Sahna foni"
+      ],
+      "answer": 0,
+      "explain": "Mushuk — sprayt."
+     }
+    ]
+   },
+   {
+    "title": "Birinchi dastur",
+    "slides": [
+     {
+      "text": "Bloklarni o'rtaga sudrab, bir-birining ostiga ulaymiz — «chiq» etishi kerak.",
+      "emoji": "🧩",
+      "code": "yashil bayroqcha bosilganda\n10 qadam yur\n«Salom!» de 2 soniya"
+     },
+     {
+      "text": "Yashil bayroqchani bosamiz — mushuk yuradi va gapiradi! Sen birinchi dasturingni yozding: kompyuter buyruqlarni tartib bilan bajardi.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Birinchi dastur",
+      "prompt": "Scratch dasturi yashil bayroqcha bilan ishga tushadi.",
+      "answer": true,
+      "explain": "«Boshladik!» tugmasi."
+     }
+    ]
+   },
+   {
+    "title": "Tajribalar",
+    "slides": [
+     {
+      "text": "O'zgartiramiz: 10 qadam → 100 qadam; «Salom!» → o'z isming; «15 gradusga buril» va «miyov» ovozini qo'shamiz.",
+      "emoji": "🔬"
+     },
+     {
+      "text": "Mushuk chetga qochdimi? Uni sichqoncha bilan sahnaga sudra. Saqlaymiz: Fayl → Kompyuterga saqlash → O'yinlar papkasi → «Birinchi dastur»."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Tajribalar",
+      "prompt": "10 qadam o'rniga 100 qo'ysak nima o'zgaradi?",
+      "options": [
+       "Mushuk uzoqroq yuradi",
+       "Mushuk jim bo'ladi",
+       "Hech narsa"
+      ],
+      "answer": 0,
+      "explain": "Ko'proq qadam — uzoqroq yuradi."
+     }
+    ]
+   }
+  ]
+ }
+}

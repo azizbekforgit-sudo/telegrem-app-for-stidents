@@ -1,0 +1,186 @@
+{
+ "title": "Lesson 14. Project: a greeting card",
+ "description": "Make a card in Word yourself: title, picture, greeting, signature",
+ "questions": [
+  {
+   "type": "choice",
+   "topic": "Card plan",
+   "prompt": "How do we make the card title?",
+   "options": [
+    "Big, centred, colourful",
+    "Tiny and grey",
+    "No title",
+    "At the very bottom"
+   ],
+   "answer": 0,
+   "explain": "The title is what people see first."
+  },
+  {
+   "type": "choice",
+   "topic": "Making the card",
+   "prompt": "What goes at the very end of the card?",
+   "options": [
+    "Signature",
+    "Title",
+    "A website address",
+    "A password"
+   ],
+   "answer": 0,
+   "explain": "For example: \"From Aziz\"."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Decorate and save",
+   "prompt": "The card should be saved in your Word folder.",
+   "answer": true,
+   "explain": "Remember: where are we saving?"
+  },
+  {
+   "type": "order",
+   "topic": "Decorate and save",
+   "prompt": "Put in order how to print the card",
+   "tokens": [
+    "File",
+    "Print",
+    "The Print button"
+   ],
+   "extra": [
+    "Delete"
+   ],
+   "explain": "File → Print → Print."
+  },
+  {
+   "type": "match",
+   "topic": "Card plan",
+   "prompt": "Match the card part with what's in it",
+   "pairs": [
+    [
+     "Title",
+     "\"Happy birthday!\""
+    ],
+    [
+     "Greeting",
+     "2–3 warm sentences"
+    ],
+    [
+     "Signature",
+     "\"From Aziz\""
+    ]
+   ],
+   "explain": "Each part in its place."
+  },
+  {
+   "type": "choice",
+   "topic": "Making the card",
+   "prompt": "Where do we get the card picture?",
+   "options": [
+    "From your Pictures folder",
+    "Draw on the screen with a finger",
+    "From the Bin",
+    "It can't be added"
+   ],
+   "answer": 0,
+   "explain": "Insert → Pictures → your folder."
+  },
+  {
+   "type": "fill",
+   "topic": "Decorate and save",
+   "prompt": "Fill in the blank",
+   "text": "Page border: the \"___\" tab → \"Page Borders\".",
+   "answer": [
+    "Design"
+   ],
+   "extra": [
+    "Insert",
+    "Home",
+    "File"
+   ],
+   "explain": "Design → Page Borders."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Card plan",
+   "prompt": "The greeting has 2–3 sentences.",
+   "answer": true,
+   "explain": "Short and warm."
+  }
+ ],
+ "learn": {
+  "intro": "Today you'll make a real card! Who is it for — mum, dad, grandma, a friend?",
+  "sections": [
+   {
+    "title": "Card plan",
+    "slides": [
+     {
+      "text": "Pick a reason: a birthday, \"thank you\", a holiday, \"I love you\".",
+      "emoji": "🎉"
+     },
+     {
+      "text": "Plan: **title** (big, centred) → **picture** → **greeting** of 2–3 sentences → **signature**.",
+      "emoji": "🗒️"
+     }
+    ],
+    "check": [
+     {
+      "type": "order",
+      "topic": "Card plan",
+      "prompt": "Put the card plan from top to bottom",
+      "tokens": [
+       "Title",
+       "Picture",
+       "Greeting",
+       "Signature"
+      ],
+      "extra": [],
+      "explain": "That makes the card neat and clear."
+     }
+    ]
+   },
+   {
+    "title": "Making the card",
+    "slides": [
+     {
+      "text": "You do it, the teacher only hints: a new document, a big centred colourful title, a picture from Pictures, a greeting and the signature \"From Aziz\".",
+      "emoji": "🖌️"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Making the card",
+      "prompt": "The student makes the card; the teacher only gives hints.",
+      "answer": true,
+      "explain": "It is your first fully independent work."
+     }
+    ]
+   },
+   {
+    "title": "Decorate and save",
+    "slides": [
+     {
+      "text": "Ideas: a border (the Design tab → \"Page Borders\"), page colour, emojis, different fonts.",
+      "emoji": "🌈"
+     },
+     {
+      "text": "Save it: \"Card for mum\" in the Word folder. Have a printer? File → Print → Print.",
+      "emoji": "🖨️"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Decorate and save",
+      "prompt": "Where do you find a page border in Word?",
+      "options": [
+       "Design → Page Borders",
+       "File → Close",
+       "Insert → Table"
+      ],
+      "answer": 0,
+      "explain": "Border = Page Borders."
+     }
+    ]
+   }
+  ]
+ }
+}

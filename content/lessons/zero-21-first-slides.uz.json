@@ -1,0 +1,194 @@
+{
+ "title": "21-dars. Birinchi slaydlar",
+ "description": "PowerPoint da taqdimot yaratamiz: muqova, slaydlar, bezak, ko'rsatish",
+ "questions": [
+  {
+   "type": "match",
+   "topic": "Slaydlar",
+   "prompt": "Slaydni undagisi bilan bog'la",
+   "pairs": [
+    [
+     "1-slayd",
+     "Muqova: mavzu va ism"
+    ],
+    [
+     "2-slayd",
+     "Qayerda yashaydi"
+    ],
+    [
+     "3-slayd",
+     "Qanday ko'rinadi"
+    ]
+   ],
+   "explain": "Ma'ruza rejasidagidek."
+  },
+  {
+   "type": "choice",
+   "topic": "Slaydlar",
+   "prompt": "Yangi slaydni qanday qo'shamiz?",
+   "options": [
+    "«Bosh sahifa» dagi «Slayd yaratish»",
+    "Ctrl + Z",
+    "PowerPoint ni yopish",
+    "Esc bosish"
+   ],
+   "answer": 0,
+   "explain": "Har bir yangi slayd — kitobning yangi sahifasi."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Bezak va ko'rsatish",
+   "prompt": "F5 tugmasi slaydlarni ko'rsatishni boshlaydi.",
+   "answer": true,
+   "explain": "Esc esa — ko'rsatishdan chiqish."
+  },
+  {
+   "type": "choice",
+   "topic": "Bezak va ko'rsatish",
+   "prompt": "Tayyor fon va ranglarni qayerdan tanlaymiz?",
+   "options": [
+    "«Konstruktor» yorlig'i",
+    "«Fayl» yorlig'i",
+    "Savatda",
+    "Paint da"
+   ],
+   "answer": 0,
+   "explain": "Taqdimot uchun tayyor liboslar."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Taqdimot",
+   "prompt": "Taqdimotning har bir sahifasi slayd deyiladi.",
+   "answer": true,
+   "explain": "Slayd — kitob sahifasi."
+  },
+  {
+   "type": "order",
+   "topic": "Slaydlar",
+   "prompt": "Taqdimotni qanday boshlashni yig'",
+   "tokens": [
+    "PowerPoint ni ochish",
+    "Bo'sh taqdimot",
+    "Slayd sarlavhasi",
+    "Ismli kichik sarlavha"
+   ],
+   "extra": [
+    "Esc"
+   ],
+   "explain": "Muqova tayyor."
+  },
+  {
+   "type": "choice",
+   "topic": "Taqdimot",
+   "prompt": "Taqdimotni qayerga saqlaymiz?",
+   "options": [
+    "O'z papkang → Taqdimotlar",
+    "Savatga",
+    "Do'stning ish stoliga",
+    "Hech qayerga"
+   ],
+   "answer": 0,
+   "explain": "Taqdimotlar papkasini yaratamiz."
+  },
+  {
+   "type": "fill",
+   "topic": "Slaydlar",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "Birinchi slayd — bu ___.",
+   "answer": [
+    "muqova"
+   ],
+   "extra": [
+    "oxir",
+    "savat",
+    "jadval"
+   ],
+   "explain": "Muqovada mavzu va ism."
+  }
+ ],
+ "learn": {
+  "intro": "Taqdimot — katta ekrandagi rasmli kitob. Tez orada sen ham uni darsda ko'rsatasan!",
+  "sections": [
+   {
+    "title": "Taqdimot",
+    "slides": [
+     {
+      "text": "**Taqdimot** — gapirib berayotganda katta ekranda ko'rsatiladigan rasmli kitob kabi. Har bir sahifa — **slayd**.",
+      "emoji": "📽️"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Taqdimot",
+      "prompt": "Taqdimot sahifasi nima deyiladi?",
+      "options": [
+       "Slayd",
+       "Yorliq",
+       "Papka"
+      ],
+      "answer": 0,
+      "explain": "Har bir sahifa — slayd."
+     }
+    ]
+   },
+   {
+    "title": "Slaydlar",
+    "slides": [
+     {
+      "text": "PowerPoint → «Bo'sh taqdimot». Birinchi slayd — **muqova**: mavzu («Mening sevimli hayvonim») va «Tayyorladi: Aziz, 3-sinf».",
+      "emoji": "📘"
+     },
+     {
+      "text": "Yangi slayd — «Bosh sahifa» yorlig'idagi **«Slayd yaratish»** tugmasi. Unda tepada sarlavha va pastda matn."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Slaydlar",
+      "prompt": "Muqovaga nima yozamiz?",
+      "options": [
+       "Mavzu va ismingni",
+       "Parol",
+       "Hech narsa"
+      ],
+      "answer": 0,
+      "explain": "Muqova — mavzu va kim tayyorlagani."
+     }
+    ]
+   },
+   {
+    "title": "Bezak va ko'rsatish",
+    "slides": [
+     {
+      "text": "**«Konstruktor»** (yoki «Dizayn») yorlig'i — taqdimot uchun tayyor liboslar: fonlar va ranglar.",
+      "emoji": "👗"
+     },
+     {
+      "text": "Slaydlarni ko'rsatish — **F5** tugmasi. Strelkalar yoki bosish bilan varaqlaymiz. **Esc** — chiqish.",
+      "emoji": "▶️"
+     }
+    ],
+    "check": [
+     {
+      "type": "fill",
+      "topic": "Bezak va ko'rsatish",
+      "prompt": "Tushib qolganini qo'y",
+      "text": "Ko'rsatishni boshlash: ___ tugmasi, chiqish: ___",
+      "answer": [
+       "F5",
+       "Esc"
+      ],
+      "extra": [
+       "Enter",
+       "Shift",
+       "Delete"
+      ],
+      "explain": "F5 — ko'rsatish, Esc — chiqish."
+     }
+    ]
+   }
+  ]
+ }
+}

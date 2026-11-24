@@ -1,0 +1,181 @@
+{
+ "title": "23-dars. Loyiha va chiqish",
+ "description": "Taqdimotni ro'yxat bo'yicha tugatamiz, repetitsiya qilamiz va chiqamiz",
+ "questions": [
+  {
+   "type": "order",
+   "topic": "Repetitsiya",
+   "prompt": "Chiqish boshlanishini yig'",
+   "tokens": [
+    "Assalomu alaykum!",
+    "Mening ismim Aziz.",
+    "Mavzuim — panda."
+   ],
+   "extra": [
+    "Xayr!"
+   ],
+   "explain": "Salomlashish, tanishtirish, mavzuni aytish."
+  },
+  {
+   "type": "choice",
+   "topic": "Tekshiruv ro'yxati",
+   "prompt": "Loyihada nechta slayd bo'lishi kerak?",
+   "options": [
+    "4–6",
+    "1",
+    "50",
+    "0"
+   ],
+   "answer": 0,
+   "explain": "Ro'yxat bo'yicha 4–6 slayd."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Chiqish",
+   "prompt": "Chiqish paytida baland gapiramiz va to'g'ri turamiz.",
+   "answer": true,
+   "explain": "Shunda seni yaxshi eshitishadi va ko'rishadi."
+  },
+  {
+   "type": "match",
+   "topic": "Tekshiruv ro'yxati",
+   "prompt": "Ro'yxat bandini misol bilan bog'la",
+   "pairs": [
+    [
+     "Muqova",
+     "Mavzu va ism"
+    ],
+    [
+     "Har bir slayd",
+     "Sarlavha va rasm"
+    ],
+    [
+     "Oxirgi slayd",
+     "E'tiboringiz uchun rahmat!"
+    ]
+   ],
+   "explain": "Chiqishdan oldin hammasini tekshiramiz."
+  },
+  {
+   "type": "choice",
+   "topic": "Repetitsiya",
+   "prompt": "Har bir slaydda nechta gap aytamiz?",
+   "options": [
+    "O'z so'zlaring bilan 1–2",
+    "Bittayam",
+    "Butun slaydni o'qiymiz",
+    "20"
+   ],
+   "answer": 0,
+   "explain": "Slayd yordam beradi, gapirib berasan sen."
+  },
+  {
+   "type": "fill",
+   "topic": "Repetitsiya",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "Chiqish oxirida aytamiz: «___ uchun rahmat!»",
+   "answer": [
+    "e'tiboringiz"
+   ],
+   "extra": [
+    "parol",
+    "xatolar",
+    "kompyuter"
+   ],
+   "explain": "Chiqishning xushmuomala yakuni."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Chiqish",
+   "prompt": "Chiqishdan keyin tomoshabinlar savol berishi mumkin.",
+   "answer": true,
+   "explain": "Haqiqiy tinglovchilardek."
+  },
+  {
+   "type": "choice",
+   "topic": "Chiqish",
+   "prompt": "Ota-onalar kela olmasa, nima qilamiz?",
+   "options": [
+    "Videoga yozib, ularga yuboramiz",
+    "Hammasini bekor qilamiz",
+    "Taqdimotni o'chiramiz",
+    "Hech narsa"
+   ],
+   "answer": 0,
+   "explain": "Video ularga chiqishni ko'rsatadi."
+  }
+ ],
+ "learn": {
+  "intro": "Bugun sen haqiqiy ma'ruzachisan! Taqdimotni tugatib, tomoshabinlar oldida chiqamiz.",
+  "sections": [
+   {
+    "title": "Tekshiruv ro'yxati",
+    "slides": [
+     {
+      "text": "Tekshiramiz: mavzu va ismli muqova bor; 4–6 slayd; har birida sarlavha va rasm; kam matn; oxirgi slayd «E'tiboringiz uchun rahmat!».",
+      "emoji": "✅"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Tekshiruv ro'yxati",
+      "prompt": "Oxirgi slaydga nima yozamiz?",
+      "options": [
+       "E'tiboringiz uchun rahmat!",
+       "Parol",
+       "Hech narsa"
+      ],
+      "answer": 0,
+      "explain": "Shunday chiroyli yakunlashadi."
+     }
+    ]
+   },
+   {
+    "title": "Repetitsiya",
+    "slides": [
+     {
+      "text": "Haqiqiy ma'ruzachi **slayddan o'qimaydi** — u gapirib beradi, slayd yordam beradi. Har slaydda — o'z so'zlaring bilan 1–2 gap.",
+      "quote": true
+     },
+     {
+      "text": "To'g'ri turamiz, baland gapiramiz, tomoshabinlarga qaraymiz. Boshi: «Assalomu alaykum! Mening ismim… Mavzuim — …». Oxiri: «E'tiboringiz uchun rahmat!»",
+      "emoji": "🗣️"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Repetitsiya",
+      "prompt": "Yaxshi ma'ruzachi butun matnni slayddan o'qiydi.",
+      "answer": false,
+      "explain": "O'z so'zlarimiz bilan gapirib beramiz."
+     }
+    ]
+   },
+   {
+    "title": "Chiqish",
+    "slides": [
+     {
+      "text": "Ota-onalar oldida chiqamiz (yoki videoga yozamiz). Keyin tomoshabinlar haqiqiy tinglovchilardek savol beradi.",
+      "emoji": "👏"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Chiqish",
+      "prompt": "Chiqish paytida qayerga qaraymiz?",
+      "options": [
+       "Tomoshabinlarga",
+       "Faqat yerga",
+       "Faqat ekranga"
+      ],
+      "answer": 0,
+      "explain": "Faqat ekranga emas, tomoshabinlarga qaraymiz."
+     }
+    ]
+   }
+  ]
+ }
+}

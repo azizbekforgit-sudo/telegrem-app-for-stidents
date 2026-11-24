@@ -1,0 +1,183 @@
+{
+ "title": "Lesson 18. How to search the internet",
+ "description": "The search engine, short exact queries, image search and the \"5 questions\" quest",
+ "questions": [
+  {
+   "type": "choice",
+   "topic": "Key words",
+   "prompt": "How should you ask a search engine?",
+   "options": [
+    "Short, with key words",
+    "Long and polite",
+    "Only with emojis",
+    "In capital letters"
+   ],
+   "answer": 0,
+   "explain": "It needs key words."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Key words",
+   "prompt": "You must write \"please\" to a search engine.",
+   "answer": false,
+   "explain": "It is not a person — key words matter."
+  },
+  {
+   "type": "order",
+   "topic": "Key words",
+   "prompt": "Build a good query",
+   "tokens": [
+    "how many",
+    "legs",
+    "spider"
+   ],
+   "extra": [
+    "please"
+   ],
+   "explain": "No extra words."
+  },
+  {
+   "type": "choice",
+   "topic": "Pictures",
+   "prompt": "Where do you search for pictures?",
+   "options": [
+    "On the Images tab",
+    "In the Bin",
+    "In the Calculator",
+    "In Paint"
+   ],
+   "answer": 0,
+   "explain": "Only pictures there."
+  },
+  {
+   "type": "match",
+   "topic": "Key words",
+   "prompt": "Match the bad and the good query",
+   "pairs": [
+    [
+     "please tell how many legs a spider has",
+     "how many legs spider"
+    ],
+    [
+     "I want a pretty cat picture",
+     "cat picture"
+    ],
+    [
+     "tell me the highest mountain in the world",
+     "highest mountain"
+    ]
+   ],
+   "explain": "Remove the extra words."
+  },
+  {
+   "type": "fill",
+   "topic": "Pictures",
+   "prompt": "Fill in the blank",
+   "text": "Save a picture: ___-click → \"Save image as\".",
+   "answer": [
+    "right"
+   ],
+   "extra": [
+    "left",
+    "double",
+    "triple"
+   ],
+   "explain": "A right-click opens the menu."
+  },
+  {
+   "type": "choice",
+   "topic": "Search engine",
+   "prompt": "Where do we write the \"5 questions\" answers?",
+   "options": [
+    "In Notepad and save",
+    "On the wall",
+    "Nowhere",
+    "In the Bin"
+   ],
+   "answer": 0,
+   "explain": "The Quest file goes into Texts."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Pictures",
+   "prompt": "Pictures from the internet go into your Pictures folder.",
+   "answer": true,
+   "explain": "Easy to find there later."
+  }
+ ],
+ "learn": {
+  "intro": "You'll become an internet detective! We learn to find the answer to any question.",
+  "sections": [
+   {
+    "title": "Search engine",
+    "slides": [
+     {
+      "text": "Without a helper you can't find anything online. The helper is a **search engine**: you write a question, it finds sites with the answer.",
+      "emoji": "🕵️"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Search engine",
+      "prompt": "A search engine finds sites with the answer.",
+      "answer": true,
+      "explain": "It is our helper."
+     }
+    ]
+   },
+   {
+    "title": "Key words",
+    "slides": [
+     {
+      "text": "A search engine is not a person. It doesn't need \"please\" or \"tell me\". It needs **key words**.",
+      "emoji": "🔑"
+     },
+     {
+      "text": "Bad: \"please tell me how many legs a spider usually has\". Good: **\"how many legs spider\"**.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Key words",
+      "prompt": "Which query is better?",
+      "options": [
+       "cat picture",
+       "I would like to see a picture of a pretty cat"
+      ],
+      "answer": 0,
+      "explain": "Short, only key words."
+     }
+    ]
+   },
+   {
+    "title": "Pictures",
+    "slides": [
+     {
+      "text": "The search engine has a **\"Images\"** tab. Find a picture of your favourite animal.",
+      "emoji": "🐼"
+     },
+     {
+      "text": "Save a picture: **right-click** → \"Save image as\" → your Pictures folder."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Pictures",
+      "prompt": "How do you save a picture from the internet?",
+      "options": [
+       "Right-click → Save image as",
+       "Photograph the screen with a phone",
+       "Press Ctrl + Z"
+      ],
+      "answer": 0,
+      "explain": "And put it in Pictures."
+     }
+    ]
+   }
+  ]
+ }
+}

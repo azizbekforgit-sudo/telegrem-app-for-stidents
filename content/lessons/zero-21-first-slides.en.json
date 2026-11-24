@@ -1,0 +1,194 @@
+{
+ "title": "Lesson 21. First slides",
+ "description": "Make a PowerPoint presentation: cover, slides, design, slideshow",
+ "questions": [
+  {
+   "type": "match",
+   "topic": "Slides",
+   "prompt": "Match the slide with its content",
+   "pairs": [
+    [
+     "Slide 1",
+     "Cover: topic and name"
+    ],
+    [
+     "Slide 2",
+     "Where it lives"
+    ],
+    [
+     "Slide 3",
+     "What it looks like"
+    ]
+   ],
+   "explain": "Just like the report plan."
+  },
+  {
+   "type": "choice",
+   "topic": "Slides",
+   "prompt": "How do you add a new slide?",
+   "options": [
+    "\"New Slide\" on the Home tab",
+    "Ctrl + Z",
+    "Close PowerPoint",
+    "Press Esc"
+   ],
+   "answer": 0,
+   "explain": "Each new slide is a new page."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Design and slideshow",
+   "prompt": "F5 starts the slideshow.",
+   "answer": true,
+   "explain": "And Esc exits."
+  },
+  {
+   "type": "choice",
+   "topic": "Design and slideshow",
+   "prompt": "Where do you pick a ready background and colours?",
+   "options": [
+    "The Designer tab",
+    "The File tab",
+    "In the Bin",
+    "In Paint"
+   ],
+   "answer": 0,
+   "explain": "Ready outfits for the presentation."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Presentation",
+   "prompt": "Each page of a presentation is called a slide.",
+   "answer": true,
+   "explain": "A slide is a page."
+  },
+  {
+   "type": "order",
+   "topic": "Slides",
+   "prompt": "Put in order how to start a presentation",
+   "tokens": [
+    "Open PowerPoint",
+    "Blank presentation",
+    "Slide title",
+    "Subtitle with your name"
+   ],
+   "extra": [
+    "Esc"
+   ],
+   "explain": "The cover is ready."
+  },
+  {
+   "type": "choice",
+   "topic": "Presentation",
+   "prompt": "Where do we save the presentation?",
+   "options": [
+    "Your folder → Presentations",
+    "Into the Bin",
+    "On a friend's desktop",
+    "Nowhere"
+   ],
+   "answer": 0,
+   "explain": "Create a Presentations folder."
+  },
+  {
+   "type": "fill",
+   "topic": "Slides",
+   "prompt": "Fill in the blank",
+   "text": "The first slide is the ___.",
+   "answer": [
+    "cover"
+   ],
+   "extra": [
+    "end",
+    "bin",
+    "table"
+   ],
+   "explain": "The cover has the topic and name."
+  }
+ ],
+ "learn": {
+  "intro": "A presentation is a picture book on a big screen. Soon you'll show one in class too!",
+  "sections": [
+   {
+    "title": "Presentation",
+    "slides": [
+     {
+      "text": "A **presentation** is like a picture book shown on a big screen while you talk. Each page is a **slide**.",
+      "emoji": "📽️"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Presentation",
+      "prompt": "What is a page of a presentation called?",
+      "options": [
+       "A slide",
+       "A tab",
+       "A folder"
+      ],
+      "answer": 0,
+      "explain": "Each page is a slide."
+     }
+    ]
+   },
+   {
+    "title": "Slides",
+    "slides": [
+     {
+      "text": "PowerPoint → \"Blank presentation\". The first slide is the **cover**: the topic (\"My favourite animal\") and \"By: Aziz, grade 3\".",
+      "emoji": "📘"
+     },
+     {
+      "text": "A new slide — the **\"New Slide\"** button on the Home tab. It has a title on top and text below."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Slides",
+      "prompt": "What goes on the cover?",
+      "options": [
+       "The topic and your name",
+       "A password",
+       "Nothing"
+      ],
+      "answer": 0,
+      "explain": "Cover: topic and author."
+     }
+    ]
+   },
+   {
+    "title": "Design and slideshow",
+    "slides": [
+     {
+      "text": "The **Designer** (or Design) tab has ready outfits for your presentation: backgrounds and colours.",
+      "emoji": "👗"
+     },
+     {
+      "text": "Slideshow — the **F5** key. Flip with the arrows or a click. **Esc** exits.",
+      "emoji": "▶️"
+     }
+    ],
+    "check": [
+     {
+      "type": "fill",
+      "topic": "Design and slideshow",
+      "prompt": "Fill in the blank",
+      "text": "Start the slideshow: ___ key, exit: ___",
+      "answer": [
+       "F5",
+       "Esc"
+      ],
+      "extra": [
+       "Enter",
+       "Shift",
+       "Delete"
+      ],
+      "explain": "F5 show, Esc exit."
+     }
+    ]
+   }
+  ]
+ }
+}

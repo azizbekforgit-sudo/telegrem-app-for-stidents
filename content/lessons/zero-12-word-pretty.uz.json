@@ -1,0 +1,185 @@
+{
+ "title": "12-dars. Chiroyli matn",
+ "description": "Qalin, kursiv, tagiga chizish, markazga tekislash va ro'yxatlar",
+ "questions": [
+  {
+   "type": "match",
+   "topic": "Q, K, T",
+   "prompt": "Tugmani matn ko'rinishi bilan bog'la",
+   "pairs": [
+    [
+     "Qalin",
+     "Yo'g'on harflar"
+    ],
+    [
+     "Kursiv",
+     "Qiya harflar"
+    ],
+    [
+     "Tagiga chizilgan",
+     "So'z ostidagi chiziq"
+    ]
+   ],
+   "explain": "Uchta sehrli tugma."
+  },
+  {
+   "type": "choice",
+   "topic": "Tekislash",
+   "prompt": "Hikoya sarlavhasini qayerga qo'yamiz?",
+   "options": [
+    "Markazga",
+    "Eng pastga",
+    "Savatga",
+    "O'ng burchakka"
+   ],
+   "answer": 0,
+   "explain": "Markazga, katta va qalin."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Ro'yxatlar",
+   "prompt": "Ro'yxatdagi har bir Enter yangi nuqta qo'shadi.",
+   "answer": true,
+   "explain": "Ikki Enter esa — ro'yxat oxiri."
+  },
+  {
+   "type": "choice",
+   "topic": "Ro'yxatlar",
+   "prompt": "Qaysi tugma nuqtali ro'yxat qiladi?",
+   "options": [
+    "Markerlar",
+    "Qalin",
+    "Rang",
+    "O'lcham"
+   ],
+   "answer": 0,
+   "explain": "«Markerlar» — ro'yxat nuqtalari."
+  },
+  {
+   "type": "fill",
+   "topic": "Q, K, T",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "Harflar baqirayotgandek yo'g'on — bu ___.",
+   "answer": [
+    "qalin"
+   ],
+   "extra": [
+    "kursiv",
+    "ro'yxat",
+    "markaz"
+   ],
+   "explain": "Q — qalin."
+  },
+  {
+   "type": "order",
+   "topic": "Tekislash",
+   "prompt": "Sarlavhani bezash tartibini yig'",
+   "tokens": [
+    "Sarlavhani belgilash",
+    "Markazga",
+    "Kattaroq",
+    "Qalin"
+   ],
+   "extra": [
+    "O'chirish"
+   ],
+   "explain": "Avval belgilaymiz, keyin bezaymiz."
+  },
+  {
+   "type": "choice",
+   "topic": "Q, K, T",
+   "prompt": "Gapdagi asosiy so'z bilan odatda nima qilamiz?",
+   "options": [
+    "Qalin yoki kursiv",
+    "O'chiramiz",
+    "Yashiramiz",
+    "Kichik yozamiz"
+   ],
+   "answer": 0,
+   "explain": "Shunda u ko'zga tashlanadi."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Ro'yxatlar",
+   "prompt": "Masalan, hayvon nimani yaxshi ko'rishini sanab o'tganda ro'yxat qulay.",
+   "answer": true,
+   "explain": "Xarid ro'yxati kabi."
+  }
+ ],
+ "learn": {
+  "intro": "Bugun «Mening sevimli hayvonim» hikoyasini yozamiz va uni haqiqiy kitobdagidek bezaymiz!",
+  "sections": [
+   {
+    "title": "Q, K, T",
+    "slides": [
+     {
+      "text": "**Q** — qalin: harflar baqirayotgandek yo'g'on. **K** — kursiv: harflar shamoldan egilgandek. **T** — tagiga chizilgan: so'z ostida chiziq.",
+      "emoji": "🅱️"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Q, K, T",
+      "prompt": "Qaysi tugma harflarni qiya qiladi?",
+      "options": [
+       "Kursiv",
+       "Qalin",
+       "Tagiga chizilgan"
+      ],
+      "answer": 0,
+      "explain": "Kursiv — shamoldan egilgandek."
+     }
+    ]
+   },
+   {
+    "title": "Tekislash",
+    "slides": [
+     {
+      "text": "Sarlavhani kitobdagidek **markazga** qo'yamiz. Uni kattaroq va qalin qilamiz.",
+      "emoji": "🎯"
+     },
+     {
+      "text": "Har bir gapdagi asosiy so'z — qalin yoki kursiv."
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Tekislash",
+      "prompt": "Sarlavha odatda markazga qo'yiladi.",
+      "answer": true,
+      "explain": "Kitobdagidek."
+     }
+    ]
+   },
+   {
+    "title": "Ro'yxatlar",
+    "slides": [
+     {
+      "text": "Sanab o'tganda **nuqtali ro'yxat** qulay — «Markerlar» tugmasi. Xarid ro'yxati kabi.",
+      "emoji": "📋"
+     },
+     {
+      "text": "Har bir Enter — yangi nuqta. Ikki marta Enter — ro'yxat tugadi.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Ro'yxatlar",
+      "prompt": "Ro'yxatni qanday tugatamiz?",
+      "options": [
+       "Enter ni ikki marta bosish",
+       "Backspace bosish",
+       "Word ni yopish"
+      ],
+      "answer": 0,
+      "explain": "Ikki Enter — ro'yxat oxiri."
+     }
+    ]
+   }
+  ]
+ }
+}

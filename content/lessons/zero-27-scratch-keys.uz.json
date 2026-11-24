@@ -1,0 +1,188 @@
+{
+ "title": "27-dars. Klaviatura bilan boshqarish",
+ "description": "16-darsdagi o'z qahramoning va strelkalar bilan boshqarish: x va y",
+ "questions": [
+  {
+   "type": "match",
+   "topic": "x va y",
+   "prompt": "Buyruqni qahramon qayerga yurishi bilan bog'la",
+   "pairs": [
+    [
+     "x ni 10 ga o'zgartir",
+     "O'ngga"
+    ],
+    [
+     "x ni -10 ga o'zgartir",
+     "Chapga"
+    ],
+    [
+     "y ni 10 ga o'zgartir",
+     "Yuqoriga"
+    ],
+    [
+     "y ni -10 ga o'zgartir",
+     "Pastga"
+    ]
+   ],
+   "explain": "x — o'ngga-chapga, y — yuqoriga-pastga."
+  },
+  {
+   "type": "choice",
+   "topic": "x va y",
+   "prompt": "«Chap strelka» ga qaysi buyruqni qo'yamiz?",
+   "options": [
+    "x ni -10 ga o'zgartir",
+    "x ni 10 ga o'zgartir",
+    "y ni 10 ga o'zgartir",
+    "«Salom!» de"
+   ],
+   "answer": 0,
+   "explain": "x bo'yicha minus — chapga."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Hodisalar",
+   "prompt": "O'yinlarda qahramonni odatda o'yinchi boshqaradi.",
+   "answer": true,
+   "explain": "Hodisa bloklari orqali."
+  },
+  {
+   "type": "fill",
+   "topic": "x va y",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "x — o'ngga-___, y — yuqoriga-___.",
+   "answer": [
+    "chapga",
+    "pastga"
+   ],
+   "extra": [
+    "oldinga",
+    "orqaga",
+    "aylanib"
+   ],
+   "explain": "Ekranning ikki o'qi."
+  },
+  {
+   "type": "order",
+   "topic": "O'z qahramoning",
+   "prompt": "O'z qahramoningni yuklash tartibini yig'",
+   "tokens": [
+    "Sprayt tanlash",
+    "Sprayt yuklash",
+    "Rasmlar papkasi",
+    "Mening qahramonim"
+   ],
+   "extra": [
+    "Savat"
+   ],
+   "explain": "16-darsdagi qahramon jonlanadi."
+  },
+  {
+   "type": "choice",
+   "topic": "O'z qahramoning",
+   "prompt": "Qahramon sahnada juda katta. Nima qilamiz?",
+   "options": [
+    "O'lchamni kichikroq qilamiz, masalan 30",
+    "Qahramonni o'chiramiz",
+    "Qaytadan chizamiz",
+    "Hech narsa qilib bo'lmaydi"
+   ],
+   "answer": 0,
+   "explain": "Sahna ostidagi «O'lcham» maydoni."
+  },
+  {
+   "type": "truefalse",
+   "topic": "x va y",
+   "prompt": "y bo'yicha minus qahramonni yuqoriga suradi.",
+   "answer": false,
+   "explain": "y bo'yicha minus — pastga."
+  },
+  {
+   "type": "choice",
+   "topic": "O'z qahramoning",
+   "prompt": "O'yin uchun fonni qayerdan tanlaymiz?",
+   "options": [
+    "O'ng pastdagi «Fon tanlash»",
+    "Word da",
+    "Savatda",
+    "Kalkulyatorda"
+   ],
+   "answer": 0,
+   "explain": "O'rmon, koinot, shahar — xohlaganingni."
+  }
+ ],
+ "learn": {
+  "intro": "O'yinlarda qahramonni o'yinchi boshqaradi! Bugun qahramoning jonlanadi va strelkalarga bo'ysunadi.",
+  "sections": [
+   {
+    "title": "Hodisalar",
+    "slides": [
+     {
+      "text": "**«tugma bosilganda»** hodisa bloklari — «qo'ng'iroq chalinganda — tanaffusga chiqamiz» kabi.",
+      "emoji": "🔔"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Hodisalar",
+      "prompt": "«Tugma bosilganda» bloki nimaga o'xshaydi?",
+      "options": [
+       "Qo'ng'iroq chalinganda — tanaffusga chiqamiz",
+       "Axlat chelagiga",
+       "Daftarga"
+      ],
+      "answer": 0,
+      "explain": "Hodisa harakatni boshlaydi."
+     }
+    ]
+   },
+   {
+    "title": "O'z qahramoning",
+    "slides": [
+     {
+      "text": "Sahna ostida: «Sprayt tanlash» → **«Sprayt yuklash»** → o'z Rasmlar papkang → «Mening qahramonim». Chizgan qahramoningni eslaysanmi? U o'yinda jonlanadi!",
+      "emoji": "🦸"
+     },
+     {
+      "text": "Rasm kattami? Sprayt o'lchamini kichikroq qil, masalan **30**. Fon — «Fon tanlash» (o'rmon, koinot, shahar)."
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "O'z qahramoning",
+      "prompt": "Paint dagi o'z qahramoningni Scratch ga sprayt qilib yuklasa bo'ladi.",
+      "answer": true,
+      "explain": "«Sprayt yuklash» → Rasmlar papkasi."
+     }
+    ]
+   },
+   {
+    "title": "x va y",
+    "slides": [
+     {
+      "text": "**x** — o'ngga-chapga, **y** — yuqoriga-pastga. Plyus — o'ngga yoki yuqoriga, minus — chapga yoki pastga.",
+      "emoji": "➕",
+      "code": "«o'ng strelka» tugmasi bosilganda\nx ni 10 ga o'zgartir\n\n«chap strelka» tugmasi bosilganda\nx ni -10 ga o'zgartir",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "x va y",
+      "prompt": "«y ni 10 ga o'zgartir» nima qiladi?",
+      "options": [
+       "Qahramon yuqoriga yuradi",
+       "Qahramon chapga yuradi",
+       "Hech narsa"
+      ],
+      "answer": 0,
+      "explain": "y — yuqoriga-pastga, plyus — yuqoriga."
+     }
+    ]
+   }
+  ]
+ }
+}

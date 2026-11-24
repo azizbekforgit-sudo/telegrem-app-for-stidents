@@ -1,0 +1,193 @@
+{
+ "title": "Lesson 25. Meet Scratch",
+ "description": "Stage, sprite, blocks and the first program: the cat walks and says \"Hello!\"",
+ "questions": [
+  {
+   "type": "match",
+   "topic": "The Scratch screen",
+   "prompt": "Match the Scratch part with what it is",
+   "pairs": [
+    [
+     "Stage",
+     "Theatre"
+    ],
+    [
+     "Sprite",
+     "Actor"
+    ],
+    [
+     "Blocks",
+     "Commands"
+    ],
+    [
+     "Green flag",
+     "\"Go!\""
+    ]
+   ],
+   "explain": "This is the Scratch screen."
+  },
+  {
+   "type": "choice",
+   "topic": "First program",
+   "prompt": "Which block starts the program?",
+   "options": [
+    "When green flag clicked",
+    "Move 10 steps",
+    "Say \"Hello!\"",
+    "Meow"
+   ],
+   "answer": 0,
+   "explain": "The yellow event block."
+  },
+  {
+   "type": "order",
+   "topic": "First program",
+   "prompt": "Build the first program",
+   "tokens": [
+    "When flag clicked",
+    "Move 10 steps",
+    "Say \"Hello!\""
+   ],
+   "extra": [
+    "Turn off"
+   ],
+   "explain": "Event first, then commands."
+  },
+  {
+   "type": "truefalse",
+   "topic": "The Scratch screen",
+   "prompt": "Blue blocks are for motion.",
+   "answer": true,
+   "explain": "Purple — looks, yellow — events."
+  },
+  {
+   "type": "choice",
+   "topic": "First program",
+   "prompt": "What happens if you swap the blocks?",
+   "options": [
+    "The cat does it in another order",
+    "Nothing changes",
+    "The computer turns off",
+    "The cat vanishes"
+   ],
+   "answer": 0,
+   "explain": "A program is commands in order."
+  },
+  {
+   "type": "fill",
+   "topic": "Experiments",
+   "prompt": "Fill in the blank",
+   "text": "The cat plays the \"___\" sound.",
+   "answer": [
+    "meow"
+   ],
+   "extra": [
+    "woof",
+    "beep",
+    "cuckoo"
+   ],
+   "explain": "Sounds are pink blocks."
+  },
+  {
+   "type": "choice",
+   "topic": "Experiments",
+   "prompt": "The cat ran off the stage edge. What now?",
+   "options": [
+    "Drag it back with the mouse",
+    "Delete Scratch",
+    "Turn off the computer",
+    "Wait for it to come back"
+   ],
+   "answer": 0,
+   "explain": "You can move a sprite with the mouse."
+  },
+  {
+   "type": "truefalse",
+   "topic": "First program",
+   "prompt": "Blocks must snap under each other with a \"click\".",
+   "answer": true,
+   "explain": "Otherwise the program won't join up."
+  }
+ ],
+ "learn": {
+  "intro": "In Scratch, commands are coloured blocks like construction pieces. The main hero is a cat!",
+  "sections": [
+   {
+    "title": "The Scratch screen",
+    "slides": [
+     {
+      "text": "The **stage** (top right) is the theatre where the hero performs. The **sprite** (the cat) is the actor. **Blocks** (left) are commands of different colours. The middle is the program area.",
+      "emoji": "🎭"
+     },
+     {
+      "text": "Blue blocks — motion, purple — looks, yellow — events. The **green flag** is the \"Go!\" button.",
+      "emoji": "🚩"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "The Scratch screen",
+      "prompt": "What is a sprite?",
+      "options": [
+       "The hero — the actor",
+       "The power button",
+       "The stage background"
+      ],
+      "answer": 0,
+      "explain": "The cat is a sprite."
+     }
+    ]
+   },
+   {
+    "title": "First program",
+    "slides": [
+     {
+      "text": "Drag blocks to the middle and snap them under each other — you should hear a \"click\".",
+      "emoji": "🧩",
+      "code": "when green flag clicked\nmove 10 steps\nsay \"Hello!\" for 2 seconds"
+     },
+     {
+      "text": "Click the green flag — the cat moves and talks! You wrote your first program: the computer followed the commands in order.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "First program",
+      "prompt": "A Scratch program starts with the green flag.",
+      "answer": true,
+      "explain": "It is the \"Go!\" button."
+     }
+    ]
+   },
+   {
+    "title": "Experiments",
+    "slides": [
+     {
+      "text": "Change it: 10 steps → 100 steps; \"Hello!\" → your name; add \"turn 15 degrees\" and the \"meow\" sound.",
+      "emoji": "🔬"
+     },
+     {
+      "text": "Did the cat run off the edge? Drag it back onto the stage. Save: File → Save to your computer → the Games folder → \"First program\"."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Experiments",
+      "prompt": "What changes if 10 steps becomes 100?",
+      "options": [
+       "The cat goes further",
+       "The cat goes quiet",
+       "Nothing"
+      ],
+      "answer": 0,
+      "explain": "More steps — further."
+     }
+    ]
+   }
+  ]
+ }
+}

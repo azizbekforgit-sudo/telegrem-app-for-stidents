@@ -1,0 +1,194 @@
+{
+ "title": "Lesson 8. Save and find",
+ "description": "Save a file into your folder, close it and find it again",
+ "questions": [
+  {
+   "type": "order",
+   "topic": "Save As",
+   "prompt": "Put the saving steps in order",
+   "tokens": [
+    "File",
+    "Save As",
+    "Choose the folder",
+    "File name",
+    "Save"
+   ],
+   "extra": [
+    "Shut down"
+   ],
+   "explain": "First where, then the name, then Save."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Why save",
+   "prompt": "Notepad text saves itself even if you close without saving.",
+   "answer": false,
+   "explain": "You must save, or the text is lost."
+  },
+  {
+   "type": "choice",
+   "topic": "Find and Ctrl + S",
+   "prompt": "What does Ctrl + S do?",
+   "options": [
+    "Saves quickly",
+    "Deletes the file",
+    "Turns off the computer",
+    "Copies"
+   ],
+   "answer": 0,
+   "explain": "S — save."
+  },
+  {
+   "type": "choice",
+   "topic": "Save As",
+   "prompt": "Where do you type the file name when saving?",
+   "options": [
+    "In the \"File name\" box at the bottom",
+    "On the desktop",
+    "In the Recycle Bin",
+    "Nowhere"
+   ],
+   "answer": 0,
+   "explain": "The \"File name\" box at the bottom of the window."
+  },
+  {
+   "type": "match",
+   "topic": "Why save",
+   "prompt": "Match the picture with the meaning",
+   "pairs": [
+    [
+     "Chalk on a board",
+     "Unsaved text"
+    ],
+    [
+     "Notebook in the schoolbag",
+     "Saved file"
+    ],
+    [
+     "Wiped board",
+     "Closed without saving"
+    ]
+   ],
+   "explain": "Saving = putting the notebook in the schoolbag."
+  },
+  {
+   "type": "choice",
+   "topic": "Find and Ctrl + S",
+   "prompt": "How do you open a saved file again?",
+   "options": [
+    "File Explorer → your folder → double-click",
+    "Press Caps Lock",
+    "Turn off the computer",
+    "Open the Calculator"
+   ],
+   "answer": 0,
+   "explain": "Find the folder and double-click the file."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Find and Ctrl + S",
+   "prompt": "After Ctrl + S you don't need to choose the folder again.",
+   "answer": true,
+   "explain": "The computer already knows where the file is."
+  },
+  {
+   "type": "choice",
+   "topic": "Why save",
+   "prompt": "What do we do if we closed without saving by accident?",
+   "options": [
+    "Type again and save",
+    "Cry",
+    "Break the computer",
+    "Never use the computer again"
+   ],
+   "answer": 0,
+   "explain": "No worries — it teaches why saving matters."
+  }
+ ],
+ "learn": {
+  "intro": "The most important lesson of the course! We learn to save and find our work — grown-ups often can't.",
+  "sections": [
+   {
+    "title": "Why save",
+    "slides": [
+     {
+      "text": "While you type in Notepad, the text only lives on the screen — like chalk on a board. Close the program — the board is wiped.",
+      "emoji": "🧽"
+     },
+     {
+      "text": "To keep the text forever you **save** it — put the notebook in the schoolbag."
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Why save",
+      "prompt": "If you close Notepad without saving, the text is lost.",
+      "answer": true,
+      "explain": "The board was wiped — no text."
+     }
+    ]
+   },
+   {
+    "title": "Save As",
+    "slides": [
+     {
+      "text": "Menu **File → Save As**. A window opens. The key thing is to look **where** we save: Documents → your folder.",
+      "emoji": "📍"
+     },
+     {
+      "text": "At the bottom is the \"File name\" box — type, for example, **My games**, and press **Save**."
+     },
+     {
+      "text": "The main question: **where am I saving?** If you don't know — you won't find it later.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Save As",
+      "prompt": "What is the main question when saving?",
+      "options": [
+       "Where am I saving?",
+       "What colour is the window?",
+       "What time is it?"
+      ],
+      "answer": 0,
+      "explain": "Otherwise you won't find the file later."
+     }
+    ]
+   },
+   {
+    "title": "Find and Ctrl + S",
+    "slides": [
+     {
+      "text": "The \"Find your notebook\" game: close Notepad → File Explorer → Documents → your folder → double-click the file. Hooray, the notebook is there!",
+      "emoji": "🔎"
+     },
+     {
+      "text": "Added more? Press **Ctrl + S** — quick save. No need to pick a folder: the computer already knows where the file is.",
+      "emoji": "⚡"
+     }
+    ],
+    "check": [
+     {
+      "type": "fill",
+      "topic": "Find and Ctrl + S",
+      "prompt": "Fill in the blank",
+      "text": "Quick save: Ctrl + ___",
+      "answer": [
+       "S"
+      ],
+      "extra": [
+       "Z",
+       "C",
+       "V"
+      ],
+      "explain": "S — save."
+     }
+    ]
+   }
+  ]
+ }
+}

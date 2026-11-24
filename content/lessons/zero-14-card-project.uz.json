@@ -1,0 +1,186 @@
+{
+ "title": "14-dars. Loyiha: otkritka",
+ "description": "Word da otkritkani o'zimiz yasaymiz: sarlavha, rasm, tabrik, imzo",
+ "questions": [
+  {
+   "type": "choice",
+   "topic": "Otkritka rejasi",
+   "prompt": "Otkritka sarlavhasini qanday qilamiz?",
+   "options": [
+    "Katta, markazda, rangli",
+    "Kichik va kulrang",
+    "Sarlavhasiz",
+    "Eng pastda"
+   ],
+   "answer": 0,
+   "explain": "Sarlavha — birinchi ko'riladigan narsa."
+  },
+  {
+   "type": "choice",
+   "topic": "Otkritka yasaymiz",
+   "prompt": "Otkritka oxirida nima yozamiz?",
+   "options": [
+    "Imzo",
+    "Sarlavha",
+    "Sayt manzili",
+    "Parol"
+   ],
+   "answer": 0,
+   "explain": "Masalan: «Azizdan»."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Bezaymiz va saqlaymiz",
+   "prompt": "Otkritkani o'z Word papkangga saqlash kerak.",
+   "answer": true,
+   "explain": "Eslaymiz: qayerga saqlaymiz?"
+  },
+  {
+   "type": "order",
+   "topic": "Bezaymiz va saqlaymiz",
+   "prompt": "Otkritkani chop etish tartibini yig'",
+   "tokens": [
+    "Fayl",
+    "Chop etish",
+    "«Chop etish» tugmasi"
+   ],
+   "extra": [
+    "O'chirish"
+   ],
+   "explain": "Fayl → Chop etish → Chop etish."
+  },
+  {
+   "type": "match",
+   "topic": "Otkritka rejasi",
+   "prompt": "Otkritka qismini ichidagisi bilan bog'la",
+   "pairs": [
+    [
+     "Sarlavha",
+     "«Tug'ilgan kuning bilan!»"
+    ],
+    [
+     "Tabrik",
+     "2–3 iliq gap"
+    ],
+    [
+     "Imzo",
+     "«Azizdan»"
+    ]
+   ],
+   "explain": "Har bir qism o'z joyida."
+  },
+  {
+   "type": "choice",
+   "topic": "Otkritka yasaymiz",
+   "prompt": "Otkritka uchun rasmni qayerdan olamiz?",
+   "options": [
+    "O'z Rasmlar papkamizdan",
+    "Ekranga barmoq bilan chizamiz",
+    "Savatdan",
+    "Uni qo'shib bo'lmaydi"
+   ],
+   "answer": 0,
+   "explain": "Qo'yish → Rasmlar → o'z papkang."
+  },
+  {
+   "type": "fill",
+   "topic": "Bezaymiz va saqlaymiz",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "Sahifa ramkasi: «___» yorlig'i → «Sahifa chegaralari».",
+   "answer": [
+    "Dizayn"
+   ],
+   "extra": [
+    "Qo'yish",
+    "Bosh sahifa",
+    "Fayl"
+   ],
+   "explain": "Dizayn → Sahifa chegaralari."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Otkritka rejasi",
+   "prompt": "Tabrikda 2–3 gap bor.",
+   "answer": true,
+   "explain": "Qisqa va iliq."
+  }
+ ],
+ "learn": {
+  "intro": "Bugun haqiqiy otkritka yasaysan! Kimga sovg'a qilasan — onangga, otangga, buvingga, do'stingga?",
+  "sections": [
+   {
+    "title": "Otkritka rejasi",
+    "slides": [
+     {
+      "text": "Sababini o'ylaymiz: tug'ilgan kun, «rahmat», bayram, «seni yaxshi ko'raman».",
+      "emoji": "🎉"
+     },
+     {
+      "text": "Reja: **sarlavha** (katta, markazda) → **rasm** → **tabrik** 2–3 gap → **imzo**.",
+      "emoji": "🗒️"
+     }
+    ],
+    "check": [
+     {
+      "type": "order",
+      "topic": "Otkritka rejasi",
+      "prompt": "Otkritka rejasini yuqoridan pastga yig'",
+      "tokens": [
+       "Sarlavha",
+       "Rasm",
+       "Tabrik",
+       "Imzo"
+      ],
+      "extra": [],
+      "explain": "Shunda otkritka chiroyli va tushunarli."
+     }
+    ]
+   },
+   {
+    "title": "Otkritka yasaymiz",
+    "slides": [
+     {
+      "text": "O'zing qilasan, o'qituvchi faqat maslahat beradi: yangi hujjat, sarlavha katta markazda va rangli, Rasmlar papkasidan rasm, tabrik va «Azizdan» imzosi.",
+      "emoji": "🖌️"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Otkritka yasaymiz",
+      "prompt": "Otkritkani o'quvchi o'zi yasaydi, o'qituvchi faqat maslahat beradi.",
+      "answer": true,
+      "explain": "Bu sening birinchi to'liq mustaqil ishing."
+     }
+    ]
+   },
+   {
+    "title": "Bezaymiz va saqlaymiz",
+    "slides": [
+     {
+      "text": "G'oyalar: ramka («Dizayn» yorlig'i → «Sahifa chegaralari»), sahifa rangi, smayliklar, turli shriftlar.",
+      "emoji": "🌈"
+     },
+     {
+      "text": "Saqlaymiz: «Onam uchun otkritka» Word papkasiga. Printer bormi? Fayl → Chop etish → Chop etish.",
+      "emoji": "🖨️"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Bezaymiz va saqlaymiz",
+      "prompt": "Word da sahifa ramkasini qayerdan topamiz?",
+      "options": [
+       "Dizayn → Sahifa chegaralari",
+       "Fayl → Yopish",
+       "Qo'yish → Jadval"
+      ],
+      "answer": 0,
+      "explain": "Ramka — «Sahifa chegaralari»."
+     }
+    ]
+   }
+  ]
+ }
+}

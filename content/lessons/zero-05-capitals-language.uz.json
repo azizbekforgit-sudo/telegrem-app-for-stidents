@@ -1,0 +1,187 @@
+{
+ "title": "5-dars. Katta harflar va tilni almashtirish",
+ "description": "Shift, tinish belgilari, Caps Lock va uchta til",
+ "questions": [
+  {
+   "type": "choice",
+   "topic": "Shift",
+   "prompt": "Katta harflar uchun kuchli tugma nima deyiladi?",
+   "options": [
+    "Shift",
+    "Enter",
+    "Backspace",
+    "Probel"
+   ],
+   "answer": 0,
+   "explain": "Shift ushlab turganingda harfni katta qiladi."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Belgilar va Caps Lock",
+   "prompt": "Caps Lock katta harflarni yoqadi va uni o'chirmaguncha ular katta qoladi.",
+   "answer": true,
+   "explain": "Bu «baqiriq» — qayta bosib o'chiramiz."
+  },
+  {
+   "type": "fill",
+   "topic": "Belgilar va Caps Lock",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "«!» olish uchun Shift + ___ bosamiz.",
+   "answer": [
+    "1"
+   ],
+   "extra": [
+    "2",
+    "0",
+    "Enter"
+   ],
+   "explain": "Shift + 1 = !"
+  },
+  {
+   "type": "choice",
+   "topic": "Tillar",
+   "prompt": "Tilni odatda qaysi birikma bilan almashtiramiz?",
+   "options": [
+    "Alt + Shift",
+    "Ctrl + S",
+    "Enter + Backspace",
+    "Shift + 1"
+   ],
+   "answer": 0,
+   "explain": "Win + Probel ham bo'ladi."
+  },
+  {
+   "type": "choice",
+   "topic": "Shift",
+   "prompt": "Gapni qanday to'g'ri boshlaymiz?",
+   "options": [
+    "Katta harf bilan",
+    "Raqam bilan",
+    "Probel bilan",
+    "Nuqta bilan"
+   ],
+   "answer": 0,
+   "explain": "Daftardagidek — katta harf bilan."
+  },
+  {
+   "type": "order",
+   "topic": "Shift",
+   "prompt": "O'zing haqingda gap yig'",
+   "tokens": [
+    "Mening",
+    "ismim",
+    "Aziz."
+   ],
+   "extra": [
+    "probel"
+   ],
+   "explain": "Katta harf bilan va oxirida nuqta."
+  },
+  {
+   "type": "match",
+   "topic": "Tillar",
+   "prompt": "So'zni til bilan bog'la",
+   "pairs": [
+    [
+     "Привет!",
+     "Rus tili"
+    ],
+    [
+     "Hello!",
+     "Ingliz tili"
+    ],
+    [
+     "Salom!",
+     "O'zbek tili"
+    ]
+   ],
+   "explain": "Uch til — uch salom."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Shift",
+   "prompt": "Shift ni qo'yib yuborsang, harflar yana kichik bo'ladi.",
+   "answer": true,
+   "explain": "Shift faqat ushlab turilganda ishlaydi."
+  }
+ ],
+ "learn": {
+  "intro": "Gapni katta harf bilan yozamiz! Bugun kuchli tugmani bilib olamiz va turli tillarda yozishni o'rganamiz.",
+  "sections": [
+   {
+    "title": "Shift",
+    "slides": [
+     {
+      "text": "**Shift** — kuchli tugma. Uni ushlasang — harf katta bo'ladi. Qo'yib yuborsang — yana kichik.",
+      "emoji": "💪"
+     },
+     {
+      "text": "Ikkala tugma birga — pianinodagi akkord kabi: Shift + harf."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Shift",
+      "prompt": "Katta harfni qanday yozamiz?",
+      "options": [
+       "Shift + harf",
+       "Enter + harf",
+       "Harfni ikki marta"
+      ],
+      "answer": 0,
+      "explain": "Shift ni ushlab, harfni bosamiz."
+     }
+    ]
+   },
+   {
+    "title": "Belgilar va Caps Lock",
+    "slides": [
+     {
+      "text": "Shift + 1 raqami **!** beradi. Klaviaturada nuqta, vergul va savol belgisi **?** ham bor.",
+      "emoji": "❗"
+     },
+     {
+      "text": "**Caps Lock** KATTA harflarni doimga yoqadi — bu baqirgandek. Yana bosdingmi — o'chdi. Agar birdan hamma harflar katta bo'lsa — Caps Lock ni tekshir!",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Belgilar va Caps Lock",
+      "prompt": "Agar hamma harflar birdan katta bo'lib qolsa, ehtimol Caps Lock yoqilgan.",
+      "answer": true,
+      "explain": "O'chirish uchun Caps Lock ni yana bos."
+     }
+    ]
+   },
+   {
+    "title": "Tillar",
+    "slides": [
+     {
+      "text": "Kompyuter ko'p tillarni biladi. O'ng pastda **РУС** yoki **ENG** harflari ko'rinadi — bu hozir yozayotgan til.",
+      "emoji": "🌍"
+     },
+     {
+      "text": "Tilni almashtiramiz: **Alt + Shift** yoki **Win + Probel**. Yozamiz: Привет! → Hello! → Salom!"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Tillar",
+      "prompt": "Qaysi tilda yozayotganimiz qayerda ko'rinadi?",
+      "options": [
+       "O'ng pastda",
+       "Chap tepada",
+       "Hech qayerda"
+      ],
+      "answer": 0,
+      "explain": "U yerda РУС yoki ENG yozilgan."
+     }
+    ]
+   }
+  ]
+ }
+}

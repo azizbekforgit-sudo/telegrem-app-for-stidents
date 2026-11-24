@@ -1,0 +1,185 @@
+{
+ "title": "Lesson 9. Tidy folders",
+ "description": "Folders inside folders, renaming, moving and copying files",
+ "questions": [
+  {
+   "type": "match",
+   "topic": "Rename and move",
+   "prompt": "Match the action with its meaning",
+   "pairs": [
+    [
+     "Move",
+     "Carry to another pocket"
+    ],
+    [
+     "Copy",
+     "Make a photocopy"
+    ],
+    [
+     "Rename",
+     "Give a new name"
+    ]
+   ],
+   "explain": "Three main file actions."
+  },
+  {
+   "type": "order",
+   "topic": "Copy",
+   "prompt": "Put the copying steps in order",
+   "tokens": [
+    "Right-click",
+    "Copy",
+    "Another folder",
+    "Paste"
+   ],
+   "extra": [
+    "Delete"
+   ],
+   "explain": "Copy → go in → Paste."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Copy",
+   "prompt": "After copying, the file is in both the old and new places.",
+   "answer": true,
+   "explain": "It is a photocopy."
+  },
+  {
+   "type": "choice",
+   "topic": "Rename and move",
+   "prompt": "Easiest way to move a file into a folder?",
+   "options": [
+    "Drag it with the mouse",
+    "Press Caps Lock",
+    "Turn off the computer",
+    "Turn the wheel"
+   ],
+   "answer": 0,
+   "explain": "Press, hold, drag to the folder, release."
+  },
+  {
+   "type": "choice",
+   "topic": "Folders in folders",
+   "prompt": "Where does the cat picture go when tidying?",
+   "options": [
+    "Into Pictures",
+    "Into Texts",
+    "Into Games",
+    "Into the Bin"
+   ],
+   "answer": 0,
+   "explain": "Pictures go into Pictures."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Folders in folders",
+   "prompt": "You can spot a picture by its icon — it looks like a picture.",
+   "answer": true,
+   "explain": "A tip from the \"Sort into drawers\" quest."
+  },
+  {
+   "type": "fill",
+   "topic": "Rename and move",
+   "prompt": "Fill in the blank",
+   "text": "To change a file's name: right-click → ___ → Enter.",
+   "answer": [
+    "Rename"
+   ],
+   "extra": [
+    "Paste",
+    "Copy",
+    "Open"
+   ],
+   "explain": "Rename gives a new name."
+  },
+  {
+   "type": "choice",
+   "topic": "Folders in folders",
+   "prompt": "What do we do with the empty \"Mess\" folder at the end?",
+   "options": [
+    "Delete it",
+    "Copy it",
+    "Rename it Games",
+    "Keep it forever"
+   ],
+   "answer": 0,
+   "explain": "An empty folder isn't needed."
+  }
+ ],
+ "learn": {
+  "intro": "A schoolbag has pockets — so does a folder! Today we tidy up like real pros.",
+  "sections": [
+   {
+    "title": "Folders in folders",
+    "slides": [
+     {
+      "text": "A schoolbag has pockets for notebooks, pens, food. A folder can have **smaller folders** too. We make: Texts, Pictures, Games.",
+      "emoji": "🎒"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Folders in folders",
+      "prompt": "You can make folders inside a folder.",
+      "answer": true,
+      "explain": "Like pockets in a schoolbag."
+     }
+    ]
+   },
+   {
+    "title": "Rename and move",
+    "slides": [
+     {
+      "text": "**Rename**: right-click the file → Rename → new name → Enter.",
+      "emoji": "✏️"
+     },
+     {
+      "text": "**Move**: drag the file into another folder with the mouse. Like moving a notebook to another pocket — it is no longer in the old place.",
+      "emoji": "🚚"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Rename and move",
+      "prompt": "After moving, is the file still in the old place?",
+      "options": [
+       "No",
+       "Yes"
+      ],
+      "answer": 0,
+      "explain": "Moving takes it away from the old place."
+     }
+    ]
+   },
+   {
+    "title": "Copy",
+    "slides": [
+     {
+      "text": "**Copy**: right-click → Copy → go to another folder → right-click → **Paste**.",
+      "emoji": "📋"
+     },
+     {
+      "text": "Copying is like a photocopy: the notebook stays, and an identical one appears in the new place.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Copy",
+      "prompt": "How is copying different from moving?",
+      "options": [
+       "The original stays in place",
+       "The file disappears",
+       "No difference"
+      ],
+      "answer": 0,
+      "explain": "A copy is a photocopy; the original stays."
+     }
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,188 @@
+{
+ "title": "Lesson 30. Final project",
+ "description": "Finish your game and show it to your parents",
+ "questions": [
+  {
+   "type": "order",
+   "topic": "Talking about the game",
+   "prompt": "Put the game talk in order",
+   "tokens": [
+    "Name and hero",
+    "How to play",
+    "How it works"
+   ],
+   "extra": [
+    "Password"
+   ],
+   "explain": "Clear to any audience."
+  },
+  {
+   "type": "match",
+   "topic": "Talking about the game",
+   "prompt": "Match the game part with what it does",
+   "pairs": [
+    [
+     "If — then",
+     "Checks touching the apple"
+    ],
+    [
+     "The \"Score\" variable",
+     "Counts points"
+    ],
+    [
+     "Arrow keys",
+     "Control the hero"
+    ]
+   ],
+   "explain": "The whole game from the course."
+  },
+  {
+   "type": "choice",
+   "topic": "Improving the game",
+   "prompt": "Which improvement can you add?",
+   "options": [
+    "A second level",
+    "Delete the hero",
+    "Mute forever",
+    "Remove all blocks"
+   ],
+   "answer": 0,
+   "explain": "Also: music, rules, an enemy, a title."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Showcase and summary",
+   "prompt": "After the course you not only play games, you create them.",
+   "answer": true,
+   "explain": "The main result of the course."
+  },
+  {
+   "type": "choice",
+   "topic": "Showcase and summary",
+   "prompt": "What comes next after the course?",
+   "options": [
+    "Bigger Scratch projects, then HTML and CSS",
+    "Never touch a computer again",
+    "Only watch cartoons",
+    "Delete all your work"
+   ],
+   "answer": 0,
+   "explain": "Mazes, races, quizzes — and the web."
+  },
+  {
+   "type": "fill",
+   "topic": "Improving the game",
+   "prompt": "Fill in the blank",
+   "text": "The rules sign: \"Collect ___ apples!\"",
+   "answer": [
+    "10"
+   ],
+   "extra": [
+    "0",
+    "1000",
+    "-5"
+   ],
+   "explain": "Like our game — up to 10 points."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Improving the game",
+   "prompt": "In the final project the teacher does everything for the student.",
+   "answer": false,
+   "explain": "The teacher hints; the student holds the mouse."
+  },
+  {
+   "type": "choice",
+   "topic": "Talking about the game",
+   "prompt": "How do you explain what counts the points?",
+   "options": [
+    "It's a variable",
+    "It's a costume",
+    "It's the backdrop",
+    "It's the green flag"
+   ],
+   "answer": 0,
+   "explain": "A variable is a box with a number."
+  }
+ ],
+ "learn": {
+  "intro": "The last lesson of the course! You went from \"what is a folder\" to your very own game!",
+  "sections": [
+   {
+    "title": "Improving the game",
+    "slides": [
+     {
+      "text": "Pick 2–3 improvements: background and music; a rules sign (\"Collect 10 apples!\"); a second level; an enemy; your game title on the stage.",
+      "emoji": "🛠️"
+     },
+     {
+      "text": "The teacher only gives hints — **you hold the mouse**.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Improving the game",
+      "prompt": "Who holds the mouse while finishing the game?",
+      "options": [
+       "The student",
+       "The teacher",
+       "The parents"
+      ],
+      "answer": 0,
+      "explain": "The main rule of the course."
+     }
+    ]
+   },
+   {
+    "title": "Talking about the game",
+    "slides": [
+     {
+      "text": "Prepare a talk: 1) the game name and hero; 2) how to play — which keys and what goal; 3) how it works.",
+      "emoji": "🎙️"
+     },
+     {
+      "text": "\"Here is the **if — then** block — it checks whether the hero touched the apple. And here is the **variable** — it counts points.\""
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Talking about the game",
+      "prompt": "In the game talk we explain how it works inside.",
+      "answer": true,
+      "explain": "The condition and the variable."
+     }
+    ]
+   },
+   {
+    "title": "Showcase and summary",
+    "slides": [
+     {
+      "text": "Show your parents: talk about the game, let them play, and show your folder with all your course work: texts, the card, drawings, the presentation, games.",
+      "emoji": "👨‍👩‍👧"
+     },
+     {
+      "text": "You learned to use a computer and made your first game. Now you don't just play games — **you create them!**",
+      "emoji": "🎓"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Showcase and summary",
+      "prompt": "Besides the game, what do we show parents?",
+      "options": [
+       "Your folder with all your work",
+       "The Recycle Bin",
+       "Passwords"
+      ],
+      "answer": 0,
+      "explain": "Texts, card, drawings, presentation, games."
+     }
+    ]
+   }
+  ]
+ }
+}

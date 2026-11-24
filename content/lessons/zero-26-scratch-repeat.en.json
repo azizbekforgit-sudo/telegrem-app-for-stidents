@@ -1,0 +1,185 @@
+{
+ "title": "Lesson 26. Motion and repeat",
+ "description": "The repeat block, changing costumes and a walking cat",
+ "questions": [
+  {
+   "type": "order",
+   "topic": "Costumes",
+   "prompt": "Build the walking cat program",
+   "tokens": [
+    "When flag clicked",
+    "Repeat 10",
+    "Move 10 steps",
+    "Next costume",
+    "Wait 0.2 seconds"
+   ],
+   "extra": [],
+   "explain": "Inside repeat: step, costume, wait."
+  },
+  {
+   "type": "choice",
+   "topic": "The repeat block",
+   "prompt": "Why add \"wait 0.2 seconds\"?",
+   "options": [
+    "So the cat walks smoothly",
+    "So the cat sleeps",
+    "To mute the sound",
+    "For no reason"
+   ],
+   "answer": 0,
+   "explain": "It moves a bit and waits."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Forever",
+   "prompt": "The forever block runs without stopping.",
+   "answer": true,
+   "explain": "So we need \"bounce off the edge\"."
+  },
+  {
+   "type": "match",
+   "topic": "Forever",
+   "prompt": "Match the block with what it does",
+   "pairs": [
+    [
+     "Repeat 10",
+     "Repeats 10 times"
+    ],
+    [
+     "Next costume",
+     "Changes the hero's picture"
+    ],
+    [
+     "If on edge, bounce",
+     "Turns back at the edge"
+    ]
+   ],
+   "explain": "The walking cat's three blocks."
+  },
+  {
+   "type": "choice",
+   "topic": "Costumes",
+   "prompt": "Where do you change the hero's pictures?",
+   "options": [
+    "On the Costumes tab",
+    "In the Bin",
+    "In Word",
+    "In the browser"
+   ],
+   "answer": 0,
+   "explain": "Costumes are the sprite's pictures."
+  },
+  {
+   "type": "fill",
+   "topic": "The repeat block",
+   "prompt": "Fill in the blank",
+   "text": "The \"___\" block is like a bracket: everything inside repeats.",
+   "answer": [
+    "repeat"
+   ],
+   "extra": [
+    "say",
+    "wait",
+    "meow"
+   ],
+   "explain": "Repeat saves blocks."
+  },
+  {
+   "type": "choice",
+   "topic": "Forever",
+   "prompt": "How do you stop the cat walking upside down?",
+   "options": [
+    "Rotation style \"left-right\"",
+    "Delete the cat",
+    "Mute the sound",
+    "Press F5"
+   ],
+   "answer": 0,
+   "explain": "The cat only flips left and right."
+  },
+  {
+   "type": "truefalse",
+   "topic": "The repeat block",
+   "prompt": "Ten identical blocks are better than one repeat block.",
+   "answer": false,
+   "explain": "Repeat is shorter and handier."
+  }
+ ],
+ "learn": {
+  "intro": "Programmers are lazy — in a good way! Today we meet a block that repeats for us.",
+  "sections": [
+   {
+    "title": "The repeat block",
+    "slides": [
+     {
+      "text": "To walk 10 steps 10 times you don't need 10 identical blocks. There is a **repeat** block — like a bracket: everything inside repeats.",
+      "emoji": "🔁"
+     },
+     {
+      "text": "Like squats in PE: \"repeat 10 times — squat\". Add \"wait 0.2 seconds\" — the cat walks smoothly instead of jumping.",
+      "emoji": "🏃"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "The repeat block",
+      "prompt": "Why do we need the repeat block?",
+      "options": [
+       "To avoid lots of identical blocks",
+       "To turn off the computer",
+       "To draw"
+      ],
+      "answer": 0,
+      "explain": "Everything inside repeats itself."
+     }
+    ]
+   },
+   {
+    "title": "Costumes",
+    "slides": [
+     {
+      "text": "The **Costumes** tab: the cat has two costumes — two pictures with legs in different positions. Switch them fast and it looks like walking. That is how cartoons are made!",
+      "emoji": "🎬",
+      "code": "when green flag clicked\nrepeat 10\n    move 10 steps\n    next costume\n    wait 0.2 seconds"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Costumes",
+      "prompt": "Switching costumes fast makes the cat look like it walks.",
+      "answer": true,
+      "explain": "That's how cartoons work."
+     }
+    ]
+   },
+   {
+    "title": "Forever",
+    "slides": [
+     {
+      "text": "\"Repeat 10\" → **\"forever\"**. The cat walks off the edge → add **\"if on edge, bounce\"**. Now it walks back and forth.",
+      "emoji": "↔️"
+     },
+     {
+      "text": "So the cat doesn't walk upside down — the block \"set rotation style: left-right\"."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Forever",
+      "prompt": "Which block keeps the cat from leaving the edge?",
+      "options": [
+       "If on edge, bounce",
+       "Say \"Hello!\"",
+       "Next costume"
+      ],
+      "answer": 0,
+      "explain": "The cat bounces back."
+     }
+    ]
+   }
+  ]
+ }
+}

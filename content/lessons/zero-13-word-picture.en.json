@@ -1,0 +1,186 @@
+{
+ "title": "Lesson 13. A picture in the text",
+ "description": "Insert a picture, change its size and place it beside the text",
+ "questions": [
+  {
+   "type": "order",
+   "topic": "Inserting a picture",
+   "prompt": "Put the insert-picture steps in order",
+   "tokens": [
+    "Insert",
+    "Pictures",
+    "This device",
+    "Your folder",
+    "Insert button"
+   ],
+   "extra": [
+    "Delete"
+   ],
+   "explain": "Insert → Pictures → This device → folder → Insert."
+  },
+  {
+   "type": "choice",
+   "topic": "Picture size",
+   "prompt": "Which circle do you drag so the picture doesn't get fat?",
+   "options": [
+    "A corner one",
+    "A side one",
+    "Any one",
+    "None"
+   ],
+   "answer": 0,
+   "explain": "A corner shrinks evenly."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Inserting a picture",
+   "prompt": "Before inserting, put the cursor where the picture goes.",
+   "answer": true,
+   "explain": "The cursor marks the spot."
+  },
+  {
+   "type": "choice",
+   "topic": "Text wrapping",
+   "prompt": "What does \"Square\" wrapping do?",
+   "options": [
+    "Text flows around the picture",
+    "Deletes the picture",
+    "Changes text colour",
+    "Saves the file"
+   ],
+   "answer": 0,
+   "explain": "The picture moves, text flows around."
+  },
+  {
+   "type": "fill",
+   "topic": "Inserting a picture",
+   "prompt": "Fill in the blank",
+   "text": "Pictures are inserted via the ___ tab → Pictures.",
+   "answer": [
+    "Insert"
+   ],
+   "extra": [
+    "Home",
+    "File",
+    "View"
+   ],
+   "explain": "Insert → Pictures."
+  },
+  {
+   "type": "match",
+   "topic": "Picture size",
+   "prompt": "Match the action with the result",
+   "pairs": [
+    [
+     "Drag a corner",
+     "Picture shrinks evenly"
+    ],
+    [
+     "Drag a side",
+     "The animal gets fat"
+    ],
+    [
+     "Choose \"Square\"",
+     "Text flows around it"
+    ]
+   ],
+   "explain": "Corner — even; side — distorts."
+  },
+  {
+   "type": "choice",
+   "topic": "Inserting a picture",
+   "prompt": "Where do we take the picture for the story?",
+   "options": [
+    "From your Pictures folder",
+    "From the Bin",
+    "From the Calculator",
+    "Nowhere"
+   ],
+   "answer": 0,
+   "explain": "Pictures live in the Pictures folder."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Picture size",
+   "prompt": "Dragging a side circle can squash the picture.",
+   "answer": true,
+   "explain": "That's why we drag a corner."
+  }
+ ],
+ "learn": {
+  "intro": "Text without a picture is like a book without illustrations. Boring! Let's add a picture.",
+  "sections": [
+   {
+    "title": "Inserting a picture",
+    "slides": [
+     {
+      "text": "Put the cursor where the picture goes → the **Insert** tab → **Pictures** → **This device** → your Pictures folder → choose → **Insert**.",
+      "emoji": "📥"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Inserting a picture",
+      "prompt": "Which tab do you insert a picture from?",
+      "options": [
+       "Insert",
+       "Home",
+       "View"
+      ],
+      "answer": 0,
+      "explain": "Insert → Pictures."
+     }
+    ]
+   },
+   {
+    "title": "Picture size",
+    "slides": [
+     {
+      "text": "Is the picture huge? There are circles at the corners. Drag a **corner** circle — the picture gets smaller.",
+      "emoji": "↘️"
+     },
+     {
+      "text": "Only drag a corner, or the animal gets fat or stretched!",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Picture size",
+      "prompt": "To keep the picture from getting fat, drag a corner circle.",
+      "answer": true,
+      "explain": "A corner keeps the shape."
+     }
+    ]
+   },
+   {
+    "title": "Text wrapping",
+    "slides": [
+     {
+      "text": "Click the picture → the \"Layout options\" icon → **\"Square\"** or **\"Tight\"**. Now you can drag the picture and the text flows around it.",
+      "emoji": "🌊"
+     },
+     {
+      "text": "The picture no longer waits in line with the text — it goes where it likes and the text flows around it."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Text wrapping",
+      "prompt": "Which layout makes text flow around the picture?",
+      "options": [
+       "Square",
+       "In line with text",
+       "None"
+      ],
+      "answer": 0,
+      "explain": "Square or Tight."
+     }
+    ]
+   }
+  ]
+ }
+}

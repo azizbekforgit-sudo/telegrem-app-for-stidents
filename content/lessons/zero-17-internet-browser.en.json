@@ -1,0 +1,184 @@
+{
+ "title": "Lesson 17. The internet and the browser",
+ "description": "The browser, website addresses, Back and Refresh, tabs",
+ "questions": [
+  {
+   "type": "match",
+   "topic": "Address and buttons",
+   "prompt": "Match the browser button with what it does",
+   "pairs": [
+    [
+     "Back arrow",
+     "Previous page"
+    ],
+    [
+     "Round arrow",
+     "Refresh"
+    ],
+    [
+     "Plus",
+     "New tab"
+    ],
+    [
+     "Cross on a tab",
+     "Close the tab"
+    ]
+   ],
+   "explain": "The main browser buttons."
+  },
+  {
+   "type": "choice",
+   "topic": "Address and buttons",
+   "prompt": "Where do you type a website address?",
+   "options": [
+    "In the address bar at the top",
+    "In Notepad",
+    "On the desktop",
+    "In the Bin"
+   ],
+   "answer": 0,
+   "explain": "Type it and press Enter."
+  },
+  {
+   "type": "truefalse",
+   "topic": "The internet and browser",
+   "prompt": "The internet is like a huge library.",
+   "answer": true,
+   "explain": "Millions of books, cartoons and games."
+  },
+  {
+   "type": "fill",
+   "topic": "Address and buttons",
+   "prompt": "Fill in the blank",
+   "text": "Typed the address? Press ___.",
+   "answer": [
+    "Enter"
+   ],
+   "extra": [
+    "Shift",
+    "Backspace",
+    "Delete"
+   ],
+   "explain": "Enter means \"go there\"."
+  },
+  {
+   "type": "choice",
+   "topic": "Tabs",
+   "prompt": "What are browser tabs like?",
+   "options": [
+    "Bookmarks in a book",
+    "A wastebasket",
+    "The wheel",
+    "A lift"
+   ],
+   "answer": 0,
+   "explain": "Each site on its own tab."
+  },
+  {
+   "type": "order",
+   "topic": "Tabs",
+   "prompt": "Put the \"Three tabs\" game in order",
+   "tokens": [
+    "Open 3 tabs",
+    "Switch on command",
+    "Close one tab",
+    "Close the browser"
+   ],
+   "extra": [],
+   "explain": "Just like the game in class."
+  },
+  {
+   "type": "choice",
+   "topic": "Address and buttons",
+   "prompt": "What does the round arrow do?",
+   "options": [
+    "Reloads the page",
+    "Closes the browser",
+    "Deletes the site",
+    "Prints"
+   ],
+   "answer": 0,
+   "explain": "It means refresh."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Tabs",
+   "prompt": "You can close one tab with the cross on that tab.",
+   "answer": true,
+   "explain": "The others stay open."
+  }
+ ],
+ "learn": {
+  "intro": "The internet is a huge library with millions of books, cartoons and games. Today we get a ticket!",
+  "sections": [
+   {
+    "title": "The internet and browser",
+    "slides": [
+     {
+      "text": "To get into the internet library you need a program — a **browser**. It is like a library ticket.",
+      "emoji": "🎫"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "The internet and browser",
+      "prompt": "What is a browser?",
+      "options": [
+       "A program — a ticket to the internet",
+       "Part of the mouse",
+       "A folder of pictures"
+      ],
+      "answer": 0,
+      "explain": "We open websites with it."
+     }
+    ]
+   },
+   {
+    "title": "Address and buttons",
+    "slides": [
+     {
+      "text": "Every website has an **address**, like a house. Type it in the address bar at the top, press **Enter** — and you are visiting the site.",
+      "emoji": "🏡"
+     },
+     {
+      "text": "The **back arrow** returns to the previous page. The **round arrow** refreshes. The cursor turned into a **hand** — it is a link you can click.",
+      "emoji": "👆"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Address and buttons",
+      "prompt": "If the cursor turns into a hand, you can click it.",
+      "answer": true,
+      "explain": "It is a link."
+     }
+    ]
+   },
+   {
+    "title": "Tabs",
+    "slides": [
+     {
+      "text": "You can open several sites at once — each on its own **tab**, like bookmarks in a book. The **plus** opens a new tab, the **cross** on a tab closes it.",
+      "emoji": "📑"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Tabs",
+      "prompt": "How do you open a new tab?",
+      "options": [
+       "Click the plus",
+       "Click the cross",
+       "Close the browser"
+      ],
+      "answer": 0,
+      "explain": "The plus opens a new tab."
+     }
+    ]
+   }
+  ]
+ }
+}

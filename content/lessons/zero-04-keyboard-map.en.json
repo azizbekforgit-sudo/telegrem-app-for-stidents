@@ -1,0 +1,190 @@
+{
+ "title": "Lesson 4. The keyboard map",
+ "description": "Letters, numbers, the cursor and magic keys: Space, Backspace, Enter, arrows",
+ "questions": [
+  {
+   "type": "match",
+   "topic": "Magic keys",
+   "prompt": "Match the key with what it does",
+   "pairs": [
+    [
+     "Space",
+     "Gap between words"
+    ],
+    [
+     "Backspace",
+     "Eraser"
+    ],
+    [
+     "Enter",
+     "New line"
+    ],
+    [
+     "Arrows",
+     "Move the cursor"
+    ]
+   ],
+   "explain": "These are the main magic keys."
+  },
+  {
+   "type": "choice",
+   "topic": "Cursor",
+   "prompt": "What is the cursor?",
+   "options": [
+    "The blinking stick where the letter goes",
+    "The power button",
+    "A folder icon",
+    "The mouse wheel"
+   ],
+   "answer": 0,
+   "explain": "The cursor is like a pencil tip."
+  },
+  {
+   "type": "choice",
+   "topic": "Magic keys",
+   "prompt": "How do you go to a new line?",
+   "options": [
+    "Enter",
+    "Space",
+    "Backspace",
+    "Up arrow"
+   ],
+   "answer": 0,
+   "explain": "Enter — like moving down a line in a notebook."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Magic keys",
+   "prompt": "Without spaces all the words stick together.",
+   "answer": true,
+   "explain": "Space is the gap between words."
+  },
+  {
+   "type": "fill",
+   "topic": "Magic keys",
+   "prompt": "Fill in the blank",
+   "text": "To erase the letter left of the cursor, press ___.",
+   "answer": [
+    "Backspace"
+   ],
+   "extra": [
+    "Enter",
+    "Shift",
+    "Alt"
+   ],
+   "explain": "Backspace is the eraser."
+  },
+  {
+   "type": "choice",
+   "topic": "Keyboard",
+   "prompt": "Where are the arrows on the keyboard?",
+   "options": [
+    "Bottom right",
+    "On top",
+    "In the middle",
+    "Top left"
+   ],
+   "answer": 0,
+   "explain": "Arrows are at the bottom right."
+  },
+  {
+   "type": "order",
+   "topic": "Magic keys",
+   "prompt": "Write about yourself in order: what we type and how we start new lines",
+   "tokens": [
+    "Name",
+    "Enter",
+    "Surname",
+    "Enter",
+    "Grade"
+   ],
+   "extra": [
+    "Backspace"
+   ],
+   "explain": "Each on a new line with Enter."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Keyboard",
+   "prompt": "When closing Notepad you can choose \"Don't save\" if you don't need the text.",
+   "answer": true,
+   "explain": "We'll learn saving later."
+  }
+ ],
+ "learn": {
+  "intro": "The keyboard is like a big musical instrument. Only instead of music, it makes letters!",
+  "sections": [
+   {
+    "title": "Keyboard",
+    "slides": [
+     {
+      "text": "Each key is its own note. **Letters** are in the middle, **numbers** on top, **arrows** at the bottom right.",
+      "emoji": "🎹"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Keyboard",
+      "prompt": "Where are the numbers on the keyboard?",
+      "options": [
+       "On top",
+       "Bottom right",
+       "There aren't any"
+      ],
+      "answer": 0,
+      "explain": "Numbers are in the top row."
+     }
+    ]
+   },
+   {
+    "title": "Cursor",
+    "slides": [
+     {
+      "text": "See the blinking stick? That is the **cursor**. It shows where the next letter will go — like a pencil tip on paper.",
+      "emoji": "✏️"
+     },
+     {
+      "text": "The **arrows** move the cursor without erasing anything."
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Cursor",
+      "prompt": "Arrows move the cursor and erase letters.",
+      "answer": false,
+      "explain": "Arrows only move the cursor."
+     }
+    ]
+   },
+   {
+    "title": "Magic keys",
+    "slides": [
+     {
+      "text": "**Space** is the long key at the bottom: the gap between words. **Backspace** is the eraser: it deletes the letter to the left of the cursor. **Enter** starts a new line.",
+      "emoji": "🪄"
+     },
+     {
+      "text": "Made a mistake? No problem! Find the Backspace eraser and fix it yourself.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Magic keys",
+      "prompt": "Which key is the eraser?",
+      "options": [
+       "Backspace",
+       "Enter",
+       "Space"
+      ],
+      "answer": 0,
+      "explain": "Backspace erases the letter left of the cursor."
+     }
+    ]
+   }
+  ]
+ }
+}

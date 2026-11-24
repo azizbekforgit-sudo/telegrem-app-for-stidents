@@ -1,0 +1,195 @@
+{
+ "title": "15-dars. Paint da chizamiz",
+ "description": "Qalam, mo'yqalamlar, o'chirg'ich, bo'yash, shakllar, palitra va «Mening uyim» rasmi",
+ "questions": [
+  {
+   "type": "match",
+   "topic": "Paint asboblari",
+   "prompt": "Asbobni vazifasi bilan bog'la",
+   "pairs": [
+    [
+     "Qalam",
+     "Ingichka chiziq"
+    ],
+    [
+     "O'chirg'ich",
+     "O'chiradi"
+    ],
+    [
+     "Bo'yash",
+     "Yopiq joyga bo'yoq"
+    ],
+    [
+     "Palitra",
+     "Rang tanlash"
+    ]
+   ],
+   "explain": "Paint albomi asboblari."
+  },
+  {
+   "type": "choice",
+   "topic": "Bo'yash va bekor qilish",
+   "prompt": "Paint da xatoni qaysi tugma bilan bekor qilamiz?",
+   "options": [
+    "Ctrl + Z",
+    "Ctrl + S",
+    "Enter",
+    "Caps Lock"
+   ],
+   "answer": 0,
+   "explain": "Vaqt mashinasi."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Paint asboblari",
+   "prompt": "Shaklni sichqoncha bilan tortsang, u o'sadi.",
+   "answer": true,
+   "explain": "Doira va kvadratlar shunday chiziladi."
+  },
+  {
+   "type": "choice",
+   "topic": "Mening uyim",
+   "prompt": "Rasmga qaysi asbob matn yozadi?",
+   "options": [
+    "A",
+    "Chelakcha",
+    "O'chirg'ich",
+    "Mo'yqalam"
+   ],
+   "answer": 0,
+   "explain": "«A» asbobi — matn."
+  },
+  {
+   "type": "fill",
+   "topic": "Mening uyim",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "Uy devori — ___, tom — ___.",
+   "answer": [
+    "to'rtburchak",
+    "uchburchak"
+   ],
+   "extra": [
+    "doira",
+    "yulduz",
+    "chiziq"
+   ],
+   "explain": "Shunda uy tekis chiqadi."
+  },
+  {
+   "type": "order",
+   "topic": "Mening uyim",
+   "prompt": "Rasmni saqlash tartibini yig'",
+   "tokens": [
+    "Fayl",
+    "Boshqacha saqlash",
+    "O'z papkang",
+    "Rasmlar",
+    "Mening uyim"
+   ],
+   "extra": [
+    "Savat"
+   ],
+   "explain": "Rasmlar — Rasmlar papkasiga."
+  },
+  {
+   "type": "choice",
+   "topic": "Bo'yash va bekor qilish",
+   "prompt": "Bo'yoq butun varaqqa to'kildi. Nima qilamiz?",
+   "options": [
+    "Ctrl + Z va chiziqdagi teshikchani qidiramiz",
+    "Kompyuterni o'chiramiz",
+    "Yangi kursni boshlaymiz",
+    "Yig'laymiz"
+   ],
+   "answer": 0,
+   "explain": "Bekor qilamiz va teshikchani yopamiz."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Paint asboblari",
+   "prompt": "Paint dagi o'chirg'ich chizilganni o'chiradi.",
+   "answer": true,
+   "explain": "Oddiy o'chirg'ich kabi."
+  }
+ ],
+ "learn": {
+  "intro": "Paint — kompyuterdagi rasm albomi. Eng muhimi — bu yerda istalgan xatoni bekor qilsa bo'ladi!",
+  "sections": [
+   {
+    "title": "Paint asboblari",
+    "slides": [
+     {
+      "text": "**Qalam** — ingichka chiziq. **Mo'yqalamlar** — flomasterdek yo'g'on chiziqlar. **O'chirg'ich** — o'chiradi. **Palitra** — rang tanlash.",
+      "emoji": "✏️"
+     },
+     {
+      "text": "**Shakllar** — tayyor doiralar, kvadratlar, yulduzlar. Sichqoncha bilan tortasan — shakl o'sadi.",
+      "emoji": "⭐"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Paint asboblari",
+      "prompt": "Qaysi asbob flomasterdek yo'g'on chiziq chizadi?",
+      "options": [
+       "Mo'yqalamlar",
+       "Qalam",
+       "O'chirg'ich"
+      ],
+      "answer": 0,
+      "explain": "Qalam — ingichka, mo'yqalam — yo'g'on."
+     }
+    ]
+   },
+   {
+    "title": "Bo'yash va bekor qilish",
+    "slides": [
+     {
+      "text": "**Bo'yash** (chelakcha) bo'yoqni yopiq joyga quyadi. Teshikcha bo'lsa — bo'yoq butun varaqqa oqib ketadi!",
+      "emoji": "🪣"
+     },
+     {
+      "text": "Bo'yoq to'kildimi? **Ctrl + Z** — vaqt mashinasi, va chiziqda teshikcha yo'qligini tekshir.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Bo'yash va bekor qilish",
+      "prompt": "Chiziqda teshikcha bo'lsa, bo'yoq butun varaqqa to'kiladi.",
+      "answer": true,
+      "explain": "Joy yopiq bo'lishi kerak."
+     }
+    ]
+   },
+   {
+    "title": "Mening uyim",
+    "slides": [
+     {
+      "text": "«Mening uyim» ni chizamiz: devor — to'rtburchak, tom — uchburchak, rang — bo'yash bilan, daraxt va quyosh — mo'yqalam bilan. Matn — **A** asbobi.",
+      "emoji": "🏠"
+     },
+     {
+      "text": "Saqlaymiz: Fayl → Boshqacha saqlash → o'z papkang → Rasmlar → «Mening uyim»."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Mening uyim",
+      "prompt": "Tom uchun qaysi shakl mos?",
+      "options": [
+       "Uchburchak",
+       "Doira",
+       "Yulduz"
+      ],
+      "answer": 0,
+      "explain": "Devor — to'rtburchak, tom — uchburchak."
+     }
+    ]
+   }
+  ]
+ }
+}

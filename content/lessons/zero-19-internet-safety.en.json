@@ -1,0 +1,184 @@
+{
+ "title": "Lesson 19. Internet safety",
+ "description": "5 safety rules and what to do in a risky situation",
+ "questions": [
+  {
+   "type": "choice",
+   "topic": "5 rules",
+   "prompt": "What do you do if something online scares you?",
+   "options": [
+    "Call a grown-up at once",
+    "Tell no one",
+    "Click everything",
+    "Send your address"
+   ],
+   "answer": 0,
+   "explain": "You won't be scolded — they'll help."
+  },
+  {
+   "type": "truefalse",
+   "topic": "5 rules",
+   "prompt": "You can download games without grown-ups — viruses don't exist.",
+   "answer": false,
+   "explain": "A virus — a computer illness — can come with a game."
+  },
+  {
+   "type": "match",
+   "topic": "What to do?",
+   "prompt": "Match the situation with the right action",
+   "pairs": [
+    [
+     "\"You won!\" window",
+     "Don't click, close it"
+    ],
+    [
+     "Asked for mum's phone password",
+     "Don't type it, tell a grown-up"
+    ],
+    [
+     "A scary picture",
+     "Close it and tell a grown-up"
+    ]
+   ],
+   "explain": "A grown-up helps in every case."
+  },
+  {
+   "type": "choice",
+   "topic": "5 rules",
+   "prompt": "Why don't we click \"Free download\"?",
+   "options": [
+    "It may be tricksters",
+    "It's too pretty",
+    "It makes the computer faster",
+    "It's banned at school"
+   ],
+   "answer": 0,
+   "explain": "Nobody gives things away for free."
+  },
+  {
+   "type": "fill",
+   "topic": "5 rules",
+   "prompt": "Fill in the blank",
+   "text": "If something scares me — I call a ___ at once.",
+   "answer": [
+    "grown-up"
+   ],
+   "extra": [
+    "stranger",
+    "game friend",
+    "nobody"
+   ],
+   "explain": "Grown-ups will help."
+  },
+  {
+   "type": "truefalse",
+   "topic": "What to do?",
+   "prompt": "If a suspicious window won't close, click the buttons inside it.",
+   "answer": false,
+   "explain": "Click nothing — call a grown-up."
+  },
+  {
+   "type": "choice",
+   "topic": "The internet is like a city",
+   "prompt": "Why don't we chat with strangers online?",
+   "options": [
+    "You don't know who is really writing",
+    "They type badly",
+    "It's boring",
+    "It takes longer"
+   ],
+   "answer": 0,
+   "explain": "He may pretend to be a kid."
+  },
+  {
+   "type": "order",
+   "topic": "5 rules",
+   "prompt": "Build the rule",
+   "tokens": [
+    "Never",
+    "share",
+    "my password"
+   ],
+   "extra": [
+    "everyone"
+   ],
+   "explain": "A password is a secret."
+  }
+ ],
+ "learn": {
+  "intro": "The internet is like a big city: lots of fun, but also strangers and tricksters. Let's learn the rules!",
+  "sections": [
+   {
+    "title": "The internet is like a city",
+    "slides": [
+     {
+      "text": "On the street you know the rules: don't talk to strangers, don't get in a stranger's car. The internet has rules too.",
+      "emoji": "🏙️"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "The internet is like a city",
+      "prompt": "Like a big city, the internet has tricksters.",
+      "answer": true,
+      "explain": "That's why we need rules."
+     }
+    ]
+   },
+   {
+    "title": "5 rules",
+    "slides": [
+     {
+      "text": "1. I never share my password, surname, address, school or phone. 2. I never click \"You won!\" or \"Free download\". 3. I download nothing without a grown-up.",
+      "emoji": "🔒"
+     },
+     {
+      "text": "4. I don't chat with strangers — you never know who is really writing. 5. If something scares or confuses me — **I call a grown-up at once**. Nobody will scold you!",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "5 rules",
+      "prompt": "What must you never tell anyone online?",
+      "options": [
+       "Your password and address",
+       "Your favourite colour",
+       "That you like cartoons"
+      ],
+      "answer": 0,
+      "explain": "A stranger could find out where you live."
+     }
+    ]
+   },
+   {
+    "title": "What to do?",
+    "slides": [
+     {
+      "text": "\"You won an iPhone!\" window popped up? **Don't click**, close it with the cross or call a grown-up. Nobody gives away phones for free.",
+      "emoji": "🎁"
+     },
+     {
+      "text": "The window won't close? Don't click anything inside — call a grown-up."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "What to do?",
+      "prompt": "In a game a stranger asks which school you go to and wants to meet. What do you do?",
+      "options": [
+       "Don't answer and tell a grown-up",
+       "Tell him my school",
+       "Go and meet him"
+      ],
+      "answer": 0,
+      "explain": "He may be pretending to be a kid."
+     }
+    ]
+   }
+  ]
+ }
+}

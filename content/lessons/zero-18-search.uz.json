@@ -1,0 +1,183 @@
+{
+ "title": "18-dars. Internetda qanday qidiramiz",
+ "description": "Qidiruv tizimi, qisqa aniq so'rov, rasm qidirish va «5 savol» kvesti",
+ "questions": [
+  {
+   "type": "choice",
+   "topic": "Asosiy so'zlar",
+   "prompt": "Qidiruv tizimidan qanday to'g'ri so'raymiz?",
+   "options": [
+    "Qisqa, asosiy so'zlar bilan",
+    "Uzun va xushmuomala",
+    "Faqat smayliklar bilan",
+    "Katta harflar bilan"
+   ],
+   "answer": 0,
+   "explain": "Unga asosiy so'zlar kerak."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Asosiy so'zlar",
+   "prompt": "Qidiruv tizimiga albatta «iltimos» deb yozish kerak.",
+   "answer": false,
+   "explain": "U odam emas — asosiysi kalit so'zlar."
+  },
+  {
+   "type": "order",
+   "topic": "Asosiy so'zlar",
+   "prompt": "Yaxshi so'rov yig'",
+   "tokens": [
+    "nechta",
+    "oyoq",
+    "o'rgimchak"
+   ],
+   "extra": [
+    "iltimos"
+   ],
+   "explain": "Ortiqcha so'zlarsiz."
+  },
+  {
+   "type": "choice",
+   "topic": "Rasmlar",
+   "prompt": "Qidiruv tizimida rasmlarni qayerda qidiramiz?",
+   "options": [
+    "«Rasmlar» yorlig'ida",
+    "Savatda",
+    "Kalkulyatorda",
+    "Paint da"
+   ],
+   "answer": 0,
+   "explain": "U yerda faqat rasmlar."
+  },
+  {
+   "type": "match",
+   "topic": "Asosiy so'zlar",
+   "prompt": "Yomon va yaxshi so'rovni bog'la",
+   "pairs": [
+    [
+     "iltimos o'rgimchak oyoqlari sonini ayt",
+     "o'rgimchak nechta oyoq"
+    ],
+    [
+     "chiroyli mushuk rasmini xohlayman",
+     "mushuk rasm"
+    ],
+    [
+     "dunyodagi eng baland tog' qaysi ayt",
+     "eng baland tog'"
+    ]
+   ],
+   "explain": "Ortiqcha so'zlarni olib tashlaymiz."
+  },
+  {
+   "type": "fill",
+   "topic": "Rasmlar",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "Rasmni saqlash: ___ tugma → «Rasmni boshqacha saqlash».",
+   "answer": [
+    "o'ng"
+   ],
+   "extra": [
+    "chap",
+    "ikki marta",
+    "uch marta"
+   ],
+   "explain": "O'ng tugma menyuni ochadi."
+  },
+  {
+   "type": "choice",
+   "topic": "Qidiruv tizimi",
+   "prompt": "«5 savol» kvesti javoblarini qayerga yozamiz?",
+   "options": [
+    "Bloknotga va saqlaymiz",
+    "Devorga",
+    "Hech qayerga",
+    "Savatga"
+   ],
+   "answer": 0,
+   "explain": "«Kvest» fayli — Matnlar papkasiga."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Rasmlar",
+   "prompt": "Internetdan rasmlarni o'z Rasmlar papkamizga saqlaymiz.",
+   "answer": true,
+   "explain": "U yerda ularni keyin topish oson."
+  }
+ ],
+ "learn": {
+  "intro": "Sen internet detektivi bo'lasan! Har qanday savolga javob topishni o'rganamiz.",
+  "sections": [
+   {
+    "title": "Qidiruv tizimi",
+    "slides": [
+     {
+      "text": "Yordamchisiz internetda hech narsa topolmaysan. Yordamchi — **qidiruv tizimi**: unga savol yozasan, u javobli saytlarni topadi.",
+      "emoji": "🕵️"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Qidiruv tizimi",
+      "prompt": "Qidiruv tizimi savolga javob bor saytlarni topadi.",
+      "answer": true,
+      "explain": "Bu bizning yordamchimiz."
+     }
+    ]
+   },
+   {
+    "title": "Asosiy so'zlar",
+    "slides": [
+     {
+      "text": "Qidiruv tizimi — odam emas. Unga «iltimos» va «aytib ber» kerak emas. Unga **asosiy so'zlar** kerak.",
+      "emoji": "🔑"
+     },
+     {
+      "text": "Yomon: «iltimos menga o'rgimchakning nechta oyog'i bo'lishini aytib ber». Yaxshi: **«o'rgimchak nechta oyoq»**.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Asosiy so'zlar",
+      "prompt": "Qaysi so'rov yaxshiroq?",
+      "options": [
+       "mushuk rasm",
+       "chiroyli mushuk rasmini ko'rmoqchiman"
+      ],
+      "answer": 0,
+      "explain": "Qisqa, faqat asosiy so'zlar."
+     }
+    ]
+   },
+   {
+    "title": "Rasmlar",
+    "slides": [
+     {
+      "text": "Qidiruv tizimida **«Rasmlar»** yorlig'i bor. Sevimli hayvon rasmini qidiramiz.",
+      "emoji": "🐼"
+     },
+     {
+      "text": "Rasmni saqlash: **o'ng tugma** → «Rasmni boshqacha saqlash» → o'z Rasmlar papkang."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Rasmlar",
+      "prompt": "Internetdan rasmni qanday saqlaymiz?",
+      "options": [
+       "O'ng tugma → Rasmni boshqacha saqlash",
+       "Ekranni telefon bilan suratga olish",
+       "Ctrl + Z bosish"
+      ],
+      "answer": 0,
+      "explain": "Va Rasmlar papkasiga solamiz."
+     }
+    ]
+   }
+  ]
+ }
+}

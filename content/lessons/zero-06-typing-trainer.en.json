@@ -1,0 +1,185 @@
+{
+ "title": "Lesson 6. Keyboard trainer",
+ "description": "How to sit, where fingers live and your first speed record",
+ "questions": [
+  {
+   "type": "choice",
+   "topic": "Home row",
+   "prompt": "Which keys have bumps for the index fingers?",
+   "options": [
+    "А and О",
+    "Ф and Ж",
+    "Enter and Space",
+    "1 and 0"
+   ],
+   "answer": 0,
+   "explain": "You can find them even with your eyes closed."
+  },
+  {
+   "type": "match",
+   "topic": "Home row",
+   "prompt": "Match the hand with its home keys",
+   "pairs": [
+    [
+     "Left hand",
+     "Ф Ы В А"
+    ],
+    [
+     "Right hand",
+     "О Л Д Ж"
+    ],
+    [
+     "Thumbs",
+     "Space bar"
+    ]
+   ],
+   "explain": "This is the fingers' home."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Good posture",
+   "prompt": "You can sit at the computer with a crooked back — it doesn't matter.",
+   "answer": false,
+   "explain": "Keep your back straight or it will get tired."
+  },
+  {
+   "type": "choice",
+   "topic": "Good posture",
+   "prompt": "Where should your feet be?",
+   "options": [
+    "On the floor",
+    "On the chair",
+    "On the desk",
+    "Under you"
+   ],
+   "answer": 0,
+   "explain": "Feet stand on the floor."
+  },
+  {
+   "type": "fill",
+   "topic": "Good posture",
+   "prompt": "Fill in the blank",
+   "text": "Elbows like a ___ — at a right angle.",
+   "answer": [
+    "robot"
+   ],
+   "extra": [
+    "cat",
+    "bird",
+    "fish"
+   ],
+   "explain": "Like a robot — straight."
+  },
+  {
+   "type": "choice",
+   "topic": "Speed",
+   "prompt": "What do we praise in the trainer?",
+   "options": [
+    "Fingers stay on home keys",
+    "Only speed",
+    "Loud tapping",
+    "Nothing"
+   ],
+   "answer": 0,
+   "explain": "Speed comes later."
+  },
+  {
+   "type": "order",
+   "topic": "Speed",
+   "prompt": "Put the record steps in order",
+   "tokens": [
+    "Type for 1 minute",
+    "Count the words",
+    "Write down the result"
+   ],
+   "extra": [
+    "Turn off"
+   ],
+   "explain": "Then compare after 2 weeks."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Home row",
+   "prompt": "The bumps on А and О help you find the home keys without looking.",
+   "answer": true,
+   "explain": "You feel them with your index fingers."
+  }
+ ],
+ "learn": {
+  "intro": "Today we train like athletes: sit right, put our fingers home and set a first record!",
+  "sections": [
+   {
+    "title": "Good posture",
+    "slides": [
+     {
+      "text": "So your back and eyes don't get tired: straight back, feet on the floor, screen an arm's length away, elbows like a robot — at a right angle.",
+      "emoji": "🪑"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Good posture",
+      "prompt": "How far should the screen be?",
+      "options": [
+       "An arm's length away",
+       "Right at your nose",
+       "In another room"
+      ],
+      "answer": 0,
+      "explain": "That way your eyes don't get tired."
+     }
+    ]
+   },
+   {
+    "title": "Home row",
+    "slides": [
+     {
+      "text": "Fingers have a home. The **А** and **О** keys have little bumps — you can find them with your eyes closed. Your index fingers live there.",
+      "emoji": "🏠"
+     },
+     {
+      "text": "Left hand — **Ф Ы В А**, right hand — **О Л Д Ж**. Thumbs — on the space bar.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Home row",
+      "prompt": "Thumbs rest on the space bar.",
+      "answer": true,
+      "explain": "The other fingers sit on their home keys."
+     }
+    ]
+   },
+   {
+    "title": "Speed",
+    "slides": [
+     {
+      "text": "We practise in a trainer for 15 minutes. We praise fingers staying home, not speed.",
+      "emoji": "🎮"
+     },
+     {
+      "text": "Contest: type a familiar text for 1 minute and count the words. Write down the record and check every 2 weeks!",
+      "emoji": "⏱️"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Speed",
+      "prompt": "How often do we check typing speed?",
+      "options": [
+       "Every 2 weeks",
+       "Every minute",
+       "Never"
+      ],
+      "answer": 0,
+      "explain": "That shows how the number grows."
+     }
+    ]
+   }
+  ]
+ }
+}

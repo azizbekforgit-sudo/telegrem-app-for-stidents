@@ -1,0 +1,185 @@
+{
+ "title": "26-dars. Harakat va takror",
+ "description": "«Takrorla» bloki, kostyum almashtirish va qadam tashlaydigan mushuk",
+ "questions": [
+  {
+   "type": "order",
+   "topic": "Kostyumlar",
+   "prompt": "Yuradigan mushuk dasturini yig'",
+   "tokens": [
+    "Bayroqcha bosilganda",
+    "10 marta takrorla",
+    "10 qadam yur",
+    "Keyingi kostyum",
+    "0.2 soniya kut"
+   ],
+   "extra": [],
+   "explain": "Takror ichida — qadam, kostyum, kutish."
+  },
+  {
+   "type": "choice",
+   "topic": "«Takrorla» bloki",
+   "prompt": "«0.2 soniya kut» ni nega qo'shamiz?",
+   "options": [
+    "Mushuk ravon yurishi uchun",
+    "Mushuk uxlashi uchun",
+    "Ovozni o'chirish uchun",
+    "Shunchaki"
+   ],
+   "answer": 0,
+   "explain": "Ozgina yurib, kutadi."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Doim takrorla",
+   "prompt": "«Doim takrorla» bloki to'xtovsiz ishlaydi.",
+   "answer": true,
+   "explain": "Shuning uchun «chetdan qaytar» kerak."
+  },
+  {
+   "type": "match",
+   "topic": "Doim takrorla",
+   "prompt": "Blokni vazifasi bilan bog'la",
+   "pairs": [
+    [
+     "10 marta takrorla",
+     "10 marta takrorlaydi"
+    ],
+    [
+     "Keyingi kostyum",
+     "Qahramon rasmini almashtiradi"
+    ],
+    [
+     "Chetda bo'lsa, qaytar",
+     "Chetda burib yuboradi"
+    ]
+   ],
+   "explain": "Yuradigan mushukning uchta bloki."
+  },
+  {
+   "type": "choice",
+   "topic": "Kostyumlar",
+   "prompt": "Qahramon rasmlari qayerda almashtiriladi?",
+   "options": [
+    "«Kostyumlar» yorlig'ida",
+    "Savatda",
+    "Word da",
+    "Brauzerda"
+   ],
+   "answer": 0,
+   "explain": "Kostyumlar — sprayt rasmlari."
+  },
+  {
+   "type": "fill",
+   "topic": "«Takrorla» bloki",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "«___» bloki — qavs kabi: ichidagi hammasi takrorlanadi.",
+   "answer": [
+    "takrorla"
+   ],
+   "extra": [
+    "de",
+    "kut",
+    "miyov"
+   ],
+   "explain": "Takror bloklarni tejaydi."
+  },
+  {
+   "type": "choice",
+   "topic": "Doim takrorla",
+   "prompt": "Mushuk teskari yurmasligi uchun nima qilamiz?",
+   "options": [
+    "«Chapga-o'ngga» aylanish usuli",
+    "Mushukni o'chirish",
+    "Ovozni o'chirish",
+    "F5 bosish"
+   ],
+   "answer": 0,
+   "explain": "Mushuk faqat chapga-o'ngga buriladi."
+  },
+  {
+   "type": "truefalse",
+   "topic": "«Takrorla» bloki",
+   "prompt": "10 ta bir xil blok bitta «takrorla» blokidan yaxshiroq.",
+   "answer": false,
+   "explain": "Takror qisqaroq va qulayroq."
+  }
+ ],
+ "learn": {
+  "intro": "Dasturchilar dangasa — yaxshi ma'noda! Bugun biz uchun takrorlaydigan blokni bilib olamiz.",
+  "sections": [
+   {
+    "title": "«Takrorla» bloki",
+    "slides": [
+     {
+      "text": "10 marta 10 qadam yurish uchun 10 ta bir xil blok qo'yish shart emas. **«Takrorla»** bloki bor — qavs kabi: ichidagi hamma narsa takrorlanadi.",
+      "emoji": "🔁"
+     },
+     {
+      "text": "Jismoniy tarbiyadagi o'tirib-turish kabi: «10 marta takrorla — o'tir». «0.2 soniya kut» ni qo'shsak — mushuk sakramay, ravon yuradi.",
+      "emoji": "🏃"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "«Takrorla» bloki",
+      "prompt": "«Takrorla» bloki nima uchun kerak?",
+      "options": [
+       "Ko'p bir xil blok qo'ymaslik uchun",
+       "Kompyuterni o'chirish uchun",
+       "Chizish uchun"
+      ],
+      "answer": 0,
+      "explain": "Ichidagi hammasi o'zi takrorlanadi."
+     }
+    ]
+   },
+   {
+    "title": "Kostyumlar",
+    "slides": [
+     {
+      "text": "**«Kostyumlar»** yorlig'i: mushukning ikkita kostyumi bor — oyoqlari har xil turgan ikki rasm. Ularni tez almashtirsang, u yurayotgandek tuyuladi. Multfilmlar shunday qilinadi!",
+      "emoji": "🎬",
+      "code": "yashil bayroqcha bosilganda\n10 marta takrorla\n    10 qadam yur\n    keyingi kostyum\n    0.2 soniya kut"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Kostyumlar",
+      "prompt": "Kostyumlarni tez almashtirish mushuk yurayotgandek ko'rsatadi.",
+      "answer": true,
+      "explain": "Multfilmlar shunday qilinadi."
+     }
+    ]
+   },
+   {
+    "title": "Doim takrorla",
+    "slides": [
+     {
+      "text": "«10 marta takrorla» → **«doim takrorla»**. Mushuk chetga ketadi → **«chetda bo'lsa, qaytar»** ni qo'shamiz. Endi mushuk u yoqdan-bu yoqqa yuradi.",
+      "emoji": "↔️"
+     },
+     {
+      "text": "Mushuk teskari yurmasligi uchun — «aylanish usulini o'rnat: chapga-o'ngga» bloki."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Doim takrorla",
+      "prompt": "Qaysi blok mushukning chetga ketishiga yo'l qo'ymaydi?",
+      "options": [
+       "Chetda bo'lsa, qaytar",
+       "«Salom!» de",
+       "Keyingi kostyum"
+      ],
+      "answer": 0,
+      "explain": "Mushuk qaytib, orqaga yuradi."
+     }
+    ]
+   }
+  ]
+ }
+}

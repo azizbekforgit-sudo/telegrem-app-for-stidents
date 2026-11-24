@@ -1,0 +1,185 @@
+{
+ "title": "22-dars. Rasmlar va slaydlar tartibi",
+ "description": "Kam matn — ko'p rasm, rasm qo'yish, slaydlar tartibi va o'tishlar",
+ "questions": [
+  {
+   "type": "choice",
+   "topic": "Asosiy qoida",
+   "prompt": "Slaydning asosiy qoidasi qaysi?",
+   "options": [
+    "Kam matn, ko'p rasm",
+    "Ko'p matn, kam rasm",
+    "Faqat matn",
+    "Hech narsa yozmaslik"
+   ],
+   "answer": 0,
+   "explain": "Slayd — plakat kabi."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Tartib va o'tishlar",
+   "prompt": "Slaydlar tartibini chapda sudrab o'zgartirsa bo'ladi.",
+   "answer": true,
+   "explain": "Karta dastasi kabi."
+  },
+  {
+   "type": "match",
+   "topic": "Tartib va o'tishlar",
+   "prompt": "So'zni ma'nosi bilan bog'la",
+   "pairs": [
+    [
+     "O'tish",
+     "Slayd qanday paydo bo'ladi"
+    ],
+    [
+     "Chapdagi kichik slaydlar",
+     "Karta dastasi"
+    ],
+    [
+     "Slayd",
+     "Plakat"
+    ]
+   ],
+   "explain": "Obrazlar eslab qolishga yordam beradi."
+  },
+  {
+   "type": "choice",
+   "topic": "Slaydlardagi rasmlar",
+   "prompt": "Slayddagi rasmni buzmay qanday kichraytiramiz?",
+   "options": [
+    "Burchakdan tortish",
+    "Yon tomondan tortish",
+    "Delete bosish",
+    "F5 bosish"
+   ],
+   "answer": 0,
+   "explain": "Word dagidek — burchakdan."
+  },
+  {
+   "type": "fill",
+   "topic": "Tartib va o'tishlar",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "Tinch o'tish: «___».",
+   "answer": [
+    "So'nish"
+   ],
+   "extra": [
+    "Portlash",
+    "Aylanish",
+    "Sakrash"
+   ],
+   "explain": "Tinch effekt tinglashga xalal bermaydi."
+  },
+  {
+   "type": "order",
+   "topic": "Slaydlardagi rasmlar",
+   "prompt": "Slaydga rasm qo'shish tartibini yig'",
+   "tokens": [
+    "Qo'yish",
+    "Rasmlar",
+    "O'z papkang",
+    "Burchakdan kichraytirish"
+   ],
+   "extra": [
+    "F5"
+   ],
+   "explain": "Qo'ydik → kichraytirdik → joyiga qo'ydik."
+  },
+  {
+   "type": "choice",
+   "topic": "Asosiy qoida",
+   "prompt": "Bu darsda qaysi slaydlarni qo'shamiz?",
+   "options": [
+    "«Nima yeydi» va «Qiziq fakt»",
+    "«Parol» va «Manzil»",
+    "Faqat bo'shlari",
+    "Hech qaysi"
+   ],
+   "answer": 0,
+   "explain": "4- va 5-slaydlar."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Slaydlardagi rasmlar",
+   "prompt": "Rasmlar yetmasa, ularni internetdan topib saqlasa bo'ladi.",
+   "answer": true,
+   "explain": "18-darsdagidek."
+  }
+ ],
+ "learn": {
+  "intro": "Bugun taqdimot jonlanadi: rasmlar, tartib va chiroyli o'tishlarni qo'shamiz!",
+  "sections": [
+   {
+    "title": "Asosiy qoida",
+    "slides": [
+     {
+      "text": "Asosiy qoida: **kam matn, ko'p rasm**. Slayd — plakat kabi: katta rasm va bir necha so'z. Tafsilotlarni o'zing aytib berasan.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Asosiy qoida",
+      "prompt": "Slaydga ko'p uzun matn yozgan ma'qul.",
+      "answer": false,
+      "explain": "Kam matn, ko'p rasm."
+     }
+    ]
+   },
+   {
+    "title": "Slaydlardagi rasmlar",
+    "slides": [
+     {
+      "text": "**Qo'yish → Rasmlar** yorlig'i → o'z Rasmlar papkang. Har bir slaydga — bittadan rasm.",
+      "emoji": "🖼️"
+     },
+     {
+      "text": "Word dagidek **burchakdan** kichraytiramiz va bo'sh joyga sudraymiz."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Slaydlardagi rasmlar",
+      "prompt": "Slaydga rasmni qanday qo'yamiz?",
+      "options": [
+       "Qo'yish → Rasmlar",
+       "Fayl → Chop etish",
+       "F5 bosish"
+      ],
+      "answer": 0,
+      "explain": "Word dagidek."
+     }
+    ]
+   },
+   {
+    "title": "Tartib va o'tishlar",
+    "slides": [
+     {
+      "text": "Chapda kichik slaydlar — karta dastasi kabi. Tartibni o'zgartirish uchun ularni **sudrasa** bo'ladi.",
+      "emoji": "🃏"
+     },
+     {
+      "text": "**O'tishlar** — slaydlar qanday paydo bo'lishi. Tinch effektni tanla, masalan «So'nish»: hammasi aylanib sakrasa, tomoshabinlar seni emas, effektni tomosha qiladi.",
+      "emoji": "✨"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Tartib va o'tishlar",
+      "prompt": "Qaysi o'tishni tanlagan ma'qul?",
+      "options": [
+       "Tinch, masalan «So'nish»",
+       "Eng sakraydigani",
+       "Har slaydga yangi aqldan ozgan"
+      ],
+      "answer": 0,
+      "explain": "Tomoshabinlar seni tinglashi kerak."
+     }
+    ]
+   }
+  ]
+ }
+}

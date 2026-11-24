@@ -1,0 +1,187 @@
+{
+ "title": "20-dars. Maktab uchun ma'lumot",
+ "description": "Ma'lumot topamiz, o'z so'zlarimiz bilan yozamiz va Word da kichik ma'ruza qilamiz",
+ "questions": [
+  {
+   "type": "choice",
+   "topic": "Qidiramiz va o'z so'zlarimiz bilan yozamiz",
+   "prompt": "Ma'ruzani qanday to'g'ri yozamiz?",
+   "options": [
+    "O'z so'zlarimiz bilan, qisqa",
+    "Butun saytni ko'chirish",
+    "Faqat matnsiz rasmlar",
+    "Juda uzun"
+   ],
+   "answer": 0,
+   "explain": "Shunda o'qituvchi tushunganingni biladi."
+  },
+  {
+   "type": "match",
+   "topic": "Ma'ruza rejasi",
+   "prompt": "Reja bandini so'rov bilan bog'la",
+   "pairs": [
+    [
+     "Qayerda yashaydi",
+     "panda qayerda yashaydi"
+    ],
+    [
+     "Nima yeydi",
+     "panda nima yeydi"
+    ],
+    [
+     "Qiziq fakt",
+     "panda qiziq faktlar"
+    ]
+   ],
+   "explain": "Har bir bandga — qisqa so'rov."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Word da ma'ruza",
+   "prompt": "Ma'ruzada kamida bitta rasm kerak.",
+   "answer": true,
+   "explain": "Rasm matn yonida."
+  },
+  {
+   "type": "choice",
+   "topic": "Word da ma'ruza",
+   "prompt": "Ma'ruza sarlavhasini qanday qilamiz?",
+   "options": [
+    "Markazda, katta",
+    "Burchakda mayda",
+    "Sarlavhasiz",
+    "Pastda tagiga chizilgan"
+   ],
+   "answer": 0,
+   "explain": "Kitobdagidek."
+  },
+  {
+   "type": "fill",
+   "topic": "Qidiramiz va o'z so'zlarimiz bilan yozamiz",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "Nusxa bilan emas, ___ so'zlarimiz bilan yozamiz.",
+   "answer": [
+    "o'z"
+   ],
+   "extra": [
+    "begona",
+    "uzun",
+    "inglizcha"
+   ],
+   "explain": "O'z so'zlaring bilan — demak, tushunding."
+  },
+  {
+   "type": "choice",
+   "topic": "Ma'ruza rejasi",
+   "prompt": "Ma'ruza uchun qaysi mavzuni olsa bo'ladi?",
+   "options": [
+    "Sevimli hayvon",
+    "Telefon paroli",
+    "Uy manzilim",
+    "Hech narsa"
+   ],
+   "answer": 0,
+   "explain": "Yana: sayyora, shahar, dinozavr."
+  },
+  {
+   "type": "order",
+   "topic": "Word da ma'ruza",
+   "prompt": "Word da ma'ruzani yig'",
+   "tokens": [
+    "Sarlavha",
+    "Uchta xatboshi",
+    "Rasm",
+    "Saqlash"
+   ],
+   "extra": [],
+   "explain": "Keyin ovoz chiqarib o'qiymiz."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Qidiramiz va o'z so'zlarimiz bilan yozamiz",
+   "prompt": "Avval javoblarni Bloknotga qisqa yozamiz, keyin Word da ma'ruza qilamiz.",
+   "answer": true,
+   "explain": "Har bandga 1–2 gapdan."
+  }
+ ],
+ "learn": {
+  "intro": "Maktabda ko'pincha ma'ruza berishadi. Bugun kompyuterda birinchi ma'ruzangni qilasan!",
+  "sections": [
+   {
+    "title": "Ma'ruza rejasi",
+    "slides": [
+     {
+      "text": "Mavzu tanlaymiz: sevimli hayvon, sayyora, shahar, dinozavr.",
+      "emoji": "🦖"
+     },
+     {
+      "text": "Reja: 1) qayerda yashaydi yoki joylashgan; 2) qanday ko'rinadi; 3) qiziq fakt.",
+      "emoji": "🗒️"
+     }
+    ],
+    "check": [
+     {
+      "type": "order",
+      "topic": "Ma'ruza rejasi",
+      "prompt": "Ma'ruza rejasini yig'",
+      "tokens": [
+       "Qayerda yashaydi",
+       "Qanday ko'rinadi",
+       "Qiziq fakt"
+      ],
+      "extra": [],
+      "explain": "Uchta qisqa band."
+     }
+    ]
+   },
+   {
+    "title": "Qidiramiz va o'z so'zlarimiz bilan yozamiz",
+    "slides": [
+     {
+      "text": "Har bir bandga — qisqa so'rov: «panda qayerda yashaydi», «panda nima yeydi».",
+      "emoji": "🐼"
+     },
+     {
+      "text": "Saytdan **butun matnni ko'chirmaymiz**. O'qib, **o'z so'zlarimiz bilan** qisqa yozamiz. Shunda haqiqatan yangi narsa o'rganasan.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Qidiramiz va o'z so'zlarimiz bilan yozamiz",
+      "prompt": "Ma'ruza uchun saytdan butun matnni ko'chirsa bo'ladi.",
+      "answer": false,
+      "explain": "O'z so'zlarimiz bilan, qisqa yozamiz."
+     }
+    ]
+   },
+   {
+    "title": "Word da ma'ruza",
+    "slides": [
+     {
+      "text": "1–2 rasmni saqlaymiz (o'ng tugma → Rasmni boshqacha saqlash → Rasmlar). Word da: sarlavha, uchta qisqa xatboshi, rasm.",
+      "emoji": "📄"
+     },
+     {
+      "text": "Bezaymiz: sarlavha markazda katta, rasm matn yonida. Saqlaymiz: Matnlar → Word → «Ma'ruza»."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Word da ma'ruza",
+      "prompt": "Ma'ruzani qayerga saqlaymiz?",
+      "options": [
+       "Matnlar → Word → Ma'ruza",
+       "Savatga",
+       "Do'stning fleshkasiga"
+      ],
+      "answer": 0,
+      "explain": "O'z papkangga, Word ga."
+     }
+    ]
+   }
+  ]
+ }
+}

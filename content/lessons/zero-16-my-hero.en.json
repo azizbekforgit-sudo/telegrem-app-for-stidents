@@ -1,0 +1,185 @@
+{
+ "title": "Lesson 16. My hero",
+ "description": "Draw a hero in Paint and write a story about it in Word",
+ "questions": [
+  {
+   "type": "choice",
+   "topic": "Drawing the hero",
+   "prompt": "Where do we save the hero drawing?",
+   "options": [
+    "Pictures → My hero",
+    "In the Bin",
+    "On the taskbar",
+    "Nowhere"
+   ],
+   "answer": 0,
+   "explain": "It'll be needed in Scratch."
+  },
+  {
+   "type": "order",
+   "topic": "A story in Word",
+   "prompt": "Put the hero story steps in order",
+   "tokens": [
+    "Title — the hero's name",
+    "Insert the drawing",
+    "3–4 sentences",
+    "Style it",
+    "Save"
+   ],
+   "extra": [],
+   "explain": "Name → picture → text → style → save."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Inventing a hero",
+   "prompt": "The hero can only be a human.",
+   "answer": false,
+   "explain": "A robot, a space cat or a dragon too."
+  },
+  {
+   "type": "choice",
+   "topic": "A story in Word",
+   "prompt": "How do you put the hero drawing into Word?",
+   "options": [
+    "Insert → Pictures → My hero",
+    "Press Ctrl + Z",
+    "Redraw it in Word",
+    "You can't"
+   ],
+   "answer": 0,
+   "explain": "Like any picture."
+  },
+  {
+   "type": "match",
+   "topic": "Inventing a hero",
+   "prompt": "Match the hero question with a sample answer",
+   "pairs": [
+    [
+     "Name?",
+     "Robo-Cat"
+    ],
+    [
+     "What can it do?",
+     "Fly"
+    ],
+    [
+     "Where does it live?",
+     "On the Moon"
+    ]
+   ],
+   "explain": "That brings the hero to life."
+  },
+  {
+   "type": "fill",
+   "topic": "A story in Word",
+   "prompt": "Fill in the blank",
+   "text": "We drew in ___ and wrote the story in ___.",
+   "answer": [
+    "Paint",
+    "Word"
+   ],
+   "extra": [
+    "Notepad",
+    "Bin",
+    "Scratch"
+   ],
+   "explain": "Two programs together."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Drawing the hero",
+   "prompt": "The hero drawing will be needed later in Scratch.",
+   "answer": true,
+   "explain": "It comes alive in the game."
+  },
+  {
+   "type": "choice",
+   "topic": "A story in Word",
+   "prompt": "How do we style the hero's name in the title?",
+   "options": [
+    "Big and centred",
+    "Small in a corner",
+    "Skip the name",
+    "Only in numbers"
+   ],
+   "answer": 0,
+   "explain": "Like a book title."
+  }
+ ],
+ "learn": {
+  "intro": "Today you invent your own hero. Remember it — at the end of the course it becomes the hero of your own game!",
+  "sections": [
+   {
+    "title": "Inventing a hero",
+    "slides": [
+     {
+      "text": "The hero can be anyone: a robot, a superhero, a space cat, a dragon. What is its name? What can it do? Where does it live?",
+      "emoji": "🐉"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Inventing a hero",
+      "prompt": "The hero you invent will later star in your game.",
+      "answer": true,
+      "explain": "In the Scratch module!"
+     }
+    ]
+   },
+   {
+    "title": "Drawing the hero",
+    "slides": [
+     {
+      "text": "Draw the hero in Paint **big, on a light background** — easier to put into the game later.",
+      "emoji": "🖌️"
+     },
+     {
+      "text": "Save: Pictures → \"My hero\"."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Drawing the hero",
+      "prompt": "How should you draw the hero for the future game?",
+      "options": [
+       "Big, on a light background",
+       "Very small",
+       "On a black background"
+      ],
+      "answer": 0,
+      "explain": "Easier to put into the game."
+     }
+    ]
+   },
+   {
+    "title": "A story in Word",
+    "slides": [
+     {
+      "text": "Open Word: the title is the hero's name, big and centred; Insert → Pictures → \"My hero\"; 3–4 sentences: who it is, what it can do, where it lives, its friends.",
+      "emoji": "📖"
+     },
+     {
+      "text": "You combined two programs: drew in Paint and wrote the story in Word. That's how real designers work!",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "A story in Word",
+      "prompt": "Which two programs did we combine today?",
+      "options": [
+       "Paint and Word",
+       "Calculator and Notepad",
+       "Bin and File Explorer"
+      ],
+      "answer": 0,
+      "explain": "A Paint drawing in a Word story."
+     }
+    ]
+   }
+  ]
+ }
+}

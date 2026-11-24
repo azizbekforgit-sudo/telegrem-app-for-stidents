@@ -1,0 +1,195 @@
+{
+ "title": "11-dars. Word dagi birinchi hujjat",
+ "description": "Hujjat yaratamiz, matnni belgilaymiz, shrift, o'lcham va rangni o'zgartiramiz",
+ "questions": [
+  {
+   "type": "match",
+   "topic": "Shrift, o'lcham, rang",
+   "prompt": "Tugmani nimani o'zgartirishi bilan bog'la",
+   "pairs": [
+    [
+     "Shrift",
+     "Xat"
+    ],
+    [
+     "O'lcham",
+     "Harflar kattaligi"
+    ],
+    [
+     "Rang",
+     "Rangli ruchka"
+    ]
+   ],
+   "explain": "Chiroyning uchta asosiy tugmasi."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Shrift, o'lcham, rang",
+   "prompt": "Matn belgilanmagan bo'lsa ham rang baribir o'zgaradi.",
+   "answer": false,
+   "explain": "Avval belgilaymiz, keyin o'zgartiramiz."
+  },
+  {
+   "type": "choice",
+   "topic": "Belgilash",
+   "prompt": "Matn belgilanganini qanday bilamiz?",
+   "options": [
+    "U ko'k bo'ldi",
+    "U yo'qoldi",
+    "U qalin bo'ldi",
+    "Kompyuter chiyillaydi"
+   ],
+   "answer": 0,
+   "explain": "Ko'k fon — belgilangan."
+  },
+  {
+   "type": "choice",
+   "topic": "Shrift, o'lcham, rang",
+   "prompt": "O'lchamni kattaroq qilsak nima bo'ladi?",
+   "options": [
+    "Harflar kattaroq bo'ladi",
+    "Harflar qizil bo'ladi",
+    "Matn o'chadi",
+    "Hech narsa"
+   ],
+   "answer": 0,
+   "explain": "Raqam katta — harflar katta."
+  },
+  {
+   "type": "order",
+   "topic": "Shrift, o'lcham, rang",
+   "prompt": "Ismni qizil qilish tartibini yig'",
+   "tokens": [
+    "Ismni belgilash",
+    "«Rang» ni bosish",
+    "Qizilni tanlash"
+   ],
+   "extra": [
+    "Delete ni bosish"
+   ],
+   "explain": "Belgiladik → rang → qizil."
+  },
+  {
+   "type": "choice",
+   "topic": "Bloknot va Word",
+   "prompt": "«Men haqimda» hujjatini o'z papkangga qanday saqlaysan?",
+   "options": [
+    "Fayl → Boshqacha saqlash → o'z papkang",
+    "Saqlamasdan yopish",
+    "Ctrl + A bosish",
+    "Kompyuterni o'chirish"
+   ],
+   "answer": 0,
+   "explain": "Bloknotdagidek — qayerga saqlayotganimizni eslaymiz."
+  },
+  {
+   "type": "fill",
+   "topic": "Belgilash",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "Avval ___, keyin o'zgartiramiz.",
+   "answer": [
+    "belgilaymiz"
+   ],
+   "extra": [
+    "saqlaymiz",
+    "yopamiz",
+    "o'chiramiz"
+   ],
+   "explain": "Word ning asosiy qoidasi."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Bloknot va Word",
+   "prompt": "Word — rangli ruchka va rasmli chiroyli daftar.",
+   "answer": true,
+   "explain": "Bloknot esa oddiy daftar."
+  }
+ ],
+ "learn": {
+  "intro": "Bloknot — oddiy katakli daftar. Word esa rangli ruchkali chiroyli daftar! Bugun matnni chiroyli qilamiz.",
+  "sections": [
+   {
+    "title": "Bloknot va Word",
+    "slides": [
+     {
+      "text": "**Word** da matnni chiroyli qilsa bo'ladi: ranglar, o'lchamlar, rasmlar. Word ni ochamiz → «Yangi hujjat».",
+      "emoji": "🖍️"
+     },
+     {
+      "text": "Tepada tugmali lenta. Tugmalar ko'p, lekin bizga bir nechtasi kerak."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Bloknot va Word",
+      "prompt": "Word Bloknotdan nimasi bilan farq qiladi?",
+      "options": [
+       "Unda matnni chiroyli qilsa bo'ladi",
+       "Unda yozib bo'lmaydi",
+       "Hech narsasi bilan"
+      ],
+      "answer": 0,
+      "explain": "Word — rangli ruchkali daftar."
+     }
+    ]
+   },
+   {
+    "title": "Belgilash",
+    "slides": [
+     {
+      "text": "Matnni o'zgartirish uchun avval uni **belgilaymiz** — kompyuterga qaysi bo'lakni o'zgartirishimizni ko'rsatamiz. So'z oldidan bos, tugmani ushlab, so'z oxirigacha yurgiz.",
+      "emoji": "🟦"
+     },
+     {
+      "text": "Matn ko'k bo'ldi — demak, belgilandi. **Ctrl + A** — hammasini belgilash."
+     }
+    ],
+    "check": [
+     {
+      "type": "fill",
+      "topic": "Belgilash",
+      "prompt": "Tushib qolganini qo'y",
+      "text": "Hammasini belgilash: Ctrl + ___",
+      "answer": [
+       "A"
+      ],
+      "extra": [
+       "S",
+       "Z",
+       "V"
+      ],
+      "explain": "A — all, hammasi."
+     }
+    ]
+   },
+   {
+    "title": "Shrift, o'lcham, rang",
+    "slides": [
+     {
+      "text": "**Shrift** — bu xat. **O'lcham** — raqam qancha katta bo'lsa, harflar shuncha katta. **Rang** — rangli chiziqli A harfi, rangli ruchka kabi.",
+      "emoji": "🎨"
+     },
+     {
+      "text": "Asosiy qoida: **avval belgilaymiz, keyin o'zgartiramiz**. Belgilamasang — hech narsa o'zgarmaydi.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Shrift, o'lcham, rang",
+      "prompt": "Rangni o'zgartirishdan oldin nima qilish kerak?",
+      "options": [
+       "Matnni belgilash",
+       "Word ni yopish",
+       "Enter bosish"
+      ],
+      "answer": 0,
+      "explain": "Avval belgilaymiz, keyin o'zgartiramiz."
+     }
+    ]
+   }
+  ]
+ }
+}

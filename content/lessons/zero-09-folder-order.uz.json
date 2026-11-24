@@ -1,0 +1,185 @@
+{
+ "title": "9-dars. Papkalarda tartib",
+ "description": "Papka ichidagi papkalar, nomini o'zgartirish, ko'chirish va nusxalash",
+ "questions": [
+  {
+   "type": "match",
+   "topic": "Nomini o'zgartirish va ko'chirish",
+   "prompt": "Amalni ma'nosi bilan bog'la",
+   "pairs": [
+    [
+     "Ko'chirish",
+     "Boshqa bo'limga o'tkazish"
+    ],
+    [
+     "Nusxalash",
+     "Kserokopiya qilish"
+    ],
+    [
+     "Nomini o'zgartirish",
+     "Yangi nom berish"
+    ]
+   ],
+   "explain": "Fayllar bilan uchta asosiy amal."
+  },
+  {
+   "type": "order",
+   "topic": "Nusxalash",
+   "prompt": "Nusxalash qadamlarini yig'",
+   "tokens": [
+    "O'ng tugma",
+    "Nusxalash",
+    "Boshqa papka",
+    "Qo'yish"
+   ],
+   "extra": [
+    "O'chirish"
+   ],
+   "explain": "Nusxalash → kirish → Qo'yish."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Nusxalash",
+   "prompt": "Nusxalagandan keyin fayl eski va yangi joyda ham bor.",
+   "answer": true,
+   "explain": "Bu kserokopiya."
+  },
+  {
+   "type": "choice",
+   "topic": "Nomini o'zgartirish va ko'chirish",
+   "prompt": "Faylni papkaga ko'chirishning eng oson yo'li?",
+   "options": [
+    "Sichqoncha bilan sudrash",
+    "Caps Lock ni bosish",
+    "Kompyuterni o'chirish",
+    "G'ildirakchani aylantirish"
+   ],
+   "answer": 0,
+   "explain": "Bosdim, ushlayman, papkaga olib boraman, qo'yib yubordim."
+  },
+  {
+   "type": "choice",
+   "topic": "Papka ichida papka",
+   "prompt": "Tartib o'rnatishda mushuk rasmini qayerga qo'yamiz?",
+   "options": [
+    "Rasmlar papkasiga",
+    "Matnlar papkasiga",
+    "O'yinlar papkasiga",
+    "Savatga"
+   ],
+   "answer": 0,
+   "explain": "Rasmlar — Rasmlarga."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Papka ichida papka",
+   "prompt": "Rasmni belgisidan bilsa bo'ladi — u rasmga o'xshaydi.",
+   "answer": true,
+   "explain": "«Tortmalarga ajrat» kvestidan maslahat."
+  },
+  {
+   "type": "fill",
+   "topic": "Nomini o'zgartirish va ko'chirish",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "Fayl nomini o'zgartirish: o'ng tugma → ___ → Enter.",
+   "answer": [
+    "Nomini o'zgartirish"
+   ],
+   "extra": [
+    "Qo'yish",
+    "Nusxalash",
+    "Ochish"
+   ],
+   "explain": "Nomini o'zgartirish — yangi nom."
+  },
+  {
+   "type": "choice",
+   "topic": "Papka ichida papka",
+   "prompt": "Oxirida bo'sh «Tartibsizlik» papkasini nima qilamiz?",
+   "options": [
+    "O'chiramiz",
+    "Nusxalaymiz",
+    "«O'yinlar» deb nomlaymiz",
+    "Abadiy qoldiramiz"
+   ],
+   "answer": 0,
+   "explain": "Bo'sh papka kerak emas."
+  }
+ ],
+ "learn": {
+  "intro": "Portfelda bo'limlar bor — papkada ham shunday! Bugun haqiqiy ustalardek tartib o'rnatamiz.",
+  "sections": [
+   {
+    "title": "Papka ichida papka",
+    "slides": [
+     {
+      "text": "Portfelda daftar, ruchka, ovqat uchun bo'limlar bor. Papkada ham **kichikroq papkalar** bo'lishi mumkin. Yaratamiz: Matnlar, Rasmlar, O'yinlar.",
+      "emoji": "🎒"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Papka ichida papka",
+      "prompt": "Papka ichida boshqa papkalar yaratsa bo'ladi.",
+      "answer": true,
+      "explain": "Portfeldagi bo'limlar kabi."
+     }
+    ]
+   },
+   {
+    "title": "Nomini o'zgartirish va ko'chirish",
+    "slides": [
+     {
+      "text": "**Nomini o'zgartirish**: faylda o'ng tugma → Nomini o'zgartirish → yangi nom → Enter.",
+      "emoji": "✏️"
+     },
+     {
+      "text": "**Ko'chirish**: faylni sichqoncha bilan boshqa papkaga sudraymiz. Daftarni boshqa bo'limga o'tkazgandek — eski joyda u endi yo'q.",
+      "emoji": "🚚"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Nomini o'zgartirish va ko'chirish",
+      "prompt": "Ko'chirgandan keyin fayl eski joyida qoladimi?",
+      "options": [
+       "Yo'q",
+       "Ha"
+      ],
+      "answer": 0,
+      "explain": "Ko'chirish — o'tkazamiz, eski joyda yo'q."
+     }
+    ]
+   },
+   {
+    "title": "Nusxalash",
+    "slides": [
+     {
+      "text": "**Nusxalash**: o'ng tugma → Nusxalash → boshqa papkaga kirish → o'ng tugma → **Qo'yish**.",
+      "emoji": "📋"
+     },
+     {
+      "text": "Nusxalash — kserokopiya qilgandek: daftar joyida qoladi, yangi joyda xuddi shunday paydo bo'ladi.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Nusxalash",
+      "prompt": "Nusxalash ko'chirishdan nimasi bilan farq qiladi?",
+      "options": [
+       "Asl nusxa joyida qoladi",
+       "Fayl yo'qoladi",
+       "Hech narsasi bilan"
+      ],
+      "answer": 0,
+      "explain": "Nusxa — kserokopiya, asli joyida."
+     }
+    ]
+   }
+  ]
+ }
+}

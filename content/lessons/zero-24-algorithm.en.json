@@ -1,0 +1,185 @@
+{
+ "title": "Lesson 24. Algorithms without a computer",
+ "description": "The Robot game: a computer follows commands exactly and in order",
+ "questions": [
+  {
+   "type": "choice",
+   "topic": "Algorithm",
+   "prompt": "What is a program?",
+   "options": [
+    "An algorithm for a computer",
+    "A mouse",
+    "The Recycle Bin",
+    "A picture"
+   ],
+   "answer": 0,
+   "explain": "Commands in order for a computer."
+  },
+  {
+   "type": "truefalse",
+   "topic": "The Robot game",
+   "prompt": "The robot does exactly what it is told, in order.",
+   "answer": true,
+   "explain": "So it's important not to make mistakes."
+  },
+  {
+   "type": "match",
+   "topic": "The Robot game",
+   "prompt": "Match the mistake with what the robot did",
+   "pairs": [
+    [
+     "\"Go there\"",
+     "Stays still"
+    ],
+    [
+     "\"Step forward\" at a wall",
+     "Bumps into the wall"
+    ],
+    [
+     "Mixed up right and left",
+     "Turned the wrong way"
+    ]
+   ],
+   "explain": "A wrong command — a wrong move."
+  },
+  {
+   "type": "order",
+   "topic": "Algorithm",
+   "prompt": "Build the \"Brush your teeth\" algorithm",
+   "tokens": [
+    "Take the brush",
+    "Squeeze the paste",
+    "Brush your teeth",
+    "Rinse your mouth"
+   ],
+   "extra": [
+    "Go to bed"
+   ],
+   "explain": "Steps in order make an algorithm."
+  },
+  {
+   "type": "choice",
+   "topic": "The Robot game",
+   "prompt": "Which commands does the game robot know?",
+   "options": [
+    "Step forward, right, left",
+    "Jump and dance",
+    "Go wherever",
+    "Any"
+   ],
+   "answer": 0,
+   "explain": "Only 3 commands."
+  },
+  {
+   "type": "fill",
+   "topic": "Algorithm",
+   "prompt": "Fill in the blank",
+   "text": "A list of commands in order is called an ___.",
+   "answer": [
+    "algorithm"
+   ],
+   "extra": [
+    "file",
+    "folder",
+    "slide"
+   ],
+   "explain": "Algorithm is the key word."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Algorithm on paper",
+   "prompt": "If a step is missing, the robot fills it in itself.",
+   "answer": false,
+   "explain": "The robot invents nothing."
+  },
+  {
+   "type": "choice",
+   "topic": "Algorithm on paper",
+   "prompt": "What do we do when the robot errs because of our algorithm?",
+   "options": [
+    "Fix the algorithm",
+    "Scold the robot",
+    "Quit the game",
+    "Nothing"
+   ],
+   "answer": 0,
+   "explain": "Add the missing steps."
+  }
+ ],
+ "learn": {
+  "intro": "Today you become a programmer, and your teacher becomes your robot!",
+  "sections": [
+   {
+    "title": "The Robot game",
+    "slides": [
+     {
+      "text": "The robot knows only 3 commands: **\"step forward\"**, **\"turn right\"**, **\"turn left\"**. It does exactly what it is told and invents nothing.",
+      "emoji": "🤖"
+     },
+     {
+      "text": "Say \"go there\" — the robot stands still: no such command. Say \"step forward\" facing a wall — it bumps into it. A bug in the program!",
+      "emoji": "🧱"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "The Robot game",
+      "prompt": "The robot understands \"go there\".",
+      "answer": false,
+      "explain": "It knows only its 3 commands."
+     }
+    ]
+   },
+   {
+    "title": "Algorithm",
+    "slides": [
+     {
+      "text": "A list of commands in order is called an **algorithm**. A **program** is an algorithm for a computer.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Algorithm",
+      "prompt": "What is an algorithm?",
+      "options": [
+       "Commands in order",
+       "A picture in Paint",
+       "The power button"
+      ],
+      "answer": 0,
+      "explain": "An algorithm is a list of steps in order."
+     }
+    ]
+   },
+   {
+    "title": "Algorithm on paper",
+    "slides": [
+     {
+      "text": "Write the algorithm \"How to make a sandwich\". The robot follows it literally: \"Spread the butter\". With what? You never said take a knife!",
+      "emoji": "🥪"
+     },
+     {
+      "text": "Fix the algorithm — add the missing steps. Then swap roles."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Algorithm on paper",
+      "prompt": "Why did the robot \"spread butter with its hands\"?",
+      "options": [
+       "The step \"take a knife\" was missing",
+       "The robot broke",
+       "That's correct"
+      ],
+      "answer": 0,
+      "explain": "The robot only does what is written."
+     }
+    ]
+   }
+  ]
+ }
+}

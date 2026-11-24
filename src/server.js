@@ -115,8 +115,9 @@ for (const row of (process.env.SEED_ACCOUNTS || '').split(';').map((x) => x.trim
     if (!g) g = logic.createGroup({ name: r.name, emoji: r.emoji, track: r.track });
     logic.updateGroup(g.id, { track: r.track || 'main', ...(r.emoji ? { emoji: r.emoji } : {}) });
     const added = [];
-    for (const uid of r.members || []) { if (!logic.S.users[uid]) { console.error(`[groups-file] нет ученика ${uid}`); continue; } try { logic.addMember(g.id, uid); added.push(logic.name(logic.S.users[uid])); } catch (e) { console.error(`[groups-file] ${uid}: ${e.message}`); } }
-    logic.S.migrations[key] = Date.now();
+    let missing = 0;
+    for (const uid of r.members || []) { if (!logic.S.users[uid]) { missing++; console.error(`[groups-file] нет ученика ${uid} — попробую при следующем запуске`); continue; } try { logic.addMember(g.id, uid); added.push(logic.name(logic.S.users[uid])); } catch (e) { console.error(`[groups-file] ${uid}: ${e.message}`); } }
+    if (!missing) logic.S.migrations[key] = Date.now();
     store.save();
     console.log('[groups-file] ' + JSON.stringify({ group: g.name, id: g.id, track: g.track, added }));
   }
@@ -135,13 +136,13 @@ if (fs.existsSync(bonusFile)) {
   }
 }
 
-// Время уроков из content/schedule.json: { id, groups: [{ match, slots }], students: [{ userId | username, slots, tzMin? }] }.
+// Время уроков из content/schedule.json: объект или массив [{ id, groups: [{ match, slots }], students: [{ userId | username, slots, tzMin? }] }.
 // Каждый id применяется один раз; дальше учитель меняет время в приложении.
 const schedFile = path.join(root, 'content', 'schedule.json');
 if (fs.existsSync(schedFile)) {
-  const sc = JSON.parse(fs.readFileSync(schedFile, 'utf8'));
+  const scs = [].concat(JSON.parse(fs.readFileSync(schedFile, 'utf8')));
   logic.S.migrations ||= {};
-  if (!logic.S.migrations['schedule:' + sc.id]) {
+  for (const sc of scs) if (!logic.S.migrations['schedule:' + sc.id]) {
     for (const g of sc.groups || []) {
       const found = Object.values(logic.S.groups).filter((x) => x.name.toLowerCase().includes(g.match.toLowerCase()));
       if (found.length !== 1) { console.error(`[schedule] группа «${g.match}»: найдено ${found.length} (${found.map((x) => x.name).join(', ')})`); continue; }

@@ -1,0 +1,188 @@
+{
+ "title": "30-dars. Yakuniy loyiha",
+ "description": "O'yinimizni tugatamiz va ota-onalarga ko'rsatamiz",
+ "questions": [
+  {
+   "type": "order",
+   "topic": "O'yin haqida hikoya",
+   "prompt": "O'yin haqidagi hikoyani tartib bilan yig'",
+   "tokens": [
+    "Nomi va qahramon",
+    "Qanday o'ynash",
+    "Qanday tuzilgan"
+   ],
+   "extra": [
+    "Parol"
+   ],
+   "explain": "Shunda har qanday tomoshabinga tushunarli."
+  },
+  {
+   "type": "match",
+   "topic": "O'yin haqida hikoya",
+   "prompt": "O'yin qismini vazifasi bilan bog'la",
+   "pairs": [
+    [
+     "Agar — unda",
+     "Olmaga tegishni tekshiradi"
+    ],
+    [
+     "«Ochkolar» o'zgaruvchisi",
+     "Ochkolarni sanaydi"
+    ],
+    [
+     "Strelkalar",
+     "Qahramonni boshqaradi"
+    ]
+   ],
+   "explain": "Kursdagi butun o'yin."
+  },
+  {
+   "type": "choice",
+   "topic": "O'yinni yaxshilaymiz",
+   "prompt": "O'yinga qaysi yaxshilashni qo'shsa bo'ladi?",
+   "options": [
+    "Ikkinchi daraja",
+    "Qahramonni o'chirish",
+    "Ovozni abadiy o'chirish",
+    "Barcha bloklarni olib tashlash"
+   ],
+   "answer": 0,
+   "explain": "Yana: musiqa, qoidalar, dushman, nom."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Ko'rsatish va yakun",
+   "prompt": "Kursdan keyin sen nafaqat o'ynaysan, balki o'yinlar yaratasan.",
+   "answer": true,
+   "explain": "Bu kursning asosiy yakuni."
+  },
+  {
+   "type": "choice",
+   "topic": "Ko'rsatish va yakun",
+   "prompt": "Kursdan keyin nima qilsa bo'ladi?",
+   "options": [
+    "Scratch da murakkab loyihalar, keyin HTML va CSS",
+    "Kompyuterga boshqa tegmaslik",
+    "Faqat multfilm ko'rish",
+    "Barcha ishlarni o'chirish"
+   ],
+   "answer": 0,
+   "explain": "Labirint, poyga, viktorina — va veb."
+  },
+  {
+   "type": "fill",
+   "topic": "O'yinni yaxshilaymiz",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "Qoidalar yozuvi: «___ ta olma yig'!»",
+   "answer": [
+    "10"
+   ],
+   "extra": [
+    "0",
+    "1000",
+    "-5"
+   ],
+   "explain": "O'yinimizdagidek — 10 ochkogacha."
+  },
+  {
+   "type": "truefalse",
+   "topic": "O'yinni yaxshilaymiz",
+   "prompt": "Yakuniy loyihada o'qituvchi hammasini o'quvchi o'rniga qiladi.",
+   "answer": false,
+   "explain": "O'qituvchi maslahat beradi, sichqoncha o'quvchida."
+  },
+  {
+   "type": "choice",
+   "topic": "O'yin haqida hikoya",
+   "prompt": "Ochkolarni nima sanashini qanday tushuntiramiz?",
+   "options": [
+    "Bu o'zgaruvchi",
+    "Bu kostyum",
+    "Bu fon",
+    "Bu yashil bayroqcha"
+   ],
+   "answer": 0,
+   "explain": "O'zgaruvchi — sonli quti."
+  }
+ ],
+ "learn": {
+  "intro": "Kursning oxirgi darsi! Sen «papka nima» dan o'z o'yiningacha yo'l bosib o'tding!",
+  "sections": [
+   {
+    "title": "O'yinni yaxshilaymiz",
+    "slides": [
+     {
+      "text": "2–3 ta yaxshilashni tanlaymiz: fon va musiqa; qoidalar yozuvi («10 ta olma yig'!»); ikkinchi daraja; dushman; sahnada o'yin nomi.",
+      "emoji": "🛠️"
+     },
+     {
+      "text": "O'qituvchi faqat maslahat beradi — **sichqoncha sening qo'lingda**.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "O'yinni yaxshilaymiz",
+      "prompt": "O'yinni tugatayotganda sichqonchani kim ushlaydi?",
+      "options": [
+       "O'quvchi",
+       "O'qituvchi",
+       "Ota-onalar"
+      ],
+      "answer": 0,
+      "explain": "Kursning asosiy qoidasi."
+     }
+    ]
+   },
+   {
+    "title": "O'yin haqida hikoya",
+    "slides": [
+     {
+      "text": "Hikoya tayyorlaymiz: 1) o'yin nomi va qahramoni; 2) qanday o'ynash — qaysi tugmalar va maqsad; 3) u qanday tuzilgan.",
+      "emoji": "🎙️"
+     },
+     {
+      "text": "«Bu yerda **agar — unda** bloki — u qahramon olmaga tekkanini tekshiradi. Bu yerda esa **o'zgaruvchi** — u ochkolarni sanaydi»."
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "O'yin haqida hikoya",
+      "prompt": "O'yin haqidagi hikoyada u ichidan qanday tuzilganini tushuntiramiz.",
+      "answer": true,
+      "explain": "Shart va o'zgaruvchi."
+     }
+    ]
+   },
+   {
+    "title": "Ko'rsatish va yakun",
+    "slides": [
+     {
+      "text": "Ota-onalarga ko'rsatish: o'yin haqida gapirib berasan, o'ynatib ko'rasan va kursning barcha ishlari bor papkangni ko'rsatasan: matnlar, otkritka, rasmlar, taqdimot, o'yinlar.",
+      "emoji": "👨‍👩‍👧"
+     },
+     {
+      "text": "Sen kompyuter bilan ishlashni o'rganding va birinchi o'yiningni yasading. Endi sen shunchaki o'ynamaysan — **sen ularni yaratasan!**",
+      "emoji": "🎓"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Ko'rsatish va yakun",
+      "prompt": "Ota-onalarga o'yindan tashqari nimani ko'rsatamiz?",
+      "options": [
+       "Barcha ishlar bor o'z papkamizni",
+       "Savatni",
+       "Parollarni"
+      ],
+      "answer": 0,
+      "explain": "Matnlar, otkritka, rasmlar, taqdimot, o'yinlar."
+     }
+    ]
+   }
+  ]
+ }
+}

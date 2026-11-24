@@ -1,0 +1,185 @@
+{
+ "title": "6-dars. Klaviatura trenajori",
+ "description": "Qanday to'g'ri o'tirish, barmoqlar qayerda yashaydi va birinchi tezlik rekordi",
+ "questions": [
+  {
+   "type": "choice",
+   "topic": "Barmoqlar uychasi",
+   "prompt": "Ko'rsatkich barmoqlar uchun do'mbiqlar qaysi harflarda?",
+   "options": [
+    "А va О",
+    "Ф va Ж",
+    "Enter va Probel",
+    "1 va 0"
+   ],
+   "answer": 0,
+   "explain": "Ularni ko'z yumib ham topsa bo'ladi."
+  },
+  {
+   "type": "match",
+   "topic": "Barmoqlar uychasi",
+   "prompt": "Qo'lni uning uychasi bilan bog'la",
+   "pairs": [
+    [
+     "Chap qo'l",
+     "Ф Ы В А"
+    ],
+    [
+     "O'ng qo'l",
+     "О Л Д Ж"
+    ],
+    [
+     "Bosh barmoqlar",
+     "Probel"
+    ]
+   ],
+   "explain": "Bu barmoqlar uychasi."
+  },
+  {
+   "type": "truefalse",
+   "topic": "To'g'ri o'tirish",
+   "prompt": "Kompyuter oldida egri bel bilan o'tirsa bo'ladi — bu muhim emas.",
+   "answer": false,
+   "explain": "Bel tekis bo'lsin, aks holda charchaydi."
+  },
+  {
+   "type": "choice",
+   "topic": "To'g'ri o'tirish",
+   "prompt": "Oyoqlar qanday turishi kerak?",
+   "options": [
+    "Yerda",
+    "Stulda",
+    "Stolda",
+    "Ostingda"
+   ],
+   "answer": 0,
+   "explain": "Oyoqlar yerda turadi."
+  },
+  {
+   "type": "fill",
+   "topic": "To'g'ri o'tirish",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "Tirsaklar ___ nikidek — to'g'ri burchakda.",
+   "answer": [
+    "robot"
+   ],
+   "extra": [
+    "mushuk",
+    "qush",
+    "baliq"
+   ],
+   "explain": "Robotnikidek — tekis."
+  },
+  {
+   "type": "choice",
+   "topic": "Tezlik",
+   "prompt": "Trenajorda nima uchun maqtaymiz?",
+   "options": [
+    "Barmoqlar uychada turibdi",
+    "Faqat tezlik uchun",
+    "Baland taqillatish uchun",
+    "Hech narsa uchun"
+   ],
+   "answer": 0,
+   "explain": "Tezlik keyin keladi."
+  },
+  {
+   "type": "order",
+   "topic": "Tezlik",
+   "prompt": "Rekordni qanday o'rnatishni yig'",
+   "tokens": [
+    "1 daqiqa yozamiz",
+    "So'zlarni sanaymiz",
+    "Natijani yozamiz"
+   ],
+   "extra": [
+    "O'chiramiz"
+   ],
+   "explain": "Keyin 2 haftadan so'ng solishtiramiz."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Barmoqlar uychasi",
+   "prompt": "А va О dagi do'mbiqlar ko'rmasdan barmoqlar uychasini topishga yordam beradi.",
+   "answer": true,
+   "explain": "Ularni ko'rsatkich barmoqlar bilan paypaslab topishadi."
+  }
+ ],
+ "learn": {
+  "intro": "Bugun sportchilardek mashq qilamiz: to'g'ri o'tiramiz, barmoqlarni uychaga qo'yamiz va birinchi rekordni o'rnatamiz!",
+  "sections": [
+   {
+    "title": "To'g'ri o'tirish",
+    "slides": [
+     {
+      "text": "Bel va ko'zlar charchamasligi uchun: bel tekis, oyoqlar yerda, ekran cho'zilgan qo'l masofasida, tirsaklar robotnikidek — to'g'ri burchakda.",
+      "emoji": "🪑"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "To'g'ri o'tirish",
+      "prompt": "Ekran qanday masofada bo'lishi kerak?",
+      "options": [
+       "Cho'zilgan qo'l masofasida",
+       "Burun oldida",
+       "Boshqa xonada"
+      ],
+      "answer": 0,
+      "explain": "Shunda ko'zlar charchamaydi."
+     }
+    ]
+   },
+   {
+    "title": "Barmoqlar uychasi",
+    "slides": [
+     {
+      "text": "Barmoqlarning o'z uychasi bor. **А** va **О** harflarida kichik do'mbiqlar bor — ularni ko'z yumib ham topasan. Ko'rsatkich barmoqlar ularda yashaydi.",
+      "emoji": "🏠"
+     },
+     {
+      "text": "Chap qo'l — **Ф Ы В А**, o'ng qo'l — **О Л Д Ж**. Bosh barmoqlar — probelda.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Barmoqlar uychasi",
+      "prompt": "Bosh barmoqlar probelda turadi.",
+      "answer": true,
+      "explain": "Qolgan barmoqlar — harflardagi uychada."
+     }
+    ]
+   },
+   {
+    "title": "Tezlik",
+    "slides": [
+     {
+      "text": "Trenajorda 15 daqiqa mashq qilamiz. Tezlik uchun emas, barmoqlar uychada turgani uchun maqtaymiz.",
+      "emoji": "🎮"
+     },
+     {
+      "text": "Musobaqa: tanish matnni 1 daqiqa yozamiz va so'zlarni sanaymiz. Rekordni yozib qo'yamiz va har 2 haftada tekshiramiz!",
+      "emoji": "⏱️"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Tezlik",
+      "prompt": "Yozish tezligini qanchalik tez-tez tekshiramiz?",
+      "options": [
+       "Har 2 haftada",
+       "Har daqiqada",
+       "Hech qachon"
+      ],
+      "answer": 0,
+      "explain": "Shunda raqam qanday o'sayotgani ko'rinadi."
+     }
+    ]
+   }
+  ]
+ }
+}

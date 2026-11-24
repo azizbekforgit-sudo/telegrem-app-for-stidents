@@ -1,0 +1,194 @@
+{
+ "title": "Lesson 1. What a computer is made of",
+ "description": "Computer parts and how to turn it on and off properly",
+ "questions": [
+  {
+   "type": "choice",
+   "topic": "Computer parts",
+   "prompt": "What is the computer's screen called?",
+   "options": [
+    "Monitor",
+    "Mouse",
+    "Speakers",
+    "Keyboard"
+   ],
+   "answer": 0,
+   "explain": "The monitor is the computer's \"eyes\"."
+  },
+  {
+   "type": "match",
+   "topic": "Computer parts",
+   "prompt": "Match the computer part with the body part",
+   "pairs": [
+    [
+     "Monitor",
+     "Eyes"
+    ],
+    [
+     "Keyboard",
+     "Ears"
+    ],
+    [
+     "System unit",
+     "Head"
+    ],
+    [
+     "Speakers",
+     "Mouth"
+    ]
+   ],
+   "explain": "The screen shows, the keyboard listens, the unit thinks, the speakers talk."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Computer parts",
+   "prompt": "We tell the computer what to do through the keyboard and mouse.",
+   "answer": true,
+   "explain": "They are its \"ears\"."
+  },
+  {
+   "type": "choice",
+   "topic": "Computer parts",
+   "prompt": "Where does the computer \"think\"?",
+   "options": [
+    "In the monitor",
+    "In the system unit",
+    "In the speakers",
+    "In the mouse"
+   ],
+   "answer": 1,
+   "explain": "The system unit is the computer's \"head\"."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Turning off",
+   "prompt": "You can turn off a computer just by pressing a button like a light.",
+   "answer": false,
+   "explain": "That way it can lose our work. We turn it off through Start."
+  },
+  {
+   "type": "choice",
+   "topic": "Turning off",
+   "prompt": "Where is the Start button?",
+   "options": [
+    "In the bottom-left corner",
+    "In the top-right corner",
+    "On top of the keyboard",
+    "On the speakers"
+   ],
+   "answer": 0,
+   "explain": "Start is at the bottom left."
+  },
+  {
+   "type": "choice",
+   "topic": "Turning on",
+   "prompt": "What do we do right after turning it on?",
+   "options": [
+    "Press all the buttons",
+    "Wait for the desktop",
+    "Turn it off again",
+    "Tap the screen"
+   ],
+   "answer": 1,
+   "explain": "The computer wakes up — we wait for the desktop."
+  },
+  {
+   "type": "fill",
+   "topic": "Turning off",
+   "prompt": "Fill in the blank",
+   "text": "We turn it off like this: ___ → power icon → \"Shut down\".",
+   "answer": [
+    "Start"
+   ],
+   "extra": [
+    "Cross",
+    "Speakers",
+    "Mouse"
+   ],
+   "explain": "We start with the Start button."
+  }
+ ],
+ "learn": {
+  "intro": "Hi! We're going to make friends with the computer. Today we meet it like a new friend!",
+  "sections": [
+   {
+    "title": "Computer parts",
+    "slides": [
+     {
+      "text": "A computer is like a person. The **monitor** is its eyes: it shows us pictures on the screen.",
+      "emoji": "🖥️"
+     },
+     {
+      "text": "The **keyboard** and **mouse** are its ears: through them we tell it what to do. The **system unit** is its head, where it thinks. The **speakers** are its mouth: it talks and sings through them.",
+      "emoji": "🧠"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Computer parts",
+      "prompt": "If I want to type a word, what do I use?",
+      "options": [
+       "The monitor",
+       "The keyboard",
+       "The speakers"
+      ],
+      "answer": 1,
+      "explain": "The keyboard is the computer's \"ears\": we tell it letters through it."
+     }
+    ]
+   },
+   {
+    "title": "Turning on",
+    "slides": [
+     {
+      "text": "We turn it on with the power button on the system unit or laptop.",
+      "emoji": "🔌"
+     },
+     {
+      "text": "Then we wait for the **desktop** to appear. The computer is waking up — it needs time.",
+      "emoji": "⏳"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Turning on",
+      "prompt": "After turning it on, you wait for the desktop to appear.",
+      "answer": true,
+      "explain": "The computer is waking up and needs time."
+     }
+    ]
+   },
+   {
+    "title": "Turning off",
+    "slides": [
+     {
+      "text": "You can't switch a computer off with a button like a light. It may get upset and lose what we made.",
+      "emoji": "🙅"
+     },
+     {
+      "text": "We turn it off **politely**: the Start button in the bottom-left corner → the power icon → \"Shut down\".",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "order",
+      "topic": "Turning off",
+      "prompt": "Put in order how to turn off the computer",
+      "tokens": [
+       "Start",
+       "Power icon",
+       "Shut down"
+      ],
+      "extra": [
+       "Cross"
+      ],
+      "explain": "First Start, then power, then Shut down."
+     }
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,185 @@
+{
+ "title": "29-dars. Hisob",
+ "description": "«Ochkolar» o'zgaruvchisi: olmalarni sanaymiz va g'alaba qilamiz",
+ "questions": [
+  {
+   "type": "choice",
+   "topic": "Ochkolar",
+   "prompt": "Qaysi blok bitta ochko qo'shadi?",
+   "options": [
+    "«Ochkolar» ni 1 ga o'zgartir",
+    "«Ochkolar» ga 0 qiymat ber",
+    "«G'alaba!» de",
+    "Ko'rin"
+   ],
+   "answer": 0,
+   "explain": "«1 ga o'zgartir» — bitta qo'shiladi."
+  },
+  {
+   "type": "match",
+   "topic": "Ochkolar",
+   "prompt": "Blokni vazifasi bilan bog'la",
+   "pairs": [
+    [
+     "«Ochkolar» ga 0 qiymat ber",
+     "Boshida bo'sh quti"
+    ],
+    [
+     "«Ochkolar» ni 1 ga o'zgartir",
+     "Bitta olma qo'shiladi"
+    ],
+    [
+     "«Ochkolar» = 10 bo'lguncha kut",
+     "G'alabani kutamiz"
+    ]
+   ],
+   "explain": "Hisobning uchta bloki."
+  },
+  {
+   "type": "truefalse",
+   "topic": "O'zgaruvchi",
+   "prompt": "O'zgaruvchi to'q sariq «O'zgaruvchilar» bloklarida yaratiladi.",
+   "answer": true,
+   "explain": "«O'zgaruvchi yaratish» → nom → OK."
+  },
+  {
+   "type": "order",
+   "topic": "G'alaba",
+   "prompt": "G'alaba dasturini yig'",
+   "tokens": [
+    "Bayroqcha bosilganda",
+    "«Ochkolar» = 10 bo'lguncha kut",
+    "«G'alaba!» de"
+   ],
+   "extra": [
+    "«Ochkolar» ga 0 qiymat ber"
+   ],
+   "explain": "10 ochkoni kutamiz — va g'alaba."
+  },
+  {
+   "type": "fill",
+   "topic": "Ochkolar",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "O'yin boshida: «Ochkolar» ga ___ qiymat ber.",
+   "answer": [
+    "0"
+   ],
+   "extra": [
+    "1",
+    "10",
+    "100"
+   ],
+   "explain": "Quti bo'sh — nol."
+  },
+  {
+   "type": "choice",
+   "topic": "G'alaba",
+   "prompt": "⭐⭐ topshiriqdagi dushman nima qiladi?",
+   "options": [
+    "Tegsa ochkolar 0 bo'ladi",
+    "100 ochko beradi",
+    "Hech narsa",
+    "Kompyuterni o'chiradi"
+   ],
+   "answer": 0,
+   "explain": "Dushmandan qochish kerak."
+  },
+  {
+   "type": "truefalse",
+   "topic": "O'zgaruvchi",
+   "prompt": "O'zgaruvchi yaratilgach sahnada ochko hisoblagichi paydo bo'ladi.",
+   "answer": true,
+   "explain": "Nechta olma yig'ilgani ko'rinadi."
+  },
+  {
+   "type": "choice",
+   "topic": "O'zgaruvchi",
+   "prompt": "O'yinimizdagi o'zgaruvchi qanday nomlanadi?",
+   "options": [
+    "Ochkolar",
+    "Mushuk",
+    "Bayroqcha",
+    "Fon"
+   ],
+   "answer": 0,
+   "explain": "«Ochkolar» qutisi."
+  }
+ ],
+ "learn": {
+  "intro": "O'yinda hisob kerak! Bugun kompyuterni son eslab qolishga o'rgatamiz — o'yin qachon yutganingni biladi.",
+  "sections": [
+   {
+    "title": "O'zgaruvchi",
+    "slides": [
+     {
+      "text": "**O'zgaruvchi** — «Ochkolar» yozuvli quticha, ichida son yotadi. Qutiga yangi son solsa yoki unga qo'shsa bo'ladi.",
+      "emoji": "📦"
+     },
+     {
+      "text": "To'q sariq «O'zgaruvchilar» bloklari → **«O'zgaruvchi yaratish»** → nomi «Ochkolar» → OK. Sahnada hisoblagich paydo bo'ldi."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "O'zgaruvchi",
+      "prompt": "O'zgaruvchi nima?",
+      "options": [
+       "Kompyuter son eslab qoladigan quti",
+       "Qahramon rasmi",
+       "O'chirish tugmasi"
+      ],
+      "answer": 0,
+      "explain": "«Ochkolar» qutichasi son bilan."
+     }
+    ]
+   },
+   {
+    "title": "Ochkolar",
+    "slides": [
+     {
+      "text": "O'yin boshida quti bo'sh: **«Ochkolar ga 0 qiymat ber»**. «Agar qahramonga tegsa» ichida — **«Ochkolar ni 1 ga o'zgartir»**.",
+      "emoji": "➕",
+      "code": "yashil bayroqcha bosilganda\n«Ochkolar» ga 0 qiymat ber\n...\n    agar «Mening qahramonim» ga tegsa, unda\n        «Ochkolar» ni 1 ga o'zgartir"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Ochkolar",
+      "prompt": "O'yin boshida ochkolarni 0 ga tenglash kerak.",
+      "answer": true,
+      "explain": "Aks holda oldingi o'yin hisobi qoladi."
+     }
+    ]
+   },
+   {
+    "title": "G'alaba",
+    "slides": [
+     {
+      "text": "Qahramonda g'alaba: ochkolar 10 bo'lguncha kutamiz va «G'alaba!» deymiz.",
+      "emoji": "🏆",
+      "code": "yashil bayroqcha bosilganda\n«Ochkolar» = 10 bo'lguncha kut\n«G'alaba!» de 2 soniya"
+     },
+     {
+      "text": "Yulduzchali topshiriqlar: ⭐ har bir ochko bilan olma tezroq paydo bo'ladi; ⭐⭐ dushman qo'sh — tegsa ochkolar 0 bo'ladi."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "G'alaba",
+      "prompt": "Qahramon qachon «G'alaba!» deydi?",
+      "options": [
+       "Ochkolar 10 bo'lganda",
+       "Darhol boshlanganda",
+       "Hech qachon"
+      ],
+      "answer": 0,
+      "explain": "«Ochkolar = 10 bo'lguncha kut»."
+     }
+    ]
+   }
+  ]
+ }
+}

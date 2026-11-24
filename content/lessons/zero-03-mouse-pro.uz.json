@@ -1,0 +1,188 @@
+{
+ "title": "3-dars. Sichqoncha ustasi",
+ "description": "O'ng tugma, sudrash va g'ildirakcha",
+ "questions": [
+  {
+   "type": "match",
+   "topic": "Sichqoncha tugmalari",
+   "prompt": "Sichqoncha qismini vazifasi bilan bog'la",
+   "pairs": [
+    [
+     "Chap tugma",
+     "Tanlash"
+    ],
+    [
+     "O'ng tugma",
+     "Menyuni ochish"
+    ],
+    [
+     "G'ildirakcha",
+     "Yuqoriga-pastga varaqlash"
+    ]
+   ],
+   "explain": "Chap — ha, o'ng — menyu, g'ildirakcha — lift."
+  },
+  {
+   "type": "choice",
+   "topic": "Sudrab olib borish",
+   "prompt": "Belgini boshqa joyga qanday ko'chiramiz?",
+   "options": [
+    "Bosish, ushlash va tortish",
+    "Ikki marta bosish",
+    "G'ildirakchani aylantirish",
+    "Enter bosish"
+   ],
+   "answer": 0,
+   "explain": "Bu sudrash."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Sichqoncha tugmalari",
+   "prompt": "O'ng tugma menyusi doim bir xil.",
+   "answer": false,
+   "explain": "Menyu har xil, chunki narsalar har xil."
+  },
+  {
+   "type": "choice",
+   "topic": "Sichqoncha tugmalari",
+   "prompt": "Menyu kerak bo'lmasa, uni qanday yopamiz?",
+   "options": [
+    "Bo'sh joyni bosish",
+    "Kompyuterni o'chirish",
+    "G'ildirakchani bosish",
+    "Hech narsa qilib bo'lmaydi"
+   ],
+   "answer": 0,
+   "explain": "Bo'sh joyni bosish menyuni yopadi."
+  },
+  {
+   "type": "order",
+   "topic": "Sudrab olib borish",
+   "prompt": "Sudrash qadamlarini yig'",
+   "tokens": [
+    "Bosish",
+    "Ushlash",
+    "Sichqonchani yurgizish",
+    "Qo'yib yuborish"
+   ],
+   "extra": [
+    "O'chirish"
+   ],
+   "explain": "Bosdim → ushlayman → yurgizaman → qo'yib yubordim."
+  },
+  {
+   "type": "fill",
+   "topic": "G'ildirakcha",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "Sahifani yuqoriga-pastga varaqlash uchun ___ aylantiramiz.",
+   "answer": [
+    "g'ildirakcha"
+   ],
+   "extra": [
+    "tugma",
+    "monitor",
+    "sim"
+   ],
+   "explain": "G'ildirakcha — lift."
+  },
+  {
+   "type": "choice",
+   "topic": "Sudrab olib borish",
+   "prompt": "«Burchaklarga ajrat» o'yinida hayvonlarni qayerga qo'yamiz?",
+   "options": [
+    "Chap pastki burchakka",
+    "O'ng yuqori burchakka",
+    "Savatga",
+    "Vazifalar paneliga"
+   ],
+   "answer": 0,
+   "explain": "Ovqat — chap yuqori, transport — o'ng yuqori, hayvonlar — chap past, o'yinchoqlar — o'ng past."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Sichqoncha tugmalari",
+   "prompt": "O'quv papkasini shunday o'chirsa bo'ladi: o'ng tugma → «O'chirish».",
+   "answer": true,
+   "explain": "Papka savatga tushadi."
+  }
+ ],
+ "learn": {
+  "intro": "Sichqonchaning sirlari bor! Bugun sen haqiqiy sichqoncha ustasi bo'lasan.",
+  "sections": [
+   {
+    "title": "Sichqoncha tugmalari",
+    "slides": [
+     {
+      "text": "**Chap tugma** — «ha, tanlash». **O'ng tugma** — «nima qilsa bo'ladi?» — u menyuni ochadi.",
+      "emoji": "🖱️"
+     },
+     {
+      "text": "Ish stoli, belgi, vazifalar panelini o'ng tugma bilan bos — menyu har safar boshqacha, chunki narsalar har xil. Bo'sh joyni bossang — menyu yopiladi."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Sichqoncha tugmalari",
+      "prompt": "Sichqonchaning o'ng tugmasi nima qiladi?",
+      "options": [
+       "Menyuni ochadi",
+       "Kompyuterni o'chiradi",
+       "Harf yozadi"
+      ],
+      "answer": 0,
+      "explain": "O'ng tugma so'raydi: «Nima qilsa bo'ladi?»"
+     }
+    ]
+   },
+   {
+    "title": "Sudrab olib borish",
+    "slides": [
+     {
+      "text": "Belgini ko'chirish: **chap tugmani bos va qo'yib yuborma**. Ushlab — sichqonchani yurgizasan. Qo'yib yubording — belgi o'sha yerda qoldi.",
+      "emoji": "✋"
+     },
+     {
+      "text": "«Burchaklarga ajrat» o'yini: ovqat — chap yuqoriga, transport — o'ng yuqoriga, hayvonlar — chap pastga, o'yinchoqlar — o'ng pastga. Vaqtga!",
+      "emoji": "⏱️"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Sudrab olib borish",
+      "prompt": "Belgini sudrash uchun sichqonchani yurgizayotganda chap tugmani ushlab turish kerak.",
+      "answer": true,
+      "explain": "Bosdim, ushlayman, yurgizaman, qo'yib yubordim."
+     }
+    ]
+   },
+   {
+    "title": "G'ildirakcha",
+    "slides": [
+     {
+      "text": "**G'ildirakcha** — lift kabi: sahifani yuqoriga va pastga suradi.",
+      "emoji": "🛗"
+     },
+     {
+      "text": "Uzun ertakni ochib g'ildirakchani aylantir — matn yuqoriga va pastga yuradi."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "G'ildirakcha",
+      "prompt": "Sichqoncha g'ildirakchasi nimaga o'xshaydi?",
+      "options": [
+       "Liftga",
+       "O'chirg'ichga",
+       "Eshikka"
+      ],
+      "answer": 0,
+      "explain": "U sahifani lift kabi yuqoriga-pastga suradi."
+     }
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,193 @@
+{
+ "title": "Lesson 7. What files and folders are",
+ "description": "Notebook and schoolbag, File Explorer and your own main folder",
+ "questions": [
+  {
+   "type": "match",
+   "topic": "File and folder",
+   "prompt": "Match the thing with its computer name",
+   "pairs": [
+    [
+     "Notebook",
+     "File"
+    ],
+    [
+     "Schoolbag",
+     "Folder"
+    ],
+    [
+     "Wardrobe",
+     "The whole computer"
+    ]
+   ],
+   "explain": "Files live in folders, folders in the computer-wardrobe."
+  },
+  {
+   "type": "choice",
+   "topic": "File and folder",
+   "prompt": "Which of these is a file?",
+   "options": [
+    "A song",
+    "The Documents folder",
+    "File Explorer",
+    "A wardrobe"
+   ],
+   "answer": 0,
+   "explain": "Songs, drawings, cartoons, texts — files."
+  },
+  {
+   "type": "truefalse",
+   "topic": "File and folder",
+   "prompt": "Files live inside folders.",
+   "answer": true,
+   "explain": "Like notebooks in a schoolbag."
+  },
+  {
+   "type": "choice",
+   "topic": "File Explorer",
+   "prompt": "What is the computer's \"wardrobe\" called?",
+   "options": [
+    "File Explorer",
+    "Paint",
+    "Calculator",
+    "Recycle Bin"
+   ],
+   "answer": 0,
+   "explain": "File Explorer shows all folders."
+  },
+  {
+   "type": "choice",
+   "topic": "Your own folder",
+   "prompt": "Where does your folder live?",
+   "options": [
+    "In Documents",
+    "In the Recycle Bin",
+    "In the speakers",
+    "In the Calculator"
+   ],
+   "answer": 0,
+   "explain": "We made it in Documents."
+  },
+  {
+   "type": "fill",
+   "topic": "Your own folder",
+   "prompt": "Fill in the blank",
+   "text": "To change a folder's name: right-click → ___.",
+   "answer": [
+    "Rename"
+   ],
+   "extra": [
+    "Delete",
+    "Copy",
+    "Shut down"
+   ],
+   "explain": "Rename changes the name."
+  },
+  {
+   "type": "truefalse",
+   "topic": "File Explorer",
+   "prompt": "File Explorer has main drawers: Desktop, Documents, Downloads, Pictures.",
+   "answer": true,
+   "explain": "They are on the left in File Explorer."
+  },
+  {
+   "type": "choice",
+   "topic": "Your own folder",
+   "prompt": "How do you open a folder?",
+   "options": [
+    "Double-click",
+    "The wheel",
+    "Backspace",
+    "Caps Lock"
+   ],
+   "answer": 0,
+   "explain": "Like a program — double-click."
+  }
+ ],
+ "learn": {
+  "intro": "This is the most important part of the course! Today we learn where all your work lives on the computer.",
+  "sections": [
+   {
+    "title": "File and folder",
+    "slides": [
+     {
+      "text": "A notebook with something in it is called a **file** on a computer. A drawing is a file too. A song is a file. A cartoon is a file.",
+      "emoji": "📄"
+     },
+     {
+      "text": "The schoolbag we put notebooks in is a **folder**. The whole computer is a big wardrobe with folder-drawers.",
+      "emoji": "🎒"
+     },
+     {
+      "text": "A notebook thrown anywhere can't be found later. So we sort everything into folders!",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "File and folder",
+      "prompt": "Is a drawing a file or a folder?",
+      "options": [
+       "A file",
+       "A folder"
+      ],
+      "answer": 0,
+      "explain": "A drawing is like a notebook — a file."
+     }
+    ]
+   },
+   {
+    "title": "File Explorer",
+    "slides": [
+     {
+      "text": "Our wardrobe on the computer is **File Explorer** (the folder icon on the taskbar). On the left are the main drawers: Desktop, Documents, Downloads, Pictures.",
+      "emoji": "🗄️"
+     },
+     {
+      "text": "We go into Documents and come back with the **Back** button — the left arrow at the top."
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "File Explorer",
+      "prompt": "In File Explorer you go back with the left arrow at the top.",
+      "answer": true,
+      "explain": "That is the Back button."
+     }
+    ]
+   },
+   {
+    "title": "Your own folder",
+    "slides": [
+     {
+      "text": "Make your own folder: open Documents → **right-click** an empty spot → **New → Folder** → type your name right away → **Enter**.",
+      "emoji": "✨"
+     },
+     {
+      "text": "Too slow, and it still says \"New folder\"? Right-click the folder → **Rename** → name → Enter."
+     }
+    ],
+    "check": [
+     {
+      "type": "order",
+      "topic": "Your own folder",
+      "prompt": "Put in order how to create a folder",
+      "tokens": [
+       "Right-click",
+       "New",
+       "Folder",
+       "Name",
+       "Enter"
+      ],
+      "extra": [
+       "Delete"
+      ],
+      "explain": "Right-click → New → Folder → name → Enter."
+     }
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,189 @@
+{
+ "title": "Lesson 2. Desktop and windows",
+ "description": "Icons, the taskbar and the three window buttons",
+ "questions": [
+  {
+   "type": "choice",
+   "topic": "Desktop",
+   "prompt": "What is the strip at the bottom of the screen called?",
+   "options": [
+    "Taskbar",
+    "Desktop",
+    "Window",
+    "Icon"
+   ],
+   "answer": 0,
+   "explain": "The taskbar shows what is open."
+  },
+  {
+   "type": "match",
+   "topic": "Window buttons",
+   "prompt": "Match the window button with what it does",
+   "pairs": [
+    [
+     "Dash",
+     "Minimize"
+    ],
+    [
+     "Square",
+     "Maximize"
+    ],
+    [
+     "Cross",
+     "Close"
+    ]
+   ],
+   "explain": "The dash hides, the square stretches, the cross closes."
+  },
+  {
+   "type": "choice",
+   "topic": "Double click",
+   "prompt": "What is a double click?",
+   "options": [
+    "Two quick left clicks",
+    "One long press",
+    "A click with the wheel",
+    "Two right clicks"
+   ],
+   "answer": 0,
+   "explain": "Twice quickly — like knock-knock on a door."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Window buttons",
+   "prompt": "You can bring back a minimized window by clicking it on the taskbar.",
+   "answer": true,
+   "explain": "The window waits on the taskbar."
+  },
+  {
+   "type": "choice",
+   "topic": "Window buttons",
+   "prompt": "Where are a window's three buttons?",
+   "options": [
+    "Top-right corner",
+    "Bottom-left corner",
+    "In the middle",
+    "On the taskbar"
+   ],
+   "answer": 0,
+   "explain": "Top right: dash, square, cross."
+  },
+  {
+   "type": "fill",
+   "topic": "Window buttons",
+   "prompt": "Fill in the blank",
+   "text": "To close a window we click the ___.",
+   "answer": [
+    "cross"
+   ],
+   "extra": [
+    "dash",
+    "square",
+    "clock"
+   ],
+   "explain": "The cross closes."
+  },
+  {
+   "type": "choice",
+   "topic": "Desktop",
+   "prompt": "What is the desktop?",
+   "options": [
+    "The screen with icons, like a desk with things",
+    "The power button",
+    "The speakers",
+    "The keyboard"
+   ],
+   "answer": 0,
+   "explain": "Icons lie on it like things on a desk."
+  },
+  {
+   "type": "order",
+   "topic": "Window buttons",
+   "prompt": "Put the \"Commander\" orders in order",
+   "tokens": [
+    "Open",
+    "Minimize",
+    "Restore",
+    "Close"
+   ],
+   "extra": [
+    "Break"
+   ],
+   "explain": "Opened, minimized, restored from the taskbar, closed."
+  }
+ ],
+ "learn": {
+  "intro": "Today we'll learn to open programs and control windows like doors in a big house!",
+  "sections": [
+   {
+    "title": "Desktop",
+    "slides": [
+     {
+      "text": "The **desktop** is like your desk at home. The little pictures on it are **icons**: each is a program or a folder.",
+      "emoji": "🗂️"
+     },
+     {
+      "text": "The strip at the bottom is the **taskbar**. It shows what is open, and the clock."
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Desktop",
+      "prompt": "Every icon on the desktop is a program or a folder.",
+      "answer": true,
+      "explain": "Icons open programs and folders."
+     }
+    ]
+   },
+   {
+    "title": "Double click",
+    "slides": [
+     {
+      "text": "To open a program, click the icon **twice quickly** — a double click. Like knocking on a door: knock-knock!",
+      "emoji": "🚪"
+     },
+     {
+      "text": "Don't move the mouse while clicking. If it doesn't work — that's fine, your hand is still learning."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Double click",
+      "prompt": "How do you open a program from its icon?",
+      "options": [
+       "Click once",
+       "Click twice quickly",
+       "Right-click"
+      ],
+      "answer": 1,
+      "explain": "Double click — knock-knock."
+     }
+    ]
+   },
+   {
+    "title": "Window buttons",
+    "slides": [
+     {
+      "text": "A window has three buttons in its top-right corner. The **dash** minimizes: the window hides down on the taskbar. The program didn't close!",
+      "emoji": "➖"
+     },
+     {
+      "text": "The **square** maximizes the window or makes it smaller. The **cross** closes it: we left the room and turned off the light.",
+      "emoji": "❌"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Window buttons",
+      "prompt": "If I minimize a window, the program closes.",
+      "answer": false,
+      "explain": "It hid on the taskbar — you can bring it back."
+     }
+    ]
+   }
+  ]
+ }
+}

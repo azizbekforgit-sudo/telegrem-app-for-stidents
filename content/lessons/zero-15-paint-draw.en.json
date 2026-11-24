@@ -1,0 +1,195 @@
+{
+ "title": "Lesson 15. Drawing in Paint",
+ "description": "Pencil, brushes, eraser, fill, shapes, palette and the \"My house\" drawing",
+ "questions": [
+  {
+   "type": "match",
+   "topic": "Paint tools",
+   "prompt": "Match the tool with what it does",
+   "pairs": [
+    [
+     "Pencil",
+     "Thin line"
+    ],
+    [
+     "Eraser",
+     "Erases"
+    ],
+    [
+     "Fill",
+     "Paint into a closed area"
+    ],
+    [
+     "Palette",
+     "Pick a colour"
+    ]
+   ],
+   "explain": "The Paint sketchbook tools."
+  },
+  {
+   "type": "choice",
+   "topic": "Fill and undo",
+   "prompt": "Which keys undo a mistake in Paint?",
+   "options": [
+    "Ctrl + Z",
+    "Ctrl + S",
+    "Enter",
+    "Caps Lock"
+   ],
+   "answer": 0,
+   "explain": "The time machine."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Paint tools",
+   "prompt": "A shape grows when you drag it with the mouse.",
+   "answer": true,
+   "explain": "That is how circles and squares are drawn."
+  },
+  {
+   "type": "choice",
+   "topic": "My house",
+   "prompt": "Which tool writes text on a drawing?",
+   "options": [
+    "A",
+    "Bucket",
+    "Eraser",
+    "Brush"
+   ],
+   "answer": 0,
+   "explain": "The \"A\" tool is text."
+  },
+  {
+   "type": "fill",
+   "topic": "My house",
+   "prompt": "Fill in the blank",
+   "text": "The house wall is a ___, the roof a ___.",
+   "answer": [
+    "rectangle",
+    "triangle"
+   ],
+   "extra": [
+    "circle",
+    "star",
+    "line"
+   ],
+   "explain": "That keeps the house neat."
+  },
+  {
+   "type": "order",
+   "topic": "My house",
+   "prompt": "Put in order how to save the drawing",
+   "tokens": [
+    "File",
+    "Save As",
+    "Your folder",
+    "Pictures",
+    "My house"
+   ],
+   "extra": [
+    "Bin"
+   ],
+   "explain": "Drawings go into Pictures."
+  },
+  {
+   "type": "choice",
+   "topic": "Fill and undo",
+   "prompt": "Paint spilled over the whole page. What now?",
+   "options": [
+    "Ctrl + Z and look for a gap in the line",
+    "Turn off the computer",
+    "Start a new course",
+    "Cry"
+   ],
+   "answer": 0,
+   "explain": "Undo and close the gap."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Paint tools",
+   "prompt": "Paint's eraser erases what you drew.",
+   "answer": true,
+   "explain": "Like a normal eraser."
+  }
+ ],
+ "learn": {
+  "intro": "Paint is a computer sketchbook. Best of all — you can undo any mistake!",
+  "sections": [
+   {
+    "title": "Paint tools",
+    "slides": [
+     {
+      "text": "The **pencil** draws thin lines. **Brushes** — thick lines, like a marker. The **eraser** erases. The **palette** picks colours.",
+      "emoji": "✏️"
+     },
+     {
+      "text": "**Shapes** — ready circles, squares, stars. Drag with the mouse — the shape grows.",
+      "emoji": "⭐"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Paint tools",
+      "prompt": "Which tool draws thick lines like a marker?",
+      "options": [
+       "Brushes",
+       "Pencil",
+       "Eraser"
+      ],
+      "answer": 0,
+      "explain": "Pencil thin, brush thick."
+     }
+    ]
+   },
+   {
+    "title": "Fill and undo",
+    "slides": [
+     {
+      "text": "The **fill** (bucket) pours paint into a closed area. If there is a gap — the paint runs over the whole page!",
+      "emoji": "🪣"
+     },
+     {
+      "text": "Paint spilled? **Ctrl + Z** — the time machine, then check the line for a gap.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Fill and undo",
+      "prompt": "If the line has a gap, the fill spills over the whole page.",
+      "answer": true,
+      "explain": "The area must be closed."
+     }
+    ]
+   },
+   {
+    "title": "My house",
+    "slides": [
+     {
+      "text": "Draw \"My house\": the wall is a rectangle, the roof a triangle, colour with the fill, a tree and sun with the brush. Text — the **A** tool.",
+      "emoji": "🏠"
+     },
+     {
+      "text": "Save: File → Save As → your folder → Pictures → \"My house\"."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "My house",
+      "prompt": "Which shape fits the roof?",
+      "options": [
+       "Triangle",
+       "Circle",
+       "Star"
+      ],
+      "answer": 0,
+      "explain": "Wall rectangle, roof triangle."
+     }
+    ]
+   }
+  ]
+ }
+}

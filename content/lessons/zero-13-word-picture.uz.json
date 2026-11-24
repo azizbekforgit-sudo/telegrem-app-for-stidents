@@ -1,0 +1,186 @@
+{
+ "title": "13-dars. Matndagi rasm",
+ "description": "Rasm qo'yamiz, uning o'lchami va matn yonidagi joyini o'zgartiramiz",
+ "questions": [
+  {
+   "type": "order",
+   "topic": "Rasm qo'yish",
+   "prompt": "Rasm qo'yish qadamlarini yig'",
+   "tokens": [
+    "Qo'yish",
+    "Rasmlar",
+    "Bu qurilma",
+    "O'z papkang",
+    "Qo'yish tugmasi"
+   ],
+   "extra": [
+    "O'chirish"
+   ],
+   "explain": "Qo'yish → Rasmlar → Bu qurilma → papka → Qo'yish."
+  },
+  {
+   "type": "choice",
+   "topic": "Rasm o'lchami",
+   "prompt": "Rasm semiz bo'lmasligi uchun qaysi doirachadan tortish kerak?",
+   "options": [
+    "Burchakdagisidan",
+    "Yon tomondagisidan",
+    "Istalganidan",
+    "Hech qaysisidan"
+   ],
+   "answer": 0,
+   "explain": "Burchak tekis kichraytiradi."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Rasm qo'yish",
+   "prompt": "Qo'yishdan oldin kursorni rasm bo'ladigan joyga qo'yamiz.",
+   "answer": true,
+   "explain": "Kursor joyni ko'rsatadi."
+  },
+  {
+   "type": "choice",
+   "topic": "Matn aylanib o'tishi",
+   "prompt": "«Kvadrat» joylashuvi nima qiladi?",
+   "options": [
+    "Matn rasmni aylanib o'tadi",
+    "Rasmni o'chiradi",
+    "Matn rangini o'zgartiradi",
+    "Faylni saqlaydi"
+   ],
+   "answer": 0,
+   "explain": "Rasm yuradi, matn aylanib o'tadi."
+  },
+  {
+   "type": "fill",
+   "topic": "Rasm qo'yish",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "Rasm ___ yorlig'i → Rasmlar orqali qo'yiladi.",
+   "answer": [
+    "Qo'yish"
+   ],
+   "extra": [
+    "Bosh sahifa",
+    "Fayl",
+    "Ko'rinish"
+   ],
+   "explain": "Qo'yish → Rasmlar."
+  },
+  {
+   "type": "match",
+   "topic": "Rasm o'lchami",
+   "prompt": "Amalni natija bilan bog'la",
+   "pairs": [
+    [
+     "Burchakdan tortish",
+     "Rasm tekis kichrayadi"
+    ],
+    [
+     "Yon tomondan tortish",
+     "Hayvon semiz bo'ladi"
+    ],
+    [
+     "«Kvadrat» ni tanlash",
+     "Matn rasmni aylanib o'tadi"
+    ]
+   ],
+   "explain": "Burchak — tekis, yon — buzadi."
+  },
+  {
+   "type": "choice",
+   "topic": "Rasm qo'yish",
+   "prompt": "Hikoya uchun rasmni qayerdan olamiz?",
+   "options": [
+    "O'z Rasmlar papkamizdan",
+    "Savatdan",
+    "Kalkulyatordan",
+    "Hech qayerdan"
+   ],
+   "answer": 0,
+   "explain": "Rasmlar Rasmlar papkasida yotadi."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Rasm o'lchami",
+   "prompt": "Rasmni yon doirachadan tortsang, u yassilanib qolishi mumkin.",
+   "answer": true,
+   "explain": "Shuning uchun burchakdan tortamiz."
+  }
+ ],
+ "learn": {
+  "intro": "Rasmsiz matn — rasmsiz kitob kabi. Zerikarli! Keling, rasm qo'shamiz.",
+  "sections": [
+   {
+    "title": "Rasm qo'yish",
+    "slides": [
+     {
+      "text": "Kursorni rasm bo'ladigan joyga qo'yamiz → **Qo'yish** yorlig'i → **Rasmlar** → **Bu qurilma** → o'z Rasmlar papkang → tanlaymiz → **Qo'yish**.",
+      "emoji": "📥"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Rasm qo'yish",
+      "prompt": "Rasm qaysi yorliqda qo'yiladi?",
+      "options": [
+       "Qo'yish",
+       "Bosh sahifa",
+       "Ko'rinish"
+      ],
+      "answer": 0,
+      "explain": "Qo'yish → Rasmlar."
+     }
+    ]
+   },
+   {
+    "title": "Rasm o'lchami",
+    "slides": [
+     {
+      "text": "Rasm juda kattami? Burchaklarda doirachalar bor. **Burchakdagi** doirachani tortamiz — rasm kichrayadi.",
+      "emoji": "↘️"
+     },
+     {
+      "text": "Faqat burchakdan torting, aks holda hayvon semiz yoki uzun bo'lib qoladi!",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Rasm o'lchami",
+      "prompt": "Rasm semiz bo'lib qolmasligi uchun burchakdagi doirachadan tortamiz.",
+      "answer": true,
+      "explain": "Burchak shaklni saqlaydi."
+     }
+    ]
+   },
+   {
+    "title": "Matn aylanib o'tishi",
+    "slides": [
+     {
+      "text": "Rasmni bosamiz → «Joylashuv parametrlari» belgisi → **«Kvadrat»** yoki **«Kontur bo'yicha»**. Endi rasmni sudrasa bo'ladi va matn uni aylanib o'tadi.",
+      "emoji": "🌊"
+     },
+     {
+      "text": "Rasm endi matn bilan navbatda turmaydi — xohlagan joyda yuradi, matn uni aylanib o'tadi."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Matn aylanib o'tishi",
+      "prompt": "Matn rasmni aylanib o'tishi uchun qaysi joylashuvni tanlaymiz?",
+      "options": [
+       "Kvadrat",
+       "Matnda",
+       "Hech qaysi"
+      ],
+      "answer": 0,
+      "explain": "«Kvadrat» yoki «Kontur bo'yicha»."
+     }
+    ]
+   }
+  ]
+ }
+}

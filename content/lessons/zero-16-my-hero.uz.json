@@ -1,0 +1,185 @@
+{
+ "title": "16-dars. Mening qahramonim",
+ "description": "Paint da qahramon chizamiz va Word da u haqida hikoya yozamiz",
+ "questions": [
+  {
+   "type": "choice",
+   "topic": "Qahramonni chizamiz",
+   "prompt": "Qahramon rasmini qayerga saqlaymiz?",
+   "options": [
+    "Rasmlar → Mening qahramonim",
+    "Savatga",
+    "Vazifalar paneliga",
+    "Hech qayerga"
+   ],
+   "answer": 0,
+   "explain": "U Scratch da kerak bo'ladi."
+  },
+  {
+   "type": "order",
+   "topic": "Word da hikoya",
+   "prompt": "Qahramon haqidagi hikoyani tartib bilan yig'",
+   "tokens": [
+    "Sarlavha — qahramon ismi",
+    "Rasmni qo'yish",
+    "3–4 gap",
+    "Bezash",
+    "Saqlash"
+   ],
+   "extra": [],
+   "explain": "Ism → rasm → matn → bezak → saqlash."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Qahramonni o'ylab topamiz",
+   "prompt": "Qahramon faqat odam bo'lishi mumkin.",
+   "answer": false,
+   "explain": "Robot ham, kosmonavt-mushuk ham, ajdaho ham bo'ladi."
+  },
+  {
+   "type": "choice",
+   "topic": "Word da hikoya",
+   "prompt": "Qahramon rasmini Word ga qanday qo'yamiz?",
+   "options": [
+    "Qo'yish → Rasmlar → Mening qahramonim",
+    "Ctrl + Z bosish",
+    "Word da qaytadan chizish",
+    "Hech qanday"
+   ],
+   "answer": 0,
+   "explain": "Har qanday rasm kabi."
+  },
+  {
+   "type": "match",
+   "topic": "Qahramonni o'ylab topamiz",
+   "prompt": "Qahramon haqidagi savolni javob namunasi bilan bog'la",
+   "pairs": [
+    [
+     "Ismi nima?",
+     "Robo-Mushuk"
+    ],
+    [
+     "Nima qila oladi?",
+     "Uchishni"
+    ],
+    [
+     "Qayerda yashaydi?",
+     "Oyda"
+    ]
+   ],
+   "explain": "Shunda qahramon jonli bo'ladi."
+  },
+  {
+   "type": "fill",
+   "topic": "Word da hikoya",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "___ da chizdik, hikoyani ___ da yozdik.",
+   "answer": [
+    "Paint",
+    "Word"
+   ],
+   "extra": [
+    "Bloknot",
+    "Savat",
+    "Scratch"
+   ],
+   "explain": "Ikki dastur birga."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Qahramonni chizamiz",
+   "prompt": "Qahramon rasmi keyin Scratch da kerak bo'ladi.",
+   "answer": true,
+   "explain": "U o'yinda jonlanadi."
+  },
+  {
+   "type": "choice",
+   "topic": "Word da hikoya",
+   "prompt": "Sarlavhadagi qahramon ismini qanday bezaymiz?",
+   "options": [
+    "Katta va markazda",
+    "Burchakda mayda",
+    "Ismni yozmaslik",
+    "Faqat raqamlar bilan"
+   ],
+   "answer": 0,
+   "explain": "Kitobdagi sarlavhadek."
+  }
+ ],
+ "learn": {
+  "intro": "Bugun o'z qahramoningni o'ylab topasan. Uni eslab qol — kurs oxirida u o'z o'yiningning qahramoni bo'ladi!",
+  "sections": [
+   {
+    "title": "Qahramonni o'ylab topamiz",
+    "slides": [
+     {
+      "text": "Qahramon kim bo'lishi mumkin: robot, superqahramon, kosmonavt-mushuk, ajdaho. Uning ismi nima? U nima qila oladi? Qayerda yashaydi?",
+      "emoji": "🐉"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Qahramonni o'ylab topamiz",
+      "prompt": "Sen o'ylab topgan qahramon keyin o'yiningning qahramoni bo'ladi.",
+      "answer": true,
+      "explain": "Scratch modulida!"
+     }
+    ]
+   },
+   {
+    "title": "Qahramonni chizamiz",
+    "slides": [
+     {
+      "text": "Qahramonni Paint da **katta, och fonda** chizamiz — shunda keyin uni o'yinga qo'yish oson bo'ladi.",
+      "emoji": "🖌️"
+     },
+     {
+      "text": "Saqlaymiz: Rasmlar → «Mening qahramonim»."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Qahramonni chizamiz",
+      "prompt": "Kelajakdagi o'yin uchun qahramonni qanday chizgan ma'qul?",
+      "options": [
+       "Katta, och fonda",
+       "Juda kichik",
+       "Qora fonda"
+      ],
+      "answer": 0,
+      "explain": "Shunda uni o'yinga qo'yish oson."
+     }
+    ]
+   },
+   {
+    "title": "Word da hikoya",
+    "slides": [
+     {
+      "text": "Word ni ochamiz: sarlavha — qahramon ismi katta markazda; Qo'yish → Rasmlar → «Mening qahramonim»; 3–4 gap: u kim, nima qila oladi, qayerda yashaydi, kim bilan do'st.",
+      "emoji": "📖"
+     },
+     {
+      "text": "Sen ikki dasturni birlashtirding: Paint da chizding, Word da hikoya yozding. Haqiqiy dizaynerlar shunday ishlaydi!",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Word da hikoya",
+      "prompt": "Bugun qaysi ikki dasturni birlashtirdik?",
+      "options": [
+       "Paint va Word",
+       "Kalkulyator va Bloknot",
+       "Savat va O'tkazgich"
+      ],
+      "answer": 0,
+      "explain": "Paint dagi rasm — Word dagi hikoyaga."
+     }
+    ]
+   }
+  ]
+ }
+}

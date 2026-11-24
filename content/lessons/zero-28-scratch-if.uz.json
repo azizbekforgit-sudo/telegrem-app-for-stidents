@@ -1,0 +1,186 @@
+{
+ "title": "28-dars. Agar — unda",
+ "description": "«Agar tegsa…, unda…» sharti: qahramon olmalarni yig'adi",
+ "questions": [
+  {
+   "type": "order",
+   "topic": "Olma dasturi",
+   "prompt": "Olma dasturini yig'",
+   "tokens": [
+    "Bayroqcha bosilganda",
+    "Ko'rin",
+    "Tasodifiy joyga o't",
+    "Doim",
+    "Agar qahramonga tegsa"
+   ],
+   "extra": [],
+   "explain": "Agar — «doim» ichida."
+  },
+  {
+   "type": "match",
+   "topic": "Shart",
+   "prompt": "«Agar» va «unda» ni bog'la",
+   "pairs": [
+    [
+     "Agar yomg'ir yog'sa",
+     "Soyabon olamiz"
+    ],
+    [
+     "Agar yashil chiroq bo'lsa",
+     "Yo'ldan o'tamiz"
+    ],
+    [
+     "Agar qahramon olmaga tegsa",
+     "Olma yo'qoladi"
+    ]
+   ],
+   "explain": "Shart va harakat."
+  },
+  {
+   "type": "choice",
+   "topic": "Olma dasturi",
+   "prompt": "Qahramon olmaga tegsa nima bo'ladi?",
+   "options": [
+    "Ovoz va olma yangi joyga sakraydi",
+    "O'yin yopiladi",
+    "Qahramon abadiy yo'qoladi",
+    "Hech narsa"
+   ],
+   "answer": 0,
+   "explain": "Olmalar uchun cheksiz ov."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Olma dasturi",
+   "prompt": "«Tegsa» blokida aynan o'z qahramoningni tanlash kerak.",
+   "answer": true,
+   "explain": "Aks holda shart ishlamaydi."
+  },
+  {
+   "type": "fill",
+   "topic": "Shart",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "___ yomg'ir yog'sa, ___ soyabon olamiz.",
+   "answer": [
+    "Agar",
+    "unda"
+   ],
+   "extra": [
+    "Doim",
+    "keyin",
+    "hech qachon"
+   ],
+   "explain": "Bu «agar — unda»."
+  },
+  {
+   "type": "choice",
+   "topic": "Olma",
+   "prompt": "Ikkinchi qaysi spraytni qo'shamiz?",
+   "options": [
+    "Olma",
+    "Savat",
+    "Sichqoncha",
+    "Hech narsa"
+   ],
+   "answer": 0,
+   "explain": "Yoki kutubxonadagi istalgan ovqat, yulduz."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Shart",
+   "prompt": "Kompyuter shartlar yordamida qaror qabul qila oladi.",
+   "answer": true,
+   "explain": "«Agar — unda» bloki."
+  },
+  {
+   "type": "choice",
+   "topic": "Olma dasturi",
+   "prompt": "O'yinni qanday saqlaymiz?",
+   "options": [
+    "O'yinlar → «Olmalar uchun ov»",
+    "Saqlamaslik",
+    "Savatga",
+    "Do'stning ish stoliga"
+   ],
+   "answer": 0,
+   "explain": "O'z O'yinlar papkangga."
+  }
+ ],
+ "learn": {
+  "intro": "Kompyuter biz kabi qaror qila oladi: yomg'ir yog'sa — soyabon olamiz. Bugun o'yinni qaror qilishga o'rgatamiz!",
+  "sections": [
+   {
+    "title": "Shart",
+    "slides": [
+     {
+      "text": "Hayotda: agar yomg'ir yog'sa, **unda** soyabon olamiz. Agar yashil chiroq bo'lsa, **unda** yo'ldan o'tamiz. Kompyuter ham shunday qila oladi — **«agar — unda»** bloki.",
+      "emoji": "☔"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Shart",
+      "prompt": "«Agar — unda» bloki nima qiladi?",
+      "options": [
+       "Shartni tekshiradi va u bajarilsa harakat qiladi",
+       "Doim hammasini takrorlaydi",
+       "O'yinni o'chiradi"
+      ],
+      "answer": 0,
+      "explain": "Shart to'g'ri bo'lsa — bajaramiz."
+     }
+    ]
+   },
+   {
+    "title": "Olma",
+    "slides": [
+     {
+      "text": "Ikkinchi sprayt — **olma** (yoki ovqat, yulduz) qo'shamiz. Hozir qahramon undan o'tib ketadi — hech narsa bo'lmaydi.",
+      "emoji": "🍏"
+     },
+     {
+      "text": "O'yinni o'rgatamiz: **agar** qahramon olmaga tegsa, **unda** olma yo'qoladi."
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Olma",
+      "prompt": "Shartsiz qahramon olmadan shunchaki o'tib ketadi.",
+      "answer": true,
+      "explain": "Shart o'yinni javob berishga o'rgatadi."
+     }
+    ]
+   },
+   {
+    "title": "Olma dasturi",
+    "slides": [
+     {
+      "text": "Olma dasturi: qahramon tegsa — «pop» ovozi va olma yangi joyga sakraydi. Cheksiz ov!",
+      "emoji": "🎯",
+      "code": "yashil bayroqcha bosilganda\nko'rin\ntasodifiy joyga o't\ndoim\n    agar «Mening qahramonim» ga tegsa, unda\n        «pop» ovozini chal\n        tasodifiy joyga o't"
+     },
+     {
+      "text": "Ishlamayaptimi? «tegsa» da aynan qahramon tanlanganini va «agar» **«doim» ichida** turganini tekshir.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Olma dasturi",
+      "prompt": "«Agar» bloki qayerda turishi kerak?",
+      "options": [
+       "«Doim» ichida",
+       "Eng oxirida, alohida",
+       "Savatda"
+      ],
+      "answer": 0,
+      "explain": "Shunda o'yin doim tekshiradi."
+     }
+    ]
+   }
+  ]
+ }
+}

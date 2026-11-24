@@ -1,0 +1,189 @@
+{
+ "title": "2-dars. Ish stoli va oynalar",
+ "description": "Belgilar, vazifalar paneli va oynaning uchta tugmasi",
+ "questions": [
+  {
+   "type": "choice",
+   "topic": "Ish stoli",
+   "prompt": "Ekran pastidagi chiziq nima deyiladi?",
+   "options": [
+    "Vazifalar paneli",
+    "Ish stoli",
+    "Oyna",
+    "Belgi"
+   ],
+   "answer": 0,
+   "explain": "Vazifalar panelida nima ochiqligi ko'rinadi."
+  },
+  {
+   "type": "match",
+   "topic": "Oyna tugmalari",
+   "prompt": "Oyna tugmasini vazifasi bilan bog'la",
+   "pairs": [
+    [
+     "Chiziqcha",
+     "Yig'ish"
+    ],
+    [
+     "Kvadratcha",
+     "Yoyish"
+    ],
+    [
+     "Xoch",
+     "Yopish"
+    ]
+   ],
+   "explain": "Chiziqcha yashiradi, kvadratcha cho'zadi, xoch yopadi."
+  },
+  {
+   "type": "choice",
+   "topic": "Ikki marta bosish",
+   "prompt": "Ikki marta bosish nima?",
+   "options": [
+    "Chap tugmani ikki marta tez bosish",
+    "Bir marta uzoq bosish",
+    "G'ildirakcha bilan bosish",
+    "O'ng tugmani ikki marta bosish"
+   ],
+   "answer": 0,
+   "explain": "Ikki marta tez — eshikni tuk-tuk qilgandek."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Oyna tugmalari",
+   "prompt": "Yig'ilgan oynani vazifalar panelida bosib qaytarsa bo'ladi.",
+   "answer": true,
+   "explain": "Oyna vazifalar panelida kutadi."
+  },
+  {
+   "type": "choice",
+   "topic": "Oyna tugmalari",
+   "prompt": "Oynaning uchta tugmasi qayerda?",
+   "options": [
+    "O'ng yuqori burchakda",
+    "Chap pastki burchakda",
+    "Oyna o'rtasida",
+    "Vazifalar panelida"
+   ],
+   "answer": 0,
+   "explain": "O'ngda yuqorida: chiziqcha, kvadratcha, xoch."
+  },
+  {
+   "type": "fill",
+   "topic": "Oyna tugmalari",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "Oynani yopish uchun ___ bosamiz.",
+   "answer": [
+    "xoch"
+   ],
+   "extra": [
+    "chiziqcha",
+    "kvadratcha",
+    "soat"
+   ],
+   "explain": "Xoch — yopish."
+  },
+  {
+   "type": "choice",
+   "topic": "Ish stoli",
+   "prompt": "Ish stoli nima?",
+   "options": [
+    "Belgilar bor ekran, buyumlar bor stol kabi",
+    "O'chirish tugmasi",
+    "Karnaylar",
+    "Klaviatura"
+   ],
+   "answer": 0,
+   "explain": "Unda belgilar stol ustidagi buyumlardek yotadi."
+  },
+  {
+   "type": "order",
+   "topic": "Oyna tugmalari",
+   "prompt": "«Qo'mondon» buyruqlarini tartib bilan yig'",
+   "tokens": [
+    "Och",
+    "Yig'",
+    "Qaytar",
+    "Yop"
+   ],
+   "extra": [
+    "Buz"
+   ],
+   "explain": "Ochdik, yig'dik, paneldan qaytardik, yopdik."
+  }
+ ],
+ "learn": {
+  "intro": "Bugun dasturlarni ochishni va oynalarni katta uydagi eshiklardek boshqarishni o'rganamiz!",
+  "sections": [
+   {
+    "title": "Ish stoli",
+    "slides": [
+     {
+      "text": "**Ish stoli** — uydagi stoling kabi. Undagi kichik rasmlar — **belgilar**: har biri dastur yoki papka.",
+      "emoji": "🗂️"
+     },
+     {
+      "text": "Pastdagi chiziq — **vazifalar paneli**. Unda nima ochiqligi va soat ko'rinadi."
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Ish stoli",
+      "prompt": "Ish stolidagi har bir belgi — dastur yoki papka.",
+      "answer": true,
+      "explain": "Belgilar dastur va papkalarni ochadi."
+     }
+    ]
+   },
+   {
+    "title": "Ikki marta bosish",
+    "slides": [
+     {
+      "text": "Dasturni ochish uchun belgini **ikki marta tez** bosamiz — bu ikki marta bosish. Eshikni taqillatgandek: tuk-tuk!",
+      "emoji": "🚪"
+     },
+     {
+      "text": "Bosayotganda sichqonchani qimirlatma. Chiqmasa — bu normal, qo'l hali o'rganyapti."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Ikki marta bosish",
+      "prompt": "Belgidan dasturni qanday ochamiz?",
+      "options": [
+       "Bir marta bosish",
+       "Ikki marta tez bosish",
+       "O'ng tugma bilan bosish"
+      ],
+      "answer": 1,
+      "explain": "Ikki marta bosish — tuk-tuk."
+     }
+    ]
+   },
+   {
+    "title": "Oyna tugmalari",
+    "slides": [
+     {
+      "text": "Oynaning o'ng yuqori burchagida uchta tugma bor. **Chiziqcha** — yig'ish: oyna pastga, vazifalar paneliga yashirinadi. Dastur yopilmadi!",
+      "emoji": "➖"
+     },
+     {
+      "text": "**Kvadratcha** — butun ekranga yoyish yoki kichraytirish. **Xoch** — yopish: xonadan chiqib, chiroqni o'chirdik.",
+      "emoji": "❌"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Oyna tugmalari",
+      "prompt": "Oynani yig'sam, dastur yopiladi.",
+      "answer": false,
+      "explain": "U vazifalar paneliga yashirindi — qaytarsa bo'ladi."
+     }
+    ]
+   }
+  ]
+ }
+}

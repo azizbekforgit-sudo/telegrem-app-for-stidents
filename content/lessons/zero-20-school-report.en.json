@@ -1,0 +1,187 @@
+{
+ "title": "Lesson 20. Information for school",
+ "description": "Find information, write it in your own words and make a mini report in Word",
+ "questions": [
+  {
+   "type": "choice",
+   "topic": "Search and write in your own words",
+   "prompt": "How should you write a report?",
+   "options": [
+    "In your own words, briefly",
+    "Copy the whole site",
+    "Only pictures, no text",
+    "Very long"
+   ],
+   "answer": 0,
+   "explain": "Then the teacher sees you understood."
+  },
+  {
+   "type": "match",
+   "topic": "Report plan",
+   "prompt": "Match the plan point with a query",
+   "pairs": [
+    [
+     "Where it lives",
+     "where panda lives"
+    ],
+    [
+     "What it eats",
+     "what panda eats"
+    ],
+    [
+     "Fun fact",
+     "panda fun facts"
+    ]
+   ],
+   "explain": "A short query for each point."
+  },
+  {
+   "type": "truefalse",
+   "topic": "The report in Word",
+   "prompt": "The report needs at least one picture.",
+   "answer": true,
+   "explain": "A picture beside the text."
+  },
+  {
+   "type": "choice",
+   "topic": "The report in Word",
+   "prompt": "How do we make the report title?",
+   "options": [
+    "Centred and big",
+    "Tiny in a corner",
+    "No title",
+    "Underlined at the bottom"
+   ],
+   "answer": 0,
+   "explain": "Like in a book."
+  },
+  {
+   "type": "fill",
+   "topic": "Search and write in your own words",
+   "prompt": "Fill in the blank",
+   "text": "We write not a copy but in our ___ words.",
+   "answer": [
+    "own"
+   ],
+   "extra": [
+    "someone else's",
+    "long",
+    "English"
+   ],
+   "explain": "Your own words means you understood."
+  },
+  {
+   "type": "choice",
+   "topic": "Report plan",
+   "prompt": "Which topic could you choose?",
+   "options": [
+    "A favourite animal",
+    "A phone password",
+    "Your home address",
+    "Nothing"
+   ],
+   "answer": 0,
+   "explain": "Also: a planet, a city, a dinosaur."
+  },
+  {
+   "type": "order",
+   "topic": "The report in Word",
+   "prompt": "Put the Word report together",
+   "tokens": [
+    "Title",
+    "Three paragraphs",
+    "Picture",
+    "Save"
+   ],
+   "extra": [],
+   "explain": "Then read it aloud."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Search and write in your own words",
+   "prompt": "First note answers briefly in Notepad, then make the report in Word.",
+   "answer": true,
+   "explain": "1–2 sentences per point."
+  }
+ ],
+ "learn": {
+  "intro": "School often sets reports. Today you'll make your first report on the computer!",
+  "sections": [
+   {
+    "title": "Report plan",
+    "slides": [
+     {
+      "text": "Pick a topic: a favourite animal, a planet, a city, a dinosaur.",
+      "emoji": "🦖"
+     },
+     {
+      "text": "Plan: 1) where it lives or is; 2) what it looks like; 3) a fun fact.",
+      "emoji": "🗒️"
+     }
+    ],
+    "check": [
+     {
+      "type": "order",
+      "topic": "Report plan",
+      "prompt": "Put the report plan in order",
+      "tokens": [
+       "Where it lives",
+       "What it looks like",
+       "A fun fact"
+      ],
+      "extra": [],
+      "explain": "Three short points."
+     }
+    ]
+   },
+   {
+    "title": "Search and write in your own words",
+    "slides": [
+     {
+      "text": "For each point a short query: \"where panda lives\", \"what panda eats\".",
+      "emoji": "🐼"
+     },
+     {
+      "text": "We **don't copy the whole text** from a site. We read and write **in our own words**, briefly. That way you really learn.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Search and write in your own words",
+      "prompt": "For a report you can copy the whole text from a website.",
+      "answer": false,
+      "explain": "We write in our own words, briefly."
+     }
+    ]
+   },
+   {
+    "title": "The report in Word",
+    "slides": [
+     {
+      "text": "Save 1–2 pictures (right-click → Save image as → Pictures). In Word: a title, three short paragraphs, a picture.",
+      "emoji": "📄"
+     },
+     {
+      "text": "Style it: a big centred title, the picture beside the text. Save: Texts → Word → \"Report\"."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "The report in Word",
+      "prompt": "Where do we save the report?",
+      "options": [
+       "Texts → Word → Report",
+       "In the Bin",
+       "On a friend's USB stick"
+      ],
+      "answer": 0,
+      "explain": "In your own folder, in Word."
+     }
+    ]
+   }
+  ]
+ }
+}

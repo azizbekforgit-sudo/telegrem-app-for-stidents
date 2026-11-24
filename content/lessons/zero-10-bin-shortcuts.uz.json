@@ -1,0 +1,200 @@
+{
+ "title": "10-dars. Savat, tezkor tugmalar va mini imtihon",
+ "description": "Fayllarni o'chiramiz va qaytaramiz, Ctrl + C, V, Z, S va fayllar imtihoni",
+ "questions": [
+  {
+   "type": "match",
+   "topic": "Tezkor tugmalar",
+   "prompt": "Birikmani vazifasi bilan bog'la",
+   "pairs": [
+    [
+     "Ctrl + C",
+     "Nusxalash"
+    ],
+    [
+     "Ctrl + V",
+     "Qo'yish"
+    ],
+    [
+     "Ctrl + Z",
+     "Bekor qilish"
+    ],
+    [
+     "Ctrl + S",
+     "Saqlash"
+    ]
+   ],
+   "explain": "Ustaning to'rtta super kuchi."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Savat",
+   "prompt": "O'chirilgan fayl darhol abadiy yo'qoladi.",
+   "answer": false,
+   "explain": "U Savatga tushadi va uni qaytarsa bo'ladi."
+  },
+  {
+   "type": "choice",
+   "topic": "Savat",
+   "prompt": "Kattalarsiz nima qilib bo'lmaydi?",
+   "options": [
+    "Savatni tozalash",
+    "Bloknotni ochish",
+    "Papka yaratish",
+    "Ismni yozish"
+   ],
+   "answer": 0,
+   "explain": "Tozalangandan keyin faylni qaytarib bo'lmaydi."
+  },
+  {
+   "type": "choice",
+   "topic": "Tezkor tugmalar",
+   "prompt": "Ctrl + V nima qiladi?",
+   "options": [
+    "Nusxani qo'yadi",
+    "Saqlaydi",
+    "Bekor qiladi",
+    "O'chiradi"
+   ],
+   "answer": 0,
+   "explain": "V — C yonida, nusxani qo'yamiz."
+  },
+  {
+   "type": "order",
+   "topic": "Mini imtihon",
+   "prompt": "Mini imtihon topshiriqlarini tartib bilan yig'",
+   "tokens": [
+    "Papka yaratish",
+    "Faylni saqlash",
+    "Nomini o'zgartirish",
+    "Nusxalash",
+    "Nusxani o'chirish",
+    "Savatdan qaytarish"
+   ],
+   "extra": [],
+   "explain": "O'qituvchining qog'ozidagidek."
+  },
+  {
+   "type": "choice",
+   "topic": "Savat",
+   "prompt": "Klaviaturadagi qaysi tugma bilan tanlangan faylni o'chirsa bo'ladi?",
+   "options": [
+    "Delete",
+    "Enter",
+    "Shift",
+    "Probel"
+   ],
+   "answer": 0,
+   "explain": "Delete faylni Savatga yuboradi."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Tezkor tugmalar",
+   "prompt": "Ctrl + Z ni bir necha marta bosish mumkin — har safar bitta amal bekor bo'ladi.",
+   "answer": true,
+   "explain": "Shunday qo'yilganlarni bittadan olib tashladik."
+  },
+  {
+   "type": "fill",
+   "topic": "Tezkor tugmalar",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "Nusxalash — Ctrl + ___, qo'yish — Ctrl + ___",
+   "answer": [
+    "C",
+    "V"
+   ],
+   "extra": [
+    "Z",
+    "S",
+    "A"
+   ],
+   "explain": "C — copy, V — yonida."
+  }
+ ],
+ "learn": {
+  "intro": "Bugun fayl o'chirib kompyuterni buzib bo'lmasligini bilamiz, super kuchlarga ega bo'lamiz va imtihon topshiramiz!",
+  "sections": [
+   {
+    "title": "Savat",
+    "slides": [
+     {
+      "text": "O'chirilgan fayl abadiy yo'qolmaydi — u **Savat**ga tushadi, axlat chelagidagi qog'ozdek. Chelak chiqarilmaguncha — qog'ozni olsa bo'ladi.",
+      "emoji": "🗑️"
+     },
+     {
+      "text": "O'chirish: o'ng tugma → O'chirish yoki **Delete** tugmasi. Qaytarish: Savatni och → o'ng tugma → **Tiklash**."
+     },
+     {
+      "text": "Fayl o'chirib kompyuterni buzib bo'lmaydi. Asosiysi — **Savatni kattalarsiz tozalama**.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Savat",
+      "prompt": "Faylni Savatdan qanday qaytaramiz?",
+      "options": [
+       "O'ng tugma → Tiklash",
+       "Savatni tozalash",
+       "Enter bosish"
+      ],
+      "answer": 0,
+      "explain": "«Tiklash» faylni joyiga qaytaradi."
+     }
+    ]
+   },
+   {
+    "title": "Tezkor tugmalar",
+    "slides": [
+     {
+      "text": "Ustalarning maxfiy birikmalari — super kuchlar kabi: **Ctrl + C** — nusxalash, **Ctrl + V** — qo'yish.",
+      "emoji": "🦸"
+     },
+     {
+      "text": "**Ctrl + Z** — vaqt mashinasi: oxirgi amalni bekor qiladi. **Ctrl + S** — saqlash.",
+      "emoji": "⏪"
+     }
+    ],
+    "check": [
+     {
+      "type": "fill",
+      "topic": "Tezkor tugmalar",
+      "prompt": "Tushib qolganini qo'y",
+      "text": "Vaqt mashinasi — Ctrl + ___",
+      "answer": [
+       "Z"
+      ],
+      "extra": [
+       "S",
+       "C",
+       "V"
+      ],
+      "explain": "Ctrl + Z oxirgisini bekor qiladi."
+     }
+    ]
+   },
+   {
+    "title": "Mini imtihon",
+    "slides": [
+     {
+      "text": "Mini imtihon: Imtihon papkasini yarat → unga Mening kunim faylini saqla → nomini o'zgartir → ish stoliga nusxala → nusxani o'chir → Savatdan qaytar.",
+      "emoji": "🎓"
+     },
+     {
+      "text": "Hammasini o'zing, maslahatsiz qilasan. Chiqmadimi — mashq qilib, a'lo bahoga qayta topshirasan!"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Mini imtihon",
+      "prompt": "Mini imtihonda o'qituvchi hammasini aytib turadi.",
+      "answer": false,
+      "explain": "Bu tekshiruv — hammasini o'zing qilasan."
+     }
+    ]
+   }
+  ]
+ }
+}

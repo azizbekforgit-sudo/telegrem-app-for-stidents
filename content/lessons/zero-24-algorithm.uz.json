@@ -1,0 +1,185 @@
+{
+ "title": "24-dars. Kompyutersiz algoritm",
+ "description": "«Robot» o'yini: kompyuter buyruqlarni aniq va tartib bilan bajaradi",
+ "questions": [
+  {
+   "type": "choice",
+   "topic": "Algoritm",
+   "prompt": "Dastur nima?",
+   "options": [
+    "Kompyuter uchun algoritm",
+    "Sichqoncha",
+    "Savat",
+    "Rasm"
+   ],
+   "answer": 0,
+   "explain": "Dastur — kompyuter uchun tartib bilan buyruqlar."
+  },
+  {
+   "type": "truefalse",
+   "topic": "«Robot» o'yini",
+   "prompt": "Robot aytilganini aniq va tartib bilan bajaradi.",
+   "answer": true,
+   "explain": "Shuning uchun buyruqlarda xato qilmaslik muhim."
+  },
+  {
+   "type": "match",
+   "topic": "«Robot» o'yini",
+   "prompt": "Xatoni robot nima qilgani bilan bog'la",
+   "pairs": [
+    [
+     "«U yerga bor»",
+     "Joyida turadi"
+    ],
+    [
+     "Devor oldida «bir qadam oldinga»",
+     "Devorga urildi"
+    ],
+    [
+     "O'ng va chapni adashtirdi",
+     "Noto'g'ri tomonga burildi"
+    ]
+   ],
+   "explain": "Buyruqdagi xato — robotning xatosi."
+  },
+  {
+   "type": "order",
+   "topic": "Algoritm",
+   "prompt": "«Tishlarni tozalash» algoritmini yig'",
+   "tokens": [
+    "Cho'tkani olish",
+    "Pastani siqish",
+    "Tishlarni tozalash",
+    "Og'izni chayish"
+   ],
+   "extra": [
+    "Uxlash"
+   ],
+   "explain": "Tartib bilan qadamlar — bu algoritm."
+  },
+  {
+   "type": "choice",
+   "topic": "«Robot» o'yini",
+   "prompt": "O'yindagi robot qaysi buyruqlarni biladi?",
+   "options": [
+    "Bir qadam oldinga, o'ngga, chapga",
+    "Sakra va raqs tush",
+    "Xohlagan joyga bor",
+    "Istalgan"
+   ],
+   "answer": 0,
+   "explain": "Faqat 3 ta buyruq."
+  },
+  {
+   "type": "fill",
+   "topic": "Algoritm",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "Tartib bilan buyruqlar ro'yxati ___ deyiladi.",
+   "answer": [
+    "algoritm"
+   ],
+   "extra": [
+    "fayl",
+    "papka",
+    "slayd"
+   ],
+   "explain": "Algoritm — darsning asosiy so'zi."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Qog'ozdagi algoritm",
+   "prompt": "Algoritmda qadam tushib qolsa, robot o'zi o'ylab topadi.",
+   "answer": false,
+   "explain": "Robot hech narsani o'ylab topmaydi."
+  },
+  {
+   "type": "choice",
+   "topic": "Qog'ozdagi algoritm",
+   "prompt": "Robot algoritmimiz sababli xato qilsa nima qilamiz?",
+   "options": [
+    "Algoritmni tuzatamiz",
+    "Robotni urishamiz",
+    "O'yinni tashlaymiz",
+    "Hech narsa"
+   ],
+   "answer": 0,
+   "explain": "Tushib qolgan qadamlarni qo'shamiz."
+  }
+ ],
+ "learn": {
+  "intro": "Bugun sen dasturchi bo'lasan, o'qituvchi esa robotingga aylanadi!",
+  "sections": [
+   {
+    "title": "«Robot» o'yini",
+    "slides": [
+     {
+      "text": "Robot faqat 3 ta buyruqni biladi: **«bir qadam oldinga»**, **«o'ngga buril»**, **«chapga buril»**. Aytilganini aniq bajaradi va hech narsani o'ylab topmaydi.",
+      "emoji": "🤖"
+     },
+     {
+      "text": "«U yerga bor» desang — robot turadi: bunday buyruq yo'q. Devor oldida «bir qadam oldinga» desang — urilib qoladi. Dasturda xato!",
+      "emoji": "🧱"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "«Robot» o'yini",
+      "prompt": "Robot «u yerga bor» buyrug'ini tushunadi.",
+      "answer": false,
+      "explain": "U faqat o'zining 3 ta buyrug'ini biladi."
+     }
+    ]
+   },
+   {
+    "title": "Algoritm",
+    "slides": [
+     {
+      "text": "Tartib bilan berilgan buyruqlar ro'yxati **algoritm** deyiladi. **Dastur** esa — kompyuter uchun algoritm.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Algoritm",
+      "prompt": "Algoritm nima?",
+      "options": [
+       "Tartib bilan buyruqlar",
+       "Paint dagi rasm",
+       "O'chirish tugmasi"
+      ],
+      "answer": 0,
+      "explain": "Algoritm — tartib bilan qadamlar ro'yxati."
+     }
+    ]
+   },
+   {
+    "title": "Qog'ozdagi algoritm",
+    "slides": [
+     {
+      "text": "«Buterbrod qanday tayyorlanadi» algoritmini yozamiz. Robot so'zma-so'z bajaradi: «Sariyog' surt». Nima bilan? Pichoq ol demading-ku!",
+      "emoji": "🥪"
+     },
+     {
+      "text": "Algoritmni tuzatamiz — tushib qolgan qadamlarni qo'shamiz. Keyin rollarni almashtiramiz."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Qog'ozdagi algoritm",
+      "prompt": "Nega robot «sariyog'ni qo'li bilan surdi»?",
+      "options": [
+       "Algoritmda «pichoq olish» qadami tushib qolgan",
+       "Robot buzildi",
+       "Shunday bo'lishi kerak"
+      ],
+      "answer": 0,
+      "explain": "Robot faqat yozilganini bajaradi."
+     }
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,187 @@
+{
+ "title": "Lesson 5. Capital letters and switching language",
+ "description": "Shift, punctuation, Caps Lock and three languages",
+ "questions": [
+  {
+   "type": "choice",
+   "topic": "Shift",
+   "prompt": "What is the strongman key for capitals called?",
+   "options": [
+    "Shift",
+    "Enter",
+    "Backspace",
+    "Space"
+   ],
+   "answer": 0,
+   "explain": "Shift makes a letter big while you hold it."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Marks and Caps Lock",
+   "prompt": "Caps Lock turns on capitals and they stay big until you turn it off.",
+   "answer": true,
+   "explain": "It is \"shouting\" — press again to turn it off."
+  },
+  {
+   "type": "fill",
+   "topic": "Marks and Caps Lock",
+   "prompt": "Fill in the blank",
+   "text": "To get \"!\" we press Shift + ___.",
+   "answer": [
+    "1"
+   ],
+   "extra": [
+    "2",
+    "0",
+    "Enter"
+   ],
+   "explain": "Shift + 1 = !"
+  },
+  {
+   "type": "choice",
+   "topic": "Languages",
+   "prompt": "Which combination usually switches the language?",
+   "options": [
+    "Alt + Shift",
+    "Ctrl + S",
+    "Enter + Backspace",
+    "Shift + 1"
+   ],
+   "answer": 0,
+   "explain": "Win + Space also works."
+  },
+  {
+   "type": "choice",
+   "topic": "Shift",
+   "prompt": "How should a sentence start?",
+   "options": [
+    "With a capital letter",
+    "With a number",
+    "With a space",
+    "With a period"
+   ],
+   "answer": 0,
+   "explain": "Like in a notebook — with a capital."
+  },
+  {
+   "type": "order",
+   "topic": "Shift",
+   "prompt": "Build a sentence about yourself",
+   "tokens": [
+    "My",
+    "name is",
+    "Aziz."
+   ],
+   "extra": [
+    "space"
+   ],
+   "explain": "A capital at the start and a period at the end."
+  },
+  {
+   "type": "match",
+   "topic": "Languages",
+   "prompt": "Match the word with the language",
+   "pairs": [
+    [
+     "Привет!",
+     "Russian"
+    ],
+    [
+     "Hello!",
+     "English"
+    ],
+    [
+     "Salom!",
+     "Uzbek"
+    ]
+   ],
+   "explain": "Three languages — three greetings."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Shift",
+   "prompt": "If you let go of Shift, the letters are small again.",
+   "answer": true,
+   "explain": "Shift only works while you hold it."
+  }
+ ],
+ "learn": {
+  "intro": "Sentences start with a capital letter! Today we meet the strongman key and learn to type in different languages.",
+  "sections": [
+   {
+    "title": "Shift",
+    "slides": [
+     {
+      "text": "**Shift** is the strongman key. Hold it — the letter becomes big. Let go — small again.",
+      "emoji": "💪"
+     },
+     {
+      "text": "Both keys together are like a chord on a piano: Shift + letter."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Shift",
+      "prompt": "How do you type a capital letter?",
+      "options": [
+       "Shift + letter",
+       "Enter + letter",
+       "The letter twice"
+      ],
+      "answer": 0,
+      "explain": "Hold Shift and press the letter."
+     }
+    ]
+   },
+   {
+    "title": "Marks and Caps Lock",
+    "slides": [
+     {
+      "text": "Shift + the number 1 gives **!**. The keyboard also has a period, a comma and a question mark **?**.",
+      "emoji": "❗"
+     },
+     {
+      "text": "**Caps Lock** turns on CAPITAL letters for good — like shouting. Press it again — off. If suddenly all letters are big — check Caps Lock!",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Marks and Caps Lock",
+      "prompt": "If all letters suddenly became capitals, Caps Lock is probably on.",
+      "answer": true,
+      "explain": "Press Caps Lock again to turn it off."
+     }
+    ]
+   },
+   {
+    "title": "Languages",
+    "slides": [
+     {
+      "text": "The computer knows many languages. At the bottom right you see **РУС** or **ENG** — the language we type in now.",
+      "emoji": "🌍"
+     },
+     {
+      "text": "Switch language: **Alt + Shift** or **Win + Space**. Type: Привет! → Hello! → Salom!"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Languages",
+      "prompt": "Where can you see which language you type in?",
+      "options": [
+       "Bottom right",
+       "Top left",
+       "Nowhere"
+      ],
+      "answer": 0,
+      "explain": "It says РУС or ENG there."
+     }
+    ]
+   }
+  ]
+ }
+}

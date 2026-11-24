@@ -1,0 +1,193 @@
+{
+ "title": "7-dars. Fayl va papka nima",
+ "description": "Daftar va portfel, O'tkazgich va o'z asosiy papkang",
+ "questions": [
+  {
+   "type": "match",
+   "topic": "Fayl va papka",
+   "prompt": "Buyumni kompyuterdagi nomi bilan bog'la",
+   "pairs": [
+    [
+     "Daftar",
+     "Fayl"
+    ],
+    [
+     "Portfel",
+     "Papka"
+    ],
+    [
+     "Shkaf",
+     "Butun kompyuter"
+    ]
+   ],
+   "explain": "Fayllar papkalarda, papkalar — kompyuter-shkafda."
+  },
+  {
+   "type": "choice",
+   "topic": "Fayl va papka",
+   "prompt": "Bulardan qaysi biri fayl?",
+   "options": [
+    "Qo'shiq",
+    "«Hujjatlar» papkasi",
+    "O'tkazgich",
+    "Shkaf"
+   ],
+   "answer": 0,
+   "explain": "Qo'shiq, rasm, multfilm, matn — fayllar."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Fayl va papka",
+   "prompt": "Papkada fayllar yotadi.",
+   "answer": true,
+   "explain": "Portfeldagi daftarlar kabi."
+  },
+  {
+   "type": "choice",
+   "topic": "O'tkazgich",
+   "prompt": "Kompyuterdagi «shkaf» nima deyiladi?",
+   "options": [
+    "O'tkazgich",
+    "Paint",
+    "Kalkulyator",
+    "Savat"
+   ],
+   "answer": 0,
+   "explain": "O'tkazgichda barcha papkalar ko'rinadi."
+  },
+  {
+   "type": "choice",
+   "topic": "O'z papkang",
+   "prompt": "Sening papkang qayerda yashaydi?",
+   "options": [
+    "«Hujjatlar»da",
+    "Savatda",
+    "Karnaylarda",
+    "Kalkulyatorda"
+   ],
+   "answer": 0,
+   "explain": "Biz uni «Hujjatlar»da yaratdik."
+  },
+  {
+   "type": "fill",
+   "topic": "O'z papkang",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "Papka nomini o'zgartirish uchun: o'ng tugma → ___.",
+   "answer": [
+    "Nomini o'zgartirish"
+   ],
+   "extra": [
+    "O'chirish",
+    "Nusxalash",
+    "O'chirib qo'yish"
+   ],
+   "explain": "«Nomini o'zgartirish» nomni almashtiradi."
+  },
+  {
+   "type": "truefalse",
+   "topic": "O'tkazgich",
+   "prompt": "O'tkazgichda asosiy tortmalar bor: Ish stoli, Hujjatlar, Yuklanmalar, Rasmlar.",
+   "answer": true,
+   "explain": "Ular O'tkazgichning chap tomonida."
+  },
+  {
+   "type": "choice",
+   "topic": "O'z papkang",
+   "prompt": "Papkaga qanday kiramiz?",
+   "options": [
+    "Ikki marta bosish",
+    "G'ildirakcha",
+    "Backspace",
+    "Caps Lock"
+   ],
+   "answer": 0,
+   "explain": "Dasturdagidek — ikki marta bosish."
+  }
+ ],
+ "learn": {
+  "intro": "Bu kursdagi eng muhim narsa! Bugun kompyuterda barcha ishlaring qayerda yashashini tushunamiz.",
+  "sections": [
+   {
+    "title": "Fayl va papka",
+    "slides": [
+     {
+      "text": "Ichida nimadir yozilgan daftar kompyuterda **fayl** deyiladi. Rasm ham fayl. Qo'shiq — fayl. Multfilm — fayl.",
+      "emoji": "📄"
+     },
+     {
+      "text": "Daftarlarni soladigan portfel — bu **papka**. Butun kompyuter esa papka-tortmali katta shkaf.",
+      "emoji": "🎒"
+     },
+     {
+      "text": "Qayerga bo'lsa tashlangan daftarni keyin topolmaysan. Shuning uchun hammasini papkalarga joylaymiz!",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Fayl va papka",
+      "prompt": "Rasm — fayl yoki papka?",
+      "options": [
+       "Fayl",
+       "Papka"
+      ],
+      "answer": 0,
+      "explain": "Rasm — daftar kabi, bu fayl."
+     }
+    ]
+   },
+   {
+    "title": "O'tkazgich",
+    "slides": [
+     {
+      "text": "Kompyuterdagi shkafimiz — **O'tkazgich** (vazifalar panelidagi papka belgisi). Chapda asosiy tortmalar: Ish stoli, Hujjatlar, Yuklanmalar, Rasmlar.",
+      "emoji": "🗄️"
+     },
+     {
+      "text": "«Hujjatlar»ga kiramiz, **«Orqaga»** tugmasi — yuqoridagi chap strelka bilan qaytamiz."
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "O'tkazgich",
+      "prompt": "O'tkazgichda yuqoridagi chap strelka bilan orqaga qaytsa bo'ladi.",
+      "answer": true,
+      "explain": "Bu «Orqaga» tugmasi."
+     }
+    ]
+   },
+   {
+    "title": "O'z papkang",
+    "slides": [
+     {
+      "text": "O'z papkamizni yaratamiz: «Hujjatlar»ni ochamiz → bo'sh joyda **o'ng tugma** → **Yaratish → Papka** → darhol ismimizni yozamiz → **Enter**.",
+      "emoji": "✨"
+     },
+     {
+      "text": "Ulgurmadingmi va «Yangi papka» qoldimi? Papkada o'ng tugma → **Nomini o'zgartirish** → ism → Enter."
+     }
+    ],
+    "check": [
+     {
+      "type": "order",
+      "topic": "O'z papkang",
+      "prompt": "Papka yaratish tartibini yig'",
+      "tokens": [
+       "O'ng tugma",
+       "Yaratish",
+       "Papka",
+       "Ism",
+       "Enter"
+      ],
+      "extra": [
+       "O'chirish"
+      ],
+      "explain": "O'ng tugma → Yaratish → Papka → ism → Enter."
+     }
+    ]
+   }
+  ]
+ }
+}

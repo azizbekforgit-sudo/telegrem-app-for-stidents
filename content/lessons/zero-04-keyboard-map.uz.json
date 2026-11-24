@@ -1,0 +1,190 @@
+{
+ "title": "4-dars. Klaviatura xaritasi",
+ "description": "Harflar, raqamlar, kursor va sehrli tugmalar: Probel, Backspace, Enter, strelkalar",
+ "questions": [
+  {
+   "type": "match",
+   "topic": "Sehrli tugmalar",
+   "prompt": "Tugmani vazifasi bilan bog'la",
+   "pairs": [
+    [
+     "Probel",
+     "So'zlar orasidagi bo'shliq"
+    ],
+    [
+     "Backspace",
+     "O'chirg'ich"
+    ],
+    [
+     "Enter",
+     "Yangi qator"
+    ],
+    [
+     "Strelkalar",
+     "Kursorni suradi"
+    ]
+   ],
+   "explain": "Bular asosiy sehrli tugmalar."
+  },
+  {
+   "type": "choice",
+   "topic": "Kursor",
+   "prompt": "Kursor nima?",
+   "options": [
+    "Harf chiqadigan miltillovchi tayoqcha",
+    "O'chirish tugmasi",
+    "Papka belgisi",
+    "Sichqoncha g'ildirakchasi"
+   ],
+   "answer": 0,
+   "explain": "Kursor — qalam uchi kabi."
+  },
+  {
+   "type": "choice",
+   "topic": "Sehrli tugmalar",
+   "prompt": "Yangi qatorga qanday o'tamiz?",
+   "options": [
+    "Enter",
+    "Probel",
+    "Backspace",
+    "Yuqori strelka"
+   ],
+   "answer": 0,
+   "explain": "Enter — daftarda pastga o'tgandek."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Sehrli tugmalar",
+   "prompt": "Probelsiz hamma so'zlar yopishib qoladi.",
+   "answer": true,
+   "explain": "Probel — so'zlar orasidagi bo'shliq."
+  },
+  {
+   "type": "fill",
+   "topic": "Sehrli tugmalar",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "Kursordan chapdagi harfni o'chirish uchun ___ ni bos.",
+   "answer": [
+    "Backspace"
+   ],
+   "extra": [
+    "Enter",
+    "Shift",
+    "Alt"
+   ],
+   "explain": "Backspace — o'chirg'ich."
+  },
+  {
+   "type": "choice",
+   "topic": "Klaviatura",
+   "prompt": "Klaviaturada strelkalar qayerda?",
+   "options": [
+    "O'ng pastda",
+    "Tepada",
+    "O'rtada",
+    "Chap tepada"
+   ],
+   "answer": 0,
+   "explain": "Strelkalar — o'ng pastda."
+  },
+  {
+   "type": "order",
+   "topic": "Sehrli tugmalar",
+   "prompt": "O'zing haqingda tartib bilan: nima yozamiz va yangi qatorga qanday o'tamiz",
+   "tokens": [
+    "Ism",
+    "Enter",
+    "Familiya",
+    "Enter",
+    "Sinf"
+   ],
+   "extra": [
+    "Backspace"
+   ],
+   "explain": "Har biri Enter orqali yangi qatordan."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Klaviatura",
+   "prompt": "Bloknotni yopayotganda matn kerak bo'lmasa «Saqlamaslik» ni bosish mumkin.",
+   "answer": true,
+   "explain": "Saqlashni keyinroq o'rganamiz."
+  }
+ ],
+ "learn": {
+  "intro": "Klaviatura — katta musiqa asbobi kabi. Faqat musiqa o'rniga harflar chiqadi!",
+  "sections": [
+   {
+    "title": "Klaviatura",
+    "slides": [
+     {
+      "text": "Har bir tugma — o'z notasi. **Harflar** — o'rtada, **raqamlar** — tepada, **strelkalar** — o'ng pastda.",
+      "emoji": "🎹"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Klaviatura",
+      "prompt": "Klaviaturada raqamlar qayerda?",
+      "options": [
+       "Tepada",
+       "O'ng pastda",
+       "Ular yo'q"
+      ],
+      "answer": 0,
+      "explain": "Raqamlar — yuqori qatorda."
+     }
+    ]
+   },
+   {
+    "title": "Kursor",
+    "slides": [
+     {
+      "text": "Miltillab turgan tayoqchani ko'ryapsanmi? Bu **kursor**. U harf qayerda chiqishini ko'rsatadi — qog'ozdagi qalam uchidek.",
+      "emoji": "✏️"
+     },
+     {
+      "text": "**Strelkalar** kursorni hech narsani o'chirmay suradi."
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Kursor",
+      "prompt": "Strelkalar kursorni suradi va harflarni o'chiradi.",
+      "answer": false,
+      "explain": "Strelkalar faqat kursorni suradi."
+     }
+    ]
+   },
+   {
+    "title": "Sehrli tugmalar",
+    "slides": [
+     {
+      "text": "**Probel** — pastdagi uzun tugma: so'zlar orasidagi bo'shliq. **Backspace** — o'chirg'ich: kursordan chapdagi harfni o'chiradi. **Enter** — yangi qator.",
+      "emoji": "🪄"
+     },
+     {
+      "text": "Xato qildingmi — hech qisi yo'q! Backspace o'chirg'ichini topib, o'zing tuzat.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Sehrli tugmalar",
+      "prompt": "Qaysi tugma — o'chirg'ich?",
+      "options": [
+       "Backspace",
+       "Enter",
+       "Probel"
+      ],
+      "answer": 0,
+      "explain": "Backspace kursordan chapdagi harfni o'chiradi."
+     }
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,184 @@
+{
+ "title": "19-dars. Internetda xavfsizlik",
+ "description": "5 ta xavfsizlik qoidasi va xavfli vaziyatda nima qilish",
+ "questions": [
+  {
+   "type": "choice",
+   "topic": "5 qoida",
+   "prompt": "Internetda nimadir qo'rqitsa nima qilish kerak?",
+   "options": [
+    "Darhol kattani chaqirish",
+    "Hech kimga aytmaslik",
+    "Hammasini ketma-ket bosish",
+    "Manzilingni yuborish"
+   ],
+   "answer": 0,
+   "explain": "Seni urishmaydi — yordam berishadi."
+  },
+  {
+   "type": "truefalse",
+   "topic": "5 qoida",
+   "prompt": "Kattalarsiz o'yin yuklab olsa bo'ladi — viruslar bo'lmaydi.",
+   "answer": false,
+   "explain": "O'yin bilan virus — kompyuter kasalligi kelishi mumkin."
+  },
+  {
+   "type": "match",
+   "topic": "Nima qilish kerak?",
+   "prompt": "Vaziyatni to'g'ri harakat bilan bog'la",
+   "pairs": [
+    [
+     "«Siz yutdingiz!» oynasi",
+     "Bosmaslik, yopish"
+    ],
+    [
+     "Onamning telefoni parolini so'rashyapti",
+     "Kiritmaslik, kattaga aytish"
+    ],
+    [
+     "Qo'rqinchli rasm",
+     "Yopish va kattaga aytish"
+    ]
+   ],
+   "explain": "Hamma holatda katta yordam beradi."
+  },
+  {
+   "type": "choice",
+   "topic": "5 qoida",
+   "prompt": "«Bepul yuklab oling» ni nega bosmaymiz?",
+   "options": [
+    "Bular aldoqchilar bo'lishi mumkin",
+    "Bu juda chiroyli",
+    "Shunda kompyuter tezroq bo'ladi",
+    "Bu maktabda taqiqlangan"
+   ],
+   "answer": 0,
+   "explain": "Hech kim narsalarni shunchaki sovg'a qilmaydi."
+  },
+  {
+   "type": "fill",
+   "topic": "5 qoida",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "Nimadir qo'rqitsa — darhol ___ chaqiraman.",
+   "answer": [
+    "kattani"
+   ],
+   "extra": [
+    "notanishni",
+    "o'yindagi do'stni",
+    "hech kimni"
+   ],
+   "explain": "Kattalar yordam beradi."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Nima qilish kerak?",
+   "prompt": "Shubhali oyna yopilmasa, uning ichidagi tugmalarni bosish kerak.",
+   "answer": false,
+   "explain": "Hech narsani bosmaymiz — kattani chaqiramiz."
+  },
+  {
+   "type": "choice",
+   "topic": "Internet — shahar kabi",
+   "prompt": "Internetda notanishlar bilan nega gaplashmaymiz?",
+   "options": [
+    "Aslida kim yozayotgani noma'lum",
+    "Ular yomon yozadi",
+    "Bu zerikarli",
+    "Bu uzoqroq"
+   ],
+   "answer": 0,
+   "explain": "U o'zini bola qilib ko'rsatishi mumkin."
+  },
+  {
+   "type": "order",
+   "topic": "5 qoida",
+   "prompt": "Qoidani yig'",
+   "tokens": [
+    "Hech kimga",
+    "aytmayman",
+    "parolimni"
+   ],
+   "extra": [
+    "hammaga"
+   ],
+   "explain": "Parol — sir."
+  }
+ ],
+ "learn": {
+  "intro": "Internet — katta shahar kabi: qiziq narsalar ko'p, lekin notanishlar va aldoqchilar ham bor. Qoidalarni o'rganamiz!",
+  "sections": [
+   {
+    "title": "Internet — shahar kabi",
+    "slides": [
+     {
+      "text": "Ko'chada qoidalarni bilasan: notanishlar bilan gaplashmaslik, begona mashinaga o'tirmaslik. Internetda ham qoidalar bor.",
+      "emoji": "🏙️"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Internet — shahar kabi",
+      "prompt": "Internetda, katta shahardagidek, aldoqchilar bo'ladi.",
+      "answer": true,
+      "explain": "Shuning uchun qoidalar kerak."
+     }
+    ]
+   },
+   {
+    "title": "5 qoida",
+    "slides": [
+     {
+      "text": "1. Hech kimga parol, familiya, manzil, maktab va telefonni aytmayman. 2. «Siz yutdingiz!» va «Bepul yuklab oling» ni bosmayman. 3. Kattalarsiz hech narsa yuklab olmayman.",
+      "emoji": "🔒"
+     },
+     {
+      "text": "4. Notanishlar bilan gaplashmayman — aslida kim yozayotgani noma'lum. 5. Nimadir qo'rqitsa yoki tushunarsiz bo'lsa — **darhol kattani chaqiraman**. Buning uchun urishmaydi!",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "5 qoida",
+      "prompt": "Internetda hech kimga nimani aytib bo'lmaydi?",
+      "options": [
+       "Parol va manzil",
+       "Sevimli rang",
+       "Multfilmlarni yaxshi ko'rishing"
+      ],
+      "answer": 0,
+      "explain": "Notanish qayerda yashashingni bilib olishi mumkin."
+     }
+    ]
+   },
+   {
+    "title": "Nima qilish kerak?",
+    "slides": [
+     {
+      "text": "«Siz iPhone yutdingiz!» oynasi chiqdimi? **Bosmaymiz**, xoch bilan yopamiz yoki kattani chaqiramiz. Hech kim telefonni shunchaki sovg'a qilmaydi.",
+      "emoji": "🎁"
+     },
+     {
+      "text": "Oyna yopilmayaptimi? Ichida hech narsani bosmaymiz — kattani chaqiramiz."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Nima qilish kerak?",
+      "prompt": "O'yinda notanish bola qaysi maktabdaligingni so'rab, uchrashishga chaqiryapti. Nima qilasan?",
+      "options": [
+       "Javob bermayman va kattaga aytaman",
+       "Maktabni aytaman",
+       "Uchrashuvga boraman"
+      ],
+      "answer": 0,
+      "explain": "U o'zini bola qilib ko'rsatishi mumkin."
+     }
+    ]
+   }
+  ]
+ }
+}

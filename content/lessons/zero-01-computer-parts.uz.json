@@ -1,0 +1,194 @@
+{
+ "title": "1-dars. Kompyuter nimadan iborat",
+ "description": "Kompyuter qismlari va uni to'g'ri yoqish va o'chirish",
+ "questions": [
+  {
+   "type": "choice",
+   "topic": "Kompyuter qismlari",
+   "prompt": "Kompyuter ekrani nima deyiladi?",
+   "options": [
+    "Monitor",
+    "Sichqoncha",
+    "Karnaylar",
+    "Klaviatura"
+   ],
+   "answer": 0,
+   "explain": "Monitor — kompyuterning «ko'zlari»."
+  },
+  {
+   "type": "match",
+   "topic": "Kompyuter qismlari",
+   "prompt": "Kompyuter qismini odam qismi bilan bog'la",
+   "pairs": [
+    [
+     "Monitor",
+     "Ko'zlar"
+    ],
+    [
+     "Klaviatura",
+     "Quloqlar"
+    ],
+    [
+     "Tizim bloki",
+     "Bosh"
+    ],
+    [
+     "Karnaylar",
+     "Og'iz"
+    ]
+   ],
+   "explain": "Ekran ko'rsatadi, klaviatura eshitadi, blok o'ylaydi, karnaylar gapiradi."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Kompyuter qismlari",
+   "prompt": "Klaviatura va sichqoncha orqali kompyuterga nima qilishni aytamiz.",
+   "answer": true,
+   "explain": "Bu uning «quloqlari»."
+  },
+  {
+   "type": "choice",
+   "topic": "Kompyuter qismlari",
+   "prompt": "Kompyuter qayerda «o'ylaydi»?",
+   "options": [
+    "Monitorda",
+    "Tizim blokida",
+    "Karnaylarda",
+    "Sichqonchada"
+   ],
+   "answer": 1,
+   "explain": "Tizim bloki — kompyuterning «boshi»."
+  },
+  {
+   "type": "truefalse",
+   "topic": "O'chirish",
+   "prompt": "Kompyuterni chiroqdek tugmani bosib o'chirsa bo'ladi.",
+   "answer": false,
+   "explain": "Shunda u qilganlarimizni yo'qotishi mumkin. «Pusk» orqali o'chiramiz."
+  },
+  {
+   "type": "choice",
+   "topic": "O'chirish",
+   "prompt": "«Pusk» tugmasi qayerda?",
+   "options": [
+    "Chap pastki burchakda",
+    "O'ng yuqori burchakda",
+    "Klaviaturaning tepasida",
+    "Karnaylarda"
+   ],
+   "answer": 0,
+   "explain": "«Pusk» — pastda chapda."
+  },
+  {
+   "type": "choice",
+   "topic": "Yoqish",
+   "prompt": "Yoqqandan keyin darhol nima qilamiz?",
+   "options": [
+    "Hamma tugmalarni bosamiz",
+    "Ish stolini kutamiz",
+    "Darhol o'chiramiz",
+    "Ekranni taqillatamiz"
+   ],
+   "answer": 1,
+   "explain": "Kompyuter uyg'onadi — ish stolini kutamiz."
+  },
+  {
+   "type": "fill",
+   "topic": "O'chirish",
+   "prompt": "Tushib qolganini qo'y",
+   "text": "Shunday o'chiramiz: ___ → quvvat belgisi → «Ishni yakunlash».",
+   "answer": [
+    "Pusk"
+   ],
+   "extra": [
+    "Xoch",
+    "Karnaylar",
+    "Sichqoncha"
+   ],
+   "explain": "«Pusk» tugmasidan boshlaymiz."
+  }
+ ],
+ "learn": {
+  "intro": "Salom! Biz kompyuter bilan do'stlashamiz. Bugun u bilan yangi do'stdek tanishamiz!",
+  "sections": [
+   {
+    "title": "Kompyuter qismlari",
+    "slides": [
+     {
+      "text": "Kompyuter odamga o'xshaydi. **Monitor** — uning ko'zlari: ekran orqali u bizga rasmlarni ko'rsatadi.",
+      "emoji": "🖥️"
+     },
+     {
+      "text": "**Klaviatura** va **sichqoncha** — uning quloqlari: ular orqali nima qilishni aytamiz. **Tizim bloki** — bosh, u yerda o'ylaydi. **Karnaylar** — og'iz, ular orqali gapiradi va kuylaydi.",
+      "emoji": "🧠"
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Kompyuter qismlari",
+      "prompt": "So'z yozmoqchi bo'lsam, nimadan foydalanaman?",
+      "options": [
+       "Monitor",
+       "Klaviatura",
+       "Karnaylar"
+      ],
+      "answer": 1,
+      "explain": "Klaviatura — kompyuterning «quloqlari»: u orqali harflarni aytamiz."
+     }
+    ]
+   },
+   {
+    "title": "Yoqish",
+    "slides": [
+     {
+      "text": "Tizim bloki yoki noutbukdagi quvvat tugmasi bilan yoqamiz.",
+      "emoji": "🔌"
+     },
+     {
+      "text": "Keyin **ish stoli** paydo bo'lishini kutamiz. Kompyuter uyg'onyapti — unga vaqt kerak.",
+      "emoji": "⏳"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Yoqish",
+      "prompt": "Yoqqandan keyin ish stoli paydo bo'lishini kutish kerak.",
+      "answer": true,
+      "explain": "Kompyuter uyg'onyapti, unga vaqt kerak."
+     }
+    ]
+   },
+   {
+    "title": "O'chirish",
+    "slides": [
+     {
+      "text": "Kompyuterni chiroqdek tugma bilan o'chirib bo'lmaydi. U xafa bo'lib, qilganlarimizni yo'qotishi mumkin.",
+      "emoji": "🙅"
+     },
+     {
+      "text": "**Xushmuomala** o'chiramiz: chap pastki burchakdagi «Pusk» tugmasi → quvvat belgisi → «Ishni yakunlash».",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "order",
+      "topic": "O'chirish",
+      "prompt": "Kompyuterni to'g'ri o'chirish tartibini yig'",
+      "tokens": [
+       "Pusk",
+       "Quvvat belgisi",
+       "Ishni yakunlash"
+      ],
+      "extra": [
+       "Xoch"
+      ],
+      "explain": "Avval «Pusk», keyin quvvat, keyin «Ishni yakunlash»."
+     }
+    ]
+   }
+  ]
+ }
+}

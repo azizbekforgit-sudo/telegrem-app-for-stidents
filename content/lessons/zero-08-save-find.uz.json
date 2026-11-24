@@ -1,0 +1,194 @@
+{
+ "title": "8-dars. Saqlash va topish",
+ "description": "Faylni o'z papkamizga saqlaymiz, yopamiz va yana topamiz",
+ "questions": [
+  {
+   "type": "order",
+   "topic": "Boshqacha saqlash",
+   "prompt": "Saqlash qadamlarini yig'",
+   "tokens": [
+    "Fayl",
+    "Boshqacha saqlash",
+    "Papkani tanlash",
+    "Fayl nomi",
+    "Saqlash"
+   ],
+   "extra": [
+    "O'chirish"
+   ],
+   "explain": "Avval qayerga, keyin nom, keyin «Saqlash»."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Nega saqlash kerak",
+   "prompt": "Bloknotdagi matn saqlamasdan yopsang ham o'zi saqlanadi.",
+   "answer": false,
+   "explain": "Saqlash kerak, aks holda matn yo'qoladi."
+  },
+  {
+   "type": "choice",
+   "topic": "Topish va Ctrl + S",
+   "prompt": "Ctrl + S nima qiladi?",
+   "options": [
+    "Tez saqlaydi",
+    "Faylni o'chiradi",
+    "Kompyuterni o'chiradi",
+    "Nusxalaydi"
+   ],
+   "answer": 0,
+   "explain": "S — save."
+  },
+  {
+   "type": "choice",
+   "topic": "Boshqacha saqlash",
+   "prompt": "Saqlashda fayl nomini qayerga yozamiz?",
+   "options": [
+    "Pastdagi «Fayl nomi» maydoniga",
+    "Ish stolida",
+    "Savatda",
+    "Hech qayerda"
+   ],
+   "answer": 0,
+   "explain": "Oyna pastidagi «Fayl nomi» maydoni."
+  },
+  {
+   "type": "match",
+   "topic": "Nega saqlash kerak",
+   "prompt": "Obrazni ma'nosi bilan bog'la",
+   "pairs": [
+    [
+     "Doskadagi bo'r",
+     "Saqlanmagan matn"
+    ],
+    [
+     "Portfeldagi daftar",
+     "Saqlangan fayl"
+    ],
+    [
+     "O'chirilgan doska",
+     "Saqlamasdan yopdik"
+    ]
+   ],
+   "explain": "Saqlash — daftarni portfelga solish."
+  },
+  {
+   "type": "choice",
+   "topic": "Topish va Ctrl + S",
+   "prompt": "Saqlangan faylni qanday qayta ochamiz?",
+   "options": [
+    "O'tkazgich → o'z papkang → ikki marta bosish",
+    "Caps Lock ni bosish",
+    "Kompyuterni o'chirish",
+    "Kalkulyatorni ochish"
+   ],
+   "answer": 0,
+   "explain": "Papkani topib, faylni ikki marta bosib ochamiz."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Topish va Ctrl + S",
+   "prompt": "Ctrl + S dan keyin papkani qayta tanlash shart emas.",
+   "answer": true,
+   "explain": "Kompyuter fayl qayerdaligini biladi."
+  },
+  {
+   "type": "choice",
+   "topic": "Nega saqlash kerak",
+   "prompt": "Tasodifan saqlamasdan yopsang nima qilamiz?",
+   "options": [
+    "Qayta yozib, saqlaymiz",
+    "Yig'laymiz",
+    "Kompyuterni buzamiz",
+    "Kompyuterdan boshqa foydalanmaymiz"
+   ],
+   "answer": 0,
+   "explain": "Qo'rqinchli emas — bu saqlash nega muhimligi haqida saboq."
+  }
+ ],
+ "learn": {
+  "intro": "Kursdagi eng muhim dars! Ishlarimizni saqlash va topishni o'rganamiz — kattalar ko'pincha buni bilishmaydi.",
+  "sections": [
+   {
+    "title": "Nega saqlash kerak",
+    "slides": [
+     {
+      "text": "Bloknotda yozayotganingda matn faqat ekranda yashaydi — doskadagi bo'r yozuvi kabi. Dasturni yopding — doska o'chirildi.",
+      "emoji": "🧽"
+     },
+     {
+      "text": "Matn doim qolishi uchun uni **saqlash** kerak — daftarni portfelga solish."
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Nega saqlash kerak",
+      "prompt": "Bloknotni saqlamasdan yopsang, matn yo'qoladi.",
+      "answer": true,
+      "explain": "Doska o'chirildi — matn yo'q."
+     }
+    ]
+   },
+   {
+    "title": "Boshqacha saqlash",
+    "slides": [
+     {
+      "text": "**Fayl → Boshqacha saqlash** menyusi. Oyna ochildi. Eng muhimi — **qayerga** saqlayotganimizga qarash: Hujjatlar → sening papkang.",
+      "emoji": "📍"
+     },
+     {
+      "text": "Pastda «Fayl nomi» maydoni — masalan, **Mening o'yinlarim** deb yozamiz va **Saqlash** ni bosamiz."
+     },
+     {
+      "text": "Asosiy savol: **qayerga saqlayapman?** Qayerga ekanini bilmasang — keyin topolmaysan.",
+      "quote": true
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Boshqacha saqlash",
+      "prompt": "Saqlashda asosiy savol qaysi?",
+      "options": [
+       "Qayerga saqlayapman?",
+       "Oyna qanday rangda?",
+       "Soat necha?"
+      ],
+      "answer": 0,
+      "explain": "Aks holda faylni keyin topolmaysan."
+     }
+    ]
+   },
+   {
+    "title": "Topish va Ctrl + S",
+    "slides": [
+     {
+      "text": "«Daftaringni top» o'yini: Bloknotni yop → O'tkazgich → Hujjatlar → o'z papkang → faylni ikki marta bos. Ura, daftar joyida!",
+      "emoji": "🔎"
+     },
+     {
+      "text": "Qo'shib yozdingmi — **Ctrl + S** ni bos, tez saqlash. Papkani tanlash shart emas: kompyuter fayl qayerdaligini biladi.",
+      "emoji": "⚡"
+     }
+    ],
+    "check": [
+     {
+      "type": "fill",
+      "topic": "Topish va Ctrl + S",
+      "prompt": "Tushib qolganini qo'y",
+      "text": "Tez saqlash: Ctrl + ___",
+      "answer": [
+       "S"
+      ],
+      "extra": [
+       "Z",
+       "C",
+       "V"
+      ],
+      "explain": "S — save, saqlash."
+     }
+    ]
+   }
+  ]
+ }
+}

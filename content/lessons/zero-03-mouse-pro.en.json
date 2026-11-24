@@ -1,0 +1,188 @@
+{
+ "title": "Lesson 3. Mouse pro",
+ "description": "Right click, dragging and the scroll wheel",
+ "questions": [
+  {
+   "type": "match",
+   "topic": "Mouse buttons",
+   "prompt": "Match the mouse part with what it does",
+   "pairs": [
+    [
+     "Left button",
+     "Select"
+    ],
+    [
+     "Right button",
+     "Open a menu"
+    ],
+    [
+     "Wheel",
+     "Scroll up and down"
+    ]
+   ],
+   "explain": "Left — yes, right — menu, wheel — lift."
+  },
+  {
+   "type": "choice",
+   "topic": "Dragging",
+   "prompt": "How do you move an icon somewhere else?",
+   "options": [
+    "Press, hold and drag",
+    "Double-click",
+    "Turn the wheel",
+    "Press Enter"
+   ],
+   "answer": 0,
+   "explain": "That is dragging."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Mouse buttons",
+   "prompt": "The right-click menu is always the same.",
+   "answer": false,
+   "explain": "The menu differs because things differ."
+  },
+  {
+   "type": "choice",
+   "topic": "Mouse buttons",
+   "prompt": "How do you close a menu you don't need?",
+   "options": [
+    "Click an empty spot",
+    "Turn off the computer",
+    "Press the wheel",
+    "Nothing can be done"
+   ],
+   "answer": 0,
+   "explain": "Clicking an empty spot closes the menu."
+  },
+  {
+   "type": "order",
+   "topic": "Dragging",
+   "prompt": "Put the dragging steps in order",
+   "tokens": [
+    "Press",
+    "Hold",
+    "Move the mouse",
+    "Release"
+   ],
+   "extra": [
+    "Turn off"
+   ],
+   "explain": "Press → hold → move → release."
+  },
+  {
+   "type": "fill",
+   "topic": "Scroll wheel",
+   "prompt": "Fill in the blank",
+   "text": "To scroll a page up and down we turn the ___.",
+   "answer": [
+    "wheel"
+   ],
+   "extra": [
+    "button",
+    "monitor",
+    "cable"
+   ],
+   "explain": "The wheel is a lift."
+  },
+  {
+   "type": "choice",
+   "topic": "Dragging",
+   "prompt": "In \"Sort into corners\", where do animals go?",
+   "options": [
+    "Bottom-left corner",
+    "Top-right corner",
+    "Into the bin",
+    "Onto the taskbar"
+   ],
+   "answer": 0,
+   "explain": "Food — top left, vehicles — top right, animals — bottom left, toys — bottom right."
+  },
+  {
+   "type": "truefalse",
+   "topic": "Mouse buttons",
+   "prompt": "You can delete a practice folder like this: right-click → \"Delete\".",
+   "answer": true,
+   "explain": "The folder goes to the bin."
+  }
+ ],
+ "learn": {
+  "intro": "The mouse has secrets! Today you become a real mouse pro.",
+  "sections": [
+   {
+    "title": "Mouse buttons",
+    "slides": [
+     {
+      "text": "The **left button** means \"yes, select\". The **right button** asks \"what can I do?\" — it opens a menu.",
+      "emoji": "🖱️"
+     },
+     {
+      "text": "Right-click the desktop, an icon, the taskbar — the menu is different each time because the things are different. Click an empty spot — the menu closes."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Mouse buttons",
+      "prompt": "What does the right mouse button do?",
+      "options": [
+       "Opens a menu",
+       "Turns off the computer",
+       "Types a letter"
+      ],
+      "answer": 0,
+      "explain": "The right button asks: \"What can I do?\""
+     }
+    ]
+   },
+   {
+    "title": "Dragging",
+    "slides": [
+     {
+      "text": "To move an icon: press **the left button and hold it**. Hold — and move the mouse. Let go — the icon stays there.",
+      "emoji": "✋"
+     },
+     {
+      "text": "The \"Sort into corners\" game: food to the top left, vehicles to the top right, animals to the bottom left, toys to the bottom right. Against the clock!",
+      "emoji": "⏱️"
+     }
+    ],
+    "check": [
+     {
+      "type": "truefalse",
+      "topic": "Dragging",
+      "prompt": "To drag an icon you hold the left button while moving the mouse.",
+      "answer": true,
+      "explain": "Press, hold, move, release."
+     }
+    ]
+   },
+   {
+    "title": "Scroll wheel",
+    "slides": [
+     {
+      "text": "The **wheel** is like a lift: it moves the page up and down.",
+      "emoji": "🛗"
+     },
+     {
+      "text": "Open a long story and turn the wheel — the text moves up and down."
+     }
+    ],
+    "check": [
+     {
+      "type": "choice",
+      "topic": "Scroll wheel",
+      "prompt": "What is the mouse wheel like?",
+      "options": [
+       "A lift",
+       "An eraser",
+       "A door"
+      ],
+      "answer": 0,
+      "explain": "It moves the page up and down like a lift."
+     }
+    ]
+   }
+  ]
+ }
+}
