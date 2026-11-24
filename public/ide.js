@@ -236,9 +236,11 @@ export function wrongTopic(files, allow) {
     const k = fileKind(name);
     if (!has(k) && !(k === 'jsx' && has('js'))) return { file: name, what: k };
     const plain = src.replace(/<!--[\s\S]*?-->|\/\*[\s\S]*?\*\//g, '');
+    // в CSS «var(--x)» — это CSS, а не JavaScript; строки в кавычках тоже не считаем
+    const cssPlain = k === 'css' ? plain.replace(/"[^"\n]*"|'[^'\n]*'/g, '""').replace(/\bvar\s*\(/g, '(') : plain;
     if (k === 'html' && !has('js') && /<script\b/i.test(plain)) return { file: name, what: 'js' };
     if (k === 'html' && !has('css') && /<style\b|<link\b[^>]*stylesheet/i.test(plain)) return { file: name, what: 'css' };
-    if (k === 'css' && /\b(function|const|let|var|document|console)\b|=>/.test(plain)) return { file: name, what: 'js' };
+    if (k === 'css' && (/\b(function|const|let|document|console)\s*[\s(.{]|=>|\bvar\s+[A-Za-z_$]/.test(cssPlain))) return { file: name, what: 'js' };
   }
   return null;
 }
@@ -270,9 +272,40 @@ export function buildPage(files) {
 
 // ───────── сам редактор ─────────
 // files: { name: text }, allow: ['html','css','js'], onChange(files, name), onBlocked(kind), canRun: показывать ли превью
+// ───────── Monaco: настоящий редактор VS Code (на компьютере) ─────────
+// Свой сервер раздаёт /monaco/vs (npm monaco-editor); сайт на Vercel берёт тот же билд с jsdelivr.
+const MONACO_BASES = ['/monaco/vs', 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs'];
+let monacoP = null;
+function loadMonaco() {
+  if (window.monaco?.editor) return Promise.resolve(window.monaco);
+  if (monacoP) return monacoP;
+  const tryBase = (i) => new Promise((res, rej) => {
+    const base = MONACO_BASES[i];
+    if (!base) return rej(new Error('monaco'));
+    const abs = new URL(base, location.href).href;
+    const s = document.createElement('script');
+    s.src = `${abs}/loader.js`;
+    s.onload = () => {
+      window.MonacoEnvironment = { getWorkerUrl: () => `data:text/javascript;charset=utf-8,${encodeURIComponent(`self.MonacoEnvironment={baseUrl:'${abs}/../'};importScripts('${abs}/base/worker/workerMain.js');`)}` };
+      window.require.config({ paths: { vs: abs } });
+      window.require(['vs/editor/editor.main'], () => res(window.monaco), rej);
+    };
+    s.onerror = () => { s.remove(); tryBase(i + 1).then(res, rej); };
+    document.head.appendChild(s);
+  });
+  monacoP = tryBase(0).catch((e) => { monacoP = null; throw e; });
+  return monacoP;
+}
+const MONACO_LANG = { html: 'html', css: 'css', js: 'javascript', jsx: 'javascript', json: 'json', sh: 'shell' };
+const wantMonaco = () => typeof matchMedia === 'function' && matchMedia('(pointer: fine) and (min-width: 700px)').matches;
+let ideSeq = 0;
+
 export function createIde(host, { files, open, allow = [], onChange, onBlocked, onConsole, title = 'VS Code', extraFiles = [], mapPage = null }) {
   const F = { ...files };
   let cur = open && F[open] != null ? open : Object.keys(F)[0];
+  let mon = null, monM = null, dead = false, deco = [];
+  const models = {};
+  const seq = ++ideSeq;
   let sug = null, sel = 0;
   const hasPage = () => Boolean(F['index.html'] != null || F['script.js'] != null);
   const runnable = () => !Object.keys(F).some((n) => /\.(jsx|json|sh)$|^\.gitignore$/.test(n)) && hasPage();
@@ -331,10 +364,17 @@ export function createIde(host, { files, open, allow = [], onChange, onBlocked, 
     const n = text.split('\n').length;
     gut.innerHTML = Array.from({ length: n }, (_, i) => `<span>${i + 1}</span>`).join('');
   }
-  function load() { ta.value = F[cur] ?? ''; tabs(); paint(); hideSug(); }
+  function load() {
+    if (mon) { mon.setModel(modelOf(cur)); tabs(); return; }
+    ta.value = F[cur] ?? ''; tabs(); paint(); hideSug();
+  }
+  function modelOf(n) {
+    if (!models[n]) models[n] = monM.editor.createModel(F[n] ?? '', MONACO_LANG[fileKind(n)] || 'plaintext', monM.Uri.parse(`file:///ide${seq}/${n}`));
+    return models[n];
+  }
   function changed() {
-    F[cur] = ta.value;
-    paint();
+    if (mon) F[cur] = mon.getValue();
+    else { F[cur] = ta.value; paint(); }
     onChange?.({ ...F }, cur);
     clearTimeout(frameTimer);
     frameTimer = setTimeout(run, 700);
@@ -437,6 +477,25 @@ export function createIde(host, { files, open, allow = [], onChange, onBlocked, 
   }));
   load();
   run();
+  // на компьютере меняем поле на настоящий Monaco (если не загрузился — остаётся простой редактор)
+  if (wantMonaco()) loadMonaco().then((m) => {
+    if (dead || !host.isConnected) return;
+    monM = m;
+    const box = document.createElement('div');
+    box.className = 'ide-monaco';
+    const main = host.querySelector('.ide-main');
+    main.replaceChildren(box);
+    host.querySelector('[data-keys]')?.remove();
+    host.querySelector('.ide').classList.add('is-monaco');
+    mon = m.editor.create(box, {
+      model: modelOf(cur), theme: 'vs-dark', automaticLayout: true, minimap: { enabled: false }, fontSize: 14, lineHeight: 21,
+      fontFamily: "'JetBrains Mono', ui-monospace, Menlo, monospace", tabSize: 2, insertSpaces: true, wordWrap: 'on', scrollBeyondLastLine: false,
+      quickSuggestions: { other: true, comments: false, strings: true }, suggestOnTriggerCharacters: true, autoClosingBrackets: 'always', autoClosingQuotes: 'always',
+      formatOnPaste: true, renderLineHighlight: 'all', smoothScrolling: true, padding: { top: 10 }, fixedOverflowWidgets: true,
+    });
+    mon.onDidChangeModelContent(() => changed());
+    mon.focus();
+  }).catch(() => { /* остаётся простой редактор */ });
   return {
     files: () => ({ ...F }),
     open(name) { if (F[name] != null) { cur = name; load(); } },
@@ -450,7 +509,24 @@ export function createIde(host, { files, open, allow = [], onChange, onBlocked, 
       $('[data-problems]').innerHTML = list.length ? list.map((p) => `<div class="p${p.sev}"><i>${p.sev >= 2 ? '✖' : '⚠'}</i><span>${esc(tr(p.msg))}</span><em>${esc(p.file)}${p.line ? `:${p.line}` : ''}</em></div>`).join('') : `<div class="ok">✓ ${esc(tr('Ошибок нет'))}</div>`;
     },
     console: () => consoleText,
-    focus: () => ta.focus(),
-    destroy() { window.removeEventListener('message', onMsg); clearTimeout(frameTimer); },
+    focus: () => (mon ? mon.focus() : ta.focus()),
+    // подсветить строку с ошибкой
+    mark(line) {
+      if (mon) {
+        mon.revealLineInCenter(line);
+        mon.setPosition({ lineNumber: line, column: 1 });
+        deco = mon.deltaDecorations(deco, [{ range: new monM.Range(line, 1, line, 1), options: { isWholeLine: true, className: 'ide-errline', glyphMarginClassName: 'ide-errglyph' } }]);
+        mon.focus();
+        return;
+      }
+      const lines = ta.value.split('\n');
+      const start = lines.slice(0, line - 1).join('\n').length + (line > 1 ? 1 : 0);
+      ta.focus(); ta.setSelectionRange(start, start + (lines[line - 1] || '').length);
+    },
+    destroy() {
+      dead = true;
+      window.removeEventListener('message', onMsg); clearTimeout(frameTimer);
+      try { mon?.dispose(); Object.values(models).forEach((x) => x.dispose()); } catch { /* */ }
+    },
   };
 }

@@ -2255,7 +2255,7 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
         <div class="cs-talk"><div class="cs-m" data-m>${me('teach', wide ? 150 : 64)}</div><div class="speech" data-say></div></div>
         <div class="cs-show" data-show hidden></div>
         <ol class="cs-steps" data-steps>${steps.map((st, i) => `<li data-st="${i}"><i></i><span>${rich(st.say)}</span></li>`).join('')}</ol>
-        <div class="cs-act">${exam ? '' : `<button class="btn ghost dim" data-hint>${emo('💡')} Подсказка</button>`}<button class="btn" data-done ${exam ? '' : 'disabled'}>${ic('check-circle')}${exam ? 'Сохранить ответ' : 'Готово'}</button></div>
+        <div class="cs-act">${exam ? '' : `<button class="btn ghost dim" data-hint>${emo('💡')} Подсказка</button><button class="btn ghost" data-review>${emo('🔍')} Проверить</button>`}<button class="btn" data-done ${exam ? '' : 'disabled'}>${ic('check-circle')}${exam ? 'Сохранить ответ' : 'Готово'}</button></div>
       </div>
       <div class="cs-ide" data-ide></div>
       ${wide || exam ? '' : `<div class="cs-intro" data-intro><div class="teach-row col">${me('talk', 150)}<div class="speech" data-isay></div></div>
@@ -2283,6 +2283,8 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
       onBlocked: (k) => { haptic('error'); sfx.bad(); say(`Стоп! ${LANG_NAME[k] || k} — это другой урок. Сейчас мы проходим «${topic}». Пиши только то, что проходим.`, 'oops', 'angry'); },
     });
     let passed = steps.map(() => false);
+    let accepted = steps.map(() => false); // шаги, которые засчитала проверка «Проверить» (сервер + Claude)
+    let reviewing = false;
     let lastErr = '', errSince = 0, hintLevel = 0, typedAt = Date.now(), finished = false;
     const showCur = () => {
       if (exam) return -1; // в контрольной шаги не отмечаются — верно или нет, видно только в конце
@@ -2296,18 +2298,18 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
       const probs = lint(files);
       ide.setProblems(probs);
       const wrong = wrongTopic(files, allow);
-      const now = checkSteps(task, files, ide.console());
+      const now = checkSteps(task, files, ide.console()).map((v, i) => v || accepted[i]);
       const newly = now.findIndex((v, i) => v && !passed[i]);
       passed = now;
       const k = showCur();
       const bad = probs.find((p) => p.sev >= 2);
       if (wrong) { say(`Стоп! Ты пишешь ${LANG_NAME[wrong.what] || wrong.what} в ${wrong.file} — это другой урок. Сейчас мы проходим «${topic}». Убери это.`, 'oops', 'angry'); haptic('error'); return; }
       // ошибка линтера только предупреждает: шаги всё равно проверяются (линтер может ошибаться)
-      if (bad && k !== -1 && newly < 0) {
+      // подсказка линтера — мягкая, ничего не блокирует: последнее слово за кнопкой «Проверить»
+      if (bad && k !== -1 && newly < 0 && !exam) {
         const key = bad.file + bad.msg;
-        if (key !== lastErr) { lastErr = key; errSince = Date.now(); haptic('warning'); say(`Ой-ой! ${tr(bad.msg)}${bad.line ? ` (${bad.file}, строка ${bad.line})` : ''}`, 'oops', 'scared'); }
-        else if (Date.now() - errSince > 20000) say(`Не сдавайся! Посмотри на строку ${bad.line || ''} в ${bad.file}: ${tr(bad.msg)}`, 'sad', 'angry');
-        if (!exam) $1('[data-done]').disabled = !preview;
+        if (key !== lastErr) { lastErr = key; errSince = Date.now(); say(`${tr(bad.msg)}${bad.line ? ` (${bad.file}:${bad.line})` : ''}\n\n${tr('Если уверен, что всё правильно, — нажми «Проверить».')}`, 'think'); }
+        $1('[data-done]').disabled = !preview;
         return;
       }
       if (!bad) lastErr = '';
@@ -2349,6 +2351,36 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
       if (steps[k].file && ide.current() !== steps[k].file) ide.open(steps[k].file);
       if (hintLevel === 1 && steps[k].hint) say(steps[k].hint, 'teach');
       else { say(`Смотри, пиши вот так в ${steps[k].file || 'файл'}:`, 'teach'); showSnippet(k); }
+    };
+    // «Проверить»: сервер проверяет шаги, а что не засчитано — смотрит Claude и говорит, где ошибка
+    if ($1('[data-review]')) $1('[data-review]').onclick = async () => {
+      if (reviewing) return;
+      const bt = $1('[data-review]');
+      reviewing = true; bt.disabled = true; bt.classList.add('busy');
+      say('Смотрю твой код… Секунду!', 'think');
+      try {
+        const r = await api('/code/review', { lessonId, key, files: ide.files(), console: ide.console() });
+        accepted = steps.map((_, i) => Boolean(r.steps?.[i]?.done));
+        const probs = (r.steps || []).map((x, i) => (!x.done && x.problem ? { file: x.file || steps[i]?.file || '', line: x.line || 0, msg: x.problem, sev: 2, raw: true } : null)).filter(Boolean)
+          .concat((r.errors || []).map((e) => ({ file: e.file, line: e.line, msg: e.message, sev: 2, raw: true })));
+        if (r.ok) {
+          ide.setProblems([]);
+          evaluate();
+        } else {
+          ide.setProblems(probs.length ? probs : lint(ide.files()));
+          passed = checkSteps(task, ide.files(), ide.console()).map((v, i) => v || accepted[i]);
+          const k = showCur();
+          const first = (r.steps || []).findIndex((x) => !x.done);
+          const p = r.steps?.[first];
+          haptic('warning'); sfx.bad();
+          if (p?.problem) {
+            if (p.file && ide.current() !== p.file) ide.open(p.file);
+            if (p.line) ide.mark?.(p.line);
+            say(`${p.file ? `${p.file}${p.line ? `, ${tr('строка')} ${p.line}` : ''}: ` : ''}${p.problem}`, 'oops');
+          } else say(`${tr('Пока не засчитано.')} ${tr('Шаг')} ${k + 1}: ${steps[k]?.say || ''}`, 'think');
+        }
+      } catch (e) { fail(e); }
+      finally { reviewing = false; bt.disabled = false; bt.classList.remove('busy'); }
     };
     const close = (done) => {
       clearInterval(idle); clearTimeout(timer); clearInterval(examTick); ide.destroy();

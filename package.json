@@ -14,8 +14,11 @@
     "node": ">=20"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.13.0",
     "express": "^4.22.3",
     "grammy": "^1.46.0",
-    "pg": "^8.23.1"
+    "monaco-editor": "^0.52.2",
+    "pg": "^8.23.1",
+    "zod": "^4.6.7"
   }
 }

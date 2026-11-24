@@ -299,7 +299,7 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
     });
     return { pet: ctx.pet, petId: ctx.petId, name: ctx.name, done: st.done, total: st.total, files: st.files, challenges: list, reflected: Object.values(G().reflections).filter((r) => r.userId === String(uid)).map((r) => r.k) };
   }
-  function houseDone(uid, k, files) {
+  function houseDone(uid, k, files, accepted = false) {
     const list = HOUSE();
     k = Number(k);
     const c = list[k - 1];
@@ -308,7 +308,7 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
     if (k > 1 && !st.done.includes(k - 1)) throw httpError(400, 'Сначала прошлое испытание');
     const t = personalize(c, ctxOf(uid));
     const r = checkAnswer({ type: 'code', task: t }, files);
-    if (!r.correct) throw httpError(400, 'Ещё не все шаги готовы');
+    if (!r.correct && !accepted) throw httpError(400, 'Ещё не все шаги готовы');
     const key = `${uid}:house:h${k}`;
     const first = !S.code?.[key];
     S.code ||= {};

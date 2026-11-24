@@ -1,5 +1,6 @@
 // Точка входа: HTTP API для Mini App + Telegram-бот + планировщик напоминаний.
 import { loadCode, localize } from './code.js';
+import { reviewCode, wasAccepted, aiEnabled } from './review.js';
 import { createSocial, ITEMS } from './social.js';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -269,7 +270,7 @@ api.get('/wardrobe', h((req) => social.wardrobe(req.user.id)));
 api.post('/wardrobe/wear', h((req) => social.wear(req.user.id, req.body?.slot, req.body?.item || null)));
 api.post('/wish', h((req) => social.wish(req.user.id, req.body?.text)));
 api.get('/house', h((req) => social.house(req.user.id)));
-api.post('/house/done', h((req) => social.houseDone(req.user.id, req.body?.k, req.body?.files)));
+api.post('/house/done', h((req) => social.houseDone(req.user.id, req.body?.k, req.body?.files, wasAccepted(req.user.id, 'house', 'h' + Number(req.body?.k), req.body?.files))));
 api.post('/reflect', h((req) => social.reflect(req.user.id, req.body?.k, req.body?.text)));
 api.post('/me/interests', h((req) => social.saveInterests(req.user.id, req.body?.answers)));
 api.post('/me/prefs', h((req) => {
@@ -390,6 +391,23 @@ api.post('/tasks/later', h((req) => {
   store.save();
   console.log('[hw-later] ' + JSON.stringify({ user: { id: u.id, name: logic.name(u) }, lesson: id }));
   return { ok: true };
+}));
+// «Проверить» в редакторе: шаги регэкспами, а что не засчитано — смотрит Claude (src/review.js)
+api.post('/code/review', h(async (req) => {
+  const { lessonId, key, files, console: consoleText } = req.body || {};
+  const lang = req.user.prefs?.lang || 'ru';
+  let task = null, topic = '';
+  if (lessonId === 'house') {
+    const k = Number(String(key || '').replace(/^h/, ''));
+    const c = social.HOUSE()[k - 1];
+    if (c) { task = social.personalize(c, social.ctxOf(req.user.id)); topic = 'Pet house'; }
+  } else {
+    const c = CODE[String(lessonId || '')];
+    const raw = !c ? null : key === 'hw' ? c.homework : /^s\d+$/.test(String(key)) ? c.sections?.[String(key).slice(1)] : null;
+    if (raw) { task = localize(raw, lang); topic = localize(c.topic || '', lang); }
+  }
+  if (!task) throw httpError(404, 'Нет такого задания');
+  return reviewCode({ uid: req.user.id, lessonId, key, task, files, consoleText: String(consoleText || ''), lang, topic });
 }));
 api.post('/code/done', h((req) => {
   const { lessonId, task, files } = req.body || {};
@@ -567,6 +585,8 @@ if (useWebhook) app.post(hookPath, webhookCallback(tg.bot, 'express'));
 
 // 3D-эмодзи не меняются — пусть кэшируются надолго
 for (const dir of ['e', 'ea']) app.use('/' + dir, express.static(path.join(root, 'public', dir), { maxAge: '30d', immutable: true }));
+// Monaco — редактор из VS Code (npm monaco-editor), для мини VS Code на компьютере
+app.use('/monaco/vs', express.static(path.join(root, 'node_modules', 'monaco-editor', 'min', 'vs'), { maxAge: '30d', immutable: true }));
 // Код приложения не кэшируем: после деплоя Telegram сразу берёт новую версию (браузер сверяет ETag, это быстро)
 app.use(express.static(path.join(root, 'public'), {
   extensions: ['html'],
