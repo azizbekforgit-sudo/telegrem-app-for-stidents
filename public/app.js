@@ -1107,14 +1107,15 @@ async function tabHome() {
   }
   // Весь курс одной дорожкой: открытые уроки + закрытые (их откроет учитель)
   const seen = new Set();
-  const course = m.path.filter((p) => !p.forYou && p.order != null && !seen.has(p.lessonId) && seen.add(p.lessonId))
+  const myTrack = m.track?.id || 'main';
+  const course = m.path.filter((p) => !p.forYou && p.order != null && (p.track || 'main') === myTrack && !seen.has(p.lessonId) && seen.add(p.lessonId))
     .map((p) => ({ order: p.order, p }))
     .concat((m.locked || []).map((l) => ({ order: l.order, l })))
     .sort((a, b) => a.order - b.order);
   if (course.length) {
     const opened = course.filter((c) => c.p);
     const done = opened.filter((c) => c.p.best != null).length;
-    html += `<div class="unit"><div class="grow"><small>${done} из ${course.length} пройдено</small><h2>${emo(E.books)}Курс</h2><div class="bar"><i style="width:${(done / course.length) * 100}%"></i></div></div>${emo(done === course.length ? E.trophy : E.books)}</div><div class="path">`;
+    html += `<div class="unit"><div class="grow"><small>${done} из ${course.length} пройдено</small><h2>${emo(m.track?.emoji || E.books)}${esc(m.track?.title || 'Курс')}</h2><div class="bar"><i style="width:${(done / course.length) * 100}%"></i></div></div>${emo(done === course.length ? E.trophy : E.books)}</div><div class="path">`;
     let k = 0;
     course.forEach((c) => { if (c.p) { html += pathNodes(c.p, k, todo); k += c.p.hasLearn ? 2 : 1; } else { html += lockedNode(c.l, k); k++; } });
     html += '</div>';
@@ -1176,13 +1177,19 @@ function pathNodes(p, k, todo) {
 function learnName(p) { return p.order != null && p.order < 100 ? `Обучалка ${p.order} урока` : 'Обучалка'; }
 
 // Путь глазами учителя: тот же вид, что у учеников, но всё открыто
+const TP = { track: 'main' };
 async function tabTeacherPath() {
   const o = await loadOverview();
-  const list = [...o.lessons].sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
-  let html = adminTop('Путь') + `<div class="hero" style="margin-top:8px">${me('talk', 96, 'quiet')}<div class="grow"><div class="say">Так Путь видят ученики. Для тебя все уроки открыты: нажми на кружок, чтобы пройти обучалку или тест.</div></div></div>`;
+  const tracks = o.tracks || [{ id: 'main', title: 'Курс', emoji: '📚' }];
+  if (!tracks.some((t) => t.id === TP.track)) TP.track = tracks[0].id;
+  const cur = tracks.find((t) => t.id === TP.track);
+  // путь курса: уроки этого курса; готовые тесты и прочее без номера — в основном курсе
+  const list = [...o.lessons].filter((l) => (l.track || 'main') === TP.track && (TP.track === 'main' || (l.order != null && l.order < 100))).sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+  const trackSeg = tracks.length > 1 ? `<div class="seg tp-tracks" style="margin-top:12px">${tracks.map((t) => `<button class="${t.id === TP.track ? 'on' : ''}" data-tptrack="${t.id}">${emo(t.emoji)} ${esc(t.title)} <i>${o.lessons.filter((l) => (l.track || 'main') === t.id && l.order != null && l.order < 100).length}</i></button>`).join('')}</div>` : '';
+  let html = adminTop('Путь') + trackSeg + `<div class="hero" style="margin-top:8px">${me('talk', 96, 'quiet')}<div class="grow"><div class="say">Так Путь видят ученики. Для тебя все уроки открыты: нажми на кружок, чтобы пройти обучалку или тест.</div></div></div>`;
   if (!list.length) html += emptyState('sleepy', 'Тестов пока нет', 'Жду конспект — пришли его Claude.');
   else {
-    html += `<div class="unit"><div class="grow"><small>${list.length} уроков, все открыты</small><h2>${emo(E.books)}Курс</h2></div>${emo(E.books)}</div><div class="path">`;
+    html += `<div class="unit"><div class="grow"><small>${list.length} уроков, все открыты</small><h2>${emo(cur.emoji)}${esc(cur.title)}</h2></div>${emo(cur.emoji)}</div><div class="path">`;
     let k = 0;
     list.forEach((l) => {
       const named = l.order != null && l.order < 100;
@@ -1198,6 +1205,7 @@ async function tabTeacherPath() {
   }
   app.innerHTML = html;
   bindAdminTop();
+  $$('[data-tptrack]').forEach((b) => (b.onclick = () => { TP.track = b.dataset.tptrack; haptic('light'); tabTeacherPath().catch(fail); }));
   $$('[data-tlearn]').forEach((b) => (b.onclick = () => { haptic('medium'); startLearn({ lessonId: b.dataset.tlearn }); }));
   $$('[data-ttest]').forEach((b) => (b.onclick = () => { haptic('medium'); const l = list.find((x) => x.id === b.dataset.ttest); if (l?.exam) startLesson({ lessonId: l.id }); else levelSheet({ target: { lessonId: b.dataset.ttest }, title: l?.title, emoji: l?.emoji, preview: true }); }));
 }
@@ -2520,20 +2528,24 @@ function assignSheet(uid) {
 
 function groupForm(after, existing) {
   let gemo = existing?.emoji || GROUP_EMOJI[0];
+  let gtrack = existing?.track || 'main';
+  const tracks = S.overview?.tracks || [];
   openSheet(
     `<div class="stack"><h2>${existing ? 'Изменить группу' : 'Новая группа'}</h2>
       <label class="field"><span>Название</span><input class="input" data-name maxlength="40" placeholder="Например: Вечерняя группа" value="${esc(existing?.name || '')}"></label>
       <div class="field"><span>Иконка</span><div class="emoji-pick">${GROUP_EMOJI.map((e) => `<button data-e="${e}" class="${e === gemo ? 'on' : ''}">${emo(e)}</button>`).join('')}</div></div>
+      ${tracks.length > 1 ? `<div class="field"><span>Путь (курс) учеников группы</span><div class="choices">${tracks.map((t) => `<button class="choice ${t.id === gtrack ? 'on' : ''}" data-gt="${t.id}">${emo(t.emoji)} ${esc(t.title)}</button>`).join('')}</div></div>` : ''}
       <button class="btn block" data-save>${existing ? 'Сохранить' : 'Создать группу'}</button></div>`,
     (el, close) => {
       $$('[data-e]', el).forEach((b) => (b.onclick = () => { gemo = b.dataset.e; $$('[data-e]', el).forEach((x) => x.classList.toggle('on', x === b)); }));
+      $$('[data-gt]', el).forEach((b) => (b.onclick = () => { gtrack = b.dataset.gt; $$('[data-gt]', el).forEach((x) => x.classList.toggle('on', x === b)); }));
       const inp = $('[data-name]', el);
       setTimeout(() => inp.focus(), 250);
       $('[data-save]', el).onclick = async () => {
         if (!inp.value.trim()) return inp.focus();
         try {
-          if (existing) await patch('/admin/groups/' + existing.id, { name: inp.value, emoji: gemo });
-          else await api('/admin/groups', { name: inp.value, emoji: gemo });
+          if (existing) await patch('/admin/groups/' + existing.id, { name: inp.value, emoji: gemo, track: gtrack });
+          else await api('/admin/groups', { name: inp.value, emoji: gemo, track: gtrack });
           haptic('success');
           close();
           await loadOverview();
@@ -2823,21 +2835,23 @@ function nextLesson(schedule, tzMin = 300) {
 }
 
 // ───────── ЖУРНАЛ (учитель) ─────────
-const JR = { group: null, y: null, m: null, day: null, mode: 'group', st: null };
+const JR = { group: 'all', y: null, m: null, day: null, mode: 'student', st: null };
 async function tabJournal() {
   const j = await api('/admin/journal');
   S.journal = j;
   if (JR.y == null) { const [y, m] = j.today.split('-').map(Number); JR.y = y; JR.m = m - 1; JR.day = j.today; }
-  if (!j.groups.some((g) => g.id === JR.group)) JR.group = j.groups[0]?.id || null;
+  // режим «По ученикам» работает и без группы: у каждого ученика своё время
+  if (JR.mode !== 'student' && !j.groups.some((g) => g.id === JR.group)) JR.group = j.groups[0]?.id || null;
+  if (JR.mode === 'student' && JR.group !== 'all' && !j.groups.some((g) => g.id === JR.group)) JR.group = 'all';
   const g = j.groups.find((x) => x.id === JR.group);
-  const chips = `<div class="chips jr-groups" style="margin-top:12px">${j.groups.map((x) => `<button class="choice ${x.id === JR.group ? 'on' : ''}" data-jg="${x.id}">${emo(x.emoji)} ${esc(x.name)}</button>`).join('')}</div>`;
+  const chips = `<div class="chips jr-groups" style="margin-top:12px">${JR.mode === 'student' ? `<button class="choice ${JR.group === 'all' ? 'on' : ''}" data-jg="all">${emo('🧑‍🎓')} Все ученики</button>` : ''}${j.groups.map((x) => `<button class="choice ${x.id === JR.group ? 'on' : ''}" data-jg="${x.id}">${emo(x.emoji)} ${esc(x.name)}</button>`).join('')}</div>`;
+  const modeSeg0 = `<div class="seg jr-mode" style="margin-top:12px"><button class="${JR.mode === 'student' ? 'on' : ''}" data-jmode="student">${emo('🧑‍🎓')} ${tr('По ученикам')}</button><button class="${JR.mode !== 'student' ? 'on' : ''}" data-jmode="group">${emo('👥')} ${tr('Вся группа')}</button></div>`;
+  if (JR.mode === 'student') return journalStudentView(j, chips, modeSeg0);
   if (!g) {
     app.innerHTML = adminTop('Журнал') + emptyState('sleepy', 'Групп пока нет', 'Создай группу во вкладке «Группы».');
     bindAdminTop();
     return;
   }
-  const modeSeg = `<div class="seg jr-mode" style="margin-top:12px"><button class="${JR.mode !== 'student' ? 'on' : ''}" data-jmode="group">${emo('👥')} ${tr('Вся группа')}</button><button class="${JR.mode === 'student' ? 'on' : ''}" data-jmode="student">${emo('🧑‍🎓')} ${tr('По ученикам')}</button></div>`;
-  if (JR.mode === 'student') return journalStudentView(j, g, chips, modeSeg);
   const L = curLang();
   const slotsTxt = (sl) => sl.map((s) => `${WEEKDAYS[L][s.dow - 1]} ${s.start}–${s.end}`).join(' · ');
   const sched = [g.schedule.length ? slotsTxt(g.schedule) : '', ...(g.personal || []).map((p) => `${p.name}: ${slotsTxt(p.schedule)}`)].filter(Boolean).join('\n');
@@ -2862,7 +2876,7 @@ async function tabJournal() {
       <div class="jr-marks"><span class="plus">＋${u.plus}</span><span class="minus">−${u.minus}</span>${u.grades.map((v) => gradeChip(v, 'mini')).join('')}</div></div>
       <div class="jr-avg">${u.avg != null ? gradeChip(Math.round(u.avg)) + `<small>${u.avg}</small>` : '<span class="faint small">—</span>'}</div>
       <button class="iconbtn" data-gr="${esc(u.id)}" aria-label="Оценка">${ic('star', 'sm')}</button></div>`).join('');
-  app.innerHTML = adminTop('Журнал') + chips + modeSeg + `
+  app.innerHTML = adminTop('Журнал') + modeSeg0 + chips + `
     <div class="card jr-head" style="margin-top:12px"><div class="row" style="gap:10px">${emo(g.emoji, { cls: 'lg' })}<div class="grow"><h2>${esc(g.name)}</h2>
       <div class="small muted" style="white-space:pre-line">${sched ? `<span data-noi18n>${esc(sched)}</span>` : 'Время уроков не задано'}</div></div>
       <button class="btn ghost sm" data-time>${ic('clock-circle', 'sm')}Время</button></div>
@@ -3360,7 +3374,12 @@ function grantTestsSheet(userIds) {
   const users = o.students.filter((u) => userIds.includes(u.id));
   // у кого уже есть доступ к тесту (лично или через группу)
   const haveCount = (l) => users.filter((u) => l.personalFor.some((s) => s.userId === u.id) || l.sentTo.some((s) => u.groups.includes(s.groupId))).length;
-  const lessons = o.lessons.filter((l) => !l.exam || true);
+  const tracks = o.tracks || [{ id: 'main', title: 'Курс', emoji: '📚' }];
+  // курс по умолчанию — курс группы выбранных учеников
+  const gTrack = (u) => (o.groups.find((g) => u.groups.includes(g.id) && g.track && g.track !== 'main') || {}).track;
+  let track = users.map(gTrack).find(Boolean) || 'main';
+  const inTrack = (l) => (l.track || 'main') === track && (track === 'main' || (l.order != null && l.order < 100));
+  let lessons = o.lessons.filter(inTrack);
   const picked = new Set();
   let noLearn = false;
   const row = (l) => {
@@ -3369,10 +3388,12 @@ function grantTestsSheet(userIds) {
     const note = full ? tr('уже открыт') : n ? `${tr('уже у')} ${n} ${tr('из')} ${users.length}` : tr('закрыт');
     return `<button class="list-check ${picked.has(l.id) ? 'on' : ''}" data-l="${esc(l.id)}" ${full ? 'disabled' : ''}>${emo(l.emoji)}<div class="grow"><b>${l.order != null && l.order < 100 && !new RegExp('(^|\\D)' + l.order + '(\\D|$)').test(l.title) ? l.order + '. ' : ''}${esc(l.title)}</b><div class="small muted">${esc(note)}</div></div></button>`;
   };
-  const maxOrder = Math.max(0, ...lessons.map((l) => (l.order != null && l.order < 100 ? l.order : 0)));
+  const maxOf = () => Math.max(0, ...lessons.map((l) => (l.order != null && l.order < 100 ? l.order : 0)));
+  const uptoOpts = () => `<option value="">${esc(tr('Открыть уроки с 1 по…'))}</option>${Array.from({ length: maxOf() }, (_, i) => `<option value="${i + 1}">1 – ${i + 1}</option>`).join('')}`;
   openSheet(
     `<div class="stack" data-noi18n><h2>${esc(tr('Какие тесты открыть?'))}</h2><p class="muted small">${esc(tr('Выбрано учеников'))}: ${users.length}</p>
-      <div class="row" style="gap:8px"><select class="input grow" data-upto><option value="">${esc(tr('Открыть уроки с 1 по…'))}</option>${Array.from({ length: maxOrder }, (_, i) => `<option value="${i + 1}">1 – ${i + 1}</option>`).join('')}</select><button class="link small" data-all>${esc(tr('Выбрать все'))}</button></div>
+      ${tracks.length > 1 ? `<div class="seg">${tracks.map((t) => `<button class="${t.id === track ? 'on' : ''}" data-gtrack="${t.id}">${emo(t.emoji)} ${esc(tr(t.title))}</button>`).join('')}</div>` : ''}
+      <div class="row" style="gap:8px"><select class="input grow" data-upto>${uptoOpts()}</select><button class="link small" data-all>${esc(tr('Выбрать все'))}</button></div>
       <div data-list style="max-height:44vh;overflow:auto">${lessons.map(row).join('')}</div>
       <div class="field"><span>${emo('📖')} ${esc(tr('Обучалка'))}</span><div class="choices"><button class="choice" data-nl="1">${esc(tr('Сразу тест'))}</button><button class="choice on" data-nl="0">${esc(tr('С обучалкой'))}</button></div></div>
       <button class="btn block" data-go disabled>${ic('plain-2')}<span></span></button></div>`,
@@ -3380,7 +3401,13 @@ function grantTestsSheet(userIds) {
       const label = () => { const n = picked.size; const b = $('[data-go]', el); b.disabled = !n; $('span', b).textContent = `${tr('Дать доступ')}${n ? ` (${n})` : ''}`; };
       const paint = () => { $$('[data-l]', el).forEach((b) => b.classList.toggle('on', picked.has(b.dataset.l))); label(); };
       const free = () => lessons.filter((l) => haveCount(l) < users.length);
-      $$('[data-l]', el).forEach((b) => (b.onclick = () => { if (b.disabled) return; haptic('light'); const id = b.dataset.l; picked.has(id) ? picked.delete(id) : picked.add(id); paint(); }));
+      const bindRows = () => $$('[data-l]', el).forEach((b) => (b.onclick = () => { if (b.disabled) return; haptic('light'); const id = b.dataset.l; picked.has(id) ? picked.delete(id) : picked.add(id); paint(); }));
+      bindRows();
+      $$('[data-gtrack]', el).forEach((b) => (b.onclick = () => {
+        track = b.dataset.gtrack; lessons = o.lessons.filter(inTrack); picked.clear(); haptic('light');
+        $$('[data-gtrack]', el).forEach((x) => x.classList.toggle('on', x === b));
+        $('[data-list]', el).innerHTML = lessons.map(row).join(''); $('[data-upto]', el).innerHTML = uptoOpts(); bindRows(); label();
+      }));
       $('[data-upto]', el).onchange = (e) => { const n = Number(e.target.value); if (!n) return; picked.clear(); free().filter((l) => l.order != null && l.order <= n).forEach((l) => picked.add(l.id)); paint(); };
       $('[data-all]', el).onclick = () => { haptic('light'); const every = free().every((l) => picked.has(l.id)); free().forEach((l) => (every ? picked.delete(l.id) : picked.add(l.id))); paint(); };
       $$('[data-nl]', el).forEach((b) => (b.onclick = () => { noLearn = b.dataset.nl === '1'; $$('[data-nl]', el).forEach((x) => x.classList.toggle('on', x === b)); }));
@@ -3959,6 +3986,205 @@ async function tabSocial() {
   $$('[data-page]').forEach((b) => (b.onclick = () => openView({ type: 'page', id: b.dataset.page, parent: null })));
 }
 
+
+// ═══════════════ КАЛЕНДАРЬ ПОСЕЩАЕМОСТИ (один вид для ученика, родителя и учителя) ═══════════════
+// Пустой день — без фона. ✓ был (зелёный), ✕ не был (красный), пунктир — будет урок по расписанию,
+// ? — урок прошёл, но учитель ещё не отметил. Цветная цифра снизу — оценка за день.
+function attMap(days, grades) {
+  const by = {};
+  days.forEach((x) => (by[x.date] ||= { l: [], g: [] }).l.push(x));
+  grades.forEach((g) => (by[g.date] ||= { l: [], g: [] }).g.push(g));
+  return by;
+}
+function attState(x) {
+  if (!x?.l.length) return null;
+  if (x.l.some((l) => l.wait)) return 'wait';
+  if (x.l.some((l) => !l.present)) return 'miss';
+  return 'was';
+}
+function planDays(y, m, schedule, today) {
+  const out = {};
+  if (!schedule?.length) return out;
+  const n = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+  for (let d = 1; d <= n; d++) {
+    const ds = ymd(y, m, d);
+    if (ds < today) continue;
+    const dow = ((new Date(Date.UTC(y, m, d)).getUTCDay() + 6) % 7) + 1;
+    const sl = schedule.filter((s) => s.dow === dow);
+    if (sl.length) out[ds] = sl;
+  }
+  return out;
+}
+function attCal(y, m, by, { today, schedule = [], selected = null } = {}) {
+  const plan = planDays(y, m, schedule, today);
+  return monthCal(y, m, (ds) => {
+    const x = by[ds];
+    const st = attState(x);
+    const gr = x?.g.length ? x.g[x.g.length - 1].value : null;
+    const cls = st ? 'a-' + st : plan[ds] ? 'a-plan' : gr != null ? 'a-grade' : '';
+    const icon = { was: '✓', miss: '✕', wait: '?' }[st] || '';
+    return { cls, html: `${icon ? `<i class="a-ic">${icon}</i>` : ''}${gr != null ? `<em class="a-gr" style="background:${gradeColor(gr)}">${gr}</em>` : ''}` };
+  }, { today, selected, cls: 'cal-att' });
+}
+function attSummary(y, m, by) {
+  const pre = ymd(y, m, 1).slice(0, 7);
+  const inMonth = Object.entries(by).filter(([d]) => d.startsWith(pre)).map(([, x]) => x);
+  const lessons = inMonth.flatMap((x) => x.l.filter((l) => !l.wait));
+  const was = lessons.filter((l) => l.present).length;
+  const n = lessons.length;
+  const pct = n ? Math.round((was / n) * 100) : null;
+  const grs = inMonth.flatMap((x) => x.g.map((g) => g.value));
+  const avg = grs.length ? Math.round((grs.reduce((a, b) => a + b, 0) / grs.length) * 10) / 10 : null;
+  return `<div class="att-sum">
+    <div class="att-headline">${n ? `<b>Был на ${was} из ${n}</b> <span>${n % 10 === 1 && n % 100 !== 11 ? 'урока' : 'уроков'} в этом месяце</span>` : '<b>В этом месяце уроков ещё не было</b>'}</div>
+    <div class="att-bar" role="img" aria-label="${pct ?? 0}%"><i style="width:${pct ?? 0}%"></i></div>
+    <div class="att-nums">
+      <div class="good"><b>${was}</b><span>был</span></div>
+      <div class="bad"><b>${n - was}</b><span>не был</span></div>
+      <div><b>${pct != null ? pct + '%' : '—'}</b><span>посещаемость</span></div>
+      <div><b>${avg ?? '—'}</b><span>средняя оценка</span></div>
+    </div></div>`;
+}
+function attList(y, m, by, { today, schedule = [], teacher = false } = {}) {
+  const pre = ymd(y, m, 1).slice(0, 7);
+  const plan = planDays(y, m, schedule, today);
+  const dates = [...new Set([...Object.keys(by).filter((d) => d.startsWith(pre)), ...Object.keys(plan)])].sort();
+  if (!dates.length) return `<p class="t-empty">${tr('В этом месяце уроков нет')}</p>`;
+  const L = curLang();
+  const t = (a) => `<span data-noi18n>${a}</span>`;
+  return `<div class="att-list">${dates.map((ds) => {
+    const x = by[ds] || { l: [], g: [] };
+    const d = Number(ds.slice(8));
+    const dow = (new Date(ds + 'T12:00:00Z').getUTCDay() + 6) % 7;
+    const st = attState(x) || (plan[ds] ? 'plan' : 'grade');
+    const head = { was: 'Был на уроке', miss: 'Не был на уроке', wait: 'Ждёт отметки', plan: 'Будет урок', grade: 'Оценка' }[st];
+    const l0 = x.l[0];
+    const time = l0 ? `${l0.start}${l0.end && l0.end !== l0.start ? '–' + l0.end : ''}` : plan[ds] ? `${plan[ds][0].start}–${plan[ds][0].end}` : '';
+    const grp = l0?.group?.name || plan[ds]?.[0]?.group?.name || '';
+    const reason = x.l.find((l) => l.reason)?.reason;
+    return `<button class="att-row a-${st}" data-aday="${ds}">
+      <div class="att-date ${ds === today ? 'today' : ''}"><b>${d}</b><span data-noi18n>${WEEKDAYS[L][dow]}</span></div>
+      <div class="att-mark">${{ was: '✓', miss: '✕', wait: '?', plan: '•', grade: '★' }[st]}</div>
+      <div class="grow"><b>${head}</b><span>${time ? t(time) : ''}${time && grp ? ' · ' : ''}${grp ? t(esc(grp)) : ''}</span>${reason ? `<span class="att-reason">💬 <span data-noi18n>${esc(reason)}</span></span>` : ''}</div>
+      ${x.g.map((g) => gradeChip(g.value)).join('')}${teacher && x.l.length ? ic('pen-2', 'sm') : ''}</button>`;
+  }).join('')}</div>`;
+}
+const attLegend = (teacher = false) => `<div class="att-legend"><span><i class="a-was">✓</i>был</span><span><i class="a-miss">✕</i>не был</span><span><i class="a-plan"></i>будет урок</span>${teacher ? '<span><i class="a-wait">?</i>ждёт отметки</span>' : ''}<span><em style="background:var(--good)">9</em>оценка</span></div>`;
+// Весь блок: стрелки месяца, сводка, календарь, легенда, список дней
+function attBlock(y, m, by, opts = {}) {
+  return `<div class="card att-card">${calNav(y, m)}${attSummary(y, m, by)}${attCal(y, m, by, opts)}${attLegend(opts.teacher)}</div>
+    <div class="section-title"><h2>${emo('📋')} ${tr('Уроки по дням')}</h2></div><div class="card att-list-card">${attList(y, m, by, opts)}</div>`;
+}
+
+// ───────── Журнал учителя → «По ученикам»: отдельный календарь каждого ученика ─────────
+function journalStudentDays(j, uid) {
+  const days = j.sessions.filter((s) => s.members.some((m) => m.id === uid)).map((s) => {
+    const me0 = s.members.find((m) => m.id === uid);
+    return { date: s.date, start: s.start, end: s.end, present: !me0.absent, wait: s.status !== 'done', group: s.group, reason: me0.reason, sid: s.id };
+  });
+  const grades = j.grades.filter((x) => x.userId === uid);
+  return { days, grades };
+}
+function journalStudentView(j, chips, modeSeg) {
+  // все ученики (или ученики выбранной группы); у каждого своё время и свой календарь
+  const list = (j.students || []).filter((u) => JR.group === 'all' || u.groups.includes(JR.group));
+  if (!list.length) {
+    app.innerHTML = adminTop('Журнал') + modeSeg + chips + emptyState('sleepy', 'Учеников пока нет', 'Ученики появятся после /start в боте или входа на сайт.');
+    return bindJournalCommon(j, null);
+  }
+  if (!list.some((u) => u.id === JR.st)) JR.st = list[0].id;
+  const i = list.findIndex((u) => u.id === JR.st);
+  const u = list[i];
+  const { days, grades } = journalStudentDays(j, u.id);
+  const by = attMap(days, grades);
+  const own = u.schedule?.length;
+  const gName = j.groups.find((x) => u.groups.includes(x.id));
+  const schedule = own ? u.schedule.map((s) => ({ ...s, group: { name: gName?.name || '', emoji: gName?.emoji || '📚' } })) : u.groupSchedule || [];
+  const L = curLang();
+  const slotsTxt = schedule.length ? schedule.map((s) => `${WEEKDAYS[L][s.dow - 1]} ${s.start}–${s.end}`).join(' · ') : '';
+  const total = days.filter((d) => !d.wait);
+  const was = total.filter((d) => d.present).length;
+  app.innerHTML = adminTop('Журнал') + modeSeg + chips + `
+    <div class="st-switch">
+      <button class="iconbtn" data-stp="-1" aria-label="Предыдущий" ${i === 0 ? 'disabled' : ''}>${ic('alt-arrow-left')}</button>
+      <div class="st-strip">${list.map((x) => `<button class="st-chip ${x.id === u.id ? 'on' : ''}" data-stc="${esc(x.id)}">${avatar(x)}<span data-noi18n>${esc(firstName(x.name))}</span></button>`).join('')}</div>
+      <button class="iconbtn" data-stp="1" aria-label="Следующий" ${i === list.length - 1 ? 'disabled' : ''}>${ic('alt-arrow-right')}</button>
+    </div>
+    <div class="card st-hero">${avatar(u, 'lg')}<div class="grow"><h2 data-noi18n>${esc(u.name)}</h2>
+      <p class="small muted"><span data-noi18n>${i + 1} / ${list.length}</span> · ${tr('за всё время')}: <b class="good-t">${was}</b> ${tr('был')}, <b class="bad-t">${total.length - was}</b> ${tr('не был')}${u.avg != null ? ` · ${tr('средняя')} ${u.avg}` : ''}</p>
+      <p class="small">${emo('⏰')} ${slotsTxt ? `<span data-noi18n>${esc(slotsTxt)}</span>${own ? ` <span class="pill">${tr('Личное время')}</span>` : ''}` : `<span class="muted">${tr('Время уроков не задано')}</span>`}</p></div>
+      <div class="row" style="gap:6px"><button class="iconbtn" data-stime aria-label="Время">${ic('clock-circle')}</button><button class="iconbtn" data-gr1 aria-label="Оценка">${ic('star')}</button><button class="iconbtn" data-open1 aria-label="Ученик">${ic('user-rounded')}</button></div></div>
+    <div class="row" style="gap:8px;margin-top:10px"><button class="btn grow" data-mark1="1">✓ ${tr('Сегодня был')}</button><button class="btn ghost grow" data-mark1="0">✕ ${tr('Сегодня не был')}</button></div>
+    ${attBlock(JR.y, JR.m, by, { today: j.today, schedule, teacher: true })}`;
+  bindJournalCommon(j, null);
+  const sel = $('.st-chip.on');
+  if (sel) sel.scrollIntoView({ inline: 'center', block: 'nearest' });
+  $$('[data-stc]').forEach((b) => (b.onclick = () => { JR.st = b.dataset.stc; haptic('light'); tabJournal().catch(fail); }));
+  $$('[data-stp]').forEach((b) => (b.onclick = () => { const nx = list[i + Number(b.dataset.stp)]; if (nx) { JR.st = nx.id; haptic('light'); tabJournal().catch(fail); } }));
+  $('[data-gr1]').onclick = () => gradeSheet({ userId: u.id, date: JR.day, after: () => tabJournal() });
+  $('[data-open1]').onclick = () => openStudent(u.id);
+  $('[data-stime]').onclick = () => studentScheduleSheet(u);
+  const mark = async (date, present) => {
+    try { await api(`/admin/students/${encodeURIComponent(u.id)}/sessions`, { date, present }); haptic('success'); toast(present ? tr('Отмечено: был') : tr('Отмечено: не был')); tabJournal().catch(fail); } catch (e) { fail(e); }
+  };
+  $$('[data-mark1]').forEach((b) => (b.onclick = () => mark(j.today, b.dataset.mark1 === '1')));
+  const open = (ds) => {
+    const x = by[ds];
+    haptic('light');
+    if (x?.l.length) return studentDaySheet(ds, x, u);
+    if (ds > j.today) return toast(tr('Этот день ещё не наступил'));
+    openSheet(`<div class="stack center"><h2>${emo('📅')} <span data-noi18n>${dmy(ds)} · ${esc(u.name)}</span></h2><p class="muted">${tr('В этот день урок не отмечен. Отметить?')}</p>
+      <div class="seg"><button data-dm="1">✓ ${tr('Был')}</button><button data-dm="0">✕ ${tr('Не был')}</button></div></div>`, (el, close) => {
+      $$('[data-dm]', el).forEach((b) => (b.onclick = () => { close(); mark(ds, b.dataset.dm === '1'); }));
+    });
+  };
+  $$('[data-day]').forEach((b) => (b.onclick = () => open(b.dataset.day)));
+  $$('[data-aday]').forEach((b) => (b.onclick = () => open(b.dataset.aday)));
+}
+// Личное время ученика: дни недели и часы (у каждого ученика своё)
+function studentScheduleSheet(u) {
+  const L = curLang();
+  const start = u.schedule?.length ? u.schedule : [{ dow: 2, start: '14:00', end: '15:00' }];
+  openSheet(`<div class="stack"><h2>${ic('clock-circle')} ${tr('Время уроков')}</h2><p class="muted small"><span data-noi18n>${esc(u.name)}</span> · ${tr('время — Ташкент. В начале урока бот спросит тебя, был ли ученик.')}</p>
+    <div class="slots">${start.map((s) => slotRow(s, L)).join('')}</div>
+    <button class="btn ghost block" data-addslot>${ic('add-circle')}${tr('Добавить день')}</button>
+    <button class="btn block" data-savesched>${ic('check-circle')}${tr('Сохранить')}</button></div>`, (el, close) => {
+    const bindRm = () => $$('[data-rmslot]', el).forEach((b) => (b.onclick = () => b.closest('.slot').remove()));
+    bindRm();
+    $('[data-addslot]', el).onclick = () => {
+      const last = $$('.slot', el).pop();
+      $('.slots', el).insertAdjacentHTML('beforeend', slotRow({ dow: last ? Math.min(7, Number($('[data-dow]', last).value) + 2) : 1, start: last ? $('[data-start]', last).value : '14:00', end: last ? $('[data-end]', last).value : '15:00' }, L));
+      bindRm();
+    };
+    $('[data-savesched]', el).onclick = async () => {
+      const slots = $$('.slot', el).map((r) => ({ dow: Number($('[data-dow]', r).value), start: $('[data-start]', r).value, end: $('[data-end]', r).value }));
+      try { await api(`/admin/students/${encodeURIComponent(u.id)}/schedule`, { slots }); haptic('success'); toast(tr('Расписание сохранено')); close(); tabJournal().catch(fail); } catch (e) { fail(e); }
+    };
+  });
+}
+function studentDaySheet(ds, x, u) {
+  openSheet(`<div class="stack"><h2>${emo('📅')} <span data-noi18n>${dmy(ds)} · ${esc(u.name)}</span></h2>
+    ${x.l.map((l) => `<div class="card day-lesson ${l.wait ? 'mark' : l.present ? 'good' : 'bad'}"><div class="row" style="gap:10px">${emo(l.group?.emoji || '📚')}<div class="grow"><b>${esc(l.group?.name || '')}</b><div class="small muted" data-noi18n>${l.start}${l.end && l.end !== l.start ? '–' + l.end : ''}</div></div></div>
+      <div class="seg" style="margin-top:10px"><button class="${!l.wait && l.present ? 'on good' : ''}" data-set="${l.sid}" data-v="1">✓ ${tr('Был')}</button><button class="${!l.wait && !l.present ? 'on bad' : ''}" data-set="${l.sid}" data-v="0">✕ ${tr('Не был')}</button></div>
+      ${l.wait ? `<p class="small muted" style="margin-top:6px">${tr('Урок ещё не отмечен: остальные ученики будут отмечены как пришедшие.')}</p>` : ''}
+      ${l.reason ? `<p class="small" style="margin-top:8px">💬 ${esc(l.reason)}</p>` : ''}</div>`).join('')}
+    ${x.g.length ? `<div class="card grades-list">${x.g.map((g) => `<div class="grow-row">${gradeChip(g.value)}<div class="grow"><b>${g.lesson ? `${emo(g.lesson.emoji)} ${esc(g.lesson.title)}` : esc(tr('Оценка учителя'))}</b><div class="small muted">+${g.xp} XP${g.comment ? ' · ' + esc(g.comment) : ''}</div></div></div>`).join('')}</div>` : ''}</div>`, (el, close) => {
+    $$('[data-set]', el).forEach((b) => (b.onclick = async () => {
+      const s = S.journal.sessions.find((z) => z.id === b.dataset.set);
+      if (!s) return;
+      let absent = s.status === 'done' ? s.members.filter((m) => m.absent).map((m) => m.id) : [];
+      absent = absent.filter((id) => id !== u.id);
+      if (b.dataset.v === '0') absent.push(u.id);
+      try { await api('/admin/sessions/' + s.id, { absent }); haptic('success'); close(); tabJournal().catch(fail); } catch (e) { fail(e); }
+    }));
+  });
+}
+function bindJournalCommon(j, g) {
+  bindAdminTop();
+  $$('[data-jg]').forEach((b) => (b.onclick = () => { JR.group = b.dataset.jg; haptic('light'); tabJournal().catch(fail); }));
+  $$('[data-jmode]').forEach((b) => (b.onclick = () => { JR.mode = b.dataset.jmode; haptic('light'); tabJournal().catch(fail); }));
+  $$('[data-cm]').forEach((b) => (b.onclick = () => { JR.m += Number(b.dataset.cm); if (JR.m < 0) { JR.m = 11; JR.y--; } if (JR.m > 11) { JR.m = 0; JR.y++; } tabJournal().catch(fail); }));
+}
 
 // ═══════════════ УЧЕНИК: оболочка как у учителя (меню слева / сверху) ═══════════════
 const S_NAV = [

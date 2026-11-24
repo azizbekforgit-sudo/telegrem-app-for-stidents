@@ -103,6 +103,25 @@ for (const row of (process.env.SEED_ACCOUNTS || '').split(';').map((x) => x.trim
   }
 }
 
+// Группы из content/groups.json: [{ id, name, emoji, track, members: [userId] }]. Каждый id один раз:
+// группа ищется по имени (нет — создаётся), ставится курс, ученики добавляются (лог [groups-file]).
+{
+  const f = path.join(root, 'content', 'groups.json');
+  if (fs.existsSync(f)) for (const r of JSON.parse(fs.readFileSync(f, 'utf8'))) {
+    const key = 'group:' + r.id;
+    logic.S.migrations ||= {};
+    if (logic.S.migrations[key]) continue;
+    let g = Object.values(logic.S.groups).find((x) => x.name.trim().toLowerCase() === String(r.name).trim().toLowerCase());
+    if (!g) g = logic.createGroup({ name: r.name, emoji: r.emoji, track: r.track });
+    logic.updateGroup(g.id, { track: r.track || 'main', ...(r.emoji ? { emoji: r.emoji } : {}) });
+    const added = [];
+    for (const uid of r.members || []) { if (!logic.S.users[uid]) { console.error(`[groups-file] нет ученика ${uid}`); continue; } try { logic.addMember(g.id, uid); added.push(logic.name(logic.S.users[uid])); } catch (e) { console.error(`[groups-file] ${uid}: ${e.message}`); } }
+    logic.S.migrations[key] = Date.now();
+    store.save();
+    console.log('[groups-file] ' + JSON.stringify({ group: g.name, id: g.id, track: g.track, added }));
+  }
+}
+
 // Бонусные баллы из content/bonuses.json: [{ id, login | userId, xp, reason }]. Каждый id начисляется один раз
 const bonusFile = path.join(root, 'content', 'bonuses.json');
 if (fs.existsSync(bonusFile)) {
@@ -448,6 +467,12 @@ adm.get('/roster', h(() => {
 adm.post('/wishes/:id', h((req) => social.wishDone(req.params.id, req.body?.done !== false)));
 adm.get('/students/:uid/diary', h((req) => journal.diary(req.params.uid)));
 adm.post('/groups/:gid/schedule', h((req) => ({ schedule: journal.setSchedule(req.params.gid, req.body?.slots) })));
+adm.post('/students/:uid/schedule', h((req) => ({ schedule: journal.setUserSchedule(req.params.uid, req.body?.slots) })));
+adm.post('/students/:uid/sessions', h(async (req) => {
+  const r = journal.studentSession(req.params.uid, req.body || {});
+  if (req.body?.present !== undefined) await tg?.onAttendance(r.session, r.fresh, { fromApp: true });
+  return { session: journal.sessionOut(r.session) };
+}));
 adm.post('/groups/:gid/sessions', h((req) => journal.sessionOut(journal.startSession(req.params.gid, req.body || {}))));
 adm.post('/sessions/:sid', h(async (req) => {
   const r = journal.markAttendance(req.params.sid, req.body?.absent);

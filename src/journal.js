@@ -107,6 +107,25 @@ export function createJournal({ logic, store }) {
     end = HM.test(end || '') ? end : start;
     return findSession(gid, date, start) || newSession(gid, date, start, end);
   }
+  // Урок одного ученика (у каждого своё время): создать, если нет, и сразу отметить был / не был
+  function studentSession(uid, { date, start, end, present } = {}) {
+    uid = String(uid);
+    if (!S.users[uid]) throw httpError(404, 'Ученик не найден');
+    const d = local();
+    date = /^\d{4}-\d\d-\d\d$/.test(date || '') ? date : dateOf(d);
+    const dow = ((new Date(date + 'T12:00:00Z').getUTCDay() + 6) % 7) + 1;
+    const slot = (S.users[uid].schedule || []).find((x) => x.dow === dow);
+    start = HM.test(start || '') ? start : slot?.start || hmOf(d);
+    end = HM.test(end || '') ? end : slot?.end || start;
+    const gid = logic.userGroups(uid)[0]?.id || null;
+    const s = Object.values(S.classes).find((x) => x.date === date && x.members.includes(uid) && (x.userId === uid || x.start === start)) || newSession(gid, date, start, end, uid);
+    if (present !== undefined) {
+      const absent = s.status === 'done' ? s.absent.filter((id) => id !== uid) : [];
+      if (!present) absent.push(uid);
+      return markAttendance(s.id, absent);
+    }
+    return { session: s, fresh: [] };
+  }
   // Отметить отсутствующих. Возвращает тех, кому ещё не писали о пропуске
   function markAttendance(sid, absentIds) {
     const s = S.classes[sid];
@@ -216,7 +235,13 @@ export function createJournal({ logic, store }) {
       }).sort((a, b) => a.name.localeCompare(b.name));
     }
     const grades = Object.values(S.grades).sort((a, b) => b.at - a.at).slice(0, 1000).map((g) => gradeOut(g));
-    return { today: dateOf(local()), groups, sessions, grades, xpPerPoint: XP_PER_POINT };
+    const students = Object.values(S.users).filter((u) => !logic.isAdmin(u.id) && u.role !== 'parent' && !u.needRole && !S.banned?.[u.id]).map((u) => {
+      const gs = logic.userGroups(u.id);
+      const gr = allGrades.filter((x) => x.userId === u.id);
+      return { id: u.id, name: nameOf(u.id), prefs: u.prefs || null, photoUrl: u.photoUrl || null, groups: gs.map((g) => g.id), schedule: u.schedule || [], groupSchedule: gs.flatMap((g) => (g.schedule || []).map((sl) => ({ ...sl, group: { name: g.name, emoji: g.emoji } }))), tzMin: u.showTzMin ?? null,
+        avg: gr.length ? Math.round((gr.reduce((n, x) => n + x.value, 0) / gr.length) * 10) / 10 : null };
+    }).sort((a, b) => a.name.localeCompare(b.name));
+    return { today: dateOf(local()), groups, students, sessions, grades, xpPerPoint: XP_PER_POINT };
   }
   // Дневник ученика: дни с уроками (был / не был), оценки, сводка
   function diary(uid) {
@@ -252,5 +277,5 @@ export function createJournal({ logic, store }) {
   }
   const gradeXp = (uid) => Object.values(S.grades).filter((g) => g.userId === String(uid)).reduce((n, g) => n + g.xp, 0);
 
-  return { setSchedule, setUserSchedule, dueSessions, startSession, markAttendance, deleteSession, pendingSession, parseNames, setReason, addGrade, deleteGrade, adminJournal, diary, gradeXp, sessionOut, members, latin };
+  return { studentSession, setSchedule, setUserSchedule, dueSessions, startSession, markAttendance, deleteSession, pendingSession, parseNames, setReason, addGrade, deleteGrade, adminJournal, diary, gradeXp, sessionOut, members, latin };
 }

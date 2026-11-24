@@ -17,6 +17,11 @@ const pct = (c, t) => (t ? Math.round((c / t) * 100) : 0);
 const avg = (xs) => (xs.length ? Math.round(xs.reduce((a, b) => a + b, 0) / xs.length) : null);
 
 export const MASCOT_IDS = ['mimi', 'kapi', 'dino', 'axi', 'boo', 'ano', 'zip', 'ugo', 'fox', 'bot', 'plu'];
+// Курсы («пути»): у урока поле track, у группы — тоже. Ученик видит путь курса своей группы.
+export const TRACKS = {
+  main: { id: 'main', title: 'Веб-разработка', emoji: '💻' },
+  zero: { id: 'zero', title: 'Нулевой класс', emoji: '🧸' },
+};
 export const ACCENTS = ['lime', 'sakura', 'lavender', 'ocean', 'peach', 'mint'];
 
 export const ACHIEVEMENTS = {
@@ -112,8 +117,8 @@ export function createLogic(store, { adminIds }) {
   }
   const unassigned = () => students().filter((u) => userGroups(u.id).length === 0).sort((a, b) => b.joinedAt - a.joinedAt);
 
-  function createGroup({ name: gname, emoji }) {
-    const g = { id: store.nextId('g'), name: String(gname || '').trim().slice(0, 40) || 'Группа', emoji: emoji || '📘', chatId: null, chatTitle: null, memberIds: [], createdAt: Date.now() };
+  function createGroup({ name: gname, emoji, track }) {
+    const g = { id: store.nextId('g'), name: String(gname || '').trim().slice(0, 40) || 'Группа', emoji: emoji || '📘', track: TRACKS[track] ? track : 'main', chatId: null, chatTitle: null, memberIds: [], createdAt: Date.now() };
     S.groups[g.id] = g;
     store.save();
     return g;
@@ -123,6 +128,7 @@ export function createLogic(store, { adminIds }) {
     if (!g) throw httpError(404, 'Группа не найдена');
     if (patch.name) g.name = String(patch.name).trim().slice(0, 40);
     if (patch.emoji) g.emoji = patch.emoji;
+    if (patch.track !== undefined) g.track = TRACKS[patch.track] ? patch.track : 'main';
     store.save();
     return g;
   }
@@ -236,6 +242,7 @@ export function createLogic(store, { adminIds }) {
       prev.kind = lesson.kind || prev.kind || 'lesson';
       prev.strict = Boolean(lesson.strict);
       prev.timeLimit = Number(lesson.timeLimit) || 0;
+      prev.track = TRACKS[lesson.track] ? lesson.track : 'main';
       if (lesson.order !== undefined) prev.order = lesson.order == null ? null : Number(lesson.order);
       // qrev: вопросы поправили на месте (тот же порядок и число) — заменяем, результаты остаются
       if ((lesson.qrev || 0) > (prev.qrev || 0) && lesson.questions.length === prev.questions.length) {
@@ -258,6 +265,7 @@ export function createLogic(store, { adminIds }) {
       kind: lesson.kind || 'lesson',
       strict: Boolean(lesson.strict),
       timeLimit: Number(lesson.timeLimit) || 0, // общий таймер на весь тест, секунды
+      track: TRACKS[lesson.track] ? lesson.track : 'main',
       qrev: lesson.qrev || 0,
       order: lesson.order != null ? Number(lesson.order) : (prev?.order ?? null),
       archived: prev?.archived || false,
@@ -1287,6 +1295,7 @@ export function createLogic(store, { adminIds }) {
       id: g.id,
       name: g.name,
       emoji: g.emoji,
+      track: g.track || 'main',
       chatTitle: g.chatTitle,
       linked: Boolean(g.chatId),
       members: members.map((id) => publicUser(S.users[id])),
@@ -1334,10 +1343,11 @@ export function createLogic(store, { adminIds }) {
     if (u?.needRole) return { user: publicUser(u), needRole: true, isAdmin: false, groups: [], path: [], xp: 0, streak: 0, mistakes: 0, feed: [] };
     if (isParent(uid)) return parentHome(uid);
     const groups = userGroups(uid);
+    const myTrack = trackOf(uid);
     const path = pubsForUser(uid).map((p) => {
       const l = loc(S.lessons[p.lessonId], langOf(uid));
       const b = best(uid, p.id);
-      return { pubId: p.id, title: l.title, emoji: l.emoji, description: l.description, questions: l.questions.length, topics: l.topics, groupId: p.groupId, groupName: p.userId ? 'Лично' : S.groups[p.groupId].name, personal: Boolean(p.userId), forYou: Boolean(S.lessons[p.lessonId].personal), order: S.lessons[p.lessonId].order ?? null, lessonId: p.lessonId, exam: l.kind === 'exam', strict: Boolean(S.lessons[p.lessonId].strict), codeCount: codeCountOf(p.lessonId), timeLimit: S.lessons[p.lessonId].timeLimit || 0, levels: levelsOf(uid, p.lessonId), hasLearn: Boolean(l.learn) && !p.noLearn, learnDone: learnDone(uid, p.id), learnSections: l.learn?.sections.length || 0, publishedAt: p.publishedAt, best: b ? b.pct : null, stars: b ? (b.pct === 100 ? 3 : b.pct >= 80 ? 2 : b.pct >= 50 ? 1 : 0) : null };
+      return { pubId: p.id, track: S.lessons[p.lessonId].track || 'main', title: l.title, emoji: l.emoji, description: l.description, questions: l.questions.length, topics: l.topics, groupId: p.groupId, groupName: p.userId ? 'Лично' : S.groups[p.groupId].name, personal: Boolean(p.userId), forYou: Boolean(S.lessons[p.lessonId].personal), order: S.lessons[p.lessonId].order ?? null, lessonId: p.lessonId, exam: l.kind === 'exam', strict: Boolean(S.lessons[p.lessonId].strict), codeCount: codeCountOf(p.lessonId), timeLimit: S.lessons[p.lessonId].timeLimit || 0, levels: levelsOf(uid, p.lessonId), hasLearn: Boolean(l.learn) && !p.noLearn, learnDone: learnDone(uid, p.id), learnSections: l.learn?.sections.length || 0, publishedAt: p.publishedAt, best: b ? b.pct : null, stars: b ? (b.pct === 100 ? 3 : b.pct >= 80 ? 2 : b.pct >= 50 ? 1 : 0) : null };
     });
     return {
       user: publicUser(u),
@@ -1346,10 +1356,11 @@ export function createLogic(store, { adminIds }) {
       xp: totalXp(uid),
       streak: currentStreak(u),
       groups: groups.map((g) => ({ id: g.id, name: g.name, emoji: g.emoji })),
+      track: TRACKS[myTrack],
       path,
       // уроки курса, которые учитель ещё не открыл: ученик видит их закрытыми
       locked: Object.values(S.lessons)
-        .filter((l) => Number.isFinite(l.order) && l.order < 100 && !l.personal && !l.archived && !path.some((p) => p.lessonId === l.id))
+        .filter((l) => Number.isFinite(l.order) && l.order < 100 && !l.personal && !l.archived && (l.track || 'main') === myTrack && !path.some((p) => p.lessonId === l.id))
         .sort((a, b) => a.order - b.order)
         .map((l) => { const t = loc(l, langOf(uid)); return { lessonId: l.id, order: l.order, title: t.title, emoji: l.emoji, description: t.description, questions: t.questions.length, hasLearn: Boolean(l.learn) }; }),
       mistakes: mistakesOf(uid).length,
@@ -1357,6 +1368,7 @@ export function createLogic(store, { adminIds }) {
     };
   }
 
+  const trackOf = (uid) => userGroups(uid).map((g) => g.track).find((t) => t && TRACKS[t]) || 'main';
   function adminOverview() {
     const groups = Object.values(S.groups).sort((a, b) => a.createdAt - b.createdAt).map(groupCard);
     const lessonsAll = Object.values(S.lessons).sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || b.createdAt - a.createdAt);
@@ -1364,7 +1376,7 @@ export function createLogic(store, { adminIds }) {
     const lessons = lessonsAll
       .filter((l) => !l.archived)
       .map((l) => ({
-        id: l.id, order: l.order ?? null, course: Number.isFinite(l.order) && l.order < 100 && !l.personal, title: l.title, emoji: l.emoji, description: l.description, topics: l.topics, questions: l.questions.length,
+        id: l.id, order: l.order ?? null, track: l.track || 'main', course: Number.isFinite(l.order) && l.order < 100 && !l.personal, title: l.title, emoji: l.emoji, description: l.description, topics: l.topics, questions: l.questions.length,
         types: [...new Set(l.questions.map((q) => q.type))],
         sentTo: Object.values(S.pubs).filter((p) => p.lessonId === l.id && S.groups[p.groupId]).map((p) => {
           const s = pubStats(p.id);
@@ -1385,6 +1397,7 @@ export function createLogic(store, { adminIds }) {
     const avgs = groups.map((g) => g.avg).filter((x) => x !== null);
     return {
       totals: { students: allStudents.length, groups: groups.length, sent: Object.keys(S.pubs).length, avg: avg(avgs) },
+      tracks: Object.values(TRACKS),
       groups,
       lessons,
       hiddenLessons: hidden,
@@ -1435,7 +1448,7 @@ export function createLogic(store, { adminIds }) {
   }
 
   return {
-    S, log, earnedXp, spentXp, setExtraXp, levelsOf, parentsOverview, testStatus, attemptQuestion, finishedAt, totalXp, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
+    S, log, trackOf, earnedXp, spentXp, setExtraXp, levelsOf, parentsOverview, testStatus, attemptQuestion, finishedAt, totalXp, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
     upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish, warn, forfeit, sweepStrict, removeLessons, setCode, resetAttempts, extendTime, resumeGrant, purgeUser,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,
