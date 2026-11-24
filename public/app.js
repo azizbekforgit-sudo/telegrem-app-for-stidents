@@ -2561,23 +2561,27 @@ function assignSheet(uid) {
 function groupForm(after, existing) {
   let gemo = existing?.emoji || GROUP_EMOJI[0];
   let gtrack = existing?.track || 'main';
+  let glevel = existing?.level || '';
   const tracks = S.overview?.tracks || [];
+  const levels = S.overview?.levels || [];
   openSheet(
     `<div class="stack"><h2>${existing ? 'Изменить группу' : 'Новая группа'}</h2>
       <label class="field"><span>Название</span><input class="input" data-name maxlength="40" placeholder="Например: Вечерняя группа" value="${esc(existing?.name || '')}"></label>
       <div class="field"><span>Иконка</span><div class="emoji-pick">${GROUP_EMOJI.map((e) => `<button data-e="${e}" class="${e === gemo ? 'on' : ''}">${emo(e)}</button>`).join('')}</div></div>
       ${tracks.length > 1 ? `<div class="field"><span>Путь (курс) учеников группы</span><div class="choices">${tracks.map((t) => `<button class="choice ${t.id === gtrack ? 'on' : ''}" data-gt="${t.id}">${emo(t.emoji)} ${esc(t.title)}</button>`).join('')}</div></div>` : ''}
+      ${levels.length ? `<div class="field"><span>Уровень заданий «Дом для питомца»</span><div class="choices">${[{ id: '', title: 'Авто' }, ...levels].map((l) => `<button class="choice ${l.id === glevel ? 'on' : ''}" data-glv="${l.id}">${esc(tr(l.title))}</button>`).join('')}</div><small class="muted">${tr('Авто — по названию группы («Младшая», «Средняя», «Старшая») и курсу')}</small></div>` : ''}
       <button class="btn block" data-save>${existing ? 'Сохранить' : 'Создать группу'}</button></div>`,
     (el, close) => {
       $$('[data-e]', el).forEach((b) => (b.onclick = () => { gemo = b.dataset.e; $$('[data-e]', el).forEach((x) => x.classList.toggle('on', x === b)); }));
       $$('[data-gt]', el).forEach((b) => (b.onclick = () => { gtrack = b.dataset.gt; $$('[data-gt]', el).forEach((x) => x.classList.toggle('on', x === b)); }));
+      $$('[data-glv]', el).forEach((b) => (b.onclick = () => { glevel = b.dataset.glv; $$('[data-glv]', el).forEach((x) => x.classList.toggle('on', x === b)); }));
       const inp = $('[data-name]', el);
       setTimeout(() => inp.focus(), 250);
       $('[data-save]', el).onclick = async () => {
         if (!inp.value.trim()) return inp.focus();
         try {
-          if (existing) await patch('/admin/groups/' + existing.id, { name: inp.value, emoji: gemo, track: gtrack });
-          else await api('/admin/groups', { name: inp.value, emoji: gemo, track: gtrack });
+          if (existing) await patch('/admin/groups/' + existing.id, { name: inp.value, emoji: gemo, track: gtrack, level: glevel });
+          else await api('/admin/groups', { name: inp.value, emoji: gemo, track: gtrack, level: glevel });
           haptic('success');
           close();
           await loadOverview();

@@ -11,23 +11,27 @@ const tri = (v, where) => { if (!v || typeof v !== 'object' || !v.ru || !v.uz ||
 for (const f of fs.existsSync(dir) ? fs.readdirSync(dir).filter((x) => x.endsWith('.json')) : []) {
   const c = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'));
   if (c.house) {
-    // «Дом для питомца»: проверяем на примере (Капи, ученица Аня), все три языка
-    let files = null;
-    for (const lang of ['ru', 'uz', 'en']) {
-      files = null;
-      for (const [i, raw] of c.house.challenges.entries()) {
-        const t = personalize(raw, { lang, pet: 'Капи', petId: 'kapi', name: 'Аня' });
-        if (lang === 'ru') { tri(raw.title, `${f} испытание ${i + 1} title`); tri(raw.intro, `${f} испытание ${i + 1} intro`); tri(raw.reflect, `${f} испытание ${i + 1} reflect`); if (raw.praise) tri(raw.praise.text, `${f} испытание ${i + 1} praise`); }
-        files = { ...(files || t.files || {}), ...(t.addFiles || {}) };
-        for (const [k, st] of t.steps.entries()) {
-          if (lang === 'ru') tri(raw.steps[k].say, `${f} испытание ${i + 1} шаг ${k + 1}`);
-          try { new RegExp(st.re, st.flags ?? 'i'); } catch (e) { console.log(`✗ ${f} испытание ${i + 1} шаг ${k + 1}: ${e.message}`); bad++; }
-          if (files[st.file] == null) { console.log(`✗ ${f} испытание ${i + 1} шаг ${k + 1}: нет файла ${st.file}`); bad++; }
+    // «Дом для питомца»: четыре уровня (zero, junior, middle, senior), каждый на трёх языках на примере (Капи, ученица Аня)
+    const sets = c.house.levels || { senior: c.house.challenges };
+    for (const [lv, challenges] of Object.entries(sets)) {
+      if (!challenges?.length) { console.log(`✗ ${f} уровень ${lv}: нет испытаний`); bad++; continue; }
+      for (const lang of ['ru', 'uz', 'en']) {
+        let files = null;
+        for (const [i, raw] of challenges.entries()) {
+          const t = personalize(raw, { lang, pet: 'Капи', petId: 'kapi', name: 'Аня' });
+          const where = `${f} ${lv} испытание ${i + 1}`;
+          if (lang === 'ru') { tri(raw.title, `${where} title`); tri(raw.intro, `${where} intro`); tri(raw.reflect, `${where} reflect`); if (raw.praise) tri(raw.praise.text, `${where} praise`); }
+          files = { ...(files || t.files || {}), ...(t.addFiles || {}) };
+          for (const [k, st] of t.steps.entries()) {
+            if (lang === 'ru') tri(raw.steps[k].say, `${where} шаг ${k + 1}`);
+            try { new RegExp(st.re, st.flags ?? 'i'); } catch (e) { console.log(`✗ ${where} шаг ${k + 1}: ${e.message}`); bad++; }
+            if (files[st.file] == null) { console.log(`✗ ${where} шаг ${k + 1}: нет файла ${st.file}`); bad++; }
+          }
+          if (checkSteps(t, files, '').every(Boolean)) { console.log(`✗ ${where} (${lang}): стартовый код уже решает задание`); bad++; }
         }
-        if (checkSteps(t, files, '').every(Boolean)) { console.log(`✗ ${f} испытание ${i + 1} (${lang}): стартовый код уже решает задание`); bad++; }
       }
+      console.log(`✓ ${f} — «Дом для питомца», уровень ${lv}: ${challenges.length} испытания`);
     }
-    console.log(`✓ ${f} — «Дом для питомца»: ${c.house.challenges.length} испытания`);
     continue;
   }
   const lessonFile = path.join(dir, '..', 'lessons', `${c.lessonId}.json`);

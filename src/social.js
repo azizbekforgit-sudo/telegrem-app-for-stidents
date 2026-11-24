@@ -227,7 +227,7 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
     top('star', (uid) => { const a = avgs.get(uid); return a && a.n >= 3 ? Math.round((a.s / a.n) * 100) : 0; }, 1);
     for (const u of list) {
       if ((u.streak || 0) >= 5 && logic.S.users[u.id]) add(u.id, 'streak');
-      if (houseState(u.id).done.length >= HOUSE().length && HOUSE().length) add(u.id, 'designer');
+      if (HOUSE(u.id).length && houseState(u.id).done.length >= HOUSE(u.id).length) add(u.id, 'designer');
       if (u.joinedAt > since && atts.some((a) => a.userId === u.id)) add(u.id, 'newbie');
     }
     badgeCache = { at: Date.now(), map };
@@ -282,10 +282,16 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
   const escH = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
   // ───────── «Дом для питомца» ─────────
-  const HOUSE = () => code()?.house?.house?.challenges || [];
+  // испытания дома зависят от группы ученика: levels.{zero|junior|middle|senior}, без уровня — challenges (старшая)
+  const HOUSE = (uid) => {
+    const h = code()?.house?.house;
+    if (!h) return [];
+    const lv = uid != null ? logic.levelOf(uid) : 'senior';
+    return h.levels?.[lv] || h.challenges || [];
+  };
   const ctxOf = (uid) => { const u = user(uid); const lang = langOf(uid); const petId = u?.prefs?.mascot || 'kapi'; return { lang, petId, pet: petName(petId, lang), name: (logic.name(u) || '').split(' ')[0] }; };
   function houseState(uid) {
-    const list = HOUSE();
+    const list = HOUSE(uid);
     const done = list.map((c, i) => (S.code?.[`${uid}:house:h${i + 1}`]?.at ? i + 1 : 0)).filter(Boolean);
     const last = done.map((k) => S.code[`${uid}:house:h${k}`]).sort((a, b) => b.at - a.at)[0] || null;
     return { done, total: list.length, files: last?.files || null };
@@ -293,14 +299,14 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
   function house(uid) {
     const ctx = ctxOf(uid);
     const st = houseState(uid);
-    const list = HOUSE().map((c, i) => {
+    const list = HOUSE(uid).map((c, i) => {
       const t = personalize(c, ctx);
       return { k: i + 1, title: t.title, intro: t.intro, praise: t.praise || null, reflect: t.reflect, reward: c.reward, rewardEmoji: ITEMS[c.reward]?.emoji || '', steps: t.steps.map((s) => ({ say: s.say, show: s.show || null, file: s.file, re: s.re, flags: s.flags })), files: t.files, addFiles: t.addFiles || null, open: t.open || null, pose: c.pose || 'think' };
     });
     return { pet: ctx.pet, petId: ctx.petId, name: ctx.name, done: st.done, total: st.total, files: st.files, challenges: list, reflected: Object.values(G().reflections).filter((r) => r.userId === String(uid)).map((r) => r.k) };
   }
   function houseDone(uid, k, files, accepted = false) {
-    const list = HOUSE();
+    const list = HOUSE(uid);
     k = Number(k);
     const c = list[k - 1];
     if (!c) throw httpError(404, 'Нет такого испытания');
@@ -429,7 +435,8 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
     })();
     const furniture = has(3) && fz ? [...fz[1].matchAll(/<([a-z]+)[^>]*>([^<]{1,8})<\/\1>/gi)].map((m) => m[2].trim()).filter((x) => x && /\p{Extended_Pictographic}/u.test(x)).slice(0, 6) : [];
     const ph = /textContent\s*=\s*(["'`])([^"'`]{1,80})\1/.exec(js);
-    const phrase = has(4) && ph ? ph[2].trim() : null;
+    const bb = /<p[^>]*class\s*=\s*["']?[^"'>]*\bbubble\b[^>]*>([^<]{2,80})<\/p>/i.exec(html);
+    const phrase = has(4) ? (ph ? ph[2].trim() : bb ? bb[1].trim() : null) : null;
     return { stage: st.done.length, total: st.total, next: st.done.length < st.total ? Math.min(...Array.from({ length: st.total }, (_, i) => i + 1).filter((k) => !has(k))) : null, sign, wall, furniture, phrase };
   }
 

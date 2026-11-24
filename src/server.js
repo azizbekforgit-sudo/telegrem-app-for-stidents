@@ -399,7 +399,7 @@ api.post('/code/review', h(async (req) => {
   let task = null, topic = '';
   if (lessonId === 'house') {
     const k = Number(String(key || '').replace(/^h/, ''));
-    const c = social.HOUSE()[k - 1];
+    const c = social.HOUSE(req.user.id)[k - 1];
     if (c) { task = social.personalize(c, social.ctxOf(req.user.id)); topic = 'Pet house'; }
   } else {
     const c = CODE[String(lessonId || '')];

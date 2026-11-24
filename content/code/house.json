@@ -13,257 +13,943 @@
  "sections": {},
  "homework": null,
  "house": {
-  "challenges": [
-   {
-    "title": {
-     "ru": "Табличка на двери",
-     "uz": "Eshikdagi lavha",
-     "en": "The door sign"
-    },
-    "intro": {
-     "ru": "{pet} переехал(а) в новый дом, но там пусто и грустно 😢 Даже таблички на двери нет — гости не найдут! Давай сделаем её вместе.",
-     "uz": "{pet} yangi uyga ko'chdi, lekin u yer bo'sh va g'amgin 😢 Eshikda lavha ham yo'q — mehmonlar topa olmaydi! Keling, uni birga yasaymiz.",
-     "en": "{pet} moved into a new house, but it's empty and sad 😢 There's not even a sign on the door — guests won't find it! Let's make one together."
-    },
-    "pose": "sad",
-    "reward": "bow",
-    "files": {
-     "index.html": {
-      "ru": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Дом {pet}</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"room\">\n    <!-- Табличка на двери: напиши здесь <h1> -->\n\n    <img class=\"portrait\" src=\"/m/tg/{petId}-sad.jpg\" alt=\"{pet}\">\n    <div class=\"furniture\">\n      <!-- Мебель поставим сюда -->\n    </div>\n    <p class=\"bubble\">Тут так пусто…</p>\n  </div>\n</body>\n</html>\n",
-      "uz": "<!DOCTYPE html>\n<html>\n<head>\n  <title>{pet}ning uyi</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"room\">\n    <!-- Eshikdagi lavha: shu yerga <h1> yoz -->\n\n    <img class=\"portrait\" src=\"/m/tg/{petId}-sad.jpg\" alt=\"{pet}\">\n    <div class=\"furniture\">\n      <!-- Mebelni shu yerga qo'yamiz -->\n    </div>\n    <p class=\"bubble\">Bu yer juda bo'sh…</p>\n  </div>\n</body>\n</html>\n",
-      "en": "<!DOCTYPE html>\n<html>\n<head>\n  <title>{pet}'s house</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"room\">\n    <!-- Door sign: write an <h1> here -->\n\n    <img class=\"portrait\" src=\"/m/tg/{petId}-sad.jpg\" alt=\"{pet}\">\n    <div class=\"furniture\">\n      <!-- We'll put furniture here -->\n    </div>\n    <p class=\"bubble\">It's so empty here…</p>\n  </div>\n</body>\n</html>\n"
+  "levels": {
+   "zero": [
+    {
+     "title": {
+      "ru": "Табличка на двери",
+      "uz": "Eshikdagi lavha",
+      "en": "The door sign"
      },
-     "style.css": "body {\n  font-family: sans-serif;\n  text-align: center;\n}\n.room {\n  max-width: 420px;\n  margin: 20px auto;\n  padding: 20px;\n  border-radius: 20px;\n}\n.portrait {\n  width: 120px;\n  border-radius: 50%;\n}\n.furniture {\n  font-size: 40px;\n  margin: 16px 0;\n}\n.bubble {\n  display: inline-block;\n  background: white;\n  padding: 10px 14px;\n  border-radius: 16px;\n}\n"
-    },
-    "open": "index.html",
-    "steps": [
-     {
-      "file": "index.html",
-      "re": "<h1[^>]*>[^<]*{PET}[^<]*</h1>",
-      "say": {
-       "ru": "Напиши табличку в `<h1>`: в ней должно быть имя «{pet}» — а дальше что хочешь. Например, `<h1>Дом {pet} и {name}</h1>`",
-       "uz": "`<h1>` ga lavha yoz: unda «{pet}» ismi bo'lsin — qolganini o'zing tanla. Masalan, `<h1>{pet} va {name}ning uyi</h1>`",
-       "en": "Write a sign in `<h1>`: it must have the name «{pet}» — the rest is up to you. For example, `<h1>{pet} and {name}'s house</h1>`"
+     "intro": {
+      "ru": "{pet} переехал(а) в новый дом, но на двери нет таблички 😢 Почти всё уже написано — ты только впишешь нужное. Начнём!",
+      "uz": "{pet} yangi uyga ko'chdi, lekin eshikda lavha yo'q 😢 Deyarli hammasi yozilgan — sen faqat kerakli joyini to'ldirasan. Boshladik!",
+      "en": "{pet} moved into a new house, but the door has no sign 😢 Almost everything is already written — you just fill in the blanks. Let's go!"
+     },
+     "pose": "sad",
+     "reward": "bow",
+     "files": {
+      "index.html": {
+       "ru": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Дом {pet}</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"room\">\n    <h1>Дом ___</h1>\n\n    <img class=\"portrait\" src=\"/m/tg/{petId}-sad.jpg\" alt=\"{pet}\">\n    <div class=\"furniture\">\n      <!-- Мебель поставим сюда. Можно скопировать: 🛋️ 🪴 📺 🧸 🎂 🐠 -->\n    </div>\n    <p class=\"bubble\">Тут так пусто…</p>\n  </div>\n</body>\n</html>\n",
+       "uz": "<!DOCTYPE html>\n<html>\n<head>\n  <title>{pet}ning uyi</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"room\">\n    <h1>___ning uyi</h1>\n\n    <img class=\"portrait\" src=\"/m/tg/{petId}-sad.jpg\" alt=\"{pet}\">\n    <div class=\"furniture\">\n      <!-- Mebelni shu yerga qo'yamiz. Nusxa olsa bo'ladi: 🛋️ 🪴 📺 🧸 🎂 🐠 -->\n    </div>\n    <p class=\"bubble\">Bu yer juda bo'sh…</p>\n  </div>\n</body>\n</html>\n",
+       "en": "<!DOCTYPE html>\n<html>\n<head>\n  <title>{pet}'s house</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"room\">\n    <h1>___'s house</h1>\n\n    <img class=\"portrait\" src=\"/m/tg/{petId}-sad.jpg\" alt=\"{pet}\">\n    <div class=\"furniture\">\n      <!-- We'll put furniture here. You can copy: 🛋️ 🪴 📺 🧸 🎂 🐠 -->\n    </div>\n    <p class=\"bubble\">It's so empty here…</p>\n  </div>\n</body>\n</html>\n"
       },
-      "show": {
-       "ru": "<h1>Дом {pet} и {name}</h1>",
-       "uz": "<h1>{pet} va {name}ning uyi</h1>",
-       "en": "<h1>{pet} and {name}'s house</h1>"
+      "style.css": {
+       "ru": "h1 {\n  /* Впиши сюда цвет: color: hotpink; */\n}\n\nbody {\n  font-family: sans-serif;\n  text-align: center;\n}\n.room {\n  max-width: 420px;\n  margin: 20px auto;\n  padding: 20px;\n  border-radius: 20px;\n}\n.portrait {\n  width: 120px;\n  border-radius: 50%;\n}\n.furniture {\n  font-size: 40px;\n  margin: 16px 0;\n}\n.bubble {\n  display: inline-block;\n  background: white;\n  padding: 10px 14px;\n  border-radius: 16px;\n}\n",
+       "uz": "h1 {\n  /* Shu yerga rang yoz: color: hotpink; */\n}\n\nbody {\n  font-family: sans-serif;\n  text-align: center;\n}\n.room {\n  max-width: 420px;\n  margin: 20px auto;\n  padding: 20px;\n  border-radius: 20px;\n}\n.portrait {\n  width: 120px;\n  border-radius: 50%;\n}\n.furniture {\n  font-size: 40px;\n  margin: 16px 0;\n}\n.bubble {\n  display: inline-block;\n  background: white;\n  padding: 10px 14px;\n  border-radius: 16px;\n}\n",
+       "en": "h1 {\n  /* Write a color here: color: hotpink; */\n}\n\nbody {\n  font-family: sans-serif;\n  text-align: center;\n}\n.room {\n  max-width: 420px;\n  margin: 20px auto;\n  padding: 20px;\n  border-radius: 20px;\n}\n.portrait {\n  width: 120px;\n  border-radius: 50%;\n}\n.furniture {\n  font-size: 40px;\n  margin: 16px 0;\n}\n.bubble {\n  display: inline-block;\n  background: white;\n  padding: 10px 14px;\n  border-radius: 16px;\n}\n"
       }
      },
-     {
+     "open": "index.html",
+     "steps": [
+      {
+       "file": "index.html",
+       "re": "<h1[^>]*>[^<]*{PET}[^<]*</h1>",
+       "say": {
+        "ru": "В табличке стоит `___`. Замени его на имя «{pet}»: `<h1>Дом {pet}</h1>`",
+        "uz": "Lavhada `___` turibdi. Uni «{pet}» ismiga almashtir: `<h1>{pet}ning uyi</h1>`",
+        "en": "The sign has `___`. Replace it with the name «{pet}»: `<h1>{pet}'s house</h1>`"
+       },
+       "show": {
+        "ru": "<h1>Дом {pet}</h1>",
+        "uz": "<h1>{pet}ning uyi</h1>",
+        "en": "<h1>{pet}'s house</h1>"
+       }
+      },
+      {
+       "file": "style.css",
+       "re": "h1\\s*\\{[^}]*color\\s*:\\s*[^;}]+",
+       "say": {
+        "ru": "Покрась табличку. Внутри `h1 { }` впиши `color: hotpink;` — цвет можно любой: red, blue, green, purple.",
+        "uz": "Lavhani bo'ya. `h1 { }` ichiga `color: hotpink;` yoz — istalgan rang bo'ladi: red, blue, green, purple.",
+        "en": "Color the sign. Inside `h1 { }` write `color: hotpink;` — any color works: red, blue, green, purple."
+       },
+       "show": "h1 {\n  color: hotpink;\n}"
+      }
+     ],
+     "praise": {
       "file": "style.css",
-      "re": "h1\\s*\\{[^}]*color\\s*:\\s*[^;}]+",
-      "say": {
-       "ru": "Выбери цвет таблички — любой, какой тебе нравится: `h1 { color: …; }`",
-       "uz": "Lavha rangini tanla — o'zingga yoqqanini: `h1 { color: …; }`",
-       "en": "Pick a color for the sign — any one you like: `h1 { color: …; }`"
-      },
-      "show": "h1 {\n  color: hotpink;\n}"
-     }
-    ],
-    "praise": {
-     "file": "style.css",
-     "re": "h1\\s*\\{[^}]*color\\s*:\\s*([^;}\\n]+)",
-     "text": {
-      "ru": "Цвет «{1}» — {pet} в восторге: теперь все найдут ваш дом!",
-      "uz": "«{1}» rangi — {pet} xursand: endi hamma uyingizni topadi!",
-      "en": "«{1}» — {pet} loves it: now everyone will find your house!"
-     }
-    },
-    "reflect": {
-     "ru": "Где ты видел(а) вывески и надписи, как эта? Что бы ты написала на двери своей комнаты?",
-     "uz": "Bunday lavha va yozuvlarni qayerda ko'rgansan? O'z xonang eshigiga nima yozgan bo'larding?",
-     "en": "Where have you seen signs like this? What would you write on your own room's door?"
-    }
-   },
-   {
-    "title": {
-     "ru": "Обои",
-     "uz": "Devor qog'ozi",
-     "en": "Wallpaper"
-    },
-    "intro": {
-     "ru": "Табличка есть — уже лучше! Но стены серые и скучные. {pet} хочет уютные обои — выбери цвета сама.",
-     "uz": "Lavha bor — allaqachon yaxshiroq! Lekin devorlar kulrang va zerikarli. {pet} shinam devor qog'ozi istaydi — ranglarni o'zing tanla.",
-     "en": "The sign is up — already better! But the walls are gray and boring. {pet} wants cozy wallpaper — choose the colors yourself."
-    },
-    "pose": "think",
-    "reward": "glasses",
-    "steps": [
-     {
-      "file": "style.css",
-      "re": "body\\s*\\{[^}]*background(-color)?\\s*:\\s*[^;}]+",
-      "say": {
-       "ru": "Покрась стены — фон всей страницы: `body { background: …; }`. Можно даже градиент: `linear-gradient(pink, white)`",
-       "uz": "Devorlarni bo'ya — butun sahifa foni: `body { background: …; }`. Hatto gradient ham bo'ladi: `linear-gradient(pink, white)`",
-       "en": "Paint the walls — the background of the whole page: `body { background: …; }`. You can even use a gradient: `linear-gradient(pink, white)`"
-      },
-      "show": "body {\n  background: linear-gradient(pink, white);\n}"
-     },
-     {
-      "file": "style.css",
-      "re": "\\.room\\s*\\{[^}]*background(-color)?\\s*:\\s*[^;}]+",
-      "say": {
-       "ru": "А сама комната пусть будет другого цвета: `.room { background: …; }`",
-       "uz": "Xonaning o'zi esa boshqa rangda bo'lsin: `.room { background: …; }`",
-       "en": "And let the room itself be another color: `.room { background: …; }`"
-      },
-      "show": ".room {\n  background: lavender;\n}"
-     }
-    ],
-    "praise": {
-     "file": "style.css",
-     "re": "body\\s*\\{[^}]*background(?:-color)?\\s*:\\s*([^;}\\n]+)",
-     "text": {
-      "ru": "Стены «{1}»! {pet} говорит: «Тут так уютно!»",
-      "uz": "Devorlar «{1}»! {pet} aytyapti: «Bu yer juda shinam!»",
-      "en": "Walls in «{1}»! {pet} says: «It's so cozy here!»"
-     }
-    },
-    "reflect": {
-     "ru": "Если бы ты делал(а) сайт для себя — какого цвета он был бы и почему?",
-     "uz": "O'zing uchun sayt qilsang — u qanday rangda bo'lardi va nega?",
-     "en": "If you made a website for yourself — what color would it be and why?"
-    }
-   },
-   {
-    "title": {
-     "ru": "Мебель",
-     "uz": "Mebel",
-     "en": "Furniture"
-    },
-    "intro": {
-     "ru": "Красиво! Но сидеть {pet} негде 😅 Поставь в комнату три вещи — любые: диван, цветок, телевизор, торт… Как в твоей мечте.",
-     "uz": "Chiroyli! Lekin {pet}ga o'tirishga joy yo'q 😅 Xonaga uchta narsa qo'y — xohlaganingni: divan, gul, televizor, tort… Orzuingdagidek.",
-     "en": "Pretty! But {pet} has nowhere to sit 😅 Put three things in the room — anything: a sofa, a plant, a TV, a cake… Like in your dream."
-    },
-    "pose": "think",
-    "reward": "scarf",
-    "steps": [
-     {
-      "file": "index.html",
-      "re": "class=[\"']?furniture[\"']?[^>]*>\\s*(<(span|div|p|i|b|em|strong)[^>]*>[^<]+</\\2>\\s*){3,}",
-      "say": {
-       "ru": "Внутри `<div class=\"furniture\">` поставь три `<span>` с эмодзи — какие хочешь: `<span>🛋️</span>`",
-       "uz": "`<div class=\"furniture\">` ichiga emoji bilan uchta `<span>` qo'y — xohlaganingni: `<span>🛋️</span>`",
-       "en": "Inside `<div class=\"furniture\">` put three `<span>` with emoji — any you like: `<span>🛋️</span>`"
-      },
-      "show": "<div class=\"furniture\">\n  <span>🛋️</span>\n  <span>🪴</span>\n  <span>📺</span>\n</div>"
-     },
-     {
-      "file": "style.css",
-      "re": "\\.furniture\\s*\\{[^}]*display\\s*:\\s*flex",
-      "say": {
-       "ru": "Расставь их в ряд: `.furniture { display: flex; }`",
-       "uz": "Ularni qatorga ter: `.furniture { display: flex; }`",
-       "en": "Line them up: `.furniture { display: flex; }`"
-      },
-      "show": ".furniture {\n  display: flex;\n}"
-     },
-     {
-      "file": "style.css",
-      "re": "\\.furniture\\s*\\{[^}]*(justify-content|gap)\\s*:",
-      "say": {
-       "ru": "И раздвинь по комнате: `justify-content: space-around;` или `gap: 20px;`",
-       "uz": "Va xona bo'ylab sur: `justify-content: space-around;` yoki `gap: 20px;`",
-       "en": "And spread them around the room: `justify-content: space-around;` or `gap: 20px;`"
-      },
-      "show": "justify-content: space-around;"
-     }
-    ],
-    "praise": {
-     "file": "index.html",
-     "re": "class=[\"']?furniture[\"']?[^>]*>\\s*<([a-z]+)[^>]*>([^<]+)</\\1>",
-     "text": {
-      "ru": "«{1}» — отличный выбор! {pet} уже устроился рядом.",
-      "uz": "«{1}» — ajoyib tanlov! {pet} allaqachon yoniga joylashdi.",
-      "en": "«{1}» — great choice! {pet} has already settled in next to it."
-     },
-     "group": 2
-    },
-    "reflect": {
-     "ru": "Какую комнату, магазин или игру ты бы хотел(а) сделать на своём сайте?",
-     "uz": "O'z saytingda qanday xona, do'kon yoki o'yin qilishni xohlarding?",
-     "en": "What room, shop or game would you like to make on your own site?"
-    }
-   },
-   {
-    "title": {
-     "ru": "{pet} говорит!",
-     "uz": "{pet} gapiradi!",
-     "en": "{pet} talks!"
-    },
-    "intro": {
-     "ru": "Дом готов, но {pet} ещё молчит. Давай оживим его: кнопка, и по клику {pet} скажет твою фразу. Это настоящий JavaScript — и у тебя получится!",
-     "uz": "Uy tayyor, lekin {pet} hali jim. Keling, uni jonlantiramiz: tugma, bosganda {pet} sening gapingni aytadi. Bu haqiqiy JavaScript — va sen uddalaysan!",
-     "en": "The house is ready, but {pet} is still silent. Let's bring it to life: a button, and on click {pet} says your phrase. This is real JavaScript — and you can do it!"
-    },
-    "pose": "happy",
-    "reward": "crown",
-    "addFiles": {
-     "script.js": {
-      "ru": "// Здесь живёт JavaScript: он оживляет страницу\n",
-      "uz": "// JavaScript shu yerda yashaydi: u sahifani jonlantiradi\n",
-      "en": "// JavaScript lives here: it brings the page to life\n"
-     }
-    },
-    "open": "index.html",
-    "steps": [
-     {
-      "file": "index.html",
-      "re": "<button[^>]*>[^<]+</button>",
-      "say": {
-       "ru": "Добавь кнопку под питомцем: `<button>Погладить {pet}</button>`",
-       "uz": "Hayvon ostiga tugma qo'sh: `<button>{pet}ni silash</button>`",
-       "en": "Add a button under the pet: `<button>Pet {pet}</button>`"
-      },
-      "show": {
-       "ru": "<button>Погладить {pet}</button>",
-       "uz": "<button>{pet}ni silash</button>",
-       "en": "<button>Pet {pet}</button>"
+      "re": "h1\\s*\\{[^}]*color\\s*:\\s*([^;}\\n]+)",
+      "text": {
+       "ru": "Цвет «{1}» — {pet} в восторге: теперь все найдут ваш дом!",
+       "uz": "«{1}» rangi — {pet} xursand: endi hamma uyingizni topadi!",
+       "en": "«{1}» — {pet} loves it: now everyone will find your house!"
       }
      },
-     {
+     "reflect": {
+      "ru": "Где ты видел(а) вывески и надписи, как эта? Что бы ты написала на двери своей комнаты?",
+      "uz": "Bunday lavha va yozuvlarni qayerda ko'rgansan? O'z xonang eshigiga nima yozgan bo'larding?",
+      "en": "Where have you seen signs like this? What would you write on your own room's door?"
+     }
+    },
+    {
+     "title": {
+      "ru": "Обои",
+      "uz": "Devor qog'ozi",
+      "en": "Wallpaper"
+     },
+     "intro": {
+      "ru": "Табличка есть — уже лучше! Но стены серые и скучные. {pet} хочет уютные обои — выбери цвета сама.",
+      "uz": "Lavha bor — allaqachon yaxshiroq! Lekin devorlar kulrang va zerikarli. {pet} shinam devor qog'ozi istaydi — ranglarni o'zing tanla.",
+      "en": "The sign is up — already better! But the walls are gray and boring. {pet} wants cozy wallpaper — choose the colors yourself."
+     },
+     "pose": "think",
+     "reward": "glasses",
+     "steps": [
+      {
+       "file": "style.css",
+       "re": "body\\s*\\{[^}]*background(-color)?\\s*:\\s*[^;}]+",
+       "say": {
+        "ru": "Покрась стены. В `body { }` допиши строчку `background: pink;` — цвет любой: lightblue, lightyellow, lightgreen.",
+        "uz": "Devorlarni bo'ya. `body { }` ichiga `background: pink;` qatorini yoz — rang istalgan: lightblue, lightyellow, lightgreen.",
+        "en": "Paint the walls. In `body { }` add the line `background: pink;` — any color: lightblue, lightyellow, lightgreen."
+       },
+       "show": "background: pink;"
+      }
+     ],
+     "praise": {
+      "file": "style.css",
+      "re": "body\\s*\\{[^}]*background(?:-color)?\\s*:\\s*([^;}\\n]+)",
+      "text": {
+       "ru": "Стены «{1}»! {pet} говорит: «Тут так уютно!»",
+       "uz": "Devorlar «{1}»! {pet} aytyapti: «Bu yer juda shinam!»",
+       "en": "Walls in «{1}»! {pet} says: «It's so cozy here!»"
+      }
+     },
+     "reflect": {
+      "ru": "Если бы ты делал(а) сайт для себя — какого цвета он был бы и почему?",
+      "uz": "O'zing uchun sayt qilsang — u qanday rangda bo'lardi va nega?",
+      "en": "If you made a website for yourself — what color would it be and why?"
+     }
+    },
+    {
+     "title": {
+      "ru": "Мебель",
+      "uz": "Mebel",
+      "en": "Furniture"
+     },
+     "intro": {
+      "ru": "Красиво! Но сидеть {pet} негде 😅 Поставь в комнату три вещи — любые: диван, цветок, телевизор, торт… Как в твоей мечте.",
+      "uz": "Chiroyli! Lekin {pet}ga o'tirishga joy yo'q 😅 Xonaga uchta narsa qo'y — xohlaganingni: divan, gul, televizor, tort… Orzuingdagidek.",
+      "en": "Pretty! But {pet} has nowhere to sit 😅 Put three things in the room — anything: a sofa, a plant, a TV, a cake… Like in your dream."
+     },
+     "pose": "think",
+     "reward": "scarf",
+     "steps": [
+      {
+       "file": "index.html",
+       "re": "class=[\"']?furniture[\"']?[^>]*>\\s*(<(span|div|p|i|b|em|strong)[^>]*>[^<]+</\\2>\\s*){3,}",
+       "say": {
+        "ru": "Между `<div class=\"furniture\">` и `</div>` поставь три `<span>` с эмодзи. Копируй: `<span>🛋️</span> <span>🪴</span> <span>📺</span>`",
+        "uz": "`<div class=\"furniture\">` va `</div>` orasiga emoji bilan uchta `<span>` qo'y. Nusxa ol: `<span>🛋️</span> <span>🪴</span> <span>📺</span>`",
+        "en": "Between `<div class=\"furniture\">` and `</div>` put three `<span>` with emoji. Copy: `<span>🛋️</span> <span>🪴</span> <span>📺</span>`"
+       },
+       "show": "<div class=\"furniture\">\n  <span>🛋️</span>\n  <span>🪴</span>\n  <span>📺</span>\n</div>"
+      },
+      {
+       "file": "style.css",
+       "re": "\\.furniture\\s*\\{[^}]*display\\s*:\\s*flex",
+       "say": {
+        "ru": "Поставь их в ряд: в `style.css` напиши `.furniture { display: flex; }`",
+        "uz": "Ularni qatorga qo'y: `style.css` ga `.furniture { display: flex; }` yoz",
+        "en": "Line them up: in `style.css` write `.furniture { display: flex; }`"
+       },
+       "show": ".furniture {\n  display: flex;\n}"
+      }
+     ],
+     "praise": {
+      "file": "index.html",
+      "re": "class=[\"']?furniture[\"']?[^>]*>\\s*<([a-z]+)[^>]*>([^<]+)</\\1>",
+      "text": {
+       "ru": "«{1}» — отличный выбор! {pet} уже устроился рядом.",
+       "uz": "«{1}» — ajoyib tanlov! {pet} allaqachon yoniga joylashdi.",
+       "en": "«{1}» — great choice! {pet} has already settled in next to it."
+      },
+      "group": 2
+     },
+     "reflect": {
+      "ru": "Какую комнату, магазин или игру ты бы хотел(а) сделать на своём сайте?",
+      "uz": "O'z saytingda qanday xona, do'kon yoki o'yin qilishni xohlarding?",
+      "en": "What room, shop or game would you like to make on your own site?"
+     }
+    },
+    {
+     "title": {
+      "ru": "{pet} говорит!",
+      "uz": "{pet} gapiradi!",
+      "en": "{pet} talks!"
+     },
+     "intro": {
+      "ru": "Дом готов, но {pet} молчит. Давай решим, что {pet} скажет! Мы просто поменяем надпись в облачке.",
+      "uz": "Uy tayyor, lekin {pet} jim. Keling, {pet} nima deyishini hal qilamiz! Bulutchadagi yozuvni almashtiramiz.",
+      "en": "The house is ready, but {pet} is silent. Let's decide what {pet} says! We'll just change the text in the bubble."
+     },
+     "pose": "happy",
+     "reward": "crown",
+     "steps": [
+      {
+       "file": "index.html",
+       "re": "<p[^>]*class=[\"\\']?bubble[\"\\']?[^>]*>\\s*(?!(?:Тут так пусто|Bu yer juda bo.sh|It.s so empty)[^<]*<)[^<\\s][^<]{2,}</p>",
+       "say": {
+        "ru": "Найди `<p class=\"bubble\">` и вместо «Тут так пусто…» напиши, что скажет {pet}. Например: `<p class=\"bubble\">Ура, у меня есть дом!</p>`",
+        "uz": "`<p class=\"bubble\">` ni top va «Bu yer juda bo'sh…» o'rniga {pet} nima deyishini yoz. Masalan: `<p class=\"bubble\">Hurra, mening uyim bor!</p>`",
+        "en": "Find `<p class=\"bubble\">` and instead of «It's so empty here…» write what {pet} says. For example: `<p class=\"bubble\">Yay, I have a home!</p>`"
+       },
+       "show": {
+        "ru": "<p class=\"bubble\">Ура, у меня есть дом!</p>",
+        "uz": "<p class=\"bubble\">Hurra, mening uyim bor!</p>",
+        "en": "<p class=\"bubble\">Yay, I have a home!</p>"
+       }
+      },
+      {
+       "file": "style.css",
+       "re": "\\.bubble\\s*\\{[^}]*background(-color)?\\s*:\\s*(?!\\s*white\\s*[;}])[^;}]+",
+       "say": {
+        "ru": "Покрась облачко: в `.bubble { }` замени `white` на другой цвет, например `lightyellow`.",
+        "uz": "Bulutchani bo'ya: `.bubble { }` da `white` ni boshqa rangga almashtir, masalan `lightyellow`.",
+        "en": "Color the bubble: in `.bubble { }` replace `white` with another color, e.g. `lightyellow`."
+       },
+       "show": "background: lightyellow;"
+      }
+     ],
+     "praise": {
+      "file": "index.html",
+      "re": "<p[^>]*bubble[^>]*>([^<]{3,})</p>",
+      "text": {
+       "ru": "«{1}» — так {pet} и скажет! Ты сделал(а) свой дом живым 🎉",
+       "uz": "«{1}» — {pet} aynan shunday aytadi! Sen uyingni jonlantirding 🎉",
+       "en": "«{1}» — that's what {pet} will say! You made your house come alive 🎉"
+      }
+     },
+     "reflect": {
+      "ru": "Что бы ты хотел(а), чтобы сказал твой питомец, когда ты приходишь домой?",
+      "uz": "Uyga kelganingda hayvoning nima deyishini xohlarding?",
+      "en": "What would you like your pet to say when you come home?"
+     }
+    }
+   ],
+   "junior": [
+    {
+     "title": {
+      "ru": "Табличка на двери",
+      "uz": "Eshikdagi lavha",
+      "en": "The door sign"
+     },
+     "intro": {
+      "ru": "{pet} переехал(а) в новый дом, но там пусто и грустно 😢 Даже таблички на двери нет — гости не найдут! Давай сделаем её вместе.",
+      "uz": "{pet} yangi uyga ko'chdi, lekin u yer bo'sh va g'amgin 😢 Eshikda lavha ham yo'q — mehmonlar topa olmaydi! Keling, uni birga yasaymiz.",
+      "en": "{pet} moved into a new house, but it's empty and sad 😢 There's not even a sign on the door — guests won't find it! Let's make one together."
+     },
+     "pose": "sad",
+     "reward": "bow",
+     "files": {
+      "index.html": {
+       "ru": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Дом {pet}</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"room\">\n    <!-- Табличка на двери: напиши здесь <h1> -->\n\n    <img class=\"portrait\" src=\"/m/tg/{petId}-sad.jpg\" alt=\"{pet}\">\n    <div class=\"furniture\">\n      <!-- Мебель поставим сюда -->\n    </div>\n    <p class=\"bubble\">Тут так пусто…</p>\n  </div>\n</body>\n</html>\n",
+       "uz": "<!DOCTYPE html>\n<html>\n<head>\n  <title>{pet}ning uyi</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"room\">\n    <!-- Eshikdagi lavha: shu yerga <h1> yoz -->\n\n    <img class=\"portrait\" src=\"/m/tg/{petId}-sad.jpg\" alt=\"{pet}\">\n    <div class=\"furniture\">\n      <!-- Mebelni shu yerga qo'yamiz -->\n    </div>\n    <p class=\"bubble\">Bu yer juda bo'sh…</p>\n  </div>\n</body>\n</html>\n",
+       "en": "<!DOCTYPE html>\n<html>\n<head>\n  <title>{pet}'s house</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"room\">\n    <!-- Door sign: write an <h1> here -->\n\n    <img class=\"portrait\" src=\"/m/tg/{petId}-sad.jpg\" alt=\"{pet}\">\n    <div class=\"furniture\">\n      <!-- We'll put furniture here -->\n    </div>\n    <p class=\"bubble\">It's so empty here…</p>\n  </div>\n</body>\n</html>\n"
+      },
+      "style.css": "body {\n  font-family: sans-serif;\n  text-align: center;\n}\n.room {\n  max-width: 420px;\n  margin: 20px auto;\n  padding: 20px;\n  border-radius: 20px;\n}\n.portrait {\n  width: 120px;\n  border-radius: 50%;\n}\n.furniture {\n  font-size: 40px;\n  margin: 16px 0;\n}\n.bubble {\n  display: inline-block;\n  background: white;\n  padding: 10px 14px;\n  border-radius: 16px;\n}\n"
+     },
+     "open": "index.html",
+     "steps": [
+      {
+       "file": "index.html",
+       "re": "<h1[^>]*>[^<]*{PET}[^<]*</h1>",
+       "say": {
+        "ru": "Напиши табличку в `<h1>`: в ней должно быть имя «{pet}» — а дальше что хочешь. Например, `<h1>Дом {pet} и {name}</h1>`",
+        "uz": "`<h1>` ga lavha yoz: unda «{pet}» ismi bo'lsin — qolganini o'zing tanla. Masalan, `<h1>{pet} va {name}ning uyi</h1>`",
+        "en": "Write a sign in `<h1>`: it must have the name «{pet}» — the rest is up to you. For example, `<h1>{pet} and {name}'s house</h1>`"
+       },
+       "show": {
+        "ru": "<h1>Дом {pet} и {name}</h1>",
+        "uz": "<h1>{pet} va {name}ning uyi</h1>",
+        "en": "<h1>{pet} and {name}'s house</h1>"
+       }
+      },
+      {
+       "file": "style.css",
+       "re": "h1\\s*\\{[^}]*color\\s*:\\s*[^;}]+",
+       "say": {
+        "ru": "Выбери цвет таблички — любой, какой тебе нравится: `h1 { color: …; }`",
+        "uz": "Lavha rangini tanla — o'zingga yoqqanini: `h1 { color: …; }`",
+        "en": "Pick a color for the sign — any one you like: `h1 { color: …; }`"
+       },
+       "show": "h1 {\n  color: hotpink;\n}"
+      }
+     ],
+     "praise": {
+      "file": "style.css",
+      "re": "h1\\s*\\{[^}]*color\\s*:\\s*([^;}\\n]+)",
+      "text": {
+       "ru": "Цвет «{1}» — {pet} в восторге: теперь все найдут ваш дом!",
+       "uz": "«{1}» rangi — {pet} xursand: endi hamma uyingizni topadi!",
+       "en": "«{1}» — {pet} loves it: now everyone will find your house!"
+      }
+     },
+     "reflect": {
+      "ru": "Где ты видел(а) вывески и надписи, как эта? Что бы ты написала на двери своей комнаты?",
+      "uz": "Bunday lavha va yozuvlarni qayerda ko'rgansan? O'z xonang eshigiga nima yozgan bo'larding?",
+      "en": "Where have you seen signs like this? What would you write on your own room's door?"
+     }
+    },
+    {
+     "title": {
+      "ru": "Обои",
+      "uz": "Devor qog'ozi",
+      "en": "Wallpaper"
+     },
+     "intro": {
+      "ru": "Табличка есть — уже лучше! Но стены серые и скучные. {pet} хочет уютные обои — выбери цвета сама.",
+      "uz": "Lavha bor — allaqachon yaxshiroq! Lekin devorlar kulrang va zerikarli. {pet} shinam devor qog'ozi istaydi — ranglarni o'zing tanla.",
+      "en": "The sign is up — already better! But the walls are gray and boring. {pet} wants cozy wallpaper — choose the colors yourself."
+     },
+     "pose": "think",
+     "reward": "glasses",
+     "steps": [
+      {
+       "file": "style.css",
+       "re": "body\\s*\\{[^}]*background(-color)?\\s*:\\s*[^;}]+",
+       "say": {
+        "ru": "Покрась стены — фон всей страницы: `body { background: …; }`. Можно даже градиент: `linear-gradient(pink, white)`",
+        "uz": "Devorlarni bo'ya — butun sahifa foni: `body { background: …; }`. Hatto gradient ham bo'ladi: `linear-gradient(pink, white)`",
+        "en": "Paint the walls — the background of the whole page: `body { background: …; }`. You can even use a gradient: `linear-gradient(pink, white)`"
+       },
+       "show": "body {\n  background: linear-gradient(pink, white);\n}"
+      }
+     ],
+     "praise": {
+      "file": "style.css",
+      "re": "body\\s*\\{[^}]*background(?:-color)?\\s*:\\s*([^;}\\n]+)",
+      "text": {
+       "ru": "Стены «{1}»! {pet} говорит: «Тут так уютно!»",
+       "uz": "Devorlar «{1}»! {pet} aytyapti: «Bu yer juda shinam!»",
+       "en": "Walls in «{1}»! {pet} says: «It's so cozy here!»"
+      }
+     },
+     "reflect": {
+      "ru": "Если бы ты делал(а) сайт для себя — какого цвета он был бы и почему?",
+      "uz": "O'zing uchun sayt qilsang — u qanday rangda bo'lardi va nega?",
+      "en": "If you made a website for yourself — what color would it be and why?"
+     }
+    },
+    {
+     "title": {
+      "ru": "Мебель",
+      "uz": "Mebel",
+      "en": "Furniture"
+     },
+     "intro": {
+      "ru": "Красиво! Но сидеть {pet} негде 😅 Поставь в комнату три вещи — любые: диван, цветок, телевизор, торт… Как в твоей мечте.",
+      "uz": "Chiroyli! Lekin {pet}ga o'tirishga joy yo'q 😅 Xonaga uchta narsa qo'y — xohlaganingni: divan, gul, televizor, tort… Orzuingdagidek.",
+      "en": "Pretty! But {pet} has nowhere to sit 😅 Put three things in the room — anything: a sofa, a plant, a TV, a cake… Like in your dream."
+     },
+     "pose": "think",
+     "reward": "scarf",
+     "steps": [
+      {
+       "file": "index.html",
+       "re": "class=[\"']?furniture[\"']?[^>]*>\\s*(<(span|div|p|i|b|em|strong)[^>]*>[^<]+</\\2>\\s*){3,}",
+       "say": {
+        "ru": "Внутри `<div class=\"furniture\">` поставь три `<span>` с эмодзи — какие хочешь: `<span>🛋️</span>`",
+        "uz": "`<div class=\"furniture\">` ichiga emoji bilan uchta `<span>` qo'y — xohlaganingni: `<span>🛋️</span>`",
+        "en": "Inside `<div class=\"furniture\">` put three `<span>` with emoji — any you like: `<span>🛋️</span>`"
+       },
+       "show": "<div class=\"furniture\">\n  <span>🛋️</span>\n  <span>🪴</span>\n  <span>📺</span>\n</div>"
+      },
+      {
+       "file": "style.css",
+       "re": "\\.furniture\\s*\\{[^}]*display\\s*:\\s*flex",
+       "say": {
+        "ru": "Расставь их в ряд: `.furniture { display: flex; }`",
+        "uz": "Ularni qatorga ter: `.furniture { display: flex; }`",
+        "en": "Line them up: `.furniture { display: flex; }`"
+       },
+       "show": ".furniture {\n  display: flex;\n}"
+      }
+     ],
+     "praise": {
+      "file": "index.html",
+      "re": "class=[\"']?furniture[\"']?[^>]*>\\s*<([a-z]+)[^>]*>([^<]+)</\\1>",
+      "text": {
+       "ru": "«{1}» — отличный выбор! {pet} уже устроился рядом.",
+       "uz": "«{1}» — ajoyib tanlov! {pet} allaqachon yoniga joylashdi.",
+       "en": "«{1}» — great choice! {pet} has already settled in next to it."
+      },
+      "group": 2
+     },
+     "reflect": {
+      "ru": "Какую комнату, магазин или игру ты бы хотел(а) сделать на своём сайте?",
+      "uz": "O'z saytingda qanday xona, do'kon yoki o'yin qilishni xohlarding?",
+      "en": "What room, shop or game would you like to make on your own site?"
+     }
+    },
+    {
+     "title": {
+      "ru": "{pet} говорит!",
+      "uz": "{pet} gapiradi!",
+      "en": "{pet} talks!"
+     },
+     "intro": {
+      "ru": "Дом готов, но {pet} ещё молчит. Мы почти всё написали за тебя — осталось добавить кнопку и придумать фразу. Это настоящий JavaScript!",
+      "uz": "Uy tayyor, lekin {pet} hali jim. Deyarli hammasini sen uchun yozdik — tugma qo'shib, gap o'ylab topish qoldi. Bu haqiqiy JavaScript!",
+      "en": "The house is ready, but {pet} is still silent. We wrote almost everything for you — just add a button and make up a phrase. This is real JavaScript!"
+     },
+     "pose": "happy",
+     "reward": "crown",
+     "addFiles": {
+      "script.js": {
+       "ru": "// Здесь живёт JavaScript: он оживляет страницу\nconst button = document.querySelector(\"button\");\nconst bubble = document.querySelector(\".bubble\");\n\nbutton.addEventListener(\"click\", function () {\n  // Что скажет питомец? Напиши здесь\n});\n",
+       "uz": "// JavaScript shu yerda yashaydi: u sahifani jonlantiradi\nconst button = document.querySelector(\"button\");\nconst bubble = document.querySelector(\".bubble\");\n\nbutton.addEventListener(\"click\", function () {\n  // Hayvon nima deydi? Shu yerga yoz\n});\n",
+       "en": "// JavaScript lives here: it brings the page to life\nconst button = document.querySelector(\"button\");\nconst bubble = document.querySelector(\".bubble\");\n\nbutton.addEventListener(\"click\", function () {\n  // What will the pet say? Write it here\n});\n"
+      }
+     },
+     "open": "index.html",
+     "steps": [
+      {
+       "file": "index.html",
+       "re": "<button[^>]*>[^<]+</button>",
+       "say": {
+        "ru": "Добавь кнопку под питомцем: `<button>Погладить {pet}</button>`",
+        "uz": "Hayvon ostiga tugma qo'sh: `<button>{pet}ni silash</button>`",
+        "en": "Add a button under the pet: `<button>Pet {pet}</button>`"
+       },
+       "show": {
+        "ru": "<button>Погладить {pet}</button>",
+        "uz": "<button>{pet}ni silash</button>",
+        "en": "<button>Pet {pet}</button>"
+       }
+      },
+      {
+       "file": "script.js",
+       "re": "textContent\\s*=\\s*[\"\\'`][^\"\\'`]{2,}[\"\\'`]",
+       "say": {
+        "ru": "Кнопка уже слушает клик. Внутри `function () { … }` пусть {pet} скажет твою фразу: `bubble.textContent = \"…\";`",
+        "uz": "Tugma bosishni allaqachon tinglayapti. `function () { … }` ichida {pet} sening gapingni aytsin: `bubble.textContent = \"…\";`",
+        "en": "The button already listens for a click. Inside `function () { … }` let {pet} say your phrase: `bubble.textContent = \"…\";`"
+       },
+       "show": {
+        "ru": "bubble.textContent = \"Ура, у меня есть дом!\";",
+        "uz": "bubble.textContent = \"Hurra, mening uyim bor!\";",
+        "en": "bubble.textContent = \"Yay, I have a home!\";"
+       }
+      }
+     ],
+     "praise": {
       "file": "script.js",
-      "re": "addEventListener\\(\\s*[\"\\']click[\"\\']",
-      "say": {
-       "ru": "В script.js найди кнопку и слушай клик: `button.addEventListener(\"click\", function () { … });`",
-       "uz": "script.js da tugmani top va bosishni tingla: `button.addEventListener(\"click\", function () { … });`",
-       "en": "In script.js find the button and listen for a click: `button.addEventListener(\"click\", function () { … });`"
-      },
-      "show": "const button = document.querySelector(\"button\");\nconst bubble = document.querySelector(\".bubble\");\n\nbutton.addEventListener(\"click\", function () {\n\n});"
-     },
-     {
-      "file": "script.js",
-      "re": "textContent\\s*=\\s*[\"\\'`][^\"\\'`]{2,}[\"\\'`]",
-      "say": {
-       "ru": "Пусть {pet} скажет твою фразу: `bubble.textContent = \"…\";` — придумай сама!",
-       "uz": "{pet} sening gapingni aytsin: `bubble.textContent = \"…\";` — o'zing o'ylab top!",
-       "en": "Let {pet} say your phrase: `bubble.textContent = \"…\";` — make it up yourself!"
-      },
-      "show": {
-       "ru": "bubble.textContent = \"Ура, у меня есть дом!\";",
-       "uz": "bubble.textContent = \"Hurra, mening uyim bor!\";",
-       "en": "bubble.textContent = \"Yay, I have a home!\";"
+      "re": "textContent\\s*=\\s*[\"\\'`]([^\"\\'`]{2,})",
+      "text": {
+       "ru": "«{1}» — так {pet} и скажет! Это настоящий JavaScript: ты сделал(а) свой сайт живым 🎉",
+       "uz": "«{1}» — {pet} aynan shunday aytadi! Bu haqiqiy JavaScript: sen saytingni jonlantirding 🎉",
+       "en": "«{1}» — that's exactly what {pet} will say! This is real JavaScript: you brought your site to life 🎉"
       }
+     },
+     "reflect": {
+      "ru": "Что ещё ты бы хотел(а), чтобы делал твой сайт, когда на него нажимают?",
+      "uz": "Saytingga bosilganda u yana nima qilishini xohlarding?",
+      "en": "What else would you like your site to do when someone clicks it?"
      }
-    ],
-    "praise": {
-     "file": "script.js",
-     "re": "textContent\\s*=\\s*[\"\\'`]([^\"\\'`]{2,})",
-     "text": {
-      "ru": "«{1}» — так {pet} и скажет! Это настоящий JavaScript: ты сделал(а) свой сайт живым 🎉",
-      "uz": "«{1}» — {pet} aynan shunday aytadi! Bu haqiqiy JavaScript: sen saytingni jonlantirding 🎉",
-      "en": "«{1}» — that's exactly what {pet} will say! This is real JavaScript: you brought your site to life 🎉"
+    }
+   ],
+   "middle": [
+    {
+     "title": {
+      "ru": "Табличка на двери",
+      "uz": "Eshikdagi lavha",
+      "en": "The door sign"
+     },
+     "intro": {
+      "ru": "{pet} переехал(а) в новый дом, но там пусто и грустно 😢 Даже таблички на двери нет — гости не найдут! Давай сделаем её вместе.",
+      "uz": "{pet} yangi uyga ko'chdi, lekin u yer bo'sh va g'amgin 😢 Eshikda lavha ham yo'q — mehmonlar topa olmaydi! Keling, uni birga yasaymiz.",
+      "en": "{pet} moved into a new house, but it's empty and sad 😢 There's not even a sign on the door — guests won't find it! Let's make one together."
+     },
+     "pose": "sad",
+     "reward": "bow",
+     "files": {
+      "index.html": {
+       "ru": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Дом {pet}</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"room\">\n    <!-- Табличка на двери: напиши здесь <h1> -->\n\n    <img class=\"portrait\" src=\"/m/tg/{petId}-sad.jpg\" alt=\"{pet}\">\n    <div class=\"furniture\">\n      <!-- Мебель поставим сюда -->\n    </div>\n    <p class=\"bubble\">Тут так пусто…</p>\n  </div>\n</body>\n</html>\n",
+       "uz": "<!DOCTYPE html>\n<html>\n<head>\n  <title>{pet}ning uyi</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"room\">\n    <!-- Eshikdagi lavha: shu yerga <h1> yoz -->\n\n    <img class=\"portrait\" src=\"/m/tg/{petId}-sad.jpg\" alt=\"{pet}\">\n    <div class=\"furniture\">\n      <!-- Mebelni shu yerga qo'yamiz -->\n    </div>\n    <p class=\"bubble\">Bu yer juda bo'sh…</p>\n  </div>\n</body>\n</html>\n",
+       "en": "<!DOCTYPE html>\n<html>\n<head>\n  <title>{pet}'s house</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"room\">\n    <!-- Door sign: write an <h1> here -->\n\n    <img class=\"portrait\" src=\"/m/tg/{petId}-sad.jpg\" alt=\"{pet}\">\n    <div class=\"furniture\">\n      <!-- We'll put furniture here -->\n    </div>\n    <p class=\"bubble\">It's so empty here…</p>\n  </div>\n</body>\n</html>\n"
+      },
+      "style.css": "body {\n  font-family: sans-serif;\n  text-align: center;\n}\n.room {\n  max-width: 420px;\n  margin: 20px auto;\n  padding: 20px;\n  border-radius: 20px;\n}\n.portrait {\n  width: 120px;\n  border-radius: 50%;\n}\n.furniture {\n  font-size: 40px;\n  margin: 16px 0;\n}\n.bubble {\n  display: inline-block;\n  background: white;\n  padding: 10px 14px;\n  border-radius: 16px;\n}\n"
+     },
+     "open": "index.html",
+     "steps": [
+      {
+       "file": "index.html",
+       "re": "<h1[^>]*>[^<]*{PET}[^<]*</h1>",
+       "say": {
+        "ru": "Напиши табличку в `<h1>`: в ней должно быть имя «{pet}» — а дальше что хочешь. Например, `<h1>Дом {pet} и {name}</h1>`",
+        "uz": "`<h1>` ga lavha yoz: unda «{pet}» ismi bo'lsin — qolganini o'zing tanla. Masalan, `<h1>{pet} va {name}ning uyi</h1>`",
+        "en": "Write a sign in `<h1>`: it must have the name «{pet}» — the rest is up to you. For example, `<h1>{pet} and {name}'s house</h1>`"
+       },
+       "show": {
+        "ru": "<h1>Дом {pet} и {name}</h1>",
+        "uz": "<h1>{pet} va {name}ning uyi</h1>",
+        "en": "<h1>{pet} and {name}'s house</h1>"
+       }
+      },
+      {
+       "file": "style.css",
+       "re": "h1\\s*\\{[^}]*color\\s*:\\s*[^;}]+",
+       "say": {
+        "ru": "Выбери цвет таблички — любой, какой тебе нравится: `h1 { color: …; }`",
+        "uz": "Lavha rangini tanla — o'zingga yoqqanini: `h1 { color: …; }`",
+        "en": "Pick a color for the sign — any one you like: `h1 { color: …; }`"
+       },
+       "show": "h1 {\n  color: hotpink;\n}"
+      }
+     ],
+     "praise": {
+      "file": "style.css",
+      "re": "h1\\s*\\{[^}]*color\\s*:\\s*([^;}\\n]+)",
+      "text": {
+       "ru": "Цвет «{1}» — {pet} в восторге: теперь все найдут ваш дом!",
+       "uz": "«{1}» rangi — {pet} xursand: endi hamma uyingizni topadi!",
+       "en": "«{1}» — {pet} loves it: now everyone will find your house!"
+      }
+     },
+     "reflect": {
+      "ru": "Где ты видел(а) вывески и надписи, как эта? Что бы ты написала на двери своей комнаты?",
+      "uz": "Bunday lavha va yozuvlarni qayerda ko'rgansan? O'z xonang eshigiga nima yozgan bo'larding?",
+      "en": "Where have you seen signs like this? What would you write on your own room's door?"
      }
     },
-    "reflect": {
-     "ru": "Что ещё ты бы хотел(а), чтобы делал твой сайт, когда на него нажимают?",
-     "uz": "Saytingga bosilganda u yana nima qilishini xohlarding?",
-     "en": "What else would you like your site to do when someone clicks it?"
+    {
+     "title": {
+      "ru": "Обои",
+      "uz": "Devor qog'ozi",
+      "en": "Wallpaper"
+     },
+     "intro": {
+      "ru": "Табличка есть — уже лучше! Но стены серые и скучные. {pet} хочет уютные обои — выбери цвета сама.",
+      "uz": "Lavha bor — allaqachon yaxshiroq! Lekin devorlar kulrang va zerikarli. {pet} shinam devor qog'ozi istaydi — ranglarni o'zing tanla.",
+      "en": "The sign is up — already better! But the walls are gray and boring. {pet} wants cozy wallpaper — choose the colors yourself."
+     },
+     "pose": "think",
+     "reward": "glasses",
+     "steps": [
+      {
+       "file": "style.css",
+       "re": "body\\s*\\{[^}]*background(-color)?\\s*:\\s*[^;}]+",
+       "say": {
+        "ru": "Покрась стены — фон всей страницы: `body { background: …; }`. Можно даже градиент: `linear-gradient(pink, white)`",
+        "uz": "Devorlarni bo'ya — butun sahifa foni: `body { background: …; }`. Hatto gradient ham bo'ladi: `linear-gradient(pink, white)`",
+        "en": "Paint the walls — the background of the whole page: `body { background: …; }`. You can even use a gradient: `linear-gradient(pink, white)`"
+       },
+       "show": "body {\n  background: linear-gradient(pink, white);\n}"
+      },
+      {
+       "file": "style.css",
+       "re": "\\.room\\s*\\{[^}]*background(-color)?\\s*:\\s*[^;}]+",
+       "say": {
+        "ru": "А сама комната пусть будет другого цвета: `.room { background: …; }`",
+        "uz": "Xonaning o'zi esa boshqa rangda bo'lsin: `.room { background: …; }`",
+        "en": "And let the room itself be another color: `.room { background: …; }`"
+       },
+       "show": ".room {\n  background: lavender;\n}"
+      }
+     ],
+     "praise": {
+      "file": "style.css",
+      "re": "body\\s*\\{[^}]*background(?:-color)?\\s*:\\s*([^;}\\n]+)",
+      "text": {
+       "ru": "Стены «{1}»! {pet} говорит: «Тут так уютно!»",
+       "uz": "Devorlar «{1}»! {pet} aytyapti: «Bu yer juda shinam!»",
+       "en": "Walls in «{1}»! {pet} says: «It's so cozy here!»"
+      }
+     },
+     "reflect": {
+      "ru": "Если бы ты делал(а) сайт для себя — какого цвета он был бы и почему?",
+      "uz": "O'zing uchun sayt qilsang — u qanday rangda bo'lardi va nega?",
+      "en": "If you made a website for yourself — what color would it be and why?"
+     }
+    },
+    {
+     "title": {
+      "ru": "Мебель",
+      "uz": "Mebel",
+      "en": "Furniture"
+     },
+     "intro": {
+      "ru": "Красиво! Но сидеть {pet} негде 😅 Поставь в комнату три вещи — любые: диван, цветок, телевизор, торт… Как в твоей мечте.",
+      "uz": "Chiroyli! Lekin {pet}ga o'tirishga joy yo'q 😅 Xonaga uchta narsa qo'y — xohlaganingni: divan, gul, televizor, tort… Orzuingdagidek.",
+      "en": "Pretty! But {pet} has nowhere to sit 😅 Put three things in the room — anything: a sofa, a plant, a TV, a cake… Like in your dream."
+     },
+     "pose": "think",
+     "reward": "scarf",
+     "steps": [
+      {
+       "file": "index.html",
+       "re": "class=[\"']?furniture[\"']?[^>]*>\\s*(<(span|div|p|i|b|em|strong)[^>]*>[^<]+</\\2>\\s*){3,}",
+       "say": {
+        "ru": "Внутри `<div class=\"furniture\">` поставь три `<span>` с эмодзи — какие хочешь: `<span>🛋️</span>`",
+        "uz": "`<div class=\"furniture\">` ichiga emoji bilan uchta `<span>` qo'y — xohlaganingni: `<span>🛋️</span>`",
+        "en": "Inside `<div class=\"furniture\">` put three `<span>` with emoji — any you like: `<span>🛋️</span>`"
+       },
+       "show": "<div class=\"furniture\">\n  <span>🛋️</span>\n  <span>🪴</span>\n  <span>📺</span>\n</div>"
+      },
+      {
+       "file": "style.css",
+       "re": "\\.furniture\\s*\\{[^}]*display\\s*:\\s*flex",
+       "say": {
+        "ru": "Расставь их в ряд: `.furniture { display: flex; }`",
+        "uz": "Ularni qatorga ter: `.furniture { display: flex; }`",
+        "en": "Line them up: `.furniture { display: flex; }`"
+       },
+       "show": ".furniture {\n  display: flex;\n}"
+      }
+     ],
+     "praise": {
+      "file": "index.html",
+      "re": "class=[\"']?furniture[\"']?[^>]*>\\s*<([a-z]+)[^>]*>([^<]+)</\\1>",
+      "text": {
+       "ru": "«{1}» — отличный выбор! {pet} уже устроился рядом.",
+       "uz": "«{1}» — ajoyib tanlov! {pet} allaqachon yoniga joylashdi.",
+       "en": "«{1}» — great choice! {pet} has already settled in next to it."
+      },
+      "group": 2
+     },
+     "reflect": {
+      "ru": "Какую комнату, магазин или игру ты бы хотел(а) сделать на своём сайте?",
+      "uz": "O'z saytingda qanday xona, do'kon yoki o'yin qilishni xohlarding?",
+      "en": "What room, shop or game would you like to make on your own site?"
+     }
+    },
+    {
+     "title": {
+      "ru": "{pet} говорит!",
+      "uz": "{pet} gapiradi!",
+      "en": "{pet} talks!"
+     },
+     "intro": {
+      "ru": "Дом готов, но {pet} ещё молчит. Давай оживим его: кнопка, и по клику {pet} скажет твою фразу. Это настоящий JavaScript — и у тебя получится!",
+      "uz": "Uy tayyor, lekin {pet} hali jim. Keling, uni jonlantiramiz: tugma, bosganda {pet} sening gapingni aytadi. Bu haqiqiy JavaScript — va sen uddalaysan!",
+      "en": "The house is ready, but {pet} is still silent. Let's bring it to life: a button, and on click {pet} says your phrase. This is real JavaScript — and you can do it!"
+     },
+     "pose": "happy",
+     "reward": "crown",
+     "addFiles": {
+      "script.js": {
+       "ru": "// Здесь живёт JavaScript: он оживляет страницу\n// Кнопку и облачко мы уже нашли за тебя:\nconst button = document.querySelector(\"button\");\nconst bubble = document.querySelector(\".bubble\");\n\n// Дальше пиши ты:\n",
+       "uz": "// JavaScript shu yerda yashaydi: u sahifani jonlantiradi\n// Tugma va bulutchani biz sen uchun topib qo'ydik:\nconst button = document.querySelector(\"button\");\nconst bubble = document.querySelector(\".bubble\");\n\n// Keyingisini o'zing yoz:\n",
+       "en": "// JavaScript lives here: it brings the page to life\n// We already found the button and the bubble for you:\nconst button = document.querySelector(\"button\");\nconst bubble = document.querySelector(\".bubble\");\n\n// Now it's your turn:\n"
+      }
+     },
+     "open": "index.html",
+     "steps": [
+      {
+       "file": "index.html",
+       "re": "<button[^>]*>[^<]+</button>",
+       "say": {
+        "ru": "Добавь кнопку под питомцем: `<button>Погладить {pet}</button>`",
+        "uz": "Hayvon ostiga tugma qo'sh: `<button>{pet}ni silash</button>`",
+        "en": "Add a button under the pet: `<button>Pet {pet}</button>`"
+       },
+       "show": {
+        "ru": "<button>Погладить {pet}</button>",
+        "uz": "<button>{pet}ni silash</button>",
+        "en": "<button>Pet {pet}</button>"
+       }
+      },
+      {
+       "file": "script.js",
+       "re": "addEventListener\\(\\s*[\"\\']click[\"\\']",
+       "say": {
+        "ru": "Кнопка (`button`) и облачко (`bubble`) уже найдены. Слушай клик: `button.addEventListener(\"click\", function () { … });`",
+        "uz": "Tugma (`button`) va bulutcha (`bubble`) allaqachon topilgan. Bosishni tingla: `button.addEventListener(\"click\", function () { … });`",
+        "en": "The button (`button`) and the bubble (`bubble`) are already found. Listen for a click: `button.addEventListener(\"click\", function () { … });`"
+       },
+       "show": "button.addEventListener(\"click\", function () {\n\n});"
+      },
+      {
+       "file": "script.js",
+       "re": "textContent\\s*=\\s*[\"\\'`][^\"\\'`]{2,}[\"\\'`]",
+       "say": {
+        "ru": "Пусть {pet} скажет твою фразу: `bubble.textContent = \"…\";` — придумай сама!",
+        "uz": "{pet} sening gapingni aytsin: `bubble.textContent = \"…\";` — o'zing o'ylab top!",
+        "en": "Let {pet} say your phrase: `bubble.textContent = \"…\";` — make it up yourself!"
+       },
+       "show": {
+        "ru": "bubble.textContent = \"Ура, у меня есть дом!\";",
+        "uz": "bubble.textContent = \"Hurra, mening uyim bor!\";",
+        "en": "bubble.textContent = \"Yay, I have a home!\";"
+       }
+      }
+     ],
+     "praise": {
+      "file": "script.js",
+      "re": "textContent\\s*=\\s*[\"\\'`]([^\"\\'`]{2,})",
+      "text": {
+       "ru": "«{1}» — так {pet} и скажет! Это настоящий JavaScript: ты сделал(а) свой сайт живым 🎉",
+       "uz": "«{1}» — {pet} aynan shunday aytadi! Bu haqiqiy JavaScript: sen saytingni jonlantirding 🎉",
+       "en": "«{1}» — that's exactly what {pet} will say! This is real JavaScript: you brought your site to life 🎉"
+      }
+     },
+     "reflect": {
+      "ru": "Что ещё ты бы хотел(а), чтобы делал твой сайт, когда на него нажимают?",
+      "uz": "Saytingga bosilganda u yana nima qilishini xohlarding?",
+      "en": "What else would you like your site to do when someone clicks it?"
+     }
     }
-   }
-  ]
+   ],
+   "senior": [
+    {
+     "title": {
+      "ru": "Табличка на двери",
+      "uz": "Eshikdagi lavha",
+      "en": "The door sign"
+     },
+     "intro": {
+      "ru": "{pet} переехал(а) в новый дом, но там пусто и грустно 😢 Даже таблички на двери нет — гости не найдут! Давай сделаем её вместе.",
+      "uz": "{pet} yangi uyga ko'chdi, lekin u yer bo'sh va g'amgin 😢 Eshikda lavha ham yo'q — mehmonlar topa olmaydi! Keling, uni birga yasaymiz.",
+      "en": "{pet} moved into a new house, but it's empty and sad 😢 There's not even a sign on the door — guests won't find it! Let's make one together."
+     },
+     "pose": "sad",
+     "reward": "bow",
+     "files": {
+      "index.html": {
+       "ru": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Дом {pet}</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"room\">\n    <!-- Табличка на двери: напиши здесь <h1> -->\n\n    <img class=\"portrait\" src=\"/m/tg/{petId}-sad.jpg\" alt=\"{pet}\">\n    <div class=\"furniture\">\n      <!-- Мебель поставим сюда -->\n    </div>\n    <p class=\"bubble\">Тут так пусто…</p>\n  </div>\n</body>\n</html>\n",
+       "uz": "<!DOCTYPE html>\n<html>\n<head>\n  <title>{pet}ning uyi</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"room\">\n    <!-- Eshikdagi lavha: shu yerga <h1> yoz -->\n\n    <img class=\"portrait\" src=\"/m/tg/{petId}-sad.jpg\" alt=\"{pet}\">\n    <div class=\"furniture\">\n      <!-- Mebelni shu yerga qo'yamiz -->\n    </div>\n    <p class=\"bubble\">Bu yer juda bo'sh…</p>\n  </div>\n</body>\n</html>\n",
+       "en": "<!DOCTYPE html>\n<html>\n<head>\n  <title>{pet}'s house</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <div class=\"room\">\n    <!-- Door sign: write an <h1> here -->\n\n    <img class=\"portrait\" src=\"/m/tg/{petId}-sad.jpg\" alt=\"{pet}\">\n    <div class=\"furniture\">\n      <!-- We'll put furniture here -->\n    </div>\n    <p class=\"bubble\">It's so empty here…</p>\n  </div>\n</body>\n</html>\n"
+      },
+      "style.css": "body {\n  font-family: sans-serif;\n  text-align: center;\n}\n.room {\n  max-width: 420px;\n  margin: 20px auto;\n  padding: 20px;\n  border-radius: 20px;\n}\n.portrait {\n  width: 120px;\n  border-radius: 50%;\n}\n.furniture {\n  font-size: 40px;\n  margin: 16px 0;\n}\n.bubble {\n  display: inline-block;\n  background: white;\n  padding: 10px 14px;\n  border-radius: 16px;\n}\n"
+     },
+     "open": "index.html",
+     "steps": [
+      {
+       "file": "index.html",
+       "re": "<h1[^>]*>[^<]*{PET}[^<]*</h1>",
+       "say": {
+        "ru": "Напиши табличку в `<h1>`: в ней должно быть имя «{pet}» — а дальше что хочешь. Например, `<h1>Дом {pet} и {name}</h1>`",
+        "uz": "`<h1>` ga lavha yoz: unda «{pet}» ismi bo'lsin — qolganini o'zing tanla. Masalan, `<h1>{pet} va {name}ning uyi</h1>`",
+        "en": "Write a sign in `<h1>`: it must have the name «{pet}» — the rest is up to you. For example, `<h1>{pet} and {name}'s house</h1>`"
+       },
+       "show": {
+        "ru": "<h1>Дом {pet} и {name}</h1>",
+        "uz": "<h1>{pet} va {name}ning uyi</h1>",
+        "en": "<h1>{pet} and {name}'s house</h1>"
+       }
+      },
+      {
+       "file": "style.css",
+       "re": "h1\\s*\\{[^}]*color\\s*:\\s*[^;}]+",
+       "say": {
+        "ru": "Выбери цвет таблички — любой, какой тебе нравится: `h1 { color: …; }`",
+        "uz": "Lavha rangini tanla — o'zingga yoqqanini: `h1 { color: …; }`",
+        "en": "Pick a color for the sign — any one you like: `h1 { color: …; }`"
+       },
+       "show": "h1 {\n  color: hotpink;\n}"
+      }
+     ],
+     "praise": {
+      "file": "style.css",
+      "re": "h1\\s*\\{[^}]*color\\s*:\\s*([^;}\\n]+)",
+      "text": {
+       "ru": "Цвет «{1}» — {pet} в восторге: теперь все найдут ваш дом!",
+       "uz": "«{1}» rangi — {pet} xursand: endi hamma uyingizni topadi!",
+       "en": "«{1}» — {pet} loves it: now everyone will find your house!"
+      }
+     },
+     "reflect": {
+      "ru": "Где ты видел(а) вывески и надписи, как эта? Что бы ты написала на двери своей комнаты?",
+      "uz": "Bunday lavha va yozuvlarni qayerda ko'rgansan? O'z xonang eshigiga nima yozgan bo'larding?",
+      "en": "Where have you seen signs like this? What would you write on your own room's door?"
+     }
+    },
+    {
+     "title": {
+      "ru": "Обои",
+      "uz": "Devor qog'ozi",
+      "en": "Wallpaper"
+     },
+     "intro": {
+      "ru": "Табличка есть — уже лучше! Но стены серые и скучные. {pet} хочет уютные обои — выбери цвета сама.",
+      "uz": "Lavha bor — allaqachon yaxshiroq! Lekin devorlar kulrang va zerikarli. {pet} shinam devor qog'ozi istaydi — ranglarni o'zing tanla.",
+      "en": "The sign is up — already better! But the walls are gray and boring. {pet} wants cozy wallpaper — choose the colors yourself."
+     },
+     "pose": "think",
+     "reward": "glasses",
+     "steps": [
+      {
+       "file": "style.css",
+       "re": "body\\s*\\{[^}]*background(-color)?\\s*:\\s*[^;}]+",
+       "say": {
+        "ru": "Покрась стены — фон всей страницы: `body { background: …; }`. Можно даже градиент: `linear-gradient(pink, white)`",
+        "uz": "Devorlarni bo'ya — butun sahifa foni: `body { background: …; }`. Hatto gradient ham bo'ladi: `linear-gradient(pink, white)`",
+        "en": "Paint the walls — the background of the whole page: `body { background: …; }`. You can even use a gradient: `linear-gradient(pink, white)`"
+       },
+       "show": "body {\n  background: linear-gradient(pink, white);\n}"
+      },
+      {
+       "file": "style.css",
+       "re": "\\.room\\s*\\{[^}]*background(-color)?\\s*:\\s*[^;}]+",
+       "say": {
+        "ru": "А сама комната пусть будет другого цвета: `.room { background: …; }`",
+        "uz": "Xonaning o'zi esa boshqa rangda bo'lsin: `.room { background: …; }`",
+        "en": "And let the room itself be another color: `.room { background: …; }`"
+       },
+       "show": ".room {\n  background: lavender;\n}"
+      }
+     ],
+     "praise": {
+      "file": "style.css",
+      "re": "body\\s*\\{[^}]*background(?:-color)?\\s*:\\s*([^;}\\n]+)",
+      "text": {
+       "ru": "Стены «{1}»! {pet} говорит: «Тут так уютно!»",
+       "uz": "Devorlar «{1}»! {pet} aytyapti: «Bu yer juda shinam!»",
+       "en": "Walls in «{1}»! {pet} says: «It's so cozy here!»"
+      }
+     },
+     "reflect": {
+      "ru": "Если бы ты делал(а) сайт для себя — какого цвета он был бы и почему?",
+      "uz": "O'zing uchun sayt qilsang — u qanday rangda bo'lardi va nega?",
+      "en": "If you made a website for yourself — what color would it be and why?"
+     }
+    },
+    {
+     "title": {
+      "ru": "Мебель",
+      "uz": "Mebel",
+      "en": "Furniture"
+     },
+     "intro": {
+      "ru": "Красиво! Но сидеть {pet} негде 😅 Поставь в комнату три вещи — любые: диван, цветок, телевизор, торт… Как в твоей мечте.",
+      "uz": "Chiroyli! Lekin {pet}ga o'tirishga joy yo'q 😅 Xonaga uchta narsa qo'y — xohlaganingni: divan, gul, televizor, tort… Orzuingdagidek.",
+      "en": "Pretty! But {pet} has nowhere to sit 😅 Put three things in the room — anything: a sofa, a plant, a TV, a cake… Like in your dream."
+     },
+     "pose": "think",
+     "reward": "scarf",
+     "steps": [
+      {
+       "file": "index.html",
+       "re": "class=[\"']?furniture[\"']?[^>]*>\\s*(<(span|div|p|i|b|em|strong)[^>]*>[^<]+</\\2>\\s*){3,}",
+       "say": {
+        "ru": "Внутри `<div class=\"furniture\">` поставь три `<span>` с эмодзи — какие хочешь: `<span>🛋️</span>`",
+        "uz": "`<div class=\"furniture\">` ichiga emoji bilan uchta `<span>` qo'y — xohlaganingni: `<span>🛋️</span>`",
+        "en": "Inside `<div class=\"furniture\">` put three `<span>` with emoji — any you like: `<span>🛋️</span>`"
+       },
+       "show": "<div class=\"furniture\">\n  <span>🛋️</span>\n  <span>🪴</span>\n  <span>📺</span>\n</div>"
+      },
+      {
+       "file": "style.css",
+       "re": "\\.furniture\\s*\\{[^}]*display\\s*:\\s*flex",
+       "say": {
+        "ru": "Расставь их в ряд: `.furniture { display: flex; }`",
+        "uz": "Ularni qatorga ter: `.furniture { display: flex; }`",
+        "en": "Line them up: `.furniture { display: flex; }`"
+       },
+       "show": ".furniture {\n  display: flex;\n}"
+      },
+      {
+       "file": "style.css",
+       "re": "\\.furniture\\s*\\{[^}]*(justify-content|gap)\\s*:",
+       "say": {
+        "ru": "И раздвинь по комнате: `justify-content: space-around;` или `gap: 20px;`",
+        "uz": "Va xona bo'ylab sur: `justify-content: space-around;` yoki `gap: 20px;`",
+        "en": "And spread them around the room: `justify-content: space-around;` or `gap: 20px;`"
+       },
+       "show": "justify-content: space-around;"
+      }
+     ],
+     "praise": {
+      "file": "index.html",
+      "re": "class=[\"']?furniture[\"']?[^>]*>\\s*<([a-z]+)[^>]*>([^<]+)</\\1>",
+      "text": {
+       "ru": "«{1}» — отличный выбор! {pet} уже устроился рядом.",
+       "uz": "«{1}» — ajoyib tanlov! {pet} allaqachon yoniga joylashdi.",
+       "en": "«{1}» — great choice! {pet} has already settled in next to it."
+      },
+      "group": 2
+     },
+     "reflect": {
+      "ru": "Какую комнату, магазин или игру ты бы хотел(а) сделать на своём сайте?",
+      "uz": "O'z saytingda qanday xona, do'kon yoki o'yin qilishni xohlarding?",
+      "en": "What room, shop or game would you like to make on your own site?"
+     }
+    },
+    {
+     "title": {
+      "ru": "{pet} говорит!",
+      "uz": "{pet} gapiradi!",
+      "en": "{pet} talks!"
+     },
+     "intro": {
+      "ru": "Дом готов, но {pet} ещё молчит. Давай оживим его: кнопка, и по клику {pet} скажет твою фразу. Это настоящий JavaScript — и у тебя получится!",
+      "uz": "Uy tayyor, lekin {pet} hali jim. Keling, uni jonlantiramiz: tugma, bosganda {pet} sening gapingni aytadi. Bu haqiqiy JavaScript — va sen uddalaysan!",
+      "en": "The house is ready, but {pet} is still silent. Let's bring it to life: a button, and on click {pet} says your phrase. This is real JavaScript — and you can do it!"
+     },
+     "pose": "happy",
+     "reward": "crown",
+     "addFiles": {
+      "script.js": {
+       "ru": "// Здесь живёт JavaScript: он оживляет страницу\n",
+       "uz": "// JavaScript shu yerda yashaydi: u sahifani jonlantiradi\n",
+       "en": "// JavaScript lives here: it brings the page to life\n"
+      }
+     },
+     "open": "index.html",
+     "steps": [
+      {
+       "file": "index.html",
+       "re": "<button[^>]*>[^<]+</button>",
+       "say": {
+        "ru": "Добавь кнопку под питомцем: `<button>Погладить {pet}</button>`",
+        "uz": "Hayvon ostiga tugma qo'sh: `<button>{pet}ni silash</button>`",
+        "en": "Add a button under the pet: `<button>Pet {pet}</button>`"
+       },
+       "show": {
+        "ru": "<button>Погладить {pet}</button>",
+        "uz": "<button>{pet}ni silash</button>",
+        "en": "<button>Pet {pet}</button>"
+       }
+      },
+      {
+       "file": "script.js",
+       "re": "addEventListener\\(\\s*[\"\\']click[\"\\']",
+       "say": {
+        "ru": "В script.js найди кнопку и слушай клик: `button.addEventListener(\"click\", function () { … });`",
+        "uz": "script.js da tugmani top va bosishni tingla: `button.addEventListener(\"click\", function () { … });`",
+        "en": "In script.js find the button and listen for a click: `button.addEventListener(\"click\", function () { … });`"
+       },
+       "show": "const button = document.querySelector(\"button\");\nconst bubble = document.querySelector(\".bubble\");\n\nbutton.addEventListener(\"click\", function () {\n\n});"
+      },
+      {
+       "file": "script.js",
+       "re": "textContent\\s*=\\s*[\"\\'`][^\"\\'`]{2,}[\"\\'`]",
+       "say": {
+        "ru": "Пусть {pet} скажет твою фразу: `bubble.textContent = \"…\";` — придумай сама!",
+        "uz": "{pet} sening gapingni aytsin: `bubble.textContent = \"…\";` — o'zing o'ylab top!",
+        "en": "Let {pet} say your phrase: `bubble.textContent = \"…\";` — make it up yourself!"
+       },
+       "show": {
+        "ru": "bubble.textContent = \"Ура, у меня есть дом!\";",
+        "uz": "bubble.textContent = \"Hurra, mening uyim bor!\";",
+        "en": "bubble.textContent = \"Yay, I have a home!\";"
+       }
+      }
+     ],
+     "praise": {
+      "file": "script.js",
+      "re": "textContent\\s*=\\s*[\"\\'`]([^\"\\'`]{2,})",
+      "text": {
+       "ru": "«{1}» — так {pet} и скажет! Это настоящий JavaScript: ты сделал(а) свой сайт живым 🎉",
+       "uz": "«{1}» — {pet} aynan shunday aytadi! Bu haqiqiy JavaScript: sen saytingni jonlantirding 🎉",
+       "en": "«{1}» — that's exactly what {pet} will say! This is real JavaScript: you brought your site to life 🎉"
+      }
+     },
+     "reflect": {
+      "ru": "Что ещё ты бы хотел(а), чтобы делал твой сайт, когда на него нажимают?",
+      "uz": "Saytingga bosilganda u yana nima qilishini xohlarding?",
+      "en": "What else would you like your site to do when someone clicks it?"
+     }
+    }
+   ]
+  },
+  "levelNames": {
+   "zero": "Нулевой класс",
+   "junior": "Младшая",
+   "middle": "Средняя",
+   "senior": "Старшая"
+  }
  }
 }

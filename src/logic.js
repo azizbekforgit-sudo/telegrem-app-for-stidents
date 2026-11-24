@@ -18,6 +18,10 @@ const avg = (xs) => (xs.length ? Math.round(xs.reduce((a, b) => a + b, 0) / xs.l
 
 export const MASCOT_IDS = ['mimi', 'kapi', 'dino', 'axi', 'boo', 'ano', 'zip', 'ugo', 'fox', 'bot', 'plu'];
 // Курсы («пути»): у урока поле track, у группы — тоже. Ученик видит путь курса своей группы.
+// Уровни сложности заданий «Дом для питомца» (по группе): нулевой класс, младшая, средняя, старшая
+export const GROUP_LEVELS = { zero: 'Нулевой', junior: 'Младшая', middle: 'Средняя', senior: 'Старшая' };
+const levelByName = (name) => (/старш/i.test(name) ? 'senior' : /средн/i.test(name) ? 'middle' : /младш/i.test(name) ? 'junior' : null);
+export const groupLevel = (g) => (GROUP_LEVELS[g?.level] ? g.level : g?.track === 'zero' ? 'zero' : levelByName(g?.name || '') || null);
 export const TRACKS = {
   main: { id: 'main', title: 'Веб-разработка', emoji: '💻' },
   zero: { id: 'zero', title: 'Нулевой класс', emoji: '🧸' },
@@ -117,8 +121,8 @@ export function createLogic(store, { adminIds }) {
   }
   const unassigned = () => students().filter((u) => userGroups(u.id).length === 0).sort((a, b) => b.joinedAt - a.joinedAt);
 
-  function createGroup({ name: gname, emoji, track }) {
-    const g = { id: store.nextId('g'), name: String(gname || '').trim().slice(0, 40) || 'Группа', emoji: emoji || '📘', track: TRACKS[track] ? track : 'main', chatId: null, chatTitle: null, memberIds: [], createdAt: Date.now() };
+  function createGroup({ name: gname, emoji, track, level }) {
+    const g = { id: store.nextId('g'), name: String(gname || '').trim().slice(0, 40) || 'Группа', emoji: emoji || '📘', track: TRACKS[track] ? track : 'main', level: GROUP_LEVELS[level] ? level : null, chatId: null, chatTitle: null, memberIds: [], createdAt: Date.now() };
     S.groups[g.id] = g;
     store.save();
     return g;
@@ -129,6 +133,7 @@ export function createLogic(store, { adminIds }) {
     if (patch.name) g.name = String(patch.name).trim().slice(0, 40);
     if (patch.emoji) g.emoji = patch.emoji;
     if (patch.track !== undefined) g.track = TRACKS[patch.track] ? patch.track : 'main';
+    if (patch.level !== undefined) g.level = GROUP_LEVELS[patch.level] ? patch.level : null;
     store.save();
     return g;
   }
@@ -1296,6 +1301,8 @@ export function createLogic(store, { adminIds }) {
       name: g.name,
       emoji: g.emoji,
       track: g.track || 'main',
+      level: g.level || null,
+      levelAuto: groupLevel(g),
       chatTitle: g.chatTitle,
       linked: Boolean(g.chatId),
       members: members.map((id) => publicUser(S.users[id])),
@@ -1368,6 +1375,8 @@ export function createLogic(store, { adminIds }) {
     };
   }
 
+  // уровень заданий ученика: по его группе (явный level, нулевой курс или слово в названии); без группы — средний
+  const levelOf = (uid) => userGroups(uid).map(groupLevel).find(Boolean) || 'middle';
   const trackOf = (uid) => userGroups(uid).map((g) => g.track).find((t) => t && TRACKS[t]) || 'main';
   function adminOverview() {
     const groups = Object.values(S.groups).sort((a, b) => a.createdAt - b.createdAt).map(groupCard);
@@ -1398,6 +1407,7 @@ export function createLogic(store, { adminIds }) {
     return {
       totals: { students: allStudents.length, groups: groups.length, sent: Object.keys(S.pubs).length, avg: avg(avgs) },
       tracks: Object.values(TRACKS),
+      levels: Object.entries(GROUP_LEVELS).map(([id, title]) => ({ id, title })),
       groups,
       lessons,
       hiddenLessons: hidden,
@@ -1448,7 +1458,7 @@ export function createLogic(store, { adminIds }) {
   }
 
   return {
-    S, log, trackOf, earnedXp, spentXp, setExtraXp, levelsOf, parentsOverview, testStatus, attemptQuestion, finishedAt, totalXp, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
+    S, log, trackOf, levelOf, earnedXp, spentXp, setExtraXp, levelsOf, parentsOverview, testStatus, attemptQuestion, finishedAt, totalXp, isAdmin, isParent, duplicateXp, grantLessons, migrateAccess, groupLessonAttempts, pubAttempts, sendToStudents, setArchived, applyArchive, addBonus, issueLogin, issueLoginsAll, accountOf, setRole, setChildren, parentStudents, name, upsertUser, userGroups, unassigned, createGroup, updateGroup, deleteGroup, addMember, removeMember, findUserByUsername,
     upsertLesson, deleteLesson, publish, sendToStudent, unpublish, pubsForGroup, pubStats, globalLeague, startAttempt, answer, retry, finish, warn, forfeit, sweepStrict, removeLessons, setCode, resetAttempts, extendTime, resumeGrant, purgeUser,
     leaderboard, userStats, groupStats, home, adminOverview, publicUser,
     createReminder, listReminders, setReminder, deleteReminder, setPrefs,
