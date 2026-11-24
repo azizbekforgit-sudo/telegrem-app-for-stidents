@@ -5,5 +5,12 @@
     "name": "Ази",
     "salt": "310f722f5b28b23a99f14ebbea16aa3c",
     "hash": "5a2be432827596acdeaf8597ef716344869557f31512c56b90089c060c311f1d"
+  },
+  {
+    "id": "2026-11-24-shohruh",
+    "login": "shohruh",
+    "name": "Шохрух",
+    "salt": "ada5033891bdd6a954f7dc3e344ced41",
+    "hash": "f95e7fe4aa47ac6b3b6f0dba54d3d207c9e3f3da7d8246d37be9b3de75642a06"
   }
 ]
