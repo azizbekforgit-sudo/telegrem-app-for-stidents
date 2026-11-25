@@ -17,3 +17,4 @@
 | T1 | Сервер «Мира Roblox»: `/api/world/*`, уровни (сейчас 11, архипелаг) | Antigravity | `src/world.js`, `src/server.js`, `content/world/` | на проверке | сделано до запуска доски (коммиты ae0b030…86a04b9); Claude проверит и задеплоит |
 | T2 | Игра в Roblox: мир, участки, мост, питомец, UI, README | Antigravity | `roblox/`, `default.project.json` | на проверке | проверка в Roblox Studio — Азиз/Antigravity |
 | T3 | Кнопка «Отправить в мир» и карточка «Мир Roblox» в приложении | Antigravity | `public/app.js`, `public/ide.js`, `public/i18n.js` | на проверке | |
+| T4 | Бот для «Мира Roblox»: `/world`, выдача кода/текущего задания, проверка `notifyWorldWin`, деплой и логи `[world]` на Render | Claude | `src/bot.js`, `src/server.js`, `src/world.js` | нужно | задано Азизом |
