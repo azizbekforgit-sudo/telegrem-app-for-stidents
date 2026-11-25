@@ -1,13 +1,12 @@
--- Превращение прямоугольников из CSS Grid в 3D-доски:
--- 1) DragDetector (TranslateViewPlane) для свободного перетаскивания мышкой/пальцем
--- 2) Кнопка [E] «Взять / Поставить мост» (ProximityPrompt) для лёгкой переноски
+-- Превращение прямоугольников из CSS Grid в 3D-объекты уровня:
+-- спавнится рядом с активным биомом (или перед игроком!), легко переносится по [E] или DragDetector.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local Config = require(ReplicatedStorage.Shared.Config)
 
 local Bridge = {}
 
-function Bridge.Spawn(plot, boxes, container)
+function Bridge.Spawn(plot, boxes, container, spawnAnchor)
 	if plot.bridgeModel then
 		plot.bridgeModel:Destroy()
 		plot.bridgeModel = nil
@@ -17,7 +16,7 @@ function Bridge.Spawn(plot, boxes, container)
 	end
 
 	local model = Instance.new("Model")
-	model.Name = "PlayerBridge"
+	model.Name = "PlayerCreation"
 
 	local scale = Config.SCALE or 10
 	local minX, minY, maxX, maxY = math.huge, math.huge, -math.huge, -math.huge
@@ -32,10 +31,11 @@ function Bridge.Spawn(plot, boxes, container)
 
 	local spanW = (maxX - minX) / scale
 	local spanD = (maxY - minY) / scale
-	local origin = plot.printerPos + Vector3.new(0, 3.2, 0)
+	local origin = (spawnAnchor or plot.printerPos) + Vector3.new(0, 3.2, 0)
 
 	local parts = {}
 	local phys = PhysicalProperties.new(1.5, 1.5, 0.05, 1.0, 1.0)
+	local dirAngle = plot.angle or 0
 
 	for i, b in ipairs(boxes) do
 		local w = math.clamp((tonumber(b.w) or 80) / scale, 0.4, 200)
@@ -56,7 +56,7 @@ function Bridge.Spawn(plot, boxes, container)
 		local plank = Instance.new("Part")
 		plank.Name = "Plank_" .. tostring(i)
 		plank.Size = Vector3.new(w, 1, d)
-		plank.CFrame = CFrame.new(origin + Vector3.new(px, 0, pz))
+		plank.CFrame = CFrame.new(origin) * CFrame.Angles(0, -dirAngle, 0) * CFrame.new(px, 0, pz)
 		plank.Color = color
 		plank.Material = Enum.Material.WoodPlanks
 		plank.CustomPhysicalProperties = phys
@@ -93,17 +93,15 @@ function Bridge.Spawn(plot, boxes, container)
 		weld.Parent = primary
 	end
 
-	-- Стабилизатор наклона (не переворачивается)
 	local gyro = Instance.new("AlignOrientation")
 	gyro.Mode = Enum.OrientationAlignmentMode.OneAttachment
 	local att = Instance.new("Attachment", primary)
 	gyro.Attachment0 = att
 	gyro.MaxTorque = 40000
 	gyro.Responsiveness = 20
-	gyro.CFrame = CFrame.new()
+	gyro.CFrame = CFrame.Angles(0, -dirAngle, 0)
 	gyro.Parent = primary
 
-	-- DragDetector: можно свободно тянуть мышкой/пальцем в пространстве (TranslateViewPlane)
 	local drag = Instance.new("DragDetector")
 	drag.DragStyle = Enum.DragDetectorDragStyle.TranslateViewPlane
 	drag.PermissionPolicy = Enum.DragDetectorPermissionPolicy.Everybody
@@ -113,18 +111,17 @@ function Bridge.Spawn(plot, boxes, container)
 	drag.ApplyAtCenterOfMass = true
 	drag.Parent = primary
 
-	-- ProximityPrompt: удобная кнопка [E] Взять / Поставить мост
 	local carrying = false
 	local prompt = Instance.new("ProximityPrompt")
-	prompt.ActionText = "Взять мост"
-	prompt.ObjectText = "Мост из CSS"
-	prompt.MaxActivationDistance = 14
+	prompt.ActionText = "Взять предмет"
+	prompt.ObjectText = "Сборка из CSS"
+	prompt.MaxActivationDistance = 16
 	prompt.HoldDuration = 0
 	prompt.Parent = primary
 
 	local function setCarry(state)
 		carrying = state
-		prompt.ActionText = carrying and "Поставить мост" or "Взять мост"
+		prompt.ActionText = carrying and "Поставить" or "Взять предмет"
 		for _, p in ipairs(parts) do
 			p.CanCollide = not carrying
 			p.Massless = carrying
@@ -160,18 +157,17 @@ function Bridge.Spawn(plot, boxes, container)
 		if carrying and plot.owner and plot.owner.Character then
 			local hrp = plot.owner.Character:FindFirstChild("HumanoidRootPart")
 			if hrp then
-				local targetCF = CFrame.new(hrp.Position + hrp.CFrame.LookVector * 10 + Vector3.new(0, 2.5, 0))
+				local targetCF = CFrame.new(hrp.Position + hrp.CFrame.LookVector * 12 + Vector3.new(0, 2.5, 0)) * CFrame.Angles(0, -dirAngle, 0)
 				primary.AssemblyLinearVelocity = Vector3.zero
 				model:PivotTo(targetCF)
 				return
 			end
 		end
 		local pos = primary.Position
-		local flat = Vector3.new(pos.X - plot.center.X, 0, pos.Z - plot.center.Z)
-		if flat.Magnitude > 90 or pos.Y < plot.center.Y - 8 then
+		if pos.Y < plot.center.Y - 25 then
 			primary.AssemblyLinearVelocity = Vector3.zero
 			primary.AssemblyAngularVelocity = Vector3.zero
-			model:PivotTo(CFrame.new(origin))
+			model:PivotTo(CFrame.new(origin) * CFrame.Angles(0, -dirAngle, 0))
 		end
 	end)
 

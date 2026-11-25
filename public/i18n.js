@@ -652,6 +652,7 @@ const PHRASES = [
   ['10 мин', '10 min', '10 daq'],
   ['Напиши CSS Grid и нажми «Отправить в мир»!', 'Write CSS Grid and press «Send to World»!', 'CSS Grid yoz va «Dunyoga yuborish» tugmasini bos!'],
   ['Попробуй поправить CSS и отправить ещё раз!', 'Try tweaking your CSS and sending again!', 'CSSni tuzatib qayta yuborib ko\'r!'],
+  ['Уровни мира', 'World levels', 'Dunyo darajalari'],
   ['Уровень заданий «Дом для питомца»', 'Difficulty of the “Pet house” tasks', "«Uy hayvoni uchun uy» topshiriqlari darajasi"],
   ['Авто', 'Auto', 'Avto'], ['Нулевой', 'Zero', 'Nolinchi'], ['Младшая', 'Junior', 'Kichik'], ['Средняя', 'Middle', "O'rta"], ['Старшая', 'Senior', 'Katta'],
   ['Авто — по названию группы («Младшая», «Средняя», «Старшая») и курсу', 'Auto — by the group name (“Младшая”, “Средняя”, “Старшая”) and the course', "Avto — guruh nomi («Младшая», «Средняя», «Старшая») va kurs bo'yicha"],

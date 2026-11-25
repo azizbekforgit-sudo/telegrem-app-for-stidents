@@ -89,20 +89,30 @@ for (const wl of worldLevels) {
   tri(wl.intro, `world:${wl.id} intro`);
   if (!wl.files?.ru || !wl.files?.uz || !wl.files?.en) { console.log(`✗ world:${wl.id}: нужны files для ru/uz/en`); bad++; }
   if (!wl.kapi?.ru || !wl.kapi?.uz || !wl.kapi?.en) { console.log(`✗ world:${wl.id}: нужны реплики kapi для ru/uz/en`); bad++; }
-  // Стартовая раскладка (1 колонка × 6 рядов по 300x60) не должна проходить
-  const startBoxes = Array.from({ length: 6 }, (_, i) => ({ x: 0, y: i * 60, w: 300, h: 60, color: [160, 82, 45] }));
+  const r = wl.rules || {};
+  let startBoxes, goodBoxes;
+  if (wl.evalType === 'stairs') {
+    startBoxes = Array.from({ length: r.count || 4 }, (_, i) => ({ x: 0, y: i * 48, w: 100, h: 40 }));
+    goodBoxes = Array.from({ length: r.count || 4 }, (_, i) => ({ x: i * 50, y: i * 48, w: 100, h: 40 }));
+  } else if (wl.evalType === 'pyramid') {
+    startBoxes = Array.from({ length: 3 }, (_, i) => ({ x: 0, y: i * 51, w: 280, h: 45 }));
+    goodBoxes = [120, 200, 280].map((w, i) => ({ x: (300 - w) / 2, y: i * 51, w, h: 45 }));
+  } else {
+    const cnt = r.count || 6, cols = r.cols || 3, minW = r.minWidth || 300;
+    const gap = Math.min(10, r.star2Gap ?? 10);
+    // Стартовая раскладка: 1 колонка или слишком узкая
+    startBoxes = Array.from({ length: cnt }, (_, i) => ({ x: cols === 1 ? i * 40 : 0, y: cols === 1 ? 0 : i * 60, w: cols === 1 ? 35 : minW, h: 55 }));
+    const colW = (minW - (cols - 1) * gap) / cols;
+    goodBoxes = Array.from({ length: cnt }, (_, i) => ({
+      x: (i % cols) * (colW + gap),
+      y: Math.floor(i / cols) * (55 + gap),
+      w: colW,
+      h: 55,
+    }));
+  }
   const startV = evaluateLayout(wl, startBoxes, { x: 0, y: 0, w: 300, h: 360 }, wl.files?.ru?.['style.css'] || '', 1, 'ru');
   if (startV.stars > 0) { console.log(`✗ world:${wl.id}: стартовая раскладка не должна проходить`); bad++; }
-  // Решение (3 колонки × 2 ряда с gap: 10px, repeat(3, 1fr), width: 300px) должно проходить на 3 звезды
-  const colW = (300 - 20) / 3;
-  const goodBoxes = Array.from({ length: 6 }, (_, i) => ({
-    x: (i % 3) * (colW + 10),
-    y: Math.floor(i / 3) * 70,
-    w: colW,
-    h: 60,
-    color: [160, 82, 45],
-  }));
-  const goodV = evaluateLayout(wl, goodBoxes, { x: 0, y: 0, w: 300, h: 130 }, wl.sampleCss || '', 1, 'ru');
+  const goodV = evaluateLayout(wl, goodBoxes, { x: 0, y: 0, w: r.minWidth || 300, h: 160 }, wl.sampleCss || '', 1, 'ru');
   if (goodV.stars !== 3) { console.log(`✗ world:${wl.id}: решение должно давать 3★ (получено ${goodV.stars})`); bad++; }
   console.log(`✓ world:${wl.id} — стартовая не проходит, решение: 3★`);
 }

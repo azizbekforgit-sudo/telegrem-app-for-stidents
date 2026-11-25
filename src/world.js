@@ -1,5 +1,5 @@
-// Серверная логика «Мира Зубрика» (Roblox): сопряжение, проверка CSS Grid по прямоугольникам,
-// выдача раскладки игре, фиксация событий и побед (XP + предмет в «Дом питомца»).
+// Серверная логика «Мира Зубрика» (Roblox): 11 уровней, сопряжение, проверка CSS раскладок,
+// прогресс по уровням, выдача раскладки игре, фиксация событий и побед (XP + предмет в «Дом питомца»).
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -16,45 +16,51 @@ const sha256 = (s) => crypto.createHash('sha256').update(String(s)).digest('hex'
 
 const T = {
   ru: {
-    needGrid: 'Нужна сетка 3 колонки и 2 ряда (6 досок). Попробуй: display: grid; grid-template-columns: repeat(3, 1fr);',
-    needEqualCols: 'Колонки разной ширины — попробуй grid-template-columns: repeat(3, 1fr);',
-    needGap: (g) => `Щели слишком большие (${g}px > 40px) — уменьши gap (например, gap: 10px;)`,
-    needOverlap: 'Доски накладываются друг на друга — проверь размеры и gap.',
-    needWidth: (w) => `Мост слишком узкий (${w}px < 300px) — проверь width: 300px; у .bridge`,
-    okGrid: '3 колонки × 2 ряда ✓',
+    needGrid: (c, r, n) => `Нужна сетка ${c} кол. × ${r} ряд. (${n} блоков). Попробуй: display: grid; grid-template-columns: repeat(${c}, 1fr);`,
+    needEqualCols: (c) => `Колонки разной ширины — попробуй grid-template-columns: repeat(${c}, 1fr);`,
+    needGap: (g, m) => `Щели слишком большие (${g}px > ${m}px) — уменьши gap`,
+    needOverlap: 'Блоки накладываются друг на друга — проверь размеры и gap.',
+    needWidth: (w, m) => `Ширина меньше нужной (${w}px < ${m}px) — проверь width: ${m}px`,
+    needStairs: 'Каждая следующая ступенька должна сдвигаться вправо на 30–110px (margin-left).',
+    needPyramid: 'Выстрой 3 яруса по центру так, чтобы каждый нижний был шире верхнего.',
+    okGrid: (c, r) => `${c}×${r} ✓`,
     okCols: 'Колонки ровные ✓',
     okGap: (g) => `Щели ${g}px ✓`,
     okWidth: (w) => `Ширина ${w}px ✓`,
-    great: 'Отличный мост!',
-    useRepeat: 'Для 3★ используй repeat(3, 1fr) и уложись в 3 отправки.',
+    great: 'Отлично!',
+    useRepeat: 'Для 3★ используй repeat(..., 1fr) и уложись в 3 отправки.',
     winReason: (id, stars) => `Мир Roblox: уровень ${id} (${'★'.repeat(stars)})`,
   },
   uz: {
-    needGrid: '3 ustun va 2 qator (6 taxta) kerak. Sinab ko\'r: display: grid; grid-template-columns: repeat(3, 1fr);',
-    needEqualCols: 'Ustunlar kengligi har xil — grid-template-columns: repeat(3, 1fr); yozib ko\'r',
-    needGap: (g) => `Oraliq juda katta (${g}px > 40px) — gap ni kamaytir (masalan, gap: 10px;)`,
-    needOverlap: 'Taxtalar ustma-ust tushib qolgan — o\'lcham va gap ni tekshir.',
-    needWidth: (w) => `Ko'prik juda tor (${w}px < 300px) — .bridge da width: 300px; ni tekshir`,
-    okGrid: '3 ustun × 2 qator ✓',
+    needGrid: (c, r, n) => `${c} ustun × ${r} qator (${n} blok) kerak. Sinab ko'r: display: grid; grid-template-columns: repeat(${c}, 1fr);`,
+    needEqualCols: (c) => `Ustunlar kengligi har xil — grid-template-columns: repeat(${c}, 1fr); yoz`,
+    needGap: (g, m) => `Oraliq juda katta (${g}px > ${m}px) — gap ni kamaytir`,
+    needOverlap: 'Bloklar ustma-ust tushgan — o\'lcham va gap ni tekshir.',
+    needWidth: (w, m) => `Kenglik kam (${w}px < ${m}px) — width: ${m}px ni tekshir`,
+    needStairs: 'Har bir keyingi zinapoya o\'ngga 30–110px siljishi kerak (margin-left).',
+    needPyramid: '3 qavatni markazga tekisla, pastki qavat yuqoridan keng bo\'lsin.',
+    okGrid: (c, r) => `${c}×${r} ✓`,
     okCols: 'Ustunlar teng ✓',
     okGap: (g) => `Oraliq ${g}px ✓`,
     okWidth: (w) => `Kenglik ${w}px ✓`,
-    great: 'Ajoyib ko\'prik!',
-    useRepeat: '3★ uchun repeat(3, 1fr) ishlat va 3 ta urinishda bajar.',
+    great: 'Ajoyib!',
+    useRepeat: '3★ uchun repeat(..., 1fr) ishlat va 3 ta urinishda bajar.',
     winReason: (id, stars) => `Roblox dunyosi: ${id} daraja (${'★'.repeat(stars)})`,
   },
   en: {
-    needGrid: 'Need a 3 columns × 2 rows grid (6 planks). Try: display: grid; grid-template-columns: repeat(3, 1fr);',
-    needEqualCols: 'Columns have different widths — try grid-template-columns: repeat(3, 1fr);',
-    needGap: (g) => `Gaps are too wide (${g}px > 40px) — reduce gap (e.g. gap: 10px;)`,
-    needOverlap: 'Planks are overlapping — check plank sizes and gap.',
-    needWidth: (w) => `Bridge is too narrow (${w}px < 300px) — check width: 300px; on .bridge`,
-    okGrid: '3 cols × 2 rows ✓',
+    needGrid: (c, r, n) => `Need a ${c} cols × ${r} rows grid (${n} blocks). Try: display: grid; grid-template-columns: repeat(${c}, 1fr);`,
+    needEqualCols: (c) => `Columns have different widths — try grid-template-columns: repeat(${c}, 1fr);`,
+    needGap: (g, m) => `Gaps are too wide (${g}px > ${m}px) — reduce gap`,
+    needOverlap: 'Blocks are overlapping — check sizes and gap.',
+    needWidth: (w, m) => `Too narrow (${w}px < ${m}px) — check width: ${m}px`,
+    needStairs: 'Each next step should shift right by 30–110px (margin-left).',
+    needPyramid: 'Center the 3 tiers so each lower tier is wider than the one above.',
+    okGrid: (c, r) => `${c}×${r} ✓`,
     okCols: 'Equal columns ✓',
     okGap: (g) => `Gaps ${g}px ✓`,
     okWidth: (w) => `Width ${w}px ✓`,
-    great: 'Great bridge!',
-    useRepeat: 'For 3★ use repeat(3, 1fr) within 3 pushes.',
+    great: 'Awesome!',
+    useRepeat: 'For 3★ use repeat(..., 1fr) within 3 pushes.',
     winReason: (id, stars) => `Roblox World: level ${id} (${'★'.repeat(stars)})`,
   },
 };
@@ -69,7 +75,7 @@ export function parseColorRgb(raw) {
     if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
     return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
   }
-  return [160, 82, 45]; // sienna по умолчанию
+  return [160, 82, 45];
 }
 
 function cluster1D(items, coordFn, tol) {
@@ -91,6 +97,49 @@ function cluster1D(items, coordFn, tol) {
 export function evaluateLayout(level, boxes, container, cssText = '', attempts = 1, lang = 'ru') {
   const L = T[lang] || T.ru;
   const rules = level.rules || {};
+  const kind = level.evalType || 'grid';
+  const strippedCss = String(cssText || '').replace(/\/\*[\s\S]*?\*\//g, '');
+
+  if (kind === 'stairs') {
+    const sorted = [...boxes].sort((a, b) => a.y - b.y);
+    const countOk = sorted.length === (rules.count ?? 4);
+    let shiftOk = countOk;
+    let gapOk = countOk;
+    for (let i = 1; i < sorted.length; i++) {
+      const dx = sorted[i].x - sorted[i - 1].x;
+      const dy = sorted[i].y - (sorted[i - 1].y + sorted[i - 1].h);
+      if (dx < (rules.minShift ?? 30) || dx > (rules.maxShift ?? 110)) shiftOk = false;
+      if (dy < -2 || dy > (rules.maxGapY ?? 24)) gapOk = false;
+    }
+    const ok = countOk && shiftOk && gapOk;
+    const stars = !ok ? 0 : (attempts <= 3 ? 3 : 2);
+    return {
+      gridOk: countOk, equalCols: shiftOk, gapOk, widthOk: true, maxGap: 0, totalWidth: Math.round(container?.w || 320), stars,
+      tips: ok ? [L.great] : [L.needStairs],
+    };
+  }
+
+  if (kind === 'pyramid') {
+    const sorted = [...boxes].sort((a, b) => a.y - b.y);
+    const countOk = sorted.length === (rules.count ?? 3);
+    let orderOk = countOk;
+    let centerOk = countOk;
+    let gapOk = countOk;
+    const centers = sorted.map((b) => b.x + b.w / 2);
+    for (let i = 1; i < sorted.length; i++) {
+      if (sorted[i].w <= sorted[i - 1].w + 15) orderOk = false;
+      if (Math.abs(centers[i] - centers[0]) > 12) centerOk = false;
+      const dy = sorted[i].y - (sorted[i - 1].y + sorted[i - 1].h);
+      if (dy < -2 || dy > (rules.maxGapY ?? 20)) gapOk = false;
+    }
+    const ok = countOk && orderOk && centerOk && gapOk;
+    const stars = !ok ? 0 : (attempts <= 3 ? 3 : 2);
+    return {
+      gridOk: countOk && orderOk, equalCols: centerOk, gapOk, widthOk: true, maxGap: 0, totalWidth: Math.round(container?.w || 300), stars,
+      tips: ok ? [L.great] : [L.needPyramid],
+    };
+  }
+
   const count = rules.count ?? 6;
   const needCols = rules.cols ?? 3;
   const needRows = rules.rows ?? 2;
@@ -151,7 +200,6 @@ export function evaluateLayout(level, boxes, container, cssText = '', attempts =
     : Math.round(container?.w || 0);
   const widthOk = boxes.length > 0 && totalWidth >= minWidth - 1;
 
-  const strippedCss = String(cssText || '').replace(/\/\*[\s\S]*?\*\//g, '');
   const usedRepeatFr = /\brepeat\s*\(/i.test(strippedCss) && /\b\d*\.?\d+fr\b/i.test(strippedCss);
 
   let stars = 0;
@@ -162,13 +210,13 @@ export function evaluateLayout(level, boxes, container, cssText = '', attempts =
   }
 
   const tips = [];
-  if (!gridOk) tips.push(L.needGrid);
-  else if (!equalCols) tips.push(L.needEqualCols);
+  if (!gridOk) tips.push(L.needGrid(needCols, needRows, count));
+  else if (!equalCols) tips.push(L.needEqualCols(needCols));
   else if (overlap) tips.push(L.needOverlap);
-  else if (!gapOk) tips.push(L.needGap(Math.round(maxGap)));
-  else if (!widthOk) tips.push(L.needWidth(totalWidth));
+  else if (!gapOk) tips.push(L.needGap(Math.round(maxGap), maxGapAllowed));
+  else if (!widthOk) tips.push(L.needWidth(totalWidth, minWidth));
   else {
-    tips.push(`${L.okGrid} · ${L.okCols} · ${L.okGap(Math.max(0, Math.round(maxGap)))} · ${L.okWidth(totalWidth)} — ${L.great}`);
+    tips.push(`${L.okGrid(needCols, needRows)} · ${L.okCols} · ${L.okGap(Math.max(0, Math.round(maxGap)))} · ${L.okWidth(totalWidth)} — ${L.great}`);
     if (stars < 3 && !usedRepeatFr) tips.push(L.useRepeat);
   }
 
@@ -196,7 +244,6 @@ export function createWorld({ logic, store, root }) {
   const levels = loadWorldLevels(root);
   const byId = Object.fromEntries(levels.map((l) => [l.id, l]));
 
-  // Одноразовые коды сопряжения хранятся только в памяти (не в БД и не в логах)
   const pairCodes = new Map();
   const pushAt = new Map();
   const pullAt = new Map();
@@ -232,8 +279,7 @@ export function createWorld({ logic, store, root }) {
     }
     let code;
     do { code = String(crypto.randomInt(100000, 1000000)); } while (pairCodes.has(code));
-    const expiresAt = Date.now() + PAIR_TTL_MS;
-    pairCodes.set(code, { userId: uid, expiresAt, used: false });
+    pairCodes.set(code, { userId: uid, expiresAt: Date.now() + PAIR_TTL_MS, used: false });
     return { code, expiresInSec: Math.round(PAIR_TTL_MS / 1000) };
   }
 
@@ -249,7 +295,6 @@ export function createWorld({ logic, store, root }) {
     pairCodes.delete(cleanCode);
 
     ensureStore();
-    // Отзываем прошлые токены этого robloxUserId / userId, чтобы не копились
     for (const [h, t] of Object.entries(S.worldTokens)) {
       if (t.userId === rec.userId || t.robloxUserId === rId) delete S.worldTokens[h];
     }
@@ -311,9 +356,27 @@ export function createWorld({ logic, store, root }) {
 
     ensureStore();
     const prev = S.world[uid] || {};
-    const attempts = (prev.levelId === level.id ? (prev.pushes || 0) : 0) + 1;
+    const prevLv = prev.byLevel?.[level.id] || {};
+    const attempts = (prevLv.pushes || 0) + 1;
     const lang = S.users[uid]?.prefs?.lang || 'ru';
     const verdict = evaluateLayout(level, cleanedBoxes, cleanedContainer, code, attempts, lang);
+
+    const nextPushId = (prev.pushId || 0) + 1;
+    const byLevel = {
+      ...(prev.byLevel || {}),
+      [level.id]: {
+        ...prevLv,
+        boxes: cleanedBoxes,
+        container: cleanedContainer,
+        verdict,
+        code,
+        pushes: attempts,
+        pushId: nextPushId,
+        stars: Math.max(prevLv.stars || 0, verdict.stars),
+        won: Boolean(prevLv.won),
+        at: now,
+      },
+    };
 
     S.world[uid] = {
       ...prev,
@@ -323,14 +386,15 @@ export function createWorld({ logic, store, root }) {
       verdict,
       code,
       pushes: attempts,
-      pushId: (prev.pushId || 0) + 1,
+      pushId: nextPushId,
       stars: Math.max(prev.stars || 0, verdict.stars),
-      won: Boolean(prev.won),
+      won: Boolean(prevLv.won),
+      byLevel,
       at: now,
     };
     store.save();
     logic.log('world', { event: 'push', user: { id: uid, name: logic.name(S.users[uid]) }, levelId: level.id, boxes: cleanedBoxes.length, stars: verdict.stars });
-    return { ok: true, verdict, pushes: attempts, pushId: S.world[uid].pushId };
+    return { ok: true, verdict, pushes: attempts, pushId: nextPushId };
   }
 
   function pull(rawToken) {
@@ -344,11 +408,23 @@ export function createWorld({ logic, store, root }) {
     const u = S.users[auth.userId];
     const lang = u?.prefs?.lang || 'ru';
     const w = S.world[auth.userId] || {};
-    const level = byId[w.levelId || '8-1'] || levels[0];
+    const activeId = w.levelId || '8-1';
+    const level = byId[activeId] || levels[0];
     const kapi = level?.kapi?.[lang] || level?.kapi?.ru || {};
+
+    const progress = {};
+    for (const lv of levels) {
+      const rec = w.byLevel?.[lv.id];
+      if (rec?.won || (lv.id === activeId && w.won)) {
+        progress[lv.id] = { won: true, stars: rec?.stars || w.stars || 1 };
+      } else if (rec?.stars) {
+        progress[lv.id] = { won: false, stars: rec.stars };
+      }
+    }
 
     return {
       levelId: level?.id || '8-1',
+      biome: level?.biome || 'camp',
       user: {
         id: auth.userId,
         name: logic.name(u),
@@ -357,14 +433,17 @@ export function createWorld({ logic, store, root }) {
         accent: u?.prefs?.accent || 'lime',
       },
       kapi,
+      progress,
       state: w.boxes ? {
+        levelId: activeId,
+        biome: level?.biome || 'camp',
         pushId: w.pushId || 1,
         boxes: w.boxes,
         container: w.container || null,
         verdict: w.verdict || null,
         cssLines: String(w.code || '').split('\n').slice(0, PULL_CSS_LINES),
-        stars: w.stars || 0,
-        won: Boolean(w.won),
+        stars: w.byLevel?.[activeId]?.stars || w.stars || 0,
+        won: Boolean(w.byLevel?.[activeId]?.won || (activeId === w.levelId && w.won)),
         at: w.at || 0,
       } : null,
     };
@@ -391,15 +470,20 @@ export function createWorld({ logic, store, root }) {
     const level = byId[String(body?.levelId || w.levelId || '8-1')] || levels[0];
     if (!level) throw httpError(404, 'Уровень не найден');
 
-    const verdictStars = w.verdict?.stars || 0;
+    const prevLv = w.byLevel?.[level.id] || {};
+    const verdictStars = prevLv.verdict?.stars || w.verdict?.stars || 0;
     const stars = Math.max(1, Math.min(3, Number(body?.stars) || verdictStars || 1));
     const maxXp = level.reward?.maxXp ?? 240;
     const perStar = level.reward?.xpPerStar ?? 80;
     const xp = Math.min(maxXp, stars * perStar);
 
-    w.won = true;
-    w.wonAt = Date.now();
-    w.stars = Math.max(w.stars || 0, stars);
+    w.byLevel ||= {};
+    w.byLevel[level.id] = { ...prevLv, won: true, wonAt: Date.now(), stars: Math.max(prevLv.stars || 0, stars) };
+    if (w.levelId === level.id) {
+      w.won = true;
+      w.wonAt = Date.now();
+      w.stars = Math.max(w.stars || 0, stars);
+    }
     S.world[uid] = w;
 
     const bonusRes = logic.addBonus({
@@ -423,32 +507,43 @@ export function createWorld({ logic, store, root }) {
       xp: bonusRes.already ? 0 : xp,
       decor: decorId,
     });
-    return { ok: true, stars, xpAwarded: bonusRes.already ? 0 : xp, decorId, newDecor };
+    return { ok: true, levelId: level.id, stars, xpAwarded: bonusRes.already ? 0 : xp, decorId, newDecor };
   }
 
   function status(uid) {
     uid = String(uid);
     const lang = S.users[uid]?.prefs?.lang || 'ru';
     const w = S.world?.[uid] || null;
+    const byLv = w?.byLevel || {};
+    const totalStars = levels.reduce((s, l) => s + (byLv[l.id]?.stars || 0), 0);
     return {
       linked: Boolean(w?.robloxUserId),
       robloxName: w?.robloxName || null,
       verdict: w?.verdict || null,
-      stars: w?.stars || 0,
+      stars: totalStars || w?.stars || 0,
+      maxStars: levels.length * 3,
       won: Boolean(w?.won),
       pushes: w?.pushes || 0,
       pushedAt: w?.at || null,
-      levels: levels.map((l) => ({
-        id: l.id,
-        lesson: l.lesson,
-        lessonId: l.lessonId,
-        title: l.title?.[lang] || l.title?.ru || l.id,
-        intro: l.intro?.[lang] || l.intro?.ru || '',
-        allow: l.allow || ['html', 'css'],
-        open: l.open || 'style.css',
-        selectors: l.selectors || { box: '.bridge', plank: '.plank' },
-        files: l.files?.[lang] || l.files?.ru || {},
-      })),
+      levels: levels.map((l) => {
+        const lvState = byLv[l.id] || null;
+        return {
+          id: l.id,
+          order: l.order || 1,
+          biome: l.biome || 'camp',
+          lesson: l.lesson,
+          lessonId: l.lessonId,
+          title: l.title?.[lang] || l.title?.ru || l.id,
+          intro: l.intro?.[lang] || l.intro?.ru || '',
+          allow: l.allow || ['html', 'css'],
+          open: l.open || 'style.css',
+          selectors: l.selectors || { box: '.bridge', plank: '.plank' },
+          files: l.files?.[lang] || l.files?.ru || {},
+          stars: lvState?.stars || 0,
+          won: Boolean(lvState?.won),
+          verdict: lvState?.verdict || null,
+        };
+      }),
     };
   }
 

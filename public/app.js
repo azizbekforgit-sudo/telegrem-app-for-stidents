@@ -4305,9 +4305,28 @@ async function tabTasks() {
       <button class="btn ${x.done ? 'ghost' : ''} sm" data-task="${x.kind}|${esc(x.lessonId)}|${x.key || ''}|${x.pubId}">${x.done ? (x.kind === 'exam' ? 'Результат' : 'Ещё раз') : x.kind === 'exam' ? 'Начать' : 'Решить'}</button></div>`;
   };
   const houseCard = TASKS.shelf === 'todo' && t.house.done < t.house.total ? `<div class="task-card k-house"><div class="task-ic">${emo('🏡')}</div><div class="grow"><div class="task-tags"><span class="pill accent">Испытание</span></div><b>Дом для ${esc(t.house.pet)}</b><span class="small muted">${t.house.done} из ${t.house.total} · за каждое — вещь в дом</span></div><button class="btn sm" data-housego>Решить</button></div>` : '';
-  const wl = world?.levels?.[0];
-  const worldStars = world?.stars ? ('★'.repeat(world.stars) + '☆'.repeat(3 - world.stars)) : '☆☆☆';
-  const worldCard = TASKS.shelf === 'todo' && wl ? `<div class="task-card k-world"><div class="task-ic">${emo('🌍')}</div><div class="grow"><div class="task-tags"><span class="pill accent">Мир Roblox</span><span class="pill ${world.linked ? 'good' : ''}">${world.linked ? `✓ ${tr('Игра подключена')}${world.robloxName ? `: ${esc(world.robloxName)}` : ''}` : tr('Ждём подключения')}</span><span class="pill gold" data-noi18n>${worldStars}</span></div><b>${esc(wl.title)}</b><span class="small muted">${esc(wl.intro)}</span>${world.verdict?.tips?.length ? `<p class="small task-intro">${esc(world.verdict.tips[0])}</p>` : ''}<div class="small muted" data-wcode></div></div><div class="row" style="gap:6px;flex-shrink:0"><button class="btn ghost sm" data-wpair>${tr('Получить код')}</button><button class="btn sm" data-wplay>${tr('Решить')}</button></div></div>` : '';
+  const wLevels = world?.levels || [];
+  const wl = wLevels[0];
+  const worldCard = TASKS.shelf === 'todo' && wl ? `<div class="task-card k-world" style="flex-direction:column;align-items:stretch;gap:10px">
+    <div class="row" style="gap:10px;align-items:center">
+      <div class="task-ic">${emo('🌍')}</div>
+      <div class="grow">
+        <div class="task-tags"><span class="pill accent">Мир Roblox</span><span class="pill ${world.linked ? 'good' : ''}">${world.linked ? `✓ ${tr('Игра подключена')}${world.robloxName ? `: ${esc(world.robloxName)}` : ''}` : tr('Ждём подключения')}</span><span class="pill gold" data-noi18n>★ ${world.stars || 0}/${world.maxStars || wLevels.length * 3}</span></div>
+        <b>${tr('Уровни мира')} (${wLevels.length})</b>
+        <div class="small muted" data-wcode></div>
+      </div>
+      <button class="btn ghost sm" data-wpair>${tr('Получить код')}</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px">
+      ${wLevels.map((lv) => `<div style="padding:8px 10px;border-radius:12px;background:var(--bg2,rgba(128,128,128,.08));display:flex;align-items:center;gap:8px">
+        <div class="grow" style="min-width:0">
+          <div class="small" style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(lv.title)}</div>
+          <div class="small muted" data-noi18n>${lv.stars ? '★'.repeat(lv.stars) + '☆'.repeat(3 - lv.stars) : '☆☆☆'}${lv.won ? ' · ✓' : ''}</div>
+        </div>
+        <button class="btn ${lv.won ? 'ghost' : ''} sm" data-wplay="${esc(lv.id)}">${lv.won ? tr('Ещё раз') : tr('Решить')}</button>
+      </div>`).join('')}
+    </div>
+  </div>` : '';
   app.innerHTML = tHead('Задачи', t.pending ? `${plural(t.pending, 'задача ждёт', 'задачи ждут', 'задач ждут')} тебя` : 'Всё решено — ты молодец! 🎉') + `
     <div class="shelves">${shelves.map(([id, e, n, c]) => `<button class="shelf ${TASKS.shelf === id ? 'on' : ''}" data-shelf="${id}">${emo(e)}<span>${n}</span>${c ? `<i>${c}</i>` : ''}</button>`).join('')}</div>
     <div class="task-list">${worldCard}${houseCard}${list.map(card).join('') || (houseCard || worldCard ? '' : emptyState(TASKS.shelf === 'done' ? 'think' : 'love', TASKS.shelf === 'done' ? 'Пока ничего не решено' : 'Здесь пусто', TASKS.shelf === 'hw' ? 'ДЗ появляется после каждого решённого теста.' : TASKS.shelf === 'class' ? 'Классная работа — код в обучалке урока.' : TASKS.shelf === 'exams' ? 'Контрольные присылает учитель.' : 'Новые задачи появятся после тестов и уроков.'))}</div>`;
@@ -4322,11 +4341,14 @@ async function tabTasks() {
       haptic('success');
     } catch (e) { fail(e); }
   };
-  const wplay = $('[data-wplay]');
-  if (wplay && wl) wplay.onclick = () => codeSession({
-    task: { title: wl.title, intro: wl.intro, files: wl.files, open: wl.open, selectors: wl.selectors, steps: [] },
-    allow: wl.allow, topic: wl.title, lessonId: wl.id, key: 'world', kind: 'world',
-  }).then(() => { if (S.tab === 'tasks') tabTasks().catch(fail); });
+  $$('[data-wplay]').forEach((b) => {
+    const lv = wLevels.find((x) => x.id === b.dataset.wplay);
+    if (!lv) return;
+    b.onclick = () => codeSession({
+      task: { title: lv.title, intro: lv.intro, files: lv.files, open: lv.open, selectors: lv.selectors, steps: [] },
+      allow: lv.allow, topic: lv.title, lessonId: lv.id, key: 'world', kind: 'world',
+    }).then(() => { if (S.tab === 'tasks') tabTasks().catch(fail); });
+  });
   $$('[data-task]').forEach((b) => (b.onclick = () => { const [kind, lessonId, key, pubId] = b.dataset.task.split('|'); openTask(kind, lessonId, key, pubId).catch(fail); }));
 }
 async function openTask(kind, lessonId, key, pubId) {

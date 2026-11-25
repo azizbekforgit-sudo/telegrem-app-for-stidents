@@ -30,12 +30,12 @@ srv.stderr.on('data', (d) => (logs += d.toString()));
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function waitReady() {
-  for (let i = 0; i < 40; i++) {
+  for (let i = 0; i < 120; i++) {
     try {
       const r = await fetch(`http://127.0.0.1:${port}/healthz`);
       if (r.ok) return;
     } catch { /* wait */ }
-    await sleep(150);
+    await sleep(250);
   }
   throw new Error('Сервер не запустился:\n' + logs);
 }
@@ -53,7 +53,7 @@ async function req(p, { method = 'GET', body, headers = {} } = {}) {
   return { status: res.status, data };
 }
 
-const devHeaders = { 'X-Dev-User': '111', 'X-Dev-Name': 'Nargiza' };
+const devHeaders = { 'X-Dev-User': 'test-' + Date.now(), 'X-Dev-Name': 'Nargiza' };
 
 try {
   await waitReady();
