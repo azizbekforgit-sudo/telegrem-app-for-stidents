@@ -2,8 +2,10 @@
 // стартовый код ещё не решает задание, тексты есть на трёх языках.
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { checkSteps } from '../public/ide.js';
 import { personalize } from '../src/social.js';
+import { evaluateLayout, loadWorldLevels } from '../src/world.js';
 
 const dir = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'content', 'code');
 let bad = 0;
@@ -79,5 +81,29 @@ for (const f of fs.existsSync(dir) ? fs.readdirSync(dir).filter((x) => x.endsWit
     n += t.steps.length;
   }
   console.log(`✓ ${f} — заданий ${tasks.length}, шагов ${n}`);
+}
+// Проверка уровней «Мира Roblox» (content/world/levels.json)
+const worldLevels = loadWorldLevels(path.join(path.dirname(fileURLToPath(import.meta.url)), '..'));
+for (const wl of worldLevels) {
+  tri(wl.title, `world:${wl.id} title`);
+  tri(wl.intro, `world:${wl.id} intro`);
+  if (!wl.files?.ru || !wl.files?.uz || !wl.files?.en) { console.log(`✗ world:${wl.id}: нужны files для ru/uz/en`); bad++; }
+  if (!wl.kapi?.ru || !wl.kapi?.uz || !wl.kapi?.en) { console.log(`✗ world:${wl.id}: нужны реплики kapi для ru/uz/en`); bad++; }
+  // Стартовая раскладка (1 колонка × 6 рядов по 300x60) не должна проходить
+  const startBoxes = Array.from({ length: 6 }, (_, i) => ({ x: 0, y: i * 60, w: 300, h: 60, color: [160, 82, 45] }));
+  const startV = evaluateLayout(wl, startBoxes, { x: 0, y: 0, w: 300, h: 360 }, wl.files?.ru?.['style.css'] || '', 1, 'ru');
+  if (startV.stars > 0) { console.log(`✗ world:${wl.id}: стартовая раскладка не должна проходить`); bad++; }
+  // Решение (3 колонки × 2 ряда с gap: 10px, repeat(3, 1fr), width: 300px) должно проходить на 3 звезды
+  const colW = (300 - 20) / 3;
+  const goodBoxes = Array.from({ length: 6 }, (_, i) => ({
+    x: (i % 3) * (colW + 10),
+    y: Math.floor(i / 3) * 70,
+    w: colW,
+    h: 60,
+    color: [160, 82, 45],
+  }));
+  const goodV = evaluateLayout(wl, goodBoxes, { x: 0, y: 0, w: 300, h: 130 }, wl.sampleCss || '', 1, 'ru');
+  if (goodV.stars !== 3) { console.log(`✗ world:${wl.id}: решение должно давать 3★ (получено ${goodV.stars})`); bad++; }
+  console.log(`✓ world:${wl.id} — стартовая не проходит, решение: 3★`);
 }
 if (bad) { console.log(`\nОшибок: ${bad}`); process.exit(1); }

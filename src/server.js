@@ -2,9 +2,11 @@
 import { loadCode, localize } from './code.js';
 import { reviewCode, wasAccepted, aiEnabled } from './review.js';
 import { createSocial, ITEMS } from './social.js';
+import { createWorld } from './world.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { fileURLToPath } from 'node:url';
 import express from 'express';
 import { webhookCallback } from 'grammy';
 import { createStore } from './store.js';
@@ -31,7 +33,7 @@ const ADMIN_IDS = (process.env.ADMIN_IDS || '7183098167').split(',').map((s) => 
 const PUBLIC_URL = (process.env.PUBLIC_URL || process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`).replace(/\/$/, '');
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || '';
 const ALLOW_DEV_AUTH = process.env.ALLOW_DEV_AUTH === '1';
-const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 const store = await createStore();
 const logic = createLogic(store, { adminIds: ADMIN_IDS });
@@ -49,6 +51,7 @@ const CODE = loadCode(path.join(root, 'content', 'code'));
 logic.setCode(CODE);
 // Общение и «свой путь»: страницы, вопросы, оценки друг другу, звания, одежда питомцев, «Дом для питомца», опрос интересов
 const social = createSocial({ logic, store, code: () => CODE, notifyTeacher: (text) => tg?.notifyAdmins(text) });
+const world = createWorld({ logic, store, root });
 logic.setExtraXp((uid) => social.peerXp(uid));
 // Опрос интересов: учитель называет ученика → запись в content/interest.json [{ id, userId }]; каждый id один раз
 {
@@ -252,7 +255,17 @@ api.post('/auth/login', h((req) => {
   const { email, password } = req.body || {};
   return logic.login(email, password);
 }));
+// ───────── Мир Roblox (запросы от сервера игры по X-World-Token) ─────────
+api.post('/world/link', h((req) => world.link(req.body || {})));
+api.get('/world/pull', h((req) => world.pull(req.get('x-world-token'))));
+api.post('/world/event', h((req) => world.event(req.get('x-world-token'), req.body || {})));
+api.post('/world/win', h((req) => world.win(req.get('x-world-token'), req.body || {})));
+
 api.use(auth);
+// ───────── Мир Roblox (запросы ученика из приложения) ─────────
+api.get('/world/status', h((req) => world.status(req.user.id)));
+api.post('/world/pair', h((req) => world.pair(req.user.id)));
+api.post('/world/push', h((req) => world.push(req.user.id, req.body || {})));
 api.post('/auth/logout', h((req) => (logic.logout(req.session), { ok: true })));
 
 // ───────── ученик ─────────

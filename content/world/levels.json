@@ -1,0 +1,100 @@
+{
+  "levels": [
+    {
+      "id": "8-1",
+      "lesson": 8,
+      "lessonId": "lesson-08-grid",
+      "title": {
+        "ru": "Уровень 8-1: Мост через Облачную пропасть",
+        "uz": "8-1 daraja: Bulutli jarlik ustidagi ko'prik",
+        "en": "Level 8-1: Bridge over the Cloud Chasm"
+      },
+      "intro": {
+        "ru": "Построй мост из 6 досок: 3 колонки, 2 ряда, щели не больше 40px.",
+        "uz": "6 ta taxtadan ko'prik qur: 3 ustun, 2 qator, oraliq 40px dan oshmasin.",
+        "en": "Build a 6-plank bridge: 3 columns, 2 rows, gaps no wider than 40px."
+      },
+      "allow": ["html", "css"],
+      "open": "style.css",
+      "selectors": {
+        "box": ".bridge",
+        "plank": ".plank"
+      },
+      "files": {
+        "ru": {
+          "index.html": "<div class=\"bridge\">\n  <div class=\"plank\">1</div><div class=\"plank\">2</div><div class=\"plank\">3</div>\n  <div class=\"plank\">4</div><div class=\"plank\">5</div><div class=\"plank\">6</div>\n</div>",
+          "style.css": "/* style.css — построй мост: 3 колонки, 2 ряда, щели не больше 40px */\n.bridge { width: 300px; }\n.plank { height: 60px; background: sienna; color: white; }"
+        },
+        "uz": {
+          "index.html": "<div class=\"bridge\">\n  <div class=\"plank\">1</div><div class=\"plank\">2</div><div class=\"plank\">3</div>\n  <div class=\"plank\">4</div><div class=\"plank\">5</div><div class=\"plank\">6</div>\n</div>",
+          "style.css": "/* style.css — ko'prik qur: 3 ustun, 2 qator, oraliq 40px dan oshmasin */\n.bridge { width: 300px; }\n.plank { height: 60px; background: sienna; color: white; }"
+        },
+        "en": {
+          "index.html": "<div class=\"bridge\">\n  <div class=\"plank\">1</div><div class=\"plank\">2</div><div class=\"plank\">3</div>\n  <div class=\"plank\">4</div><div class=\"plank\">5</div><div class=\"plank\">6</div>\n</div>",
+          "style.css": "/* style.css — build a bridge: 3 columns, 2 rows, gaps <= 40px */\n.bridge { width: 300px; }\n.plank { height: 60px; background: sienna; color: white; }"
+        }
+      },
+      "sampleCss": ".bridge { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 300px; }\n.plank { height: 60px; background: sienna; color: white; }",
+      "rules": {
+        "count": 6,
+        "cols": 3,
+        "rows": 2,
+        "maxGap": 40,
+        "star2Gap": 20,
+        "minWidth": 300,
+        "tolX": 3,
+        "tolW": 2,
+        "maxAttemptsFor3Stars": 3
+      },
+      "reward": {
+        "xpPerStar": 80,
+        "maxXp": 240,
+        "decorId": "bridge"
+      },
+      "kapi": {
+        "ru": {
+          "greeting": "Привет! Я Капи. Нам надо перебраться на Остров Флажка, а моста нет…",
+          "toWorkshop": "Идём в Мастерскую кода! Введи 6 цифр из приложения Зубрик.",
+          "connected": "Подключено! Привет, {name} 👋 Отправь мост из приложения!",
+          "pushedGood": "Отличный мост! Бери его и неси к Облачной пропасти!",
+          "pushedBad": "Почти получилось! Посмотри на экран и поправь CSS.",
+          "fell": "Ой! Похоже, в мосту слишком большие щели. Посмотри на gap!",
+          "idle": "Напиши CSS Grid в приложении и нажми «Отправить в мир»!",
+          "win": "Ура! Мы на Острове Флажка! Вот твои звёзды и подарок в дом!",
+          "signCamp": "Лагерь программистов",
+          "signWorkshop": "Мастерская кода",
+          "signWarning": "Щели больше 40px = опасно!",
+          "signHint": "Как работает Grid: repeat(3, 1fr) + gap"
+        },
+        "uz": {
+          "greeting": "Salom! Men Kapi. Bayroqcha oroliga o'tishimiz kerak, lekin ko'prik yo'q…",
+          "toWorkshop": "Kod ustaxonasiga boramiz! Zubrik ilovasidan 6 ta raqamni kirit.",
+          "connected": "Ulandi! Salom, {name} 👋 Ilovadan ko'prikni yubor!",
+          "pushedGood": "Ajoyib ko'prik! Uni olib, Bulutli jarlikka olib bor!",
+          "pushedBad": "Deyarli tayyor! Ekranga qara va CSSni tuzat.",
+          "fell": "Voy! Ko'prikdagi oraliq juda katta shekilli. gap ga qara!",
+          "idle": "Ilovada CSS Grid yoz va «Dunyoga yuborish» tugmasini bos!",
+          "win": "Ura! Bayroqcha oroliga yetib keldik! Mana yulduzlar va sovg'a!",
+          "signCamp": "Dasturchilar lageri",
+          "signWorkshop": "Kod ustaxonasi",
+          "signWarning": "40px dan katta oraliq = xavfli!",
+          "signHint": "Grid qanday ishlaydi: repeat(3, 1fr) + gap"
+        },
+        "en": {
+          "greeting": "Hi! I'm Kapi. We need to cross to Flag Island, but there's no bridge…",
+          "toWorkshop": "Let's go to the Code Workshop! Enter the 6-digit code from Zubrik.",
+          "connected": "Connected! Hi, {name} 👋 Push your bridge from the app!",
+          "pushedGood": "Awesome bridge! Grab it and carry it to the Cloud Chasm!",
+          "pushedBad": "Almost there! Check the screen and tweak your CSS.",
+          "fell": "Oops! Looks like the gaps are too wide. Check your gap!",
+          "idle": "Write CSS Grid in the app and press «Send to World»!",
+          "win": "Hooray! We reached Flag Island! Here are your stars and a gift!",
+          "signCamp": "Coders Camp",
+          "signWorkshop": "Code Workshop",
+          "signWarning": "Gaps over 40px = danger!",
+          "signHint": "How Grid works: repeat(3, 1fr) + gap"
+        }
+      }
+    }
+  ]
+}
