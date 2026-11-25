@@ -3,8 +3,8 @@ local Config = {}
 
 -- Адрес вашего сервера Express (без слэша на конце).
 -- Для локального теста: "http://localhost:3000"
--- Для продакшена (Render): "https://ваш-сервис.onrender.com"
-Config.SERVER_URL = "http://localhost:3000"
+-- Для продакшена (Render): "https://zubrik-bot.onrender.com"
+Config.SERVER_URL = "https://zubrik-bot.onrender.com"
 
 -- Масштаб: 10 пикселей CSS = 1 stud в Roblox
 Config.SCALE = 10
