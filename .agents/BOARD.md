@@ -14,6 +14,6 @@
 
 | № | Задача | Кто | Файлы | Статус | Заметки |
 |---|---|---|---|---|---|
-| T1 | Пример: сервер для «Мира Roblox» — `/api/world/*`, уровень 8-1, имитатор Roblox | Claude | `src/world.js`, `src/server.js`, `content/world/` | нужно | ждёт команды Азиза |
-| T2 | Пример: игра в Roblox — мир, участки, мост, Капи, UI, README | Antigravity | `roblox/` | нужно | ждёт T1 (API), адрес сервера `https://zubrik-bot.onrender.com` |
-| T3 | Пример: кнопка «Отправить в мир» и карточка «Мир Roblox» в приложении | Claude | `public/app.js`, `public/ide.js`, `public/i18n.js` | нужно | после T1 |
+| T1 | Сервер «Мира Roblox»: `/api/world/*`, уровни (сейчас 11, архипелаг) | Antigravity | `src/world.js`, `src/server.js`, `content/world/` | на проверке | сделано до запуска доски (коммиты ae0b030…86a04b9); Claude проверит и задеплоит |
+| T2 | Игра в Roblox: мир, участки, мост, питомец, UI, README | Antigravity | `roblox/`, `default.project.json` | на проверке | проверка в Roblox Studio — Азиз/Antigravity |
+| T3 | Кнопка «Отправить в мир» и карточка «Мир Roblox» в приложении | Antigravity | `public/app.js`, `public/ide.js`, `public/i18n.js` | на проверке | |

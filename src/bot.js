@@ -166,6 +166,24 @@ export function createBot({ token, logic, journal, nudges, store, appUrl, adminI
     if (!b || b.xp <= 0 || String(b.userId).startsWith('w')) return null;
     return safeSend(b.userId, tt('bonus', langOf(b.userId), b.xp, esc(b.reason)), { reply_markup: privateKb(tt('open', langOf(b.userId))) });
   }
+  async function notifyWorldWin(w) {
+    if (!w || !w.userId || !w.xpAwarded || String(w.userId).startsWith('w')) return null;
+    const lang = langOf(w.userId);
+    const st = '★'.repeat(w.stars || 1);
+    const head = lang === 'uz'
+      ? `🎉 <b>${esc(w.title)}</b> o'tildi (${st})!\n+${w.xpAwarded} XP.`
+      : lang === 'en'
+        ? `🎉 <b>${esc(w.title)}</b> complete (${st})!\n+${w.xpAwarded} XP.`
+        : `🎉 <b>${esc(w.title)}</b> пройден (${st})!\n+${w.xpAwarded} XP.`;
+    const next = w.nextTitle
+      ? (lang === 'uz'
+        ? `\n\n🔓 Keyingi daraja ochildi: <b>${esc(w.nextTitle)}</b>\n${esc(w.nextIntro || '')}`
+        : lang === 'en'
+          ? `\n\n🔓 Next level unlocked: <b>${esc(w.nextTitle)}</b>\n${esc(w.nextIntro || '')}`
+          : `\n\n🔓 Открыт следующий уровень: <b>${esc(w.nextTitle)}</b>\n${esc(w.nextIntro || '')}`)
+      : '';
+    return safeSend(w.userId, head + next, { reply_markup: privateKb(tt('open', lang)) });
+  }
   async function sendLogin(l) {
     if (!l?.password || String(l.userId).startsWith('w')) return null;
     return safeSend(l.userId, tt('siteLogin', langOf(l.userId), esc(siteUrl()), esc(l.login), esc(l.password)));
@@ -509,5 +527,5 @@ export function createBot({ token, logic, journal, nudges, store, appUrl, adminI
     console.log(`[bot] @${bot.botInfo.username} готов`);
   }
 
-  return { bot, setup, notifyPublish, notifyPersonal, announce, tickReminders, onRoleChosen, sendLogin, notifyBonus, notifyAccess, notifyGrade, onAttendance, tickAttendance, tickNudges, sendMascot, notifyParentsDebts, notifyAdmins };
+  return { bot, setup, notifyPublish, notifyPersonal, announce, tickReminders, onRoleChosen, sendLogin, notifyBonus, notifyWorldWin, notifyAccess, notifyGrade, onAttendance, tickAttendance, tickNudges, sendMascot, notifyParentsDebts, notifyAdmins };
 }

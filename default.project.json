@@ -1,0 +1,23 @@
+{
+  "name": "zubrik-world",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "Shared": {
+        "$path": "roblox/src/shared"
+      }
+    },
+    "ServerScriptService": {
+      "Server": {
+        "$path": "roblox/src/server"
+      }
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "Client": {
+          "$path": "roblox/src/client"
+        }
+      }
+    }
+  }
+}

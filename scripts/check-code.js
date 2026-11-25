@@ -2,8 +2,10 @@
 // стартовый код ещё не решает задание, тексты есть на трёх языках.
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { checkSteps } from '../public/ide.js';
 import { personalize } from '../src/social.js';
+import { evaluateLayout, loadWorldLevels } from '../src/world.js';
 
 const dir = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'content', 'code');
 let bad = 0;
@@ -79,5 +81,39 @@ for (const f of fs.existsSync(dir) ? fs.readdirSync(dir).filter((x) => x.endsWit
     n += t.steps.length;
   }
   console.log(`✓ ${f} — заданий ${tasks.length}, шагов ${n}`);
+}
+// Проверка уровней «Мира Roblox» (content/world/levels.json)
+const worldLevels = loadWorldLevels(path.join(path.dirname(fileURLToPath(import.meta.url)), '..'));
+for (const wl of worldLevels) {
+  tri(wl.title, `world:${wl.id} title`);
+  tri(wl.intro, `world:${wl.id} intro`);
+  if (!wl.files?.ru || !wl.files?.uz || !wl.files?.en) { console.log(`✗ world:${wl.id}: нужны files для ru/uz/en`); bad++; }
+  if (!wl.kapi?.ru || !wl.kapi?.uz || !wl.kapi?.en) { console.log(`✗ world:${wl.id}: нужны реплики kapi для ru/uz/en`); bad++; }
+  const r = wl.rules || {};
+  let startBoxes, goodBoxes;
+  if (wl.evalType === 'stairs') {
+    startBoxes = Array.from({ length: r.count || 4 }, (_, i) => ({ x: 0, y: i * 48, w: 100, h: 40 }));
+    goodBoxes = Array.from({ length: r.count || 4 }, (_, i) => ({ x: i * 50, y: i * 48, w: 100, h: 40 }));
+  } else if (wl.evalType === 'pyramid') {
+    startBoxes = Array.from({ length: 3 }, (_, i) => ({ x: 0, y: i * 51, w: 280, h: 45 }));
+    goodBoxes = [120, 200, 280].map((w, i) => ({ x: (300 - w) / 2, y: i * 51, w, h: 45 }));
+  } else {
+    const cnt = r.count || 6, cols = r.cols || 3, minW = r.minWidth || 300;
+    const gap = Math.min(10, r.star2Gap ?? 10);
+    // Стартовая раскладка: 1 колонка или слишком узкая
+    startBoxes = Array.from({ length: cnt }, (_, i) => ({ x: cols === 1 ? i * 40 : 0, y: cols === 1 ? 0 : i * 60, w: cols === 1 ? 35 : minW, h: 55 }));
+    const colW = (minW - (cols - 1) * gap) / cols;
+    goodBoxes = Array.from({ length: cnt }, (_, i) => ({
+      x: (i % cols) * (colW + gap),
+      y: Math.floor(i / cols) * (55 + gap),
+      w: colW,
+      h: 55,
+    }));
+  }
+  const startV = evaluateLayout(wl, startBoxes, { x: 0, y: 0, w: 300, h: 360 }, wl.files?.ru?.['style.css'] || '', 1, 'ru');
+  if (startV.stars > 0) { console.log(`✗ world:${wl.id}: стартовая раскладка не должна проходить`); bad++; }
+  const goodV = evaluateLayout(wl, goodBoxes, { x: 0, y: 0, w: r.minWidth || 300, h: 160 }, wl.sampleCss || '', 1, 'ru');
+  if (goodV.stars !== 3) { console.log(`✗ world:${wl.id}: решение должно давать 3★ (получено ${goodV.stars})`); bad++; }
+  console.log(`✓ world:${wl.id} — стартовая не проходит, решение: 3★`);
 }
 if (bad) { console.log(`\nОшибок: ${bad}`); process.exit(1); }

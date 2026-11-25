@@ -2250,12 +2250,12 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
     el.innerHTML = `
       <div class="cs-guide">
         <div class="cs-head"><button class="pclose" data-close aria-label="Закрыть">${ic('close-circle')}</button>
-          <div class="grow"><small>${kind === 'house' ? `${emo('🏠')} ${esc(topic)}` : kind === 'hw' ? `${emo('🏠')} Домашка` : exam ? `${emo('🛡️')} Контрольная · напиши код` : `${emo('💻')} Пишем код`}</small><b>${esc(task.title || '')}</b></div>
-          ${exam ? `<span class="pill accent" data-noi18n data-etimer>⏱ 0:00</span>` : `<span class="pill accent" data-noi18n data-prog>0/${steps.length}</span>`}</div>
+          <div class="grow"><small>${kind === 'world' ? `${emo('🌍')} Мир Roblox` : kind === 'house' ? `${emo('🏠')} ${esc(topic)}` : kind === 'hw' ? `${emo('🏠')} Домашка` : exam ? `${emo('🛡️')} Контрольная · напиши код` : `${emo('💻')} Пишем код`}</small><b>${esc(task.title || '')}</b></div>
+          ${exam ? `<span class="pill accent" data-noi18n data-etimer>⏱ 0:00</span>` : kind === 'world' ? `<span class="pill accent" data-noi18n data-wstars>☆☆☆</span>` : `<span class="pill accent" data-noi18n data-prog>0/${steps.length}</span>`}</div>
         <div class="cs-talk"><div class="cs-m" data-m>${me('teach', wide ? 150 : 64)}</div><div class="speech" data-say></div></div>
         <div class="cs-show" data-show hidden></div>
-        <ol class="cs-steps" data-steps>${steps.map((st, i) => `<li data-st="${i}"><i></i><span>${rich(st.say)}</span></li>`).join('')}</ol>
-        <div class="cs-act">${exam ? '' : `<button class="btn ghost dim" data-hint>${emo('💡')} Подсказка</button><button class="btn ghost" data-review>${emo('🔍')} Проверить</button>`}<button class="btn" data-done ${exam ? '' : 'disabled'}>${ic('check-circle')}${exam ? 'Сохранить ответ' : 'Готово'}</button></div>
+        ${kind === 'world' ? '' : `<ol class="cs-steps" data-steps>${steps.map((st, i) => `<li data-st="${i}"><i></i><span>${rich(st.say)}</span></li>`).join('')}</ol>`}
+        <div class="cs-act">${exam ? '' : kind === 'world' ? `<button class="btn ghost" data-review>${emo('🔍')} Проверить</button><button class="btn" data-push>${emo('🌍')} Отправить в мир</button>` : `<button class="btn ghost dim" data-hint>${emo('💡')} Подсказка</button><button class="btn ghost" data-review>${emo('🔍')} Проверить</button>`}${kind === 'world' ? '' : `<button class="btn" data-done ${exam ? '' : 'disabled'}>${ic('check-circle')}${exam ? 'Сохранить ответ' : 'Готово'}</button>`}</div>
       </div>
       <div class="cs-ide" data-ide></div>
       ${wide || exam ? '' : `<div class="cs-intro" data-intro><div class="teach-row col">${me('talk', 150)}<div class="speech" data-isay></div></div>
@@ -2287,7 +2287,7 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
     let reviewing = false;
     let lastErr = '', errSince = 0, hintLevel = 0, typedAt = Date.now(), finished = false;
     const showCur = () => {
-      if (exam) return -1; // в контрольной шаги не отмечаются — верно или нет, видно только в конце
+      if (exam || kind === 'world') return -1; // в контрольной и в мире шаги не отмечаются
       const k = passed.indexOf(false);
       $1('[data-steps]').querySelectorAll('li').forEach((li, i) => { li.className = passed[i] ? 'ok' : i === k ? 'now' : ''; });
       $1('[data-prog]').textContent = `${passed.filter(Boolean).length}/${steps.length}`;
@@ -2309,17 +2309,17 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
       if (bad && k !== -1 && newly < 0 && !exam) {
         const key = bad.file + bad.msg;
         if (key !== lastErr) { lastErr = key; errSince = Date.now(); say(`${tr(bad.msg)}${bad.line ? ` (${bad.file}:${bad.line})` : ''}\n\n${tr('Если уверен, что всё правильно, — нажми «Проверить».')}`, 'think'); }
-        $1('[data-done]').disabled = !preview;
+        if ($1('[data-done]')) $1('[data-done]').disabled = !preview;
         return;
       }
       if (!bad) lastErr = '';
-      if (exam) return;
+      if (exam || kind === 'world') { if (kind === 'world' && !lastErr) say(task.intro || 'Напиши CSS Grid и нажми «Отправить в мир»!', 'teach'); return; }
       if (k === -1 && steps.length) {
         if (!finished) { finished = true; sfx.win(); setTimeout(confetti, 150); haptic('success'); }
-        $1('[data-done]').disabled = false;
+        if ($1('[data-done]')) $1('[data-done]').disabled = false;
         return say(task.done || 'Всё работает! Ты настоящий программист! Жми «Готово».', 'love', 'happy');
       }
-      $1('[data-done]').disabled = !preview;
+      if ($1('[data-done]')) $1('[data-done]').disabled = !preview;
       if (newly >= 0) { sfx.ok(); haptic('success'); say(`${['Отлично!', 'Супер!', 'Так держать!', 'В точку!'][newly % 4]} Теперь: ${steps[k].say}`, 'cheer', 'happy'); hintLevel = 0; $1('[data-show]').hidden = true; return; }
       say(steps[k].say, 'think');
     }
@@ -2382,15 +2382,64 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
       } catch (e) { fail(e); }
       finally { reviewing = false; bt.disabled = false; bt.classList.remove('busy'); }
     };
+    // «Отправить в мир»: снимаем прямоугольники из предпросмотра и шлём в Roblox
+    if ($1('[data-push]')) $1('[data-push]').onclick = async () => {
+      const bt = $1('[data-push]');
+      if (bt.disabled) return;
+      bt.disabled = true; bt.classList.add('busy');
+      try {
+        const snap = await ide.askBoxes(task.selectors?.plank || '.plank', task.selectors?.box || '.bridge');
+        const r = await api('/world/push', { levelId: lessonId, files: ide.files(), boxes: snap.boxes, container: snap.container });
+        const v = r.verdict || {};
+        const stars = v.stars || 0;
+        if ($1('[data-wstars]')) $1('[data-wstars]').textContent = '★'.repeat(stars) + '☆'.repeat(3 - stars);
+        if (stars > 0) {
+          finished = true;
+          sfx.win(); haptic('success');
+          if (stars === 3) setTimeout(confetti, 150);
+          say((v.tips || []).join('\n'), 'love', 'happy');
+        } else {
+          sfx.bad(); haptic('warning');
+          say((v.tips || []).join('\n') || 'Попробуй поправить CSS и отправить ещё раз!', 'think');
+        }
+      } catch (e) { fail(e); }
+      finally { bt.disabled = false; bt.classList.remove('busy'); }
+    };
     const close = (done) => {
-      clearInterval(idle); clearTimeout(timer); clearInterval(examTick); ide.destroy();
+      clearInterval(idle); clearTimeout(timer); clearInterval(examTick); clearInterval(worldPoll); ide.destroy();
       if (ACTIVE_CODE?.el === el) ACTIVE_CODE = null;
       el.classList.add('leaving');
       setTimeout(() => { el.remove(); if (S.view) tg?.BackButton?.show(); }, wide ? 0 : 320);
       resolve(exam ? (done ? ide.files() : null) : Boolean(done));
     };
+    let worldPoll = null;
+    if (kind === 'world') {
+      let alreadyWon = Boolean(task.won);
+      worldPoll = setInterval(async () => {
+        if (!el.isConnected) return clearInterval(worldPoll);
+        try {
+          const st = await api('/world/status');
+          const cur = (st.levels || []).find((x) => x.id === lessonId);
+          if (cur?.won && !alreadyWon) {
+            alreadyWon = true;
+            finished = true;
+            sfx.win(); confetti(); haptic('success');
+            const nextLv = (st.levels || []).find((x) => x.unlocked && !x.won);
+            say(nextLv ? `🎉 Уровень пройден! Открыт следующий: **${nextLv.title}**` : '🎉 Все 11 уровней пройдены!', 'love', 'happy');
+            const act = $1('.cs-act');
+            if (act && nextLv && !$1('[data-wnext]')) {
+              const nb = document.createElement('button');
+              nb.className = 'btn'; nb.dataset.wnext = nextLv.id;
+              nb.innerHTML = `${emo('➡️')} ${tr('Следующий уровень')}`;
+              nb.onclick = () => { el.dataset.nextWorld = nextLv.id; close(true); };
+              act.appendChild(nb);
+            }
+          }
+        } catch { /* */ }
+      }, 3000);
+    }
     if (exam) ACTIVE_CODE = { el, abort: () => { const f = ide.files(); close(false); return f; } };
-    $1('[data-done]').onclick = async () => {
+    if ($1('[data-done]')) $1('[data-done]').onclick = async () => {
       if (onSubmit) { const bt = $1('[data-done]'); if (bt.dataset.busy) return; bt.dataset.busy = '1'; bt.disabled = true; try { if (await onSubmit(ide.files())) return close(true); } finally { delete bt.dataset.busy; bt.disabled = false; } return; }
       if (!preview && !exam) { try { await api('/code/done', { lessonId, task: key, files: ide.files() }); } catch { /* */ } }
       close(true);
@@ -4258,7 +4307,7 @@ async function refreshStudentBadges() {
 // ═══════════════ «ЗАДАЧИ»: ДЗ, классная работа, контрольные — по полочкам ═══════════════
 const TASKS = { shelf: 'todo' };
 async function tabTasks() {
-  const t = await api('/tasks');
+  const [t, world] = await Promise.all([api('/tasks'), api('/world/status').catch(() => null)]);
   S_BADGE.tasks = t.pending;
   studentNav();
   const all = [...t.hw, ...t.class, ...t.exams];
@@ -4282,12 +4331,65 @@ async function tabTasks() {
       <button class="btn ${x.done ? 'ghost' : ''} sm" data-task="${x.kind}|${esc(x.lessonId)}|${x.key || ''}|${x.pubId}">${x.done ? (x.kind === 'exam' ? 'Результат' : 'Ещё раз') : x.kind === 'exam' ? 'Начать' : 'Решить'}</button></div>`;
   };
   const houseCard = TASKS.shelf === 'todo' && t.house.done < t.house.total ? `<div class="task-card k-house"><div class="task-ic">${emo('🏡')}</div><div class="grow"><div class="task-tags"><span class="pill accent">Испытание</span></div><b>Дом для ${esc(t.house.pet)}</b><span class="small muted">${t.house.done} из ${t.house.total} · за каждое — вещь в дом</span></div><button class="btn sm" data-housego>Решить</button></div>` : '';
+  const wLevels = world?.levels || [];
+  const wl = wLevels.find((x) => x.id === world?.currentLevelId) || wLevels[0];
+  const worldCard = TASKS.shelf === 'todo' && wl ? `<div class="task-card k-world" style="flex-direction:column;align-items:stretch;gap:10px">
+    <div class="row" style="gap:10px;align-items:center">
+      <div class="task-ic">${emo('🌍')}</div>
+      <div class="grow">
+        <div class="task-tags"><span class="pill accent">Мир Roblox</span><span class="pill ${world.linked ? 'good' : ''}">${world.linked ? `✓ ${tr('Игра подключена')}${world.robloxName ? `: ${esc(world.robloxName)}` : ''}` : tr('Ждём подключения')}</span><span class="pill gold" data-noi18n>★ ${world.stars || 0}/${world.maxStars || wLevels.length * 3}</span></div>
+        <b>${esc(wl.title)}</b>
+        <div class="small muted">${esc(wl.intro)}</div>
+        <div class="small muted" data-wcode></div>
+      </div>
+      <div class="row" style="gap:6px;flex-shrink:0"><button class="btn ghost sm" data-wpair>${tr('Получить код')}</button><button class="btn sm" data-wplay="${esc(wl.id)}">${tr('Решить')}</button></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px">
+      ${wLevels.map((lv) => `<div style="padding:8px 10px;border-radius:12px;background:var(--bg2,rgba(128,128,128,.08));border:${lv.id === wl.id ? '2px solid var(--accent,#84cc16)' : '1px solid transparent'};opacity:${lv.unlocked ? '1' : '0.55'};display:flex;align-items:center;gap:8px">
+        <div class="grow" style="min-width:0">
+          <div class="small" style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${lv.unlocked ? '' : '🔒 '}${esc(lv.title)}</div>
+          <div class="small muted" data-noi18n>${lv.stars ? '★'.repeat(lv.stars) + '☆'.repeat(3 - lv.stars) : '☆☆☆'}${lv.won ? ' · ✓' : ''}</div>
+        </div>
+        ${lv.unlocked ? `<button class="btn ${lv.won ? 'ghost' : ''} sm" data-wplay="${esc(lv.id)}">${lv.won ? tr('Ещё раз') : tr('Решить')}</button>` : `<span class="small muted">🔒</span>`}
+      </div>`).join('')}
+    </div>
+  </div>` : '';
   app.innerHTML = tHead('Задачи', t.pending ? `${plural(t.pending, 'задача ждёт', 'задачи ждут', 'задач ждут')} тебя` : 'Всё решено — ты молодец! 🎉') + `
     <div class="shelves">${shelves.map(([id, e, n, c]) => `<button class="shelf ${TASKS.shelf === id ? 'on' : ''}" data-shelf="${id}">${emo(e)}<span>${n}</span>${c ? `<i>${c}</i>` : ''}</button>`).join('')}</div>
-    <div class="task-list">${houseCard}${list.map(card).join('') || (houseCard ? '' : emptyState(TASKS.shelf === 'done' ? 'think' : 'love', TASKS.shelf === 'done' ? 'Пока ничего не решено' : 'Здесь пусто', TASKS.shelf === 'hw' ? 'ДЗ появляется после каждого решённого теста.' : TASKS.shelf === 'class' ? 'Классная работа — код в обучалке урока.' : TASKS.shelf === 'exams' ? 'Контрольные присылает учитель.' : 'Новые задачи появятся после тестов и уроков.'))}</div>`;
+    <div class="task-list">${worldCard}${houseCard}${list.map(card).join('') || (houseCard || worldCard ? '' : emptyState(TASKS.shelf === 'done' ? 'think' : 'love', TASKS.shelf === 'done' ? 'Пока ничего не решено' : 'Здесь пусто', TASKS.shelf === 'hw' ? 'ДЗ появляется после каждого решённого теста.' : TASKS.shelf === 'class' ? 'Классная работа — код в обучалке урока.' : TASKS.shelf === 'exams' ? 'Контрольные присылает учитель.' : 'Новые задачи появятся после тестов и уроков.'))}</div>`;
   $$('[data-shelf]').forEach((b) => (b.onclick = () => { TASKS.shelf = b.dataset.shelf; haptic('light'); tabTasks().catch(fail); }));
   const hg = $('[data-housego]');
   if (hg) hg.onclick = () => houseSheet();
+  const wp = $('[data-wpair]');
+  if (wp) wp.onclick = async () => {
+    try {
+      const r = await api('/world/pair', {});
+      $('[data-wcode]').innerHTML = `${tr('Код для Roblox')}: <b data-noi18n style="font-size:15px;letter-spacing:2px">${esc(r.code)}</b> (${tr('10 мин')})`;
+      haptic('success');
+    } catch (e) { fail(e); }
+  };
+  const openWorldLevel = (lvId) => {
+    const lv = wLevels.find((x) => x.id === lvId);
+    if (!lv || !lv.unlocked) return;
+    codeSession({
+      task: { title: lv.title, intro: lv.intro, files: lv.files, open: lv.open, selectors: lv.selectors, won: lv.won, steps: [] },
+      allow: lv.allow, topic: lv.title, lessonId: lv.id, key: 'world', kind: 'world',
+    }).then(() => {
+      if (S.tab === 'tasks') tabTasks().catch(fail);
+    });
+  };
+  $$('[data-wplay]').forEach((b) => { b.onclick = () => openWorldLevel(b.dataset.wplay); });
+  if (TASKS.shelf === 'todo' && wl) {
+    const prevKey = JSON.stringify([world?.linked, world?.stars, world?.currentLevelId]);
+    const poll = setInterval(async () => {
+      if (S.tab !== 'tasks' || TASKS.shelf !== 'todo' || !$('[data-wpair]')) return clearInterval(poll);
+      try {
+        const w2 = await api('/world/status');
+        const nextKey = JSON.stringify([w2?.linked, w2?.stars, w2?.currentLevelId]);
+        if (nextKey !== prevKey) { clearInterval(poll); tabTasks().catch(() => {}); }
+      } catch { /* */ }
+    }, 3500);
+  }
   $$('[data-task]').forEach((b) => (b.onclick = () => { const [kind, lessonId, key, pubId] = b.dataset.task.split('|'); openTask(kind, lessonId, key, pubId).catch(fail); }));
 }
 async function openTask(kind, lessonId, key, pubId) {

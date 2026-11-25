@@ -1,0 +1,498 @@
+{
+  "levels": [
+    {
+      "id": "8-1",
+      "order": 1,
+      "biome": "camp",
+      "evalType": "grid",
+      "lesson": 8,
+      "lessonId": "lesson-08-grid",
+      "title": {
+        "ru": "8-1: Мост через Облачную пропасть",
+        "uz": "8-1: Bulutli jarlik ustidagi ko'prik",
+        "en": "8-1: Bridge over the Cloud Chasm"
+      },
+      "intro": {
+        "ru": "Построй мост из 6 досок: 3 колонки, 2 ряда, щели не больше 40px, ширина от 300px.",
+        "uz": "6 ta taxtadan ko'prik qur: 3 ustun, 2 qator, oraliq 40px gacha, kengligi kamida 300px.",
+        "en": "Build a 6-plank bridge: 3 columns, 2 rows, gaps <= 40px, width >= 300px."
+      },
+      "allow": ["html", "css"],
+      "open": "style.css",
+      "selectors": { "box": ".bridge", "plank": ".plank" },
+      "files": {
+        "ru": {
+          "index.html": "<div class=\"bridge\">\n  <div class=\"plank\">1</div><div class=\"plank\">2</div><div class=\"plank\">3</div>\n  <div class=\"plank\">4</div><div class=\"plank\">5</div><div class=\"plank\">6</div>\n</div>",
+          "style.css": "/* построй мост: 3 колонки, 2 ряда, щели <= 40px */\n.bridge { width: 300px; }\n.plank { height: 60px; background: sienna; color: white; }"
+        },
+        "uz": {
+          "index.html": "<div class=\"bridge\">\n  <div class=\"plank\">1</div><div class=\"plank\">2</div><div class=\"plank\">3</div>\n  <div class=\"plank\">4</div><div class=\"plank\">5</div><div class=\"plank\">6</div>\n</div>",
+          "style.css": "/* ko'prik qur: 3 ustun, 2 qator, oraliq <= 40px */\n.bridge { width: 300px; }\n.plank { height: 60px; background: sienna; color: white; }"
+        },
+        "en": {
+          "index.html": "<div class=\"bridge\">\n  <div class=\"plank\">1</div><div class=\"plank\">2</div><div class=\"plank\">3</div>\n  <div class=\"plank\">4</div><div class=\"plank\">5</div><div class=\"plank\">6</div>\n</div>",
+          "style.css": "/* build a bridge: 3 cols, 2 rows, gaps <= 40px */\n.bridge { width: 300px; }\n.plank { height: 60px; background: sienna; color: white; }"
+        }
+      },
+      "sampleCss": ".bridge { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 300px; }\n.plank { height: 60px; background: sienna; color: white; }",
+      "rules": { "count": 6, "cols": 3, "rows": 2, "maxGap": 40, "star2Gap": 20, "minWidth": 300, "tolX": 3, "tolW": 2, "maxAttemptsFor3Stars": 3 },
+      "reward": { "xpPerStar": 80, "maxXp": 240, "decorId": "bridge" },
+      "kapi": {
+        "ru": {
+          "greeting": "Привет! Выбери уровень и отправь мост из приложения!",
+          "pushedGood": "Отличный мост! Нажми [E] или потяни мышкой и положи через пропасть!",
+          "pushedBad": "Почти получилось! Посмотри на экран и поправь CSS.",
+          "fell": "Ой! В мосту большие щели — уменьши gap!",
+          "idle": "Напиши CSS Grid в приложении и нажми «Отправить в мир»!",
+          "win": "Ура! Пропасть пройдена! Открыт следующий остров!"
+        },
+        "uz": {
+          "greeting": "Salom! Darajani tanla va ilovadan ko'prik yubor!",
+          "pushedGood": "Ajoyib ko'prik! [E] tugmasini bosib jarlik ustiga qo'y!",
+          "pushedBad": "Deyarli tayyor! Ekranga qara va CSSni tuzat.",
+          "fell": "Voy! Ko'prikda oraliq katta — gap ni kamaytir!",
+          "idle": "CSS Grid yoz va «Dunyoga yuborish» ni bos!",
+          "win": "Ura! Keyingi orol ochildi!"
+        },
+        "en": {
+          "greeting": "Hi! Pick a level and push your bridge from the app!",
+          "pushedGood": "Awesome bridge! Press [E] or drag it over the chasm!",
+          "pushedBad": "Almost there! Check the screen and tweak your CSS.",
+          "fell": "Oops! Gaps are too wide — check your gap!",
+          "idle": "Write CSS Grid in the app and hit «Send to World»!",
+          "win": "Hooray! Next sky island unlocked!"
+        }
+      }
+    },
+    {
+      "id": "8-2",
+      "order": 2,
+      "biome": "ruins",
+      "evalType": "stairs",
+      "lesson": 8,
+      "lessonId": "lesson-08-grid",
+      "title": {
+        "ru": "8-2: Небесная лестница к Храму",
+        "uz": "8-2: Ibodatxonaga osmon zinasi",
+        "en": "8-2: Sky Stairs to the Temple"
+      },
+      "intro": {
+        "ru": "Собери 4 ступеньки (.step): пусть каждая следующая сдвигается вправо (margin-left или grid-column), шаг 40–100px.",
+        "uz": "4 ta zinapoya (.step) yasang: har biri o'ngga siljisin (40–100px).",
+        "en": "Build 4 stairs (.step): each step shifts right by 40–100px."
+      },
+      "allow": ["html", "css"],
+      "open": "style.css",
+      "selectors": { "box": ".stairs", "plank": ".step" },
+      "files": {
+        "ru": {
+          "index.html": "<div class=\"stairs\">\n  <div class=\"step s1\">1</div>\n  <div class=\"step s2\">2</div>\n  <div class=\"step s3\">3</div>\n  <div class=\"step s4\">4</div>\n</div>",
+          "style.css": "/* сдвинь ступеньки s2, s3, s4 вправо лесенкой */\n.stairs { display: grid; gap: 8px; width: 320px; }\n.step { width: 100px; height: 40px; background: goldenrod; }"
+        },
+        "uz": {
+          "index.html": "<div class=\"stairs\">\n  <div class=\"step s1\">1</div>\n  <div class=\"step s2\">2</div>\n  <div class=\"step s3\">3</div>\n  <div class=\"step s4\">4</div>\n</div>",
+          "style.css": "/* s2, s3, s4 zinapoyalarni o'ngga siljit */\n.stairs { display: grid; gap: 8px; width: 320px; }\n.step { width: 100px; height: 40px; background: goldenrod; }"
+        },
+        "en": {
+          "index.html": "<div class=\"stairs\">\n  <div class=\"step s1\">1</div>\n  <div class=\"step s2\">2</div>\n  <div class=\"step s3\">3</div>\n  <div class=\"step s4\">4</div>\n</div>",
+          "style.css": "/* shift steps s2, s3, s4 to the right */\n.stairs { display: grid; gap: 8px; width: 320px; }\n.step { width: 100px; height: 40px; background: goldenrod; }"
+        }
+      },
+      "sampleCss": ".stairs { display: grid; gap: 8px; width: 320px; }\n.step { width: 100px; height: 40px; background: goldenrod; }\n.s2 { margin-left: 50px; }\n.s3 { margin-left: 100px; }\n.s4 { margin-left: 150px; }",
+      "rules": { "count": 4, "minShift": 30, "maxShift": 110, "maxGapY": 24 },
+      "reward": { "xpPerStar": 80, "maxXp": 240 },
+      "kapi": {
+        "ru": { "pushedGood": "Золотая лестница готова! Положи её у Храма!", "win": "Храм Солнца покорен!" },
+        "uz": { "pushedGood": "Oltin zina tayyor!", "win": "Quyosh ibodatxonasi zabt etildi!" },
+        "en": { "pushedGood": "Golden stairs ready!", "win": "Sun Temple conquered!" }
+      }
+    },
+    {
+      "id": "8-3",
+      "order": 3,
+      "biome": "lava",
+      "evalType": "grid",
+      "lesson": 8,
+      "lessonId": "lesson-08-grid",
+      "title": {
+        "ru": "8-3: Плот через Огненный поток",
+        "uz": "8-3: Olovli daryodan sol",
+        "en": "8-3: Raft over the Lava Stream"
+      },
+      "intro": {
+        "ru": "Выстрой 4 бревна в 1 ряд и 4 колонки (repeat(4, 1fr)), щели <= 10px, ширина >= 320px!",
+        "uz": "4 ta xodani 1 qator va 4 ustunga joyla (repeat(4, 1fr)), oraliq <= 10px, kengligi >= 320px!",
+        "en": "Align 4 logs in 1 row × 4 columns (repeat(4, 1fr)), gap <= 10px, width >= 320px!"
+      },
+      "allow": ["html", "css"],
+      "open": "style.css",
+      "selectors": { "box": ".raft", "plank": ".log" },
+      "files": {
+        "ru": {
+          "index.html": "<div class=\"raft\">\n  <div class=\"log\">1</div><div class=\"log\">2</div><div class=\"log\">3</div><div class=\"log\">4</div>\n</div>",
+          "style.css": "/* сделай 4 колонки в 1 ряд с маленьким gap */\n.raft { width: 320px; }\n.log { height: 70px; background: saddlebrown; }"
+        },
+        "uz": {
+          "index.html": "<div class=\"raft\">\n  <div class=\"log\">1</div><div class=\"log\">2</div><div class=\"log\">3</div><div class=\"log\">4</div>\n</div>",
+          "style.css": "/* 1 qatorda 4 ustun va kichik gap qil */\n.raft { width: 320px; }\n.log { height: 70px; background: saddlebrown; }"
+        },
+        "en": {
+          "index.html": "<div class=\"raft\">\n  <div class=\"log\">1</div><div class=\"log\">2</div><div class=\"log\">3</div><div class=\"log\">4</div>\n</div>",
+          "style.css": "/* make 4 columns in 1 row with small gap */\n.raft { width: 320px; }\n.log { height: 70px; background: saddlebrown; }"
+        }
+      },
+      "sampleCss": ".raft { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 320px; }\n.log { height: 70px; background: saddlebrown; }",
+      "rules": { "count": 4, "cols": 4, "rows": 1, "maxGap": 12, "star2Gap": 8, "minWidth": 320, "tolX": 3, "tolW": 2 },
+      "reward": { "xpPerStar": 80, "maxXp": 240 },
+      "kapi": {
+        "ru": { "pushedGood": "Крепкий плот! Переправляйся через лаву!", "win": "Огненный каньон позади!" },
+        "uz": { "pushedGood": "Mustahkam sol!", "win": "Olovli kanyon ortda qoldi!" },
+        "en": { "pushedGood": "Sturdy raft!", "win": "Lava canyon crossed!" }
+      }
+    },
+    {
+      "id": "8-4",
+      "order": 4,
+      "biome": "crystal",
+      "evalType": "grid",
+      "lesson": 8,
+      "lessonId": "lesson-08-grid",
+      "title": {
+        "ru": "8-4: Хрустальные Ворота (2×3)",
+        "uz": "8-4: Billur darvoza (2×3)",
+        "en": "8-4: Crystal Gate (2×3)"
+      },
+      "intro": {
+        "ru": "Собери ключ-решётку из 6 кристаллов: 2 колонки, 3 ряда, равные колонки, gap <= 16px, ширина >= 240px.",
+        "uz": "6 ta billurdan kalit yig': 2 ustun, 3 qator, gap <= 16px, kengligi >= 240px.",
+        "en": "Build a 6-crystal grid key: 2 columns × 3 rows, gap <= 16px, width >= 240px."
+      },
+      "allow": ["html", "css"],
+      "open": "style.css",
+      "selectors": { "box": ".gate", "plank": ".gem" },
+      "files": {
+        "ru": {
+          "index.html": "<div class=\"gate\">\n  <div class=\"gem\">1</div><div class=\"gem\">2</div>\n  <div class=\"gem\">3</div><div class=\"gem\">4</div>\n  <div class=\"gem\">5</div><div class=\"gem\">6</div>\n</div>",
+          "style.css": "/* 2 колонки и 3 ряда */\n.gate { width: 260px; }\n.gem { height: 50px; background: deepskyblue; }"
+        },
+        "uz": {
+          "index.html": "<div class=\"gate\">\n  <div class=\"gem\">1</div><div class=\"gem\">2</div>\n  <div class=\"gem\">3</div><div class=\"gem\">4</div>\n  <div class=\"gem\">5</div><div class=\"gem\">6</div>\n</div>",
+          "style.css": "/* 2 ustun va 3 qator */\n.gate { width: 260px; }\n.gem { height: 50px; background: deepskyblue; }"
+        },
+        "en": {
+          "index.html": "<div class=\"gate\">\n  <div class=\"gem\">1</div><div class=\"gem\">2</div>\n  <div class=\"gem\">3</div><div class=\"gem\">4</div>\n  <div class=\"gem\">5</div><div class=\"gem\">6</div>\n</div>",
+          "style.css": "/* 2 columns and 3 rows */\n.gate { width: 260px; }\n.gem { height: 50px; background: deepskyblue; }"
+        }
+      },
+      "sampleCss": ".gate { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 260px; }\n.gem { height: 50px; background: deepskyblue; }",
+      "rules": { "count": 6, "cols": 2, "rows": 3, "maxGap": 16, "star2Gap": 10, "minWidth": 240, "tolX": 3, "tolW": 2 },
+      "reward": { "xpPerStar": 80, "maxXp": 240 },
+      "kapi": {
+        "ru": { "pushedGood": "Хрустальный ключ светится! Неси к воротам!", "win": "Ворота Хрустального леса открыты!" },
+        "uz": { "pushedGood": "Billur kalit porlamoqda!", "win": "Billur o'rmon darvozasi ochildi!" },
+        "en": { "pushedGood": "Crystal key is glowing!", "win": "Crystal Forest Gate opened!" }
+      }
+    },
+    {
+      "id": "8-5",
+      "order": 5,
+      "biome": "garden",
+      "evalType": "grid",
+      "lesson": 8,
+      "lessonId": "lesson-08-grid",
+      "title": {
+        "ru": "8-5: Прыгучие Облака (5 платформ)",
+        "uz": "8-5: Sakrovchi bulutlar (5 platforma)",
+        "en": "8-5: Bouncy Clouds (5 pads)"
+      },
+      "intro": {
+        "ru": "Расставь 5 облачных батутов в 1 ряд (repeat(5, 1fr)), gap 15..50px, ширина >= 360px.",
+        "uz": "5 ta bulut batutini 1 qatorda joyla (repeat(5, 1fr)), gap 15..50px, kengligi >= 360px.",
+        "en": "Place 5 cloud bounce pads in 1 row (repeat(5, 1fr)), gap <= 50px, width >= 360px."
+      },
+      "allow": ["html", "css"],
+      "open": "style.css",
+      "selectors": { "box": ".clouds", "plank": ".pad" },
+      "files": {
+        "ru": {
+          "index.html": "<div class=\"clouds\">\n  <div class=\"pad\">1</div><div class=\"pad\">2</div><div class=\"pad\">3</div><div class=\"pad\">4</div><div class=\"pad\">5</div>\n</div>",
+          "style.css": "/* 5 колонок в 1 ряд */\n.clouds { width: 380px; }\n.pad { height: 55px; background: hotpink; }"
+        },
+        "uz": {
+          "index.html": "<div class=\"clouds\">\n  <div class=\"pad\">1</div><div class=\"pad\">2</div><div class=\"pad\">3</div><div class=\"pad\">4</div><div class=\"pad\">5</div>\n</div>",
+          "style.css": "/* 1 qatorda 5 ustun */\n.clouds { width: 380px; }\n.pad { height: 55px; background: hotpink; }"
+        },
+        "en": {
+          "index.html": "<div class=\"clouds\">\n  <div class=\"pad\">1</div><div class=\"pad\">2</div><div class=\"pad\">3</div><div class=\"pad\">4</div><div class=\"pad\">5</div>\n</div>",
+          "style.css": "/* 5 columns in 1 row */\n.clouds { width: 380px; }\n.pad { height: 55px; background: hotpink; }"
+        }
+      },
+      "sampleCss": ".clouds { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; width: 380px; }\n.pad { height: 55px; background: hotpink; }",
+      "rules": { "count": 5, "cols": 5, "rows": 1, "maxGap": 50, "star2Gap": 25, "minWidth": 360, "tolX": 3, "tolW": 2 },
+      "reward": { "xpPerStar": 80, "maxXp": 240 },
+      "kapi": {
+        "ru": { "pushedGood": "Прыгучие облака готовы! Попробуй попрыгать!", "win": "Облачный сад пройден!" },
+        "uz": { "pushedGood": "Sakrovchi bulutlar tayyor!", "win": "Bulutli bog' o'tildi!" },
+        "en": { "pushedGood": "Bouncy clouds ready!", "win": "Cloud Garden cleared!" }
+      }
+    },
+    {
+      "id": "8-6",
+      "order": 6,
+      "biome": "station",
+      "evalType": "grid",
+      "lesson": 8,
+      "lessonId": "lesson-08-grid",
+      "title": {
+        "ru": "8-6: Семафор Звёздной станции",
+        "uz": "8-6: Yulduzli bekat svetofori",
+        "en": "8-6: Star Station Signal"
+      },
+      "intro": {
+        "ru": "Выстрой 3 фонаря в 1 колонку × 3 ряда с ровным gap <= 20px и шириной >= 100px.",
+        "uz": "3 ta chiroqni 1 ustun × 3 qator qilib joyla, gap <= 20px, kengligi >= 100px.",
+        "en": "Stack 3 signal lights in 1 column × 3 rows, gap <= 20px, width >= 100px."
+      },
+      "allow": ["html", "css"],
+      "open": "style.css",
+      "selectors": { "box": ".signal", "plank": ".lamp" },
+      "files": {
+        "ru": {
+          "index.html": "<div class=\"signal\">\n  <div class=\"lamp l1\">1</div>\n  <div class=\"lamp l2\">2</div>\n  <div class=\"lamp l3\">3</div>\n</div>",
+          "style.css": "/* 1 колонка, 3 ряда, gap 12px */\n.signal { width: 120px; }\n.lamp { height: 60px; background: crimson; display: inline-block; width: 35px; }"
+        },
+        "uz": {
+          "index.html": "<div class=\"signal\">\n  <div class=\"lamp l1\">1</div>\n  <div class=\"lamp l2\">2</div>\n  <div class=\"lamp l3\">3</div>\n</div>",
+          "style.css": "/* 1 ustun, 3 qator, gap 12px */\n.signal { width: 120px; }\n.lamp { height: 60px; background: crimson; display: inline-block; width: 35px; }"
+        },
+        "en": {
+          "index.html": "<div class=\"signal\">\n  <div class=\"lamp l1\">1</div>\n  <div class=\"lamp l2\">2</div>\n  <div class=\"lamp l3\">3</div>\n</div>",
+          "style.css": "/* 1 column, 3 rows, gap 12px */\n.signal { width: 120px; }\n.lamp { height: 60px; background: crimson; display: inline-block; width: 35px; }"
+        }
+      },
+      "sampleCss": ".signal { display: grid; grid-template-columns: repeat(1, 1fr); gap: 12px; width: 120px; }\n.lamp { height: 60px; width: 100%; background: limegreen; }\n.l1 { background: crimson; }\n.l2 { background: gold; }",
+      "rules": { "count": 3, "cols": 1, "rows": 3, "maxGap": 20, "star2Gap": 15, "minWidth": 100, "tolX": 3, "tolW": 2 },
+      "reward": { "xpPerStar": 80, "maxXp": 240 },
+      "kapi": {
+        "ru": { "pushedGood": "Семафор включён! Зелёный свет открыт!", "win": "Станция Звёзд пройдена!" },
+        "uz": { "pushedGood": "Svetofor yondi!", "win": "Yulduzli bekat o'tildi!" },
+        "en": { "pushedGood": "Signal lit up!", "win": "Star Station cleared!" }
+      }
+    },
+    {
+      "id": "8-7",
+      "order": 7,
+      "biome": "mushroom",
+      "evalType": "pyramid",
+      "lesson": 8,
+      "lessonId": "lesson-08-grid",
+      "title": {
+        "ru": "8-7: Крыша для Дома Светлячков",
+        "uz": "8-7: Yaltiroq qo'ng'izlar uyining tomi",
+        "en": "8-7: Firefly Cottage Roof"
+      },
+      "intro": {
+        "ru": "Сложи 3 яруса крыши (.tier) по центру: верхний уже среднего, средний уже нижнего.",
+        "uz": "Tomning 3 qavatini (.tier) markazga tekisla: yuqorisi tor, pasti keng bo'lsin.",
+        "en": "Center 3 roof tiers (.tier): top narrower than middle, middle narrower than bottom."
+      },
+      "allow": ["html", "css"],
+      "open": "style.css",
+      "selectors": { "box": ".roof", "plank": ".tier" },
+      "files": {
+        "ru": {
+          "index.html": "<div class=\"roof\">\n  <div class=\"tier t1\">1</div>\n  <div class=\"tier t2\">2</div>\n  <div class=\"tier t3\">3</div>\n</div>",
+          "style.css": "/* выстрой 3 яруса по центру и сделай разную ширину */\n.roof { display: grid; gap: 6px; width: 300px; }\n.tier { height: 45px; width: 280px; background: coral; }"
+        },
+        "uz": {
+          "index.html": "<div class=\"roof\">\n  <div class=\"tier t1\">1</div>\n  <div class=\"tier t2\">2</div>\n  <div class=\"tier t3\">3</div>\n</div>",
+          "style.css": "/* 3 qavatni markazga tekisla */\n.roof { display: grid; gap: 6px; width: 300px; }\n.tier { height: 45px; width: 280px; background: coral; }"
+        },
+        "en": {
+          "index.html": "<div class=\"roof\">\n  <div class=\"tier t1\">1</div>\n  <div class=\"tier t2\">2</div>\n  <div class=\"tier t3\">3</div>\n</div>",
+          "style.css": "/* center 3 tiers with increasing width */\n.roof { display: grid; gap: 6px; width: 300px; }\n.tier { height: 45px; width: 280px; background: coral; }"
+        }
+      },
+      "sampleCss": ".roof { display: grid; justify-items: center; gap: 6px; width: 300px; }\n.tier { height: 45px; background: coral; }\n.t1 { width: 120px; }\n.t2 { width: 200px; }\n.t3 { width: 280px; }",
+      "rules": { "count": 3, "maxGapY": 20 },
+      "reward": { "xpPerStar": 80, "maxXp": 240 },
+      "kapi": {
+        "ru": { "pushedGood": "Уютная крыша готова!", "win": "Грибная поляна пройдена!" },
+        "uz": { "pushedGood": "Shinam tom tayyor!", "win": "Qo'ziqorinli maydon o'tildi!" },
+        "en": { "pushedGood": "Cozy roof ready!", "win": "Mushroom Glade cleared!" }
+      }
+    },
+    {
+      "id": "8-8",
+      "order": 8,
+      "biome": "portal",
+      "evalType": "grid",
+      "lesson": 8,
+      "lessonId": "lesson-08-grid",
+      "title": {
+        "ru": "8-8: Руны Древнего Портала (2×2)",
+        "uz": "8-8: Qadimiy portal runalari (2×2)",
+        "en": "8-8: Ancient Portal Runes (2×2)"
+      },
+      "intro": {
+        "ru": "Собери матрицу 2×2 из 4 рун (.rune): repeat(2, 1fr), gap <= 20px, ширина >= 260px.",
+        "uz": "4 ta runadan 2×2 matritsa yig': repeat(2, 1fr), gap <= 20px, kengligi >= 260px.",
+        "en": "Build a 2×2 matrix of 4 runes (.rune): repeat(2, 1fr), gap <= 20px, width >= 260px."
+      },
+      "allow": ["html", "css"],
+      "open": "style.css",
+      "selectors": { "box": ".portal", "plank": ".rune" },
+      "files": {
+        "ru": {
+          "index.html": "<div class=\"portal\">\n  <div class=\"rune\">1</div><div class=\"rune\">2</div>\n  <div class=\"rune\">3</div><div class=\"rune\">4</div>\n</div>",
+          "style.css": "/* сетка 2x2 с repeat(2, 1fr) */\n.portal { width: 280px; }\n.rune { height: 80px; background: mediumpurple; }"
+        },
+        "uz": {
+          "index.html": "<div class=\"portal\">\n  <div class=\"rune\">1</div><div class=\"rune\">2</div>\n  <div class=\"rune\">3</div><div class=\"rune\">4</div>\n</div>",
+          "style.css": "/* repeat(2, 1fr) bilan 2x2 setka */\n.portal { width: 280px; }\n.rune { height: 80px; background: mediumpurple; }"
+        },
+        "en": {
+          "index.html": "<div class=\"portal\">\n  <div class=\"rune\">1</div><div class=\"rune\">2</div>\n  <div class=\"rune\">3</div><div class=\"rune\">4</div>\n</div>",
+          "style.css": "/* 2x2 grid using repeat(2, 1fr) */\n.portal { width: 280px; }\n.rune { height: 80px; background: mediumpurple; }"
+        }
+      },
+      "sampleCss": ".portal { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 280px; }\n.rune { height: 80px; background: mediumpurple; }",
+      "rules": { "count": 4, "cols": 2, "rows": 2, "maxGap": 20, "star2Gap": 14, "minWidth": 260, "tolX": 3, "tolW": 2 },
+      "reward": { "xpPerStar": 80, "maxXp": 240 },
+      "kapi": {
+        "ru": { "pushedGood": "Портал заряжен! Прыгай в вихрь!", "win": "Портал открыт!" },
+        "uz": { "pushedGood": "Portal quvvatlandi!", "win": "Portal ochildi!" },
+        "en": { "pushedGood": "Portal charged!", "win": "Portal unlocked!" }
+      }
+    },
+    {
+      "id": "8-9",
+      "order": 9,
+      "biome": "castle",
+      "evalType": "grid",
+      "lesson": 8,
+      "lessonId": "lesson-08-grid",
+      "title": {
+        "ru": "8-9: Мост Заоблачного Замка (4×2)",
+        "uz": "8-9: Osmon qal'asi ko'prigi (4×2)",
+        "en": "8-9: Sky Castle Drawbridge (4×2)"
+      },
+      "intro": {
+        "ru": "Собери большой мост из 8 плит: 4 колонки, 2 ряда, gap <= 18px, ширина >= 320px.",
+        "uz": "8 ta plitadan katta ko'prik qur: 4 ustun, 2 qator, gap <= 18px, kengligi >= 320px.",
+        "en": "Build a grand 8-tile drawbridge: 4 columns × 2 rows, gap <= 18px, width >= 320px."
+      },
+      "allow": ["html", "css"],
+      "open": "style.css",
+      "selectors": { "box": ".drawbridge", "plank": ".stone" },
+      "files": {
+        "ru": {
+          "index.html": "<div class=\"drawbridge\">\n  <div class=\"stone\">1</div><div class=\"stone\">2</div><div class=\"stone\">3</div><div class=\"stone\">4</div>\n  <div class=\"stone\">5</div><div class=\"stone\">6</div><div class=\"stone\">7</div><div class=\"stone\">8</div>\n</div>",
+          "style.css": "/* 4 колонки × 2 ряда */\n.drawbridge { width: 340px; }\n.stone { height: 55px; background: slategray; }"
+        },
+        "uz": {
+          "index.html": "<div class=\"drawbridge\">\n  <div class=\"stone\">1</div><div class=\"stone\">2</div><div class=\"stone\">3</div><div class=\"stone\">4</div>\n  <div class=\"stone\">5</div><div class=\"stone\">6</div><div class=\"stone\">7</div><div class=\"stone\">8</div>\n</div>",
+          "style.css": "/* 4 ustun × 2 qator */\n.drawbridge { width: 340px; }\n.stone { height: 55px; background: slategray; }"
+        },
+        "en": {
+          "index.html": "<div class=\"drawbridge\">\n  <div class=\"stone\">1</div><div class=\"stone\">2</div><div class=\"stone\">3</div><div class=\"stone\">4</div>\n  <div class=\"stone\">5</div><div class=\"stone\">6</div><div class=\"stone\">7</div><div class=\"stone\">8</div>\n</div>",
+          "style.css": "/* 4 columns × 2 rows */\n.drawbridge { width: 340px; }\n.stone { height: 55px; background: slategray; }"
+        }
+      },
+      "sampleCss": ".drawbridge { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 340px; }\n.stone { height: 55px; background: slategray; }",
+      "rules": { "count": 8, "cols": 4, "rows": 2, "maxGap": 18, "star2Gap": 12, "minWidth": 320, "tolX": 3, "tolW": 2 },
+      "reward": { "xpPerStar": 80, "maxXp": 240 },
+      "kapi": {
+        "ru": { "pushedGood": "Замковый мост опущен!", "win": "Заоблачный Замок покорён!" },
+        "uz": { "pushedGood": "Qal'a ko'prigi tushirildi!", "win": "Osmon qal'asi zabt etildi!" },
+        "en": { "pushedGood": "Castle drawbridge lowered!", "win": "Sky Castle conquered!" }
+      }
+    },
+    {
+      "id": "8-10",
+      "order": 10,
+      "biome": "observatory",
+      "evalType": "grid",
+      "lesson": 8,
+      "lessonId": "lesson-08-grid",
+      "title": {
+        "ru": "8-10: Солнечные крылья (3×3)",
+        "uz": "8-10: Quyosh qanotlari (3×3)",
+        "en": "8-10: Solar Array (3×3)"
+      },
+      "intro": {
+        "ru": "Собери матрицу 3×3 из 9 солнечных ячеек (.cell): repeat(3, 1fr), gap <= 16px, ширина >= 300px.",
+        "uz": "9 ta quyosh panelidan 3×3 matritsa yig': repeat(3, 1fr), gap <= 16px, kengligi >= 300px.",
+        "en": "Build a 3×3 solar matrix (9 .cell): repeat(3, 1fr), gap <= 16px, width >= 300px."
+      },
+      "allow": ["html", "css"],
+      "open": "style.css",
+      "selectors": { "box": ".solar", "plank": ".cell" },
+      "files": {
+        "ru": {
+          "index.html": "<div class=\"solar\">\n  <div class=\"cell\">1</div><div class=\"cell\">2</div><div class=\"cell\">3</div>\n  <div class=\"cell\">4</div><div class=\"cell\">5</div><div class=\"cell\">6</div>\n  <div class=\"cell\">7</div><div class=\"cell\">8</div><div class=\"cell\">9</div>\n</div>",
+          "style.css": "/* сетка 3x3 */\n.solar { width: 300px; }\n.cell { height: 55px; background: royalblue; }"
+        },
+        "uz": {
+          "index.html": "<div class=\"solar\">\n  <div class=\"cell\">1</div><div class=\"cell\">2</div><div class=\"cell\">3</div>\n  <div class=\"cell\">4</div><div class=\"cell\">5</div><div class=\"cell\">6</div>\n  <div class=\"cell\">7</div><div class=\"cell\">8</div><div class=\"cell\">9</div>\n</div>",
+          "style.css": "/* 3x3 setka */\n.solar { width: 300px; }\n.cell { height: 55px; background: royalblue; }"
+        },
+        "en": {
+          "index.html": "<div class=\"solar\">\n  <div class=\"cell\">1</div><div class=\"cell\">2</div><div class=\"cell\">3</div>\n  <div class=\"cell\">4</div><div class=\"cell\">5</div><div class=\"cell\">6</div>\n  <div class=\"cell\">7</div><div class=\"cell\">8</div><div class=\"cell\">9</div>\n</div>",
+          "style.css": "/* 3x3 grid */\n.solar { width: 300px; }\n.cell { height: 55px; background: royalblue; }"
+        }
+      },
+      "sampleCss": ".solar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 300px; }\n.cell { height: 55px; background: royalblue; }",
+      "rules": { "count": 9, "cols": 3, "rows": 3, "maxGap": 16, "star2Gap": 10, "minWidth": 300, "tolX": 3, "tolW": 2 },
+      "reward": { "xpPerStar": 80, "maxXp": 240 },
+      "kapi": {
+        "ru": { "pushedGood": "Солнечные батареи заряжены!", "win": "Обсерватория открыта!" },
+        "uz": { "pushedGood": "Quyosh batareyalari to'ldi!", "win": "Observatoriya ochildi!" },
+        "en": { "pushedGood": "Solar array charged!", "win": "Observatory unlocked!" }
+      }
+    },
+    {
+      "id": "8-11",
+      "order": 11,
+      "biome": "crown",
+      "evalType": "grid",
+      "lesson": 8,
+      "lessonId": "lesson-08-grid",
+      "title": {
+        "ru": "8-11: Радужная Дорога Короны (6×1)",
+        "uz": "8-11: Toj kamalak yo'li (6×1)",
+        "en": "8-11: Rainbow Crown Road (6×1)"
+      },
+      "intro": {
+        "ru": "Финал! Построй радужный путь из 6 колонн (repeat(6, 1fr)), gap <= 14px, ширина >= 360px.",
+        "uz": "Final! 6 ustundan iborat kamalak yo'lini qur (repeat(6, 1fr)), gap <= 14px, kengligi >= 360px.",
+        "en": "Finale! Build a 6-column rainbow path (repeat(6, 1fr)), gap <= 14px, width >= 360px."
+      },
+      "allow": ["html", "css"],
+      "open": "style.css",
+      "selectors": { "box": ".rainbow", "plank": ".bar" },
+      "files": {
+        "ru": {
+          "index.html": "<div class=\"rainbow\">\n  <div class=\"bar b1\">1</div><div class=\"bar b2\">2</div><div class=\"bar b3\">3</div>\n  <div class=\"bar b4\">4</div><div class=\"bar b5\">5</div><div class=\"bar b6\">6</div>\n</div>",
+          "style.css": "/* 6 равных колонок в ряд */\n.rainbow { width: 360px; }\n.bar { height: 75px; background: gold; }\n.b1{background:crimson}.b2{background:orange}.b3{background:gold}.b4{background:limegreen}.b5{background:dodgerblue}.b6{background:blueviolet}"
+        },
+        "uz": {
+          "index.html": "<div class=\"rainbow\">\n  <div class=\"bar b1\">1</div><div class=\"bar b2\">2</div><div class=\"bar b3\">3</div>\n  <div class=\"bar b4\">4</div><div class=\"bar b5\">5</div><div class=\"bar b6\">6</div>\n</div>",
+          "style.css": "/* 1 qatorda 6 ta teng ustun */\n.rainbow { width: 360px; }\n.bar { height: 75px; background: gold; }\n.b1{background:crimson}.b2{background:orange}.b3{background:gold}.b4{background:limegreen}.b5{background:dodgerblue}.b6{background:blueviolet}"
+        },
+        "en": {
+          "index.html": "<div class=\"rainbow\">\n  <div class=\"bar b1\">1</div><div class=\"bar b2\">2</div><div class=\"bar b3\">3</div>\n  <div class=\"bar b4\">4</div><div class=\"bar b5\">5</div><div class=\"bar b6\">6</div>\n</div>",
+          "style.css": "/* 6 equal columns in a row */\n.rainbow { width: 360px; }\n.bar { height: 75px; background: gold; }\n.b1{background:crimson}.b2{background:orange}.b3{background:gold}.b4{background:limegreen}.b5{background:dodgerblue}.b6{background:blueviolet}"
+        }
+      },
+      "sampleCss": ".rainbow { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; width: 360px; }\n.bar { height: 75px; }\n.b1{background:crimson}.b2{background:orange}.b3{background:gold}.b4{background:limegreen}.b5{background:dodgerblue}.b6{background:blueviolet}",
+      "rules": { "count": 6, "cols": 6, "rows": 1, "maxGap": 14, "star2Gap": 10, "minWidth": 360, "tolX": 3, "tolW": 2 },
+      "reward": { "xpPerStar": 80, "maxXp": 240 },
+      "kapi": {
+        "ru": { "pushedGood": "Радужный путь сияет! Беги к Короне!", "win": "Ты Мастер CSS Grid! Все 11 уровней пройдены!" },
+        "uz": { "pushedGood": "Kamalak yo'li porlamoqda!", "win": "Sen CSS Grid ustasisan! Barcha 11 daraja o'tildi!" },
+        "en": { "pushedGood": "Rainbow path is shining!", "win": "You are a CSS Grid Master! All 11 levels complete!" }
+      }
+    }
+  ]
+}

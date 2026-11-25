@@ -85,6 +85,7 @@ export const DECOR = {
   star: { emoji: '⭐', layer: 'wall', name: T3('Звезда', 'Yulduz', 'Star'), rule: ['streak', 7] },
   cup: { emoji: '☕', layer: 'floor', name: T3('Кружка какао', 'Kakao krujkasi', 'Cocoa mug'), rule: ['answers', 3] },
   bouquet: { emoji: '💐', layer: 'floor', name: T3('Букет', 'Guldasta', 'Bouquet'), rule: ['rated', 3] },
+  bridge: { emoji: '🌉', layer: 'floor', name: T3('Деревянный мостик', 'Yog\'och ko\'prik', 'Wooden bridge'), rule: ['world', 1] },
 };
 const RULE_TXT = {
   tests: T3('Реши тестов: {n}', 'Testlar yech: {n}', 'Solve tests: {n}'),
@@ -94,6 +95,7 @@ const RULE_TXT = {
   streak: T3('Серия дней: {n}', 'Kunlar seriyasi: {n}', 'Day streak: {n}'),
   answers: T3('Ответь одноклассникам: {n}', 'Sinfdoshlarga javob: {n}', 'Answer classmates: {n}'),
   rated: T3('Звёзды от одноклассников: {n}', 'Sinfdoshlardan yulduz: {n}', 'Stars from classmates: {n}'),
+  world: T3('Пройди уровень в «Мире Roblox»: {n}', '«Roblox dunyosi»da darajani o\'t: {n}', 'Complete a «Roblox World» level: {n}'),
 };
 export const WALLS = ['mint', 'peach', 'sky', 'lilac', 'lemon', 'night'];
 export const FLOORS = ['wood', 'tiles', 'carpet', 'grass'];
@@ -453,6 +455,7 @@ export function createSocial({ logic, store, code, notifyTeacher = async () => {
       streak: Math.max(user(uid)?.streak || 0, user(uid)?.bestStreak || 0),
       answers: Object.values(G().questions).filter((q) => q.to === uid && q.answer).length,
       rated: Object.values(G().ratings).filter((r) => r.to === uid).length,
+      world: (user(uid)?.worldDecor || []).length,
     };
   }
   const decorOwned = (uid, prog = progressOf(uid)) => Object.entries(DECOR).filter(([, d]) => user(uid)?.unlockAll || !d.rule || prog[d.rule[0]] >= d.rule[1]).map(([id]) => id);

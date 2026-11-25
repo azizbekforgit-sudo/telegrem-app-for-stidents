@@ -259,7 +259,7 @@ export function buildPage(files) {
   if (!html.trim() && js) html = '<!DOCTYPE html><html><body></body></html>';
   html = html.replace(/<link[^>]*href=["'][^"']*\.css["'][^>]*>/gi, '').replace(/<script[^>]*src=["'][^"']*\.js["'][^>]*>\s*<\/script>/gi, '');
   const head = `<meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font-family:system-ui,sans-serif}</style><style>${css.replace(/<\/style/gi, '')}</style>`;
-  const spy = `<script>(function(){var send=function(t,a){try{parent.postMessage({ide:1,t:t,a:[].map.call(a,function(x){try{return typeof x==='object'?JSON.stringify(x):String(x)}catch(e){return String(x)}}).join(' ')},'*')}catch(e){}};['log','info','warn','error'].forEach(function(k){var o=console[k];console[k]=function(){send(k,arguments);o.apply(console,arguments)}});window.onerror=function(m,s,l){send('error',[m+(l?' (строка '+l+')':'')])};window.alert=function(m){send('log',['alert: '+m])};window.prompt=function(m){send('log',['prompt: '+m]);return ''};})();<\/script>`;
+  const spy = `<script>(function(){var send=function(t,a){try{parent.postMessage({ide:1,t:t,a:[].map.call(a,function(x){try{return typeof x==='object'?JSON.stringify(x):String(x)}catch(e){return String(x)}}).join(' ')},'*')}catch(e){}};['log','info','warn','error'].forEach(function(k){var o=console[k];console[k]=function(){send(k,arguments);o.apply(console,arguments)}});window.onerror=function(m,s,l){send('error',[m+(l?' (строка '+l+')':'')])};window.alert=function(m){send('log',['alert: '+m])};window.prompt=function(m){send('log',['prompt: '+m]);return ''};window.addEventListener('message',function(e){var d=e.data;if(!d||d.ide!==1||d.ask!=='boxes')return;var cEl=document.querySelector(d.box||'.bridge');var cR=cEl?cEl.getBoundingClientRect():{left:0,top:0,width:300,height:130};var boxes=[].map.call(document.querySelectorAll(d.sel||'.plank'),function(el){var r=el.getBoundingClientRect();return{x:Math.round((r.left-cR.left)*10)/10,y:Math.round((r.top-cR.top)*10)/10,w:Math.round(r.width*10)/10,h:Math.round(r.height*10)/10,color:getComputedStyle(el).backgroundColor}});parent.postMessage({ide:1,t:'boxes',id:d.id||0,container:{x:0,y:0,w:Math.round(cR.width*10)/10,h:Math.round(cR.height*10)/10},boxes:boxes},'*')});})();<\/script>`;
   // защита от бесконечного цикла: каждый виток считается, после 100 000 — стоп с понятной ошибкой
   const guarded = js.replace(/\b(for|while)\s*\(((?:[^()]|\([^()]*\))*)\)\s*\{/g, '$1 ($2) { if (++__lg > 100000) throw new Error("Бесконечный цикл! Он не останавливается — проверь условие");');
   const body = js ? `<script>${spy.slice(8, -9)}\n;var __lg=0;try{\n${guarded.replace(/<\/script/gi, '<\\/script')}\n}catch(e){console.error(e.message)}<\/script>` : spy;
@@ -333,7 +333,17 @@ export function createIde(host, { files, open, allow = [], onChange, onBlocked, 
   let consoleText = '';
   let frameTimer = null;
   const frame = $('[data-frame]');
-  const onMsg = (e) => { if (e.source !== frame.contentWindow || !e.data?.ide) return; consoleText += `${e.data.t === 'error' ? '✖ ' : ''}${e.data.a}\n`; $('[data-cons]').textContent = consoleText; onConsole?.(consoleText); };
+  let boxSeq = 0;
+  const boxWait = new Map();
+  const onMsg = (e) => {
+    if (e.source !== frame.contentWindow || !e.data?.ide) return;
+    if (e.data.t === 'boxes') {
+      const fn = boxWait.get(e.data.id);
+      if (fn) { boxWait.delete(e.data.id); fn({ container: e.data.container, boxes: e.data.boxes || [] }); }
+      return;
+    }
+    consoleText += `${e.data.t === 'error' ? '✖ ' : ''}${e.data.a}\n`; $('[data-cons]').textContent = consoleText; onConsole?.(consoleText);
+  };
   window.addEventListener('message', onMsg);
 
   function tabs() {
@@ -509,6 +519,16 @@ export function createIde(host, { files, open, allow = [], onChange, onBlocked, 
       $('[data-problems]').innerHTML = list.length ? list.map((p) => `<div class="p${p.sev}"><i>${p.sev >= 2 ? '✖' : '⚠'}</i><span>${esc(tr(p.msg))}</span><em>${esc(p.file)}${p.line ? `:${p.line}` : ''}</em></div>`).join('') : `<div class="ok">✓ ${esc(tr('Ошибок нет'))}</div>`;
     },
     console: () => consoleText,
+    askBoxes(sel = '.plank', boxSel = '.bridge') {
+      return new Promise((res) => {
+        if (!frame.srcdoc) run();
+        const id = ++boxSeq;
+        const t = setTimeout(() => { boxWait.delete(id); res({ container: { x: 0, y: 0, w: 300, h: 130 }, boxes: [] }); }, 1500);
+        boxWait.set(id, (data) => { clearTimeout(t); res(data); });
+        const send = () => { try { frame.contentWindow?.postMessage({ ide: 1, ask: 'boxes', id, sel, box: boxSel }, '*'); } catch { /* */ } };
+        setTimeout(send, 80);
+      });
+    },
     focus: () => (mon ? mon.focus() : ta.focus()),
     // подсветить строку с ошибкой
     mark(line) {
