@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Штаб Зубрика</title>
+<style>
+  :root { --bg: #0f1117; --panel: #171a23; --line: #262a37; --fg: #e8eaf1; --mute: #8b90a3;
+    --aziz: #4f8cff; --claude: #ff8a3d; --antigravity: #a26bff; --good: #2fd27a; --warn: #ffc53d; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.45 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; height: 100vh; display: flex; flex-direction: column; }
+  header { display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-bottom: 1px solid var(--line); background: var(--panel); }
+  header h1 { font-size: 18px; margin: 0 auto 0 0; letter-spacing: .3px; }
+  .sync { font-size: 12px; color: var(--mute); display: flex; align-items: center; gap: 6px; }
+  .sync i { width: 8px; height: 8px; border-radius: 50%; background: var(--good); }
+  .sync.bad i { background: #ff5a5a; }
+  .crew { display: flex; gap: 14px; padding: 16px 20px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .agent { flex: 1 1 260px; display: flex; gap: 12px; align-items: center; padding: 12px 14px; border-radius: 14px; background: var(--panel); border: 1px solid var(--line); cursor: pointer; position: relative; transition: transform .15s, box-shadow .3s, border-color .3s; }
+  .agent:hover { transform: translateY(-1px); }
+  .ava { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 18px; color: #fff; flex: none; position: relative; }
+  .ava::after { content: ''; position: absolute; right: -2px; bottom: -2px; width: 14px; height: 14px; border-radius: 50%; border: 3px solid var(--panel); background: #555b6e; }
+  .agent.working .ava::after { background: var(--warn); animation: pulse 1.2s infinite; }
+  .agent.done .ava::after { background: var(--good); }
+  .agent.unseen { border-color: var(--good); box-shadow: 0 0 0 2px #2fd27a44, 0 0 26px #2fd27a66; animation: glow 1.6s ease-in-out infinite; }
+  @keyframes glow { 50% { box-shadow: 0 0 0 3px #2fd27a66, 0 0 40px #2fd27aaa; } }
+  @keyframes pulse { 50% { opacity: .35; } }
+  .agent b { display: block; }
+  .agent small { color: var(--mute); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 360px; }
+  .agent .call { margin-left: auto; font-size: 12px; padding: 6px 10px; border-radius: 9px; border: 1px solid var(--line); background: transparent; color: var(--fg); cursor: pointer; }
+  .agent .call:hover { background: var(--line); }
+  .badge { position: absolute; top: -8px; right: 12px; background: var(--good); color: #062; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 99px; }
+  main { flex: 1; overflow-y: auto; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; }
+  .msg { display: flex; gap: 10px; max-width: 860px; }
+  .msg.me { align-self: flex-end; flex-direction: row-reverse; }
+  .msg .ava { width: 34px; height: 34px; font-size: 14px; }
+  .msg .ava::after { display: none; }
+  .bub { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 9px 13px; min-width: 120px; }
+  .msg.me .bub { background: #1b2a4a; border-color: #2a4170; }
+  .meta { font-size: 12px; color: var(--mute); margin-bottom: 3px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .meta .who { font-weight: 700; }
+  .tag { font-size: 11px; padding: 1px 7px; border-radius: 99px; background: var(--line); color: var(--fg); }
+  .tag.plan { background: #3a3215; color: #ffd36e; } .tag.report { background: #13351f; color: #6ff0a4; } .tag.result { background: #2f1a4d; color: #d4b6ff; } .tag.task { background: #15284d; color: #9cc1ff; }
+  .txt { white-space: pre-wrap; word-break: break-word; }
+  .txt code { background: #0b0d12; padding: 1px 5px; border-radius: 5px; font-size: 13px; }
+  footer { border-top: 1px solid var(--line); padding: 12px 20px; background: var(--panel); display: flex; gap: 10px; align-items: flex-end; }
+  select, textarea, button.send { font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 12px; }
+  select { padding: 10px; }
+  textarea { flex: 1; resize: none; min-height: 46px; max-height: 180px; padding: 11px 13px; }
+  button.send { background: var(--aziz); border: 0; color: #fff; font-weight: 700; padding: 12px 18px; cursor: pointer; }
+  label.task { font-size: 13px; color: var(--mute); display: flex; gap: 6px; align-items: center; white-space: nowrap; padding-bottom: 12px; }
+  dialog { background: var(--panel); color: var(--fg); border: 1px solid var(--line); border-radius: 18px; max-width: 640px; width: 92vw; padding: 22px; }
+  dialog::backdrop { background: #000a; }
+  dialog h2 { margin: 0 0 4px; } dialog .sum { white-space: pre-wrap; background: var(--bg); border-radius: 12px; padding: 12px 14px; margin: 12px 0; }
+  dialog button { font: inherit; padding: 10px 16px; border-radius: 10px; border: 0; background: var(--good); color: #052; font-weight: 700; cursor: pointer; }
+  .empty { margin: auto; text-align: center; color: var(--mute); }
+  .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: #222838; padding: 10px 16px; border-radius: 10px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<header><h1>🛰️ Штаб Зубрика</h1><div class="sync" id="sync"><i></i><span>синхронизация…</span></div></header>
+<section class="crew" id="crew"></section>
+<main id="feed"><div class="empty">Пока тихо. Дай задачу — агенты разделят её между собой.</div></main>
+<footer>
+  <select id="to"><option value="all">Всем</option><option value="claude">Claude</option><option value="antigravity">Antigravity</option></select>
+  <label class="task"><input type="checkbox" id="isTask" checked> это задача</label>
+  <textarea id="text" placeholder="Напиши задачу или сообщение… (Enter — отправить, Shift+Enter — новая строка)"></textarea>
+  <button class="send" id="send">Отправить</button>
+</footer>
+<dialog id="dlg"><h2 id="dTitle"></h2><small id="dSub" style="color:var(--mute)"></small><div class="sum" id="dSum"></div><div id="dMsgs"></div><p style="text-align:right;margin:12px 0 0"><button id="dOk">Понятно</button></p></dialog>
+<div class="toast" id="toast"></div>
+<script>
+const COLORS = { aziz: 'var(--aziz)', claude: 'var(--claude)', antigravity: 'var(--antigravity)' };
+const KIND = { plan: 'план', report: 'отчёт', result: 'итог', task: 'задача' };
+const STATE = { idle: 'ждёт задачу', working: 'работает…', done: 'закончил' };
+const CALL = {
+  claude: 'Загляни в Штаб: прочитай новые сообщения (.agents/chat.jsonl) и действуй по скиллу team, раздел «Штаб».',
+  antigravity: 'Загляни в Штаб: сделай git pull, прочитай новые сообщения в .agents/chat.jsonl и действуй по скиллу team (.agent/skills/team/SKILL.md), раздел «Штаб».',
+};
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const rich = (s) => esc(s).replace(/`([^`\n]+)`/g, '<code>$1</code>').replace(/\*\*([^*\n]+)\*\*/g, '<b>$1</b>');
+const time = (iso) => { const d = new Date(iso); return d.toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }); };
+let S = null, lastCount = -1;
+const $ = (id) => document.getElementById(id);
+const toast = (t) => { const e = $('toast'); e.textContent = t; e.classList.add('show'); setTimeout(() => e.classList.remove('show'), 1800); };
+
+async function load() {
+  try { S = await (await fetch('/api/state')).json(); } catch { $('sync').className = 'sync bad'; $('sync').lastElementChild.textContent = 'Штаб не отвечает'; return; }
+  const sy = $('sync');
+  sy.className = 'sync' + (S.sync.ok ? '' : ' bad');
+  sy.lastElementChild.textContent = S.sync.ok ? `git: ${S.sync.at ? time(S.sync.at) : '…'}` : S.sync.err;
+  renderCrew(); renderFeed();
+}
+function renderCrew() {
+  $('crew').innerHTML = ['claude', 'antigravity'].map((a) => {
+    const st = S.status[a] || { state: 'idle' };
+    const cls = `${st.state || 'idle'} ${st.unseen ? 'unseen' : ''}`;
+    return `<div class="agent ${cls}" data-a="${a}">${st.unseen ? '<span class="badge">новое</span>' : ''}
+      <div class="ava" style="background:${COLORS[a]}">${S.people[a].name[0]}</div>
+      <div><b>${S.people[a].name}</b><small>${esc(STATE[st.state] || 'ждёт задачу')}${st.task ? ' · ' + esc(st.task) : ''}</small></div>
+      <button class="call" data-call="${a}" title="Скопировать команду для агента">Позвать</button></div>`;
+  }).join('');
+  document.querySelectorAll('[data-a]').forEach((el) => (el.onclick = (e) => { if (e.target.closest('[data-call]')) return; openAgent(el.dataset.a); }));
+  document.querySelectorAll('[data-call]').forEach((b) => (b.onclick = async () => { try { await navigator.clipboard.writeText(CALL[b.dataset.call]); toast(`Скопировано — вставь в чат ${S.people[b.dataset.call].name}`); } catch { prompt('Скопируй и вставь агенту:', CALL[b.dataset.call]); } }));
+}
+function renderFeed() {
+  const ms = S.messages;
+  if (ms.length === lastCount) return;
+  const feed = $('feed');
+  const atBottom = feed.scrollHeight - feed.scrollTop - feed.clientHeight < 80;
+  lastCount = ms.length;
+  feed.innerHTML = ms.length ? ms.map((m) => {
+    const p = S.people[m.from] || { name: m.from };
+    const to = m.to && m.to !== 'all' ? ` → ${esc(S.people[m.to]?.name || m.to)}` : ' → всем';
+    return `<div class="msg ${m.from === 'aziz' ? 'me' : ''}"><div class="ava" style="background:${COLORS[m.from] || '#555'}">${esc(p.name[0])}</div>
+      <div class="bub"><div class="meta"><span class="who" style="color:${COLORS[m.from]}">${esc(p.name)}</span><span>${to}</span>${m.kind && KIND[m.kind] ? `<span class="tag ${m.kind}">${KIND[m.kind]}</span>` : ''}${m.task ? `<span class="tag">${esc(m.task)}</span>` : ''}<span>${time(m.at)}</span></div>
+      <div class="txt">${rich(m.text)}</div></div></div>`;
+  }).join('') : '<div class="empty">Пока тихо. Дай задачу — агенты разделят её между собой.</div>';
+  if (atBottom || lastCount < 0) feed.scrollTop = feed.scrollHeight;
+}
+function openAgent(a) {
+  const st = S.status[a] || {};
+  const seenFrom = st.at || '';
+  const mine = S.messages.filter((m) => m.from === a).slice(-4);
+  $('dTitle').textContent = `${S.people[a].name}: ${STATE[st.state] || 'ждёт задачу'}`;
+  $('dSub').textContent = `${st.task ? st.task + ' · ' : ''}${st.at ? 'обновлено ' + time(st.at) : ''}`;
+  $('dSum').innerHTML = st.summary ? rich(st.summary) : '<span style="color:var(--mute)">Итога пока нет.</span>';
+  $('dMsgs').innerHTML = mine.length ? '<small style="color:var(--mute)">Последние сообщения:</small>' + mine.map((m) => `<div class="bub" style="margin-top:8px"><div class="meta">${time(m.at)} ${m.kind && KIND[m.kind] ? `<span class="tag ${m.kind}">${KIND[m.kind]}</span>` : ''}</div><div class="txt">${rich(m.text)}</div></div>`).join('') : '';
+  $('dlg').showModal();
+  $('dOk').onclick = async () => { $('dlg').close(); if (st.unseen) { await fetch('/api/seen', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ agent: a }) }); load(); } };
+}
+async function sendMsg() {
+  const text = $('text').value.trim();
+  if (!text) return;
+  $('send').disabled = true;
+  try {
+    const r = await fetch('/api/msg', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text, to: $('to').value, kind: $('isTask').checked ? 'task' : 'msg' }) });
+    if (!r.ok) throw new Error((await r.json()).error);
+    $('text').value = '';
+    toast('Отправлено. Теперь нажми «Позвать» у агентов');
+    lastCount = -1; await load();
+  } catch (e) { toast('Ошибка: ' + e.message); }
+  $('send').disabled = false;
+}
+$('send').onclick = sendMsg;
+$('text').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); } });
+load(); setInterval(load, 3000);
+</script>
+</body>
+</html>

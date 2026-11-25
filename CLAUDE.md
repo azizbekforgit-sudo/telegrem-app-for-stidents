@@ -269,4 +269,4 @@
 
 ## Командная работа с Antigravity
 
-Второй агент — Antigravity (на компьютере Азиза). Общаемся через `.agents/`: доска задач `BOARD.md`, журнал `LOG.md`, правила `PROTOCOL.md`; для Antigravity — `AGENTS.md`. У Claude — скилл `/team` (`.claude/skills/team/SKILL.md`). Роли раздаёт Азиз.
+Второй агент — Antigravity (на компьютере Азиза). Общаемся через `.agents/`: доска задач `BOARD.md`, журнал `LOG.md`, правила `PROTOCOL.md`; для Antigravity — `AGENTS.md`. У Claude — скилл `/team` (`.claude/skills/team/SKILL.md`). Роли раздаёт Азиз. **Штаб** — общий чат с индикаторами (`npm run shtab` на компьютере Азиза, `tools/shtab/`, сообщения агентов — `node tools/shtab/say.mjs`), правила — раздел «Штаб» в `.agents/PROTOCOL.md`.
