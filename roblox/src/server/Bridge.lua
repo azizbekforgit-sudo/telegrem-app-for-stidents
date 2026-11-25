@@ -1,4 +1,6 @@
--- Превращение прямоугольников из CSS Grid в 3D-доски с DragDetector
+-- Превращение прямоугольников из CSS Grid в 3D-доски:
+-- 1) DragDetector (TranslateViewPlane) для свободного перетаскивания мышкой/пальцем
+-- 2) Кнопка [E] «Взять / Поставить мост» (ProximityPrompt) для лёгкой переноски
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local Config = require(ReplicatedStorage.Shared.Config)
@@ -18,13 +20,10 @@ function Bridge.Spawn(plot, boxes, container)
 	model.Name = "PlayerBridge"
 
 	local scale = Config.SCALE or 10
-	local minX, minY = math.huge, math.huge
-	local maxX, maxY = -math.huge, -math.huge
+	local minX, minY, maxX, maxY = math.huge, math.huge, -math.huge, -math.huge
 	for _, b in ipairs(boxes) do
-		local x = tonumber(b.x) or 0
-		local y = tonumber(b.y) or 0
-		local w = tonumber(b.w) or 80
-		local h = tonumber(b.h) or 60
+		local x, y = tonumber(b.x) or 0, tonumber(b.y) or 0
+		local w, h = tonumber(b.w) or 80, tonumber(b.h) or 60
 		minX = math.min(minX, x)
 		minY = math.min(minY, y)
 		maxX = math.max(maxX, x + w)
@@ -36,7 +35,7 @@ function Bridge.Spawn(plot, boxes, container)
 	local origin = plot.printerPos + Vector3.new(0, 3.2, 0)
 
 	local parts = {}
-	local phys = PhysicalProperties.new(2.0, 1.5, 0.05, 1.0, 1.0)
+	local phys = PhysicalProperties.new(1.5, 1.5, 0.05, 1.0, 1.0)
 
 	for i, b in ipairs(boxes) do
 		local w = math.clamp((tonumber(b.w) or 80) / scale, 0.4, 200)
@@ -66,7 +65,6 @@ function Bridge.Spawn(plot, boxes, container)
 		plank.Anchored = false
 		plank.Parent = model
 
-		-- Номер доски сверху
 		local sg = Instance.new("SurfaceGui")
 		sg.Face = Enum.NormalId.Top
 		sg.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
@@ -95,38 +93,82 @@ function Bridge.Spawn(plot, boxes, container)
 		weld.Parent = primary
 	end
 
-	-- Помогаем мосту не переворачиваться
+	-- Стабилизатор наклона (не переворачивается)
 	local gyro = Instance.new("AlignOrientation")
 	gyro.Mode = Enum.OrientationAlignmentMode.OneAttachment
-	local att = Instance.new("Attachment")
-	att.Parent = primary
+	local att = Instance.new("Attachment", primary)
 	gyro.Attachment0 = att
-	gyro.MaxTorque = 25000
-	gyro.Responsiveness = 12
+	gyro.MaxTorque = 40000
+	gyro.Responsiveness = 20
 	gyro.CFrame = CFrame.new()
 	gyro.Parent = primary
 
-	-- DragDetector: ученица берёт мост руками и несёт к пропасти
+	-- DragDetector: можно свободно тянуть мышкой/пальцем в пространстве (TranslateViewPlane)
 	local drag = Instance.new("DragDetector")
-	drag.DragStyle = Enum.DragDetectorDragStyle.TranslatePlane
-	drag.MaxForce = 60000
-	drag.Responsiveness = 25
+	drag.DragStyle = Enum.DragDetectorDragStyle.TranslateViewPlane
+	drag.PermissionPolicy = Enum.DragDetectorPermissionPolicy.Everybody
+	drag.MaxForce = math.huge
+	drag.MaxTorque = 0
+	drag.Responsiveness = 30
 	drag.ApplyAtCenterOfMass = true
-	drag.Parent = model
+	drag.Parent = primary
+
+	-- ProximityPrompt: удобная кнопка [E] Взять / Поставить мост
+	local carrying = false
+	local prompt = Instance.new("ProximityPrompt")
+	prompt.ActionText = "Взять мост"
+	prompt.ObjectText = "Мост из CSS"
+	prompt.MaxActivationDistance = 14
+	prompt.HoldDuration = 0
+	prompt.Parent = primary
+
+	local function setCarry(state)
+		carrying = state
+		prompt.ActionText = carrying and "Поставить мост" or "Взять мост"
+		for _, p in ipairs(parts) do
+			p.CanCollide = not carrying
+			p.Massless = carrying
+		end
+		if not carrying then
+			primary.AssemblyLinearVelocity = Vector3.zero
+			primary.AssemblyAngularVelocity = Vector3.zero
+		end
+	end
+
+	prompt.Triggered:Connect(function(plr)
+		if plr ~= plot.owner then
+			return
+		end
+		setCarry(not carrying)
+	end)
+
+	drag.DragStart:Connect(function()
+		if carrying then
+			setCarry(false)
+		end
+	end)
 
 	model.Parent = plot.folder
 	plot.bridgeModel = model
 
-	-- Не даём выбросить мост за пределы участка
 	local conn
 	conn = RunService.Heartbeat:Connect(function()
 		if not model.Parent or not primary.Parent then
 			conn:Disconnect()
 			return
 		end
+		if carrying and plot.owner and plot.owner.Character then
+			local hrp = plot.owner.Character:FindFirstChild("HumanoidRootPart")
+			if hrp then
+				local targetCF = CFrame.new(hrp.Position + hrp.CFrame.LookVector * 10 + Vector3.new(0, 2.5, 0))
+				primary.AssemblyLinearVelocity = Vector3.zero
+				model:PivotTo(targetCF)
+				return
+			end
+		end
 		local pos = primary.Position
 		local flat = Vector3.new(pos.X - plot.center.X, 0, pos.Z - plot.center.Z)
-		if flat.Magnitude > 85 or pos.Y < plot.center.Y - 6 then
+		if flat.Magnitude > 90 or pos.Y < plot.center.Y - 8 then
 			primary.AssemblyLinearVelocity = Vector3.zero
 			primary.AssemblyAngularVelocity = Vector3.zero
 			model:PivotTo(CFrame.new(origin))

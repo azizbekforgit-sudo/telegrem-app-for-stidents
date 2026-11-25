@@ -114,6 +114,9 @@ pairFn.OnServerInvoke = function(player, rawCode)
 	plot.lastPushId = 0
 	plot.lastActivity = os.clock()
 
+	if data.mascot then
+		Mascot.SetType(plot, data.mascot)
+	end
 	if data.accent and Config.ACCENTS[data.accent] and plot.flagCloth then
 		plot.flagCloth.Color = Config.ACCENTS[data.accent]
 	end
@@ -131,6 +134,10 @@ pairFn.OnServerInvoke = function(player, rawCode)
 	end
 
 	plot.onWin = function()
+		plot.won = true
+		if plot.finishPos then
+			plot.currentSpawn = plot.finishPos + Vector3.new(0, 4, 0)
+		end
 		if plot.chestLid then
 			TweenService:Create(plot.chestLid, TweenInfo.new(0.8, Enum.EasingStyle.Back), {
 				CFrame = plot.chestLid.CFrame * CFrame.new(0, 0.8, -1.0) * CFrame.Angles(-math.pi / 3, 0, 0),
@@ -178,11 +185,23 @@ task.spawn(function()
 					if plot.signHintLabel and plot.kapiLines.signHint then
 						plot.signHintLabel.Text = plot.kapiLines.signHint
 					end
-					if data.user and data.user.accent and Config.ACCENTS[data.user.accent] and plot.flagCloth then
-						plot.flagCloth.Color = Config.ACCENTS[data.user.accent]
+					if data.user then
+						if data.user.mascot then
+							Mascot.SetType(plot, data.user.mascot)
+						end
+						if data.user.accent and Config.ACCENTS[data.user.accent] and plot.flagCloth then
+							plot.flagCloth.Color = Config.ACCENTS[data.user.accent]
+						end
 					end
 
 					local st = data.state
+					if st and st.won and not plot.won then
+						plot.won = true
+						plot.stars = math.max(plot.stars, tonumber(st.stars) or 1)
+						if plot.finishPos then
+							plot.currentSpawn = plot.finishPos + Vector3.new(0, 4, 0)
+						end
+					end
 					if st and st.pushId and st.pushId ~= plot.lastPushId then
 						plot.lastPushId = st.pushId
 						plot.lastActivity = os.clock()

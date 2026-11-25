@@ -214,6 +214,33 @@ local function buildPlot(plot)
 		}):Play()
 	end
 
+	-- Фонарики-кристаллы вдоль дорожки, грибочки и ягодные кусты
+	for i = 0, 4 do
+		local lx = campCenter.X - 4 + i * 7
+		makePart(folder, "LanternPost", Vector3.new(0.35, 2.8, 0.35), Vector3.new(lx, campCenter.Y + 2.2, campCenter.Z - 7.5), Color3.fromRGB(92, 60, 38), Enum.Material.Wood)
+		local orb = makePart(folder, "LanternOrb", Vector3.new(0.9, 0.9, 0.9), Vector3.new(lx, campCenter.Y + 3.8, campCenter.Z - 7.5), Color3.fromRGB(253, 224, 71), Enum.Material.Neon, true, false)
+		orb.Shape = Enum.PartType.Ball
+	end
+	for i = 1, 7 do
+		local mp = campCenter + Vector3.new(rng:NextNumber(-20, 14), 1.3, rng:NextNumber(-18, 18))
+		makePart(folder, "MushStem", Vector3.new(0.4, 0.7, 0.4), mp, Color3.fromRGB(255, 250, 240), Enum.Material.SmoothPlastic, true, false)
+		local cap = makePart(folder, "MushCap", Vector3.new(1.1, 0.6, 1.1), mp + Vector3.new(0, 0.45, 0), Color3.fromRGB(239, 68, 68), Enum.Material.SmoothPlastic, true, false)
+		cap.Shape = Enum.PartType.Ball
+	end
+
+	-- Деревянный причал и светящийся чекпоинт перед пропастью
+	makePart(folder, "PierDeck", Vector3.new(8, 0.7, 10), c + Vector3.new(-8.5, 1.2, 0), Color3.fromRGB(160, 102, 58), Enum.Material.WoodPlanks)
+	makePart(folder, "PierRailL", Vector3.new(7.5, 1.2, 0.35), c + Vector3.new(-8.5, 2.2, -4.8), Color3.fromRGB(120, 74, 42), Enum.Material.Wood)
+	makePart(folder, "PierRailR", Vector3.new(7.5, 1.2, 0.35), c + Vector3.new(-8.5, 2.2, 4.8), Color3.fromRGB(120, 74, 42), Enum.Material.Wood)
+	local cpPad = makePart(folder, "CheckpointPad", Vector3.new(3.5, 0.35, 3.5), c + Vector3.new(-11, 1.65, 0), Color3.fromRGB(56, 189, 248), Enum.Material.Neon, true, false)
+	cpPad.Touched:Connect(function(hit)
+		local plr = Players:GetPlayerFromCharacter(hit.Parent)
+		if plr and plr == plot.owner then
+			plot.currentSpawn = plot.checkpointPos
+			cpPad.Color = Color3.fromRGB(74, 222, 128)
+		end
+	end)
+
 	-- Цветы
 	for i = 1, 16 do
 		local fp = campCenter + Vector3.new(rng:NextNumber(-22, 18), 1.2, rng:NextNumber(-20, 20))
@@ -320,9 +347,10 @@ local function buildPlot(plot)
 	plot.screenCode = codeLbl
 	plot.screenVerdict = verdictLbl
 
-	-- Станок-принтер с вращающимися кольцами
+	-- Станок-принтер с двумя вращающимися неоновыми кольцами
 	local pBase = makePart(folder, "PrinterBase", Vector3.new(10, 0.8, 10), plot.printerPos, Color3.fromRGB(51, 65, 85), Enum.Material.Metal)
 	local ring = makePart(folder, "PrinterRing", Vector3.new(9, 0.25, 9), plot.printerPos + Vector3.new(0, 0.55, 0), Color3.fromRGB(56, 189, 248), Enum.Material.Neon, true, false)
+	local ring2 = makePart(folder, "PrinterRing2", Vector3.new(6.5, 0.22, 6.5), plot.printerPos + Vector3.new(0, 0.85, 0), Color3.fromRGB(250, 204, 21), Enum.Material.Neon, true, false)
 	local sparks = Instance.new("ParticleEmitter")
 	sparks.Color = ColorSequence.new(Color3.fromRGB(56, 189, 248), Color3.fromRGB(250, 204, 21))
 	sparks.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.4), NumberSequenceKeypoint.new(1, 0) })
@@ -333,6 +361,9 @@ local function buildPlot(plot)
 	plot.printerSparks = sparks
 	TweenService:Create(ring, TweenInfo.new(6, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {
 		Orientation = Vector3.new(0, 360, 0),
+	}):Play()
+	TweenService:Create(ring2, TweenInfo.new(4, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), {
+		Orientation = Vector3.new(0, -360, 0),
 	}):Play()
 
 	-- Доска-подсказка 3x2
@@ -452,7 +483,8 @@ local function teleportToPlot(player, character)
 	local hrp = character:WaitForChild("HumanoidRootPart", 5)
 	if hrp then
 		task.wait(0.1)
-		hrp.CFrame = CFrame.new(plot.spawnPos)
+		local target = plot.currentSpawn or plot.spawnPos
+		hrp.CFrame = CFrame.new(target)
 	end
 end
 

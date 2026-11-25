@@ -1,4 +1,4 @@
--- Управление участками игроков: у каждого ученика свой изолированный остров
+-- Управление участками игроков: у каждого ученика свой изолированный остров и сохранение прогресса при респавне
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Config = require(ReplicatedStorage.Shared.Config)
 
@@ -22,6 +22,7 @@ function Plots.Init(buildFn)
 			lastActivity = os.clock(),
 			won = false,
 			stars = 0,
+			currentSpawn = nil,
 			kapiLines = {},
 			bridgeModel = nil,
 			folder = nil,
@@ -29,6 +30,7 @@ function Plots.Init(buildFn)
 		if buildFn then
 			buildFn(plot)
 		end
+		plot.currentSpawn = plot.spawnPos
 		list[i] = plot
 	end
 end
@@ -59,6 +61,7 @@ function Plots.Assign(player)
 			plot.lastActivity = os.clock()
 			plot.won = false
 			plot.stars = 0
+			plot.currentSpawn = plot.spawnPos
 			if plot.bridgeModel then
 				plot.bridgeModel:Destroy()
 				plot.bridgeModel = nil
@@ -78,6 +81,7 @@ function Plots.Release(player)
 	plot.token = nil
 	plot.lastPushId = 0
 	plot.won = false
+	plot.currentSpawn = plot.spawnPos
 	if plot.bridgeModel then
 		plot.bridgeModel:Destroy()
 		plot.bridgeModel = nil
