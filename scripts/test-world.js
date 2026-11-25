@@ -64,7 +64,9 @@ try {
   assert.equal(st0.status, 200);
   assert.equal(st0.data.linked, false);
   assert.equal(st0.data.levels[0].id, '8-1');
-  console.log('✓ /world/status до сопряжения');
+  assert.equal(st0.data.levels[0].unlocked, true);
+  assert.equal(st0.data.levels[1].unlocked, false);
+  console.log('✓ /world/status до сопряжения (8-1 открыт, 8-2 закрыт)');
 
   // 2. Генерация 6-значного кода и сопряжение
   const pair = await req('/world/pair', { method: 'POST', body: {}, headers: devHeaders });
@@ -166,8 +168,13 @@ try {
   const win1 = await req('/world/win', { method: 'POST', headers: rbxHeaders, body: { levelId: '8-1', stars: 3 } });
   assert.equal(win1.status, 200);
   assert.equal(win1.data.xpAwarded, 240);
+  assert.equal(win1.data.nextLevelId, '8-2');
   assert.equal(win1.data.decorId, 'bridge');
   assert.equal(win1.data.newDecor, true);
+
+  const st1 = await req('/world/status', { headers: devHeaders });
+  assert.equal(st1.data.levels[1].unlocked, true);
+  assert.equal(st1.data.currentLevelId, '8-2');
 
   const win2 = await req('/world/win', { method: 'POST', headers: rbxHeaders, body: { levelId: '8-1', stars: 3 } });
   assert.equal(win2.status, 200);

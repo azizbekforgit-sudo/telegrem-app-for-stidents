@@ -253,6 +253,16 @@ export function createWorld({ logic, store, root }) {
     S.worldTokens ||= {};
   };
 
+  function isUnlocked(uid, level) {
+    if (!level) return false;
+    if (logic.isAdmin(uid)) return true;
+    const ord = level.order || 1;
+    if (ord <= 1) return true;
+    const prev = levels.find((l) => (l.order || 1) === ord - 1);
+    if (!prev) return true;
+    return Boolean(S.world?.[uid]?.byLevel?.[prev.id]?.won);
+  }
+
   function cleanBox(b) {
     if (!b || typeof b !== 'object') throw httpError(400, 'Некорректный блок');
     const x = Number(b.x), y = Number(b.y), w = Number(b.w), h = Number(b.h);
@@ -342,6 +352,7 @@ export function createWorld({ logic, store, root }) {
 
     const level = byId[String(levelId || '')];
     if (!level) throw httpError(404, 'Уровень не найден');
+    if (!isUnlocked(uid, level)) throw httpError(403, 'Сначала пройди предыдущий уровень в Roblox!');
     if (!Array.isArray(boxes) || boxes.length > MAX_BOXES) {
       throw httpError(400, `Ожидается массив блоков (не более ${MAX_BOXES})`);
     }
@@ -479,10 +490,12 @@ export function createWorld({ logic, store, root }) {
 
     w.byLevel ||= {};
     w.byLevel[level.id] = { ...prevLv, won: true, wonAt: Date.now(), stars: Math.max(prevLv.stars || 0, stars) };
+    const nextLevel = levels.find((l) => (l.order || 1) === (level.order || 1) + 1) || null;
     if (w.levelId === level.id) {
       w.won = true;
       w.wonAt = Date.now();
       w.stars = Math.max(w.stars || 0, stars);
+      if (nextLevel) w.levelId = nextLevel.id;
     }
     S.world[uid] = w;
 
@@ -507,7 +520,19 @@ export function createWorld({ logic, store, root }) {
       xp: bonusRes.already ? 0 : xp,
       decor: decorId,
     });
-    return { ok: true, levelId: level.id, stars, xpAwarded: bonusRes.already ? 0 : xp, decorId, newDecor };
+    return {
+      ok: true,
+      userId: uid,
+      levelId: level.id,
+      title: level.title?.[lang] || level.title?.ru || level.id,
+      nextLevelId: nextLevel?.id || null,
+      nextTitle: nextLevel ? (nextLevel.title?.[lang] || nextLevel.title?.ru || nextLevel.id) : null,
+      nextIntro: nextLevel ? (nextLevel.intro?.[lang] || nextLevel.intro?.ru || '') : null,
+      stars,
+      xpAwarded: bonusRes.already ? 0 : xp,
+      decorId,
+      newDecor,
+    };
   }
 
   function status(uid) {
@@ -516,34 +541,39 @@ export function createWorld({ logic, store, root }) {
     const w = S.world?.[uid] || null;
     const byLv = w?.byLevel || {};
     const totalStars = levels.reduce((s, l) => s + (byLv[l.id]?.stars || 0), 0);
+    const mapped = levels.map((l) => {
+      const lvState = byLv[l.id] || null;
+      const unlocked = isUnlocked(uid, l);
+      return {
+        id: l.id,
+        order: l.order || 1,
+        biome: l.biome || 'camp',
+        lesson: l.lesson,
+        lessonId: l.lessonId,
+        title: l.title?.[lang] || l.title?.ru || l.id,
+        intro: l.intro?.[lang] || l.intro?.ru || '',
+        allow: l.allow || ['html', 'css'],
+        open: l.open || 'style.css',
+        selectors: l.selectors || { box: '.bridge', plank: '.plank' },
+        files: l.files?.[lang] || l.files?.ru || {},
+        stars: lvState?.stars || 0,
+        won: Boolean(lvState?.won),
+        unlocked,
+        verdict: lvState?.verdict || null,
+      };
+    });
+    const current = mapped.find((l) => l.unlocked && !l.won) || mapped[mapped.length - 1] || null;
     return {
       linked: Boolean(w?.robloxUserId),
       robloxName: w?.robloxName || null,
       verdict: w?.verdict || null,
       stars: totalStars || w?.stars || 0,
       maxStars: levels.length * 3,
+      currentLevelId: current?.id || '8-1',
       won: Boolean(w?.won),
       pushes: w?.pushes || 0,
       pushedAt: w?.at || null,
-      levels: levels.map((l) => {
-        const lvState = byLv[l.id] || null;
-        return {
-          id: l.id,
-          order: l.order || 1,
-          biome: l.biome || 'camp',
-          lesson: l.lesson,
-          lessonId: l.lessonId,
-          title: l.title?.[lang] || l.title?.ru || l.id,
-          intro: l.intro?.[lang] || l.intro?.ru || '',
-          allow: l.allow || ['html', 'css'],
-          open: l.open || 'style.css',
-          selectors: l.selectors || { box: '.bridge', plank: '.plank' },
-          files: l.files?.[lang] || l.files?.ru || {},
-          stars: lvState?.stars || 0,
-          won: Boolean(lvState?.won),
-          verdict: lvState?.verdict || null,
-        };
-      }),
+      levels: mapped,
     };
   }
 

@@ -259,7 +259,11 @@ api.post('/auth/login', h((req) => {
 api.post('/world/link', h((req) => world.link(req.body || {})));
 api.get('/world/pull', h((req) => world.pull(req.get('x-world-token'))));
 api.post('/world/event', h((req) => world.event(req.get('x-world-token'), req.body || {})));
-api.post('/world/win', h((req) => world.win(req.get('x-world-token'), req.body || {})));
+api.post('/world/win', h(async (req) => {
+  const r = world.win(req.get('x-world-token'), req.body || {});
+  if (r.xpAwarded > 0) await tg?.notifyWorldWin(r);
+  return r;
+}));
 
 api.use(auth);
 // ───────── Мир Roblox (запросы ученика из приложения) ─────────

@@ -2406,12 +2406,38 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
       finally { bt.disabled = false; bt.classList.remove('busy'); }
     };
     const close = (done) => {
-      clearInterval(idle); clearTimeout(timer); clearInterval(examTick); ide.destroy();
+      clearInterval(idle); clearTimeout(timer); clearInterval(examTick); clearInterval(worldPoll); ide.destroy();
       if (ACTIVE_CODE?.el === el) ACTIVE_CODE = null;
       el.classList.add('leaving');
       setTimeout(() => { el.remove(); if (S.view) tg?.BackButton?.show(); }, wide ? 0 : 320);
       resolve(exam ? (done ? ide.files() : null) : Boolean(done));
     };
+    let worldPoll = null;
+    if (kind === 'world') {
+      let alreadyWon = Boolean(task.won);
+      worldPoll = setInterval(async () => {
+        if (!el.isConnected) return clearInterval(worldPoll);
+        try {
+          const st = await api('/world/status');
+          const cur = (st.levels || []).find((x) => x.id === lessonId);
+          if (cur?.won && !alreadyWon) {
+            alreadyWon = true;
+            finished = true;
+            sfx.win(); confetti(); haptic('success');
+            const nextLv = (st.levels || []).find((x) => x.unlocked && !x.won);
+            say(nextLv ? `🎉 Уровень пройден! Открыт следующий: **${nextLv.title}**` : '🎉 Все 11 уровней пройдены!', 'love', 'happy');
+            const act = $1('.cs-act');
+            if (act && nextLv && !$1('[data-wnext]')) {
+              const nb = document.createElement('button');
+              nb.className = 'btn'; nb.dataset.wnext = nextLv.id;
+              nb.innerHTML = `${emo('➡️')} ${tr('Следующий уровень')}`;
+              nb.onclick = () => { el.dataset.nextWorld = nextLv.id; close(true); };
+              act.appendChild(nb);
+            }
+          }
+        } catch { /* */ }
+      }, 3000);
+    }
     if (exam) ACTIVE_CODE = { el, abort: () => { const f = ide.files(); close(false); return f; } };
     if ($1('[data-done]')) $1('[data-done]').onclick = async () => {
       if (onSubmit) { const bt = $1('[data-done]'); if (bt.dataset.busy) return; bt.dataset.busy = '1'; bt.disabled = true; try { if (await onSubmit(ide.files())) return close(true); } finally { delete bt.dataset.busy; bt.disabled = false; } return; }
@@ -4306,24 +4332,25 @@ async function tabTasks() {
   };
   const houseCard = TASKS.shelf === 'todo' && t.house.done < t.house.total ? `<div class="task-card k-house"><div class="task-ic">${emo('🏡')}</div><div class="grow"><div class="task-tags"><span class="pill accent">Испытание</span></div><b>Дом для ${esc(t.house.pet)}</b><span class="small muted">${t.house.done} из ${t.house.total} · за каждое — вещь в дом</span></div><button class="btn sm" data-housego>Решить</button></div>` : '';
   const wLevels = world?.levels || [];
-  const wl = wLevels[0];
+  const wl = wLevels.find((x) => x.id === world?.currentLevelId) || wLevels[0];
   const worldCard = TASKS.shelf === 'todo' && wl ? `<div class="task-card k-world" style="flex-direction:column;align-items:stretch;gap:10px">
     <div class="row" style="gap:10px;align-items:center">
       <div class="task-ic">${emo('🌍')}</div>
       <div class="grow">
         <div class="task-tags"><span class="pill accent">Мир Roblox</span><span class="pill ${world.linked ? 'good' : ''}">${world.linked ? `✓ ${tr('Игра подключена')}${world.robloxName ? `: ${esc(world.robloxName)}` : ''}` : tr('Ждём подключения')}</span><span class="pill gold" data-noi18n>★ ${world.stars || 0}/${world.maxStars || wLevels.length * 3}</span></div>
-        <b>${tr('Уровни мира')} (${wLevels.length})</b>
+        <b>${esc(wl.title)}</b>
+        <div class="small muted">${esc(wl.intro)}</div>
         <div class="small muted" data-wcode></div>
       </div>
-      <button class="btn ghost sm" data-wpair>${tr('Получить код')}</button>
+      <div class="row" style="gap:6px;flex-shrink:0"><button class="btn ghost sm" data-wpair>${tr('Получить код')}</button><button class="btn sm" data-wplay="${esc(wl.id)}">${tr('Решить')}</button></div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px">
-      ${wLevels.map((lv) => `<div style="padding:8px 10px;border-radius:12px;background:var(--bg2,rgba(128,128,128,.08));display:flex;align-items:center;gap:8px">
+      ${wLevels.map((lv) => `<div style="padding:8px 10px;border-radius:12px;background:var(--bg2,rgba(128,128,128,.08));border:${lv.id === wl.id ? '2px solid var(--accent,#84cc16)' : '1px solid transparent'};opacity:${lv.unlocked ? '1' : '0.55'};display:flex;align-items:center;gap:8px">
         <div class="grow" style="min-width:0">
-          <div class="small" style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(lv.title)}</div>
+          <div class="small" style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${lv.unlocked ? '' : '🔒 '}${esc(lv.title)}</div>
           <div class="small muted" data-noi18n>${lv.stars ? '★'.repeat(lv.stars) + '☆'.repeat(3 - lv.stars) : '☆☆☆'}${lv.won ? ' · ✓' : ''}</div>
         </div>
-        <button class="btn ${lv.won ? 'ghost' : ''} sm" data-wplay="${esc(lv.id)}">${lv.won ? tr('Ещё раз') : tr('Решить')}</button>
+        ${lv.unlocked ? `<button class="btn ${lv.won ? 'ghost' : ''} sm" data-wplay="${esc(lv.id)}">${lv.won ? tr('Ещё раз') : tr('Решить')}</button>` : `<span class="small muted">🔒</span>`}
       </div>`).join('')}
     </div>
   </div>` : '';
@@ -4341,14 +4368,28 @@ async function tabTasks() {
       haptic('success');
     } catch (e) { fail(e); }
   };
-  $$('[data-wplay]').forEach((b) => {
-    const lv = wLevels.find((x) => x.id === b.dataset.wplay);
-    if (!lv) return;
-    b.onclick = () => codeSession({
-      task: { title: lv.title, intro: lv.intro, files: lv.files, open: lv.open, selectors: lv.selectors, steps: [] },
+  const openWorldLevel = (lvId) => {
+    const lv = wLevels.find((x) => x.id === lvId);
+    if (!lv || !lv.unlocked) return;
+    codeSession({
+      task: { title: lv.title, intro: lv.intro, files: lv.files, open: lv.open, selectors: lv.selectors, won: lv.won, steps: [] },
       allow: lv.allow, topic: lv.title, lessonId: lv.id, key: 'world', kind: 'world',
-    }).then(() => { if (S.tab === 'tasks') tabTasks().catch(fail); });
-  });
+    }).then(() => {
+      if (S.tab === 'tasks') tabTasks().catch(fail);
+    });
+  };
+  $$('[data-wplay]').forEach((b) => { b.onclick = () => openWorldLevel(b.dataset.wplay); });
+  if (TASKS.shelf === 'todo' && wl) {
+    const prevKey = JSON.stringify([world?.linked, world?.stars, world?.currentLevelId]);
+    const poll = setInterval(async () => {
+      if (S.tab !== 'tasks' || TASKS.shelf !== 'todo' || !$('[data-wpair]')) return clearInterval(poll);
+      try {
+        const w2 = await api('/world/status');
+        const nextKey = JSON.stringify([w2?.linked, w2?.stars, w2?.currentLevelId]);
+        if (nextKey !== prevKey) { clearInterval(poll); tabTasks().catch(() => {}); }
+      } catch { /* */ }
+    }, 3500);
+  }
   $$('[data-task]').forEach((b) => (b.onclick = () => { const [kind, lessonId, key, pubId] = b.dataset.task.split('|'); openTask(kind, lessonId, key, pubId).catch(fail); }));
 }
 async function openTask(kind, lessonId, key, pubId) {
