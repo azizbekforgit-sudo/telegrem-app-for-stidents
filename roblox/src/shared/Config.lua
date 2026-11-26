@@ -15,6 +15,7 @@ Config.REMOTES = {
 	State = "WorldState",
 	Effect = "WorldEffect",
 	Teleport = "WorldTeleport",
+	Rotate = "WorldRotate",
 }
 
 Config.ACCENTS = {

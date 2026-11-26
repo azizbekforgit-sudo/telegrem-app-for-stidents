@@ -128,9 +128,12 @@ pairFn.OnServerInvoke = function(player, rawCode)
 			task.spawn(function()
 				local wok, wdata = postJson("/api/world/win", { levelId = lv, stars = stars }, plot.token)
 				if plot.owner then
-					stateEv:FireClient(plot.owner, { linked = true, name = safeName, stars = sumStars(plot), progress = plot.wonLevels })
+					stateEv:FireClient(plot.owner, { linked = true, name = safeName, stars = sumStars(plot), levelId = (wok and wdata and wdata.nextLevelId) or lv, progress = plot.wonLevels })
 					effectEv:FireClient(plot.owner, "win", {
 						levelId = lv,
+						title = wok and wdata and wdata.title or lv,
+						nextLevelId = wok and wdata and wdata.nextLevelId or nil,
+						nextTitle = wok and wdata and wdata.nextTitle or nil,
 						stars = stars,
 						xp = wok and wdata and wdata.xpAwarded or (stars * 80),
 					})
@@ -160,6 +163,7 @@ task.spawn(function()
 					end
 
 					-- Восстанавливаем пройденные уровни с сервера (чтобы при смерти/перезаходе ничего не терялось!)
+					local progressChanged = false
 					if type(data.progress) == "table" then
 						for lvId, rec in pairs(data.progress) do
 							if rec.stars then
@@ -167,6 +171,7 @@ task.spawn(function()
 							end
 							if rec.won and not plot.wonLevels[lvId] then
 								plot.wonLevels[lvId] = true
+								progressChanged = true
 								local b = plot.biomes[lvId]
 								if b and b.nextBridge then
 									b.nextBridge.Transparency = 0.15
@@ -174,6 +179,9 @@ task.spawn(function()
 								end
 							end
 						end
+					end
+					if progressChanged and plot.owner then
+						stateEv:FireClient(plot.owner, { linked = true, stars = sumStars(plot), levelId = plot.activeLevelId, progress = plot.wonLevels })
 					end
 
 					local st = data.state
@@ -193,7 +201,7 @@ task.spawn(function()
 
 						local biome = plot.biomes[lv] or plot.biomes["8-1"]
 						local anchor = biome and biome.printerPos or plot.printerPos
-						Bridge.Spawn(plot, st.boxes, st.container, anchor)
+						Bridge.Spawn(plot, st.boxes, st.container, anchor, lv)
 						if biome and biome.sparks then biome.sparks:Emit(45) end
 
 						-- Если игрок сейчас далеко от этого биома, переносим его ко входу в нужный биом
