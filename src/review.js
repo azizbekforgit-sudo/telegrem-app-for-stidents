@@ -11,7 +11,9 @@ import { httpError } from './logic.js';
 
 const GROQ_KEY = process.env.GROQ_API_KEY || '';
 const GROQ_URL = (process.env.GROQ_BASE_URL || 'https://api.groq.com/openai/v1').replace(/\/$/, '');
-const GROQ_MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+let GROQ_MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+const GROQ_PREFER = [/llama-3\.3-70b/, /llama-4-maverick/, /gpt-oss-120b/, /llama-4-scout/, /qwen.*(32b|3)/, /llama-3\.1-70b/, /gpt-oss-20b/, /llama-3\.1-8b-instant/];
+let modelFixed = false;
 const CLAUDE_KEY = process.env.ANTHROPIC_API_KEY || '';
 const provider = GROQ_KEY ? 'groq' : CLAUDE_KEY ? 'claude' : null;
 export const aiEnabled = () => Boolean(provider);
@@ -65,7 +67,15 @@ function cleanFiles(files) {
 }
 
 // ───────── вызов ИИ ─────────
-async function askGroq(system, prompt) {
+// Если модели нет в доступе — берём из списка Groq лучшую из подходящих (и пишем её в лог)
+async function pickGroqModel() {
+  const r = await fetch(`${GROQ_URL}/models`, { headers: { authorization: `Bearer ${GROQ_KEY}` } });
+  if (!r.ok) throw new Error(`Groq models ${r.status}`);
+  const ids = ((await r.json()).data || []).map((m) => m.id).filter((id) => !/whisper|guard|tts|embed|playai|orpheus/i.test(id));
+  for (const rx of GROQ_PREFER) { const hit = ids.find((id) => rx.test(id)); if (hit) return { hit, ids }; }
+  return { hit: ids[0], ids };
+}
+async function askGroq(system, prompt, retry = true) {
   const ctl = new AbortController();
   const t = setTimeout(() => ctl.abort(), 30_000);
   try {
@@ -74,7 +84,16 @@ async function askGroq(system, prompt) {
       headers: { 'content-type': 'application/json', authorization: `Bearer ${GROQ_KEY}` },
       body: JSON.stringify({ model: GROQ_MODEL, temperature: 0.1, max_tokens: 1800, response_format: { type: 'json_object' }, messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }] }),
     });
-    if (!r.ok) { const e = new Error(`Groq ${r.status}: ${(await r.text().catch(() => '')).slice(0, 200)}`); e.status = r.status; throw e; }
+    if (!r.ok) {
+      const txt = (await r.text().catch(() => '')).slice(0, 300);
+      if (r.status === 404 && /model/i.test(txt) && retry && !modelFixed) {
+        modelFixed = true;
+        const { hit, ids } = await pickGroqModel();
+        console.log(`[review] модель ${GROQ_MODEL} недоступна; доступно: ${ids.slice(0, 25).join(', ')}; беру ${hit}`);
+        if (hit) { GROQ_MODEL = hit; clearTimeout(t); return askGroq(system, prompt, false); }
+      }
+      const e = new Error(`Groq ${r.status}: ${txt.slice(0, 200)}`); e.status = r.status; throw e;
+    }
     const j = await r.json();
     return j.choices?.[0]?.message?.content || '';
   } finally { clearTimeout(t); }
