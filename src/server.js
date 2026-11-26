@@ -1,6 +1,6 @@
 // Точка входа: HTTP API для Mini App + Telegram-бот + планировщик напоминаний.
 import { loadCode, localize } from './code.js';
-import { reviewCode, wasAccepted, aiEnabled } from './review.js';
+import { reviewCode, wasAccepted, aiEnabled, selfTest } from './review.js';
 import { createSocial, ITEMS } from './social.js';
 import { createWorld } from './world.js';
 import fs from 'node:fs';
@@ -620,6 +620,7 @@ app.use((err, _req, res, _next) => {
 
 app.listen(PORT, async () => {
   console.log(`[http] :${PORT}  app: ${PUBLIC_URL}/`);
+  selfTest().catch(() => {});
   if (!tg) return console.log('[bot] BOT_TOKEN не задан — бот выключен');
   try {
     await tg.setup();

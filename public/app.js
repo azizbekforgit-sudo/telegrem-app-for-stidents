@@ -2254,8 +2254,9 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
           ${exam ? `<span class="pill accent" data-noi18n data-etimer>⏱ 0:00</span>` : kind === 'world' ? `<span class="pill accent" data-noi18n data-wstars>☆☆☆</span>` : `<span class="pill accent" data-noi18n data-prog>0/${steps.length}</span>`}</div>
         <div class="cs-talk"><div class="cs-m" data-m>${me('teach', wide ? 150 : 64)}</div><div class="speech" data-say></div></div>
         <div class="cs-show" data-show hidden></div>
+        <div class="cs-ai" data-ai hidden></div>
         ${kind === 'world' ? '' : `<ol class="cs-steps" data-steps>${steps.map((st, i) => `<li data-st="${i}"><i></i><span>${rich(st.say)}</span></li>`).join('')}</ol>`}
-        <div class="cs-act">${exam ? '' : kind === 'world' ? `<button class="btn ghost" data-review>${emo('🔍')} Проверить</button><button class="btn" data-push>${emo('🌍')} Отправить в мир</button>` : `<button class="btn ghost dim" data-hint>${emo('💡')} Подсказка</button><button class="btn ghost" data-review>${emo('🔍')} Проверить</button>`}${kind === 'world' ? '' : `<button class="btn" data-done ${exam ? '' : 'disabled'}>${ic('check-circle')}${exam ? 'Сохранить ответ' : 'Готово'}</button>`}</div>
+        <div class="cs-act">${exam ? '' : kind === 'world' ? `<button class="btn ghost" data-review>${emo('🔍')} Проверить</button><button class="btn" data-push>${emo('🌍')} Отправить в мир</button>` : `<button class="btn ghost dim" data-hint>${emo('💡')} Подсказка</button><button class="btn ghost" data-review>${emo('🤖')} Проверить ИИ</button>`}${kind === 'world' ? '' : `<button class="btn" data-done ${exam ? '' : 'disabled'}>${ic('check-circle')}${exam ? 'Сохранить ответ' : 'Готово'}</button>`}</div>
       </div>
       <div class="cs-ide" data-ide></div>
       ${wide || exam ? '' : `<div class="cs-intro" data-intro><div class="teach-row col">${me('talk', 150)}<div class="speech" data-isay></div></div>
@@ -2316,8 +2317,9 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
       if (exam || kind === 'world') { if (kind === 'world' && !lastErr) say(task.intro || 'Напиши CSS Grid и нажми «Отправить в мир»!', 'teach'); return; }
       if (k === -1 && steps.length) {
         if (!finished) { finished = true; sfx.win(); setTimeout(confetti, 150); haptic('success'); }
-        if ($1('[data-done]')) $1('[data-done]').disabled = false;
-        return say(task.done || 'Всё работает! Ты настоящий программист! Жми «Готово».', 'love', 'happy');
+        const dn = $1('[data-done]');
+        if (dn) { dn.disabled = false; dn.classList.add('ready'); dn.innerHTML = `${ic('check-circle')}${tr('Продолжить')} →`; }
+        return say(task.done || 'Всё верно! Ты настоящий программист! Жми «Продолжить».', 'love', 'happy');
       }
       if ($1('[data-done]')) $1('[data-done]').disabled = !preview;
       if (newly >= 0) { sfx.ok(); haptic('success'); say(`${['Отлично!', 'Супер!', 'Так держать!', 'В точку!'][newly % 4]} Теперь: ${steps[k].say}`, 'cheer', 'happy'); hintLevel = 0; $1('[data-show]').hidden = true; return; }
@@ -2352,7 +2354,24 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
       if (hintLevel === 1 && steps[k].hint) say(steps[k].hint, 'teach');
       else { say(`Смотри, пиши вот так в ${steps[k].file || 'файл'}:`, 'teach'); showSnippet(k); }
     };
-    // «Проверить»: сервер проверяет шаги, а что не засчитано — смотрит Claude и говорит, где ошибка
+    // Карточка разбора ИИ: что не так, где и как исправить (нажми на пункт — откроется файл и подсветится строка)
+    function showAi(r) {
+      const box = $1('[data-ai]');
+      if (!box) return;
+      const bad = (r.steps || []).map((x, i) => ({ ...x, i })).filter((x) => !x.done);
+      let h;
+      if (r.ok) h = `<div class="ai-head ok">${emo('✅')} <b>${tr('Всё верно!')}</b></div>${r.summary ? `<p>${esc(r.summary)}</p>` : ''}`;
+      else if (r.aiError) h = `<div class="ai-head warn">${emo('⚠️')} <b>${tr('ИИ сейчас не отвечает')}</b></div><p>${tr('Я проверил только по шаблонам. Подожди минуту и нажми «Проверить ИИ» ещё раз.')}</p>`;
+      else {
+        h = `<div class="ai-head bad">${emo('🤖')} <b>${tr('Вот что нужно поправить')}</b></div>${r.summary ? `<p>${esc(r.summary)}</p>` : ''}` + bad.map((x) =>
+          `<button type="button" class="ai-item" data-aif="${esc(x.file || '')}" data-ail="${x.line || 0}"><span class="ai-where">${esc(x.file || '')}${x.line ? ':' + x.line : ''}</span><span class="ai-why">${rich(x.problem || steps[x.i]?.say || '')}</span>${x.fix ? `<span class="ai-fix">${emo('🔧')} ${rich(x.fix)}</span>` : ''}</button>`).join('');
+      }
+      box.innerHTML = h;
+      box.className = `cs-ai ${r.ok ? 'ok' : r.aiError ? 'warn' : 'bad'}`;
+      box.hidden = false;
+      box.querySelectorAll('[data-aif]').forEach((b) => (b.onclick = () => { const f = b.dataset.aif; if (f && ide.current() !== f) ide.open(f); const l = Number(b.dataset.ail); if (l) ide.mark?.(l); }));
+    }
+    // «Проверить ИИ»: сервер проверяет шаги, а что не засчитано — смотрит ИИ и говорит, где ошибка и как исправить
     if ($1('[data-review]')) $1('[data-review]').onclick = async () => {
       if (reviewing) return;
       const bt = $1('[data-review]');
@@ -2361,6 +2380,7 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
       try {
         const r = await api('/code/review', { lessonId, key, files: ide.files(), console: ide.console() });
         accepted = steps.map((_, i) => Boolean(r.steps?.[i]?.done));
+        showAi(r);
         const probs = (r.steps || []).map((x, i) => (!x.done && x.problem ? { file: x.file || steps[i]?.file || '', line: x.line || 0, msg: x.problem, sev: 2, raw: true } : null)).filter(Boolean)
           .concat((r.errors || []).map((e) => ({ file: e.file, line: e.line, msg: e.message, sev: 2, raw: true })));
         if (r.ok) {

@@ -1683,3 +1683,20 @@ body.t-shell #app[data-w="narrow"] { max-width: 760px; }
 .ide-errline { background: rgba(244, 71, 71, .18); }
 .ide-errglyph { background: #f44747; border-radius: 50%; margin-left: 4px; width: 8px !important; height: 8px !important; margin-top: 6px; }
 .cs-act .btn.busy { opacity: .6; pointer-events: none; }
+
+/* Разбор кода ИИ */
+.cs-ai { border-radius: 16px; padding: 12px 14px; background: var(--card); border: 1.5px solid var(--line); display: flex; flex-direction: column; gap: 8px; font-weight: 700; font-size: 14.5px; }
+.cs-ai[hidden] { display: none; }
+.cs-ai p { margin: 0; color: var(--muted); font-weight: 600; }
+.cs-ai.ok { border-color: var(--good); background: color-mix(in srgb, var(--good) 10%, var(--card)); }
+.cs-ai.bad { border-color: #f5a524; }
+.cs-ai.warn { border-color: var(--line); }
+.ai-head { display: flex; align-items: center; gap: 8px; font-size: 15.5px; }
+.ai-item { all: unset; cursor: pointer; display: flex; flex-direction: column; gap: 3px; background: var(--bg); border: 1.5px solid var(--line); border-radius: 12px; padding: 9px 11px; }
+.ai-item:hover { border-color: var(--accent); }
+.ai-where { font: 800 12px/1.2 ui-monospace, Menlo, monospace; color: #f5a524; }
+.ai-why { font-weight: 700; }
+.ai-fix { color: var(--good); font-weight: 700; }
+.ai-item code, .cs-ai code { background: var(--line); padding: 1px 5px; border-radius: 6px; font-size: 12.5px; }
+.cs-act .btn.ready { animation: readyPulse 1.2s ease-in-out infinite; }
+@keyframes readyPulse { 50% { transform: scale(1.04); box-shadow: 0 0 0 6px color-mix(in srgb, var(--good) 30%, transparent); } }
