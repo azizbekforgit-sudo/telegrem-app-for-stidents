@@ -1698,5 +1698,6 @@ body.t-shell #app[data-w="narrow"] { max-width: 760px; }
 .ai-why { font-weight: 700; }
 .ai-fix { color: var(--good); font-weight: 700; }
 .ai-item code, .cs-ai code { background: var(--line); padding: 1px 5px; border-radius: 6px; font-size: 12.5px; }
-.cs-act .btn.ready { animation: readyPulse 1.2s ease-in-out infinite; }
-@keyframes readyPulse { 50% { transform: scale(1.04); box-shadow: 0 0 0 6px color-mix(in srgb, var(--good) 30%, transparent); } }
+.cs-act .btn.ready { animation: readyPulse 1.4s ease-in-out infinite; transform: none; }
+/* только яркость: размер и положение кнопки не меняются, страница не «дышит» */
+@keyframes readyPulse { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.18) saturate(1.1); } }
