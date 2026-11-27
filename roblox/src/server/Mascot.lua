@@ -151,10 +151,10 @@ local function buildBody(model, kind)
 		-- Светящиеся оранжево-золотые глаза (как в mascots.js)
 		for _, side in ipairs({ -1, 1 }) do
 			local t = side < 0 and "L" or "R"
-			add("OrbRing" .. t, Vector3.new(0.56, 0.56, 0.18), amber, Vector3.new(side * 0.48, 1.15, -1.62), "Part", Enum.Material.Neon, nil, Enum.PartType.Ball)
-			add("OrbGold" .. t, Vector3.new(0.46, 0.46, 0.18), gold, Vector3.new(side * 0.48, 1.15, -1.66), "Part", Enum.Material.Neon, nil, Enum.PartType.Ball)
-			add("OrbPupil" .. t, Vector3.new(0.32, 0.34, 0.16), Color3.fromRGB(11, 11, 15), Vector3.new(side * 0.48, 1.15, -1.70), "Part", nil, nil, Enum.PartType.Ball)
-			add("OrbGlint" .. t, Vector3.new(0.12, 0.12, 0.08), Color3.new(1, 1, 1), Vector3.new(side * 0.48 + 0.07, 1.24, -1.76), "Part", Enum.Material.Neon, nil, Enum.PartType.Ball)
+			add("OrbRing" .. t, Vector3.new(0.52, 0.52, 0.18), amber, Vector3.new(side * 0.42, 1.15, -1.56), "Part", Enum.Material.Neon, nil, Enum.PartType.Ball)
+			add("OrbGold" .. t, Vector3.new(0.42, 0.42, 0.18), gold, Vector3.new(side * 0.42, 1.15, -1.60), "Part", Enum.Material.Neon, nil, Enum.PartType.Ball)
+			add("OrbPupil" .. t, Vector3.new(0.30, 0.32, 0.16), Color3.fromRGB(11, 11, 15), Vector3.new(side * 0.42, 1.15, -1.64), "Part", nil, nil, Enum.PartType.Ball)
+			add("OrbGlint" .. t, Vector3.new(0.11, 0.11, 0.08), Color3.new(1, 1, 1), Vector3.new(side * 0.42 + 0.06, 1.23, -1.70), "Part", Enum.Material.Neon, nil, Enum.PartType.Ball)
 		end
 		add("Tail1", Vector3.new(0.46, 0.46, 1.3), black, Vector3.new(-0.35, 0.15, 1.35), "Part", nil, CFrame.Angles(0.3, -0.4, 0), Enum.PartType.Ball)
 		add("Tail2", Vector3.new(0.44, 0.44, 1.0), black, Vector3.new(-0.85, 0.65, 1.85), "Part", nil, nil, Enum.PartType.Ball)
@@ -201,7 +201,7 @@ local function buildBody(model, kind)
 			add("Spike" .. i, Vector3.new(0.3, 0.66, 0.58), spike, Vector3.new(0, 1.75 - i * 0.28, -0.75 + i * 0.58), "WedgePart", Enum.Material.Neon, CFrame.Angles(0, math.pi, 0))
 		end
 		addPaws(add, green, Color3.fromRGB(62, 180, 114), 0.66, -0.9, 0.25, -0.8)
-		addFace(add, Vector3.new(0, 1.04, -0.95), 0.5, 0.18, -0.98, Color3.fromRGB(22, 163, 74), 1.02)
+		addFace(add, Vector3.new(0, 1.04, -0.95), 0.44, 0.18, -0.90, Color3.fromRGB(22, 163, 74), 1.0)
 
 	elseif kind == "axi" then
 		-- Акси: розовый аксолотль с 6 перистыми жабрами и пятнышками
@@ -230,7 +230,7 @@ local function buildBody(model, kind)
 		local ghostWhite = Color3.fromRGB(246, 244, 252)
 		local root = add("Root", Vector3.new(2.45, 2.6, 2.45), hoodCol, Vector3.new(0, 0.45, 0), "Part", nil, nil, Enum.PartType.Ball)
 		model.PrimaryPart = root
-		add("HoodPeak", Vector3.new(1.5, 1.15, 1.4), hoodCol, Vector3.new(0, 1.65, 0.25), "WedgePart", nil, CFrame.Angles(0, math.pi, 0))
+		add("HoodPeak", Vector3.new(1.1, 0.85, 1.1), hoodCol, Vector3.new(0, 1.55, 0.18), "Part", nil, nil, Enum.PartType.Ball)
 		add("HoodInner", Vector3.new(1.9, 2.05, 1.3), innerCol, Vector3.new(0, 0.52, -0.58), "Part", nil, nil, Enum.PartType.Ball)
 		headPart = add("GhostFace", Vector3.new(1.62, 1.8, 1.1), ghostWhite, Vector3.new(0, 0.56, -0.78), "Part", nil, nil, Enum.PartType.Ball)
 		-- Телефон в руке («Ну что, решил тест?»)
@@ -319,7 +319,7 @@ local function buildBody(model, kind)
 		add("Tangerine", Vector3.new(0.82, 0.7, 0.82), orange, Vector3.new(0, 2.02, -1.0), "Part", nil, nil, Enum.PartType.Ball)
 		add("Leaf", Vector3.new(0.32, 0.14, 0.44), Color3.fromRGB(92, 201, 107), Vector3.new(0.16, 2.4, -1.0), "Part", nil, CFrame.Angles(0, 0.3, 0.22))
 		addPaws(add, bodyCol, dark, 0.68, -0.88, 0.15, -0.95)
-		addFace(add, Vector3.new(0, 0.96, -1.0), 0.5, 0.2, -0.96, Color3.fromRGB(92, 60, 38), 0.92)
+		addFace(add, Vector3.new(0, 0.96, -1.0), 0.44, 0.2, -0.88, Color3.fromRGB(92, 60, 38), 0.92)
 	end
 
 	local meta = MASCOT_META[kind] or MASCOT_META.kapi
@@ -404,7 +404,7 @@ function Mascot.Create(plot)
 			return
 		end
 		local targetPos = hrp.Position + hrp.CFrame.RightVector * 4.4 + hrp.CFrame.LookVector * 1.4
-		targetPos = Vector3.new(targetPos.X, math.max(plot.center.Y - 12, hrp.Position.Y - 0.6), targetPos.Z)
+		targetPos = Vector3.new(targetPos.X, math.max(plot.center.Y - 12, hrp.Position.Y + 0.2), targetPos.Z)
 		local pos = currentCF.Position:Lerp(targetPos, math.clamp(dt * 3.5, 0, 1))
 		local look = Vector3.new(hrp.Position.X, pos.Y, hrp.Position.Z)
 		currentCF = (look - pos).Magnitude > 0.2 and CFrame.lookAt(pos, look) or CFrame.new(pos)

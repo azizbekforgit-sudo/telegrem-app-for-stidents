@@ -14,8 +14,8 @@ local Mascot = require(script.Parent.Mascot)
 
 local Terrain = Workspace.Terrain
 
--- Убираем стартовый Baseplate и одиночный SpawnLocation, чтобы архипелаг парил над облаками
-for _, oldName in ipairs({ "Baseplate", "SpawnLocation" }) do
+-- Убираем стартовый Baseplate, SpawnLocation и EditPreview, чтобы архипелаг парил над облаками
+for _, oldName in ipairs({ "Baseplate", "SpawnLocation", "EditPreview" }) do
 	local old = Workspace:FindFirstChild(oldName)
 	if old then
 		old:Destroy()
@@ -147,8 +147,8 @@ local function spawnTree(parent, pos, kind, rng)
 		end
 		return
 	end
-	local h = rng:NextNumber(6, 9)
-	local trunk = makePart(parent, "Trunk", Vector3.new(1.1, h, 1.1), CFrame.new(pos + Vector3.new(0, h / 2, 0)) * CFrame.Angles(0, 0, math.pi / 2), Color3.fromRGB(108, 70, 42), Enum.Material.Wood)
+	local h = rng:NextNumber(8, 11.5)
+	local trunk = makePart(parent, "Trunk", Vector3.new(1.25, h, 1.25), CFrame.new(pos + Vector3.new(0, h / 2, 0)) * CFrame.Angles(0, 0, math.pi / 2), Color3.fromRGB(108, 70, 42), Enum.Material.Wood)
 	trunk.Shape = Enum.PartType.Cylinder
 	local palette = kind == "sakura"
 		and { Color3.fromRGB(249, 168, 212), Color3.fromRGB(244, 114, 182), Color3.fromRGB(251, 207, 232) }
@@ -400,13 +400,13 @@ local function buildPlot(plot)
 	plot.workshopPos = at(plot, 0, -18, 1.5); plot.printerPos = at(plot, 6, -12, 1.6)
 
 	-- Мастерская кода с двускатной крышей из WedgePart
-	local wsCF = cfAt(plot, 0, -18, 1.5)
-	makePart(folder, "WorkshopFloor", Vector3.new(16, 0.6, 14), wsCF, Color3.fromRGB(145, 98, 60), Enum.Material.WoodPlanks)
+	local wsCF = cfAt(plot, -6, -16, 1.8)
+	makePart(folder, "WorkshopFloor", Vector3.new(16, 0.8, 14), wsCF, Color3.fromRGB(145, 98, 60), Enum.Material.WoodPlanks)
 	for _, off in ipairs({ Vector3.new(-7, 4, -6), Vector3.new(7, 4, -6), Vector3.new(-7, 4, 6), Vector3.new(7, 4, 6) }) do
 		makePart(folder, "Pillar", Vector3.new(0.75, 8, 0.75), wsCF * CFrame.new(off), Color3.fromRGB(102, 66, 40), Enum.Material.Wood)
 	end
-	makePart(folder, "RoofL", Vector3.new(17.5, 3.2, 7.6), wsCF * CFrame.new(0, 9.6, -3.8) * CFrame.Angles(0, math.pi, 0), Color3.fromRGB(180, 96, 52), Enum.Material.WoodPlanks, true, true, "WedgePart")
-	makePart(folder, "RoofR", Vector3.new(17.5, 3.2, 7.6), wsCF * CFrame.new(0, 9.6, 3.8), Color3.fromRGB(180, 96, 52), Enum.Material.WoodPlanks, true, true, "WedgePart")
+	makePart(folder, "RoofL", Vector3.new(17.5, 3.2, 7.6), wsCF * CFrame.new(0, 9.6, -3.8), Color3.fromRGB(180, 96, 52), Enum.Material.WoodPlanks, true, true, "WedgePart")
+	makePart(folder, "RoofR", Vector3.new(17.5, 3.2, 7.6), wsCF * CFrame.new(0, 9.6, 3.8) * CFrame.Angles(0, math.pi, 0), Color3.fromRGB(180, 96, 52), Enum.Material.WoodPlanks, true, true, "WedgePart")
 
 	local screen = makePart(folder, "CodeScreen", Vector3.new(12.5, 7.0, 0.5), wsCF * CFrame.new(0, 4.4, 5.6), Color3.fromRGB(20, 24, 34))
 	local screenGui = Instance.new("SurfaceGui", screen); screenGui.Face = Enum.NormalId.Back; screenGui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud; screenGui.PixelsPerStud = 40; screenGui.MaxDistance = 60
@@ -443,12 +443,14 @@ local function buildPlot(plot)
 
 		-- Подсказка прямо у пропасти для уровней-мостов
 		if idx == 1 or idx == 2 or idx == 3 or idx == 5 or idx == 9 or idx == 10 or idx == 11 then
-			makeTargetHint(folder, cfAt(plot, baseFwd + 28, 0, 0.2), b.hint, Color3.fromRGB(132, 204, 22))
+			makeTargetHint(folder, cfAt(plot, baseFwd + 28, 0, 1.1), b.hint, Color3.fromRGB(132, 204, 22))
 		end
 
 		for t = 1, 4 do
-			local side = (t % 2 == 0) and 1 or -1
-			spawnTree(folder, at(plot, baseFwd + rng:NextNumber(-10, 10), side * rng:NextNumber(9, entryD * 0.42), 1.2), b.tree, rng)
+			local side = (idx == 1) and 1 or ((t % 2 == 0) and 1 or -1)
+			local tx = baseFwd + rng:NextNumber(-10, 10)
+			local tz = side * rng:NextNumber(11, entryD * 0.42)
+			spawnTree(folder, at(plot, tx, tz, 1.4), b.tree, rng)
 		end
 		spawnCoin(folder, at(plot, baseFwd + 5, rng:NextNumber(-4, 4), 3.6), plot)
 		spawnCoin(folder, at(plot, baseFwd + 14, rng:NextNumber(-5, 5), 3.8), plot)

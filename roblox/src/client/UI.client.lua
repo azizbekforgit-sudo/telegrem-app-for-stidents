@@ -76,7 +76,7 @@ statusBtn.BackgroundTransparency = 1
 statusBtn.TextColor3 = Color3.fromRGB(248, 250, 252)
 statusBtn.Font = Enum.Font.GothamBold
 statusBtn.TextSize = 14
-statusBtn.Text = "🔗 Код   ★ 0/33   🪙 0"
+statusBtn.Text = "🔗 Код   ★ 0/33   Монет: 0"
 
 local mapBtn = Instance.new("TextButton", bar)
 mapBtn.Size = UDim2.fromOffset(122, 32)
@@ -257,7 +257,7 @@ end)
 
 local carryingNow = false
 local function refreshBar()
-	statusBtn.Text = (curLinked and "✓ " or "🔗 ") .. curName .. "   ★ " .. tostring(curStars) .. "/33   🪙 " .. tostring(curCoins)
+	statusBtn.Text = (curLinked and "✓ " or "🔗 ") .. curName .. "   ★ " .. tostring(curStars) .. "/33   Монет: " .. tostring(curCoins)
 	local info = LEVEL_MAP[activeLevelId] or LEVEL_MAP["8-1"]
 	questTitle.Text = "Урок 8 · " .. activeLevelId .. ": " .. info.label
 	if carryingNow then
