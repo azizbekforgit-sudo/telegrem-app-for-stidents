@@ -171,10 +171,10 @@ export function createBot({ token, logic, journal, nudges, store, world, appUrl,
     const lang = langOf(w.userId);
     const st = '★'.repeat(w.stars || 1);
     const head = lang === 'uz'
-      ? `🎉 <b>${esc(w.title)}</b> o'tildi (${st})!\n+${w.xpAwarded} XP.`
+      ? `🎉 Ura! <b>${esc(w.title)}</b> o'tildi (${st})!\n+${w.xpAwarded} XP.`
       : lang === 'en'
-        ? `🎉 <b>${esc(w.title)}</b> complete (${st})!\n+${w.xpAwarded} XP.`
-        : `🎉 <b>${esc(w.title)}</b> пройден (${st})!\n+${w.xpAwarded} XP.`;
+        ? `🎉 Hooray! <b>${esc(w.title)}</b> complete (${st})!\n+${w.xpAwarded} XP.`
+        : `🎉 Ура! Уровень <b>${esc(w.title)}</b> пройден (${st})!\n+${w.xpAwarded} XP.`;
     const next = w.nextTitle
       ? (lang === 'uz'
         ? `\n\n🔓 Keyingi daraja ochildi: <b>${esc(w.nextTitle)}</b>\n${esc(w.nextIntro || '')}`

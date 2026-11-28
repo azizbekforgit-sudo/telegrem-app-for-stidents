@@ -1,49 +1,34 @@
--- Клиентские эффекты: звуки из Config.SOUNDS (без перехвата камеры — камера всегда на персонаже)
+-- Фоновая музыка и звуки природы (звуки событий играет UI и сервер у самих предметов)
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local SoundService = game:GetService("SoundService")
 
 local Config = require(ReplicatedStorage.Shared.Config)
-local remotes = ReplicatedStorage:WaitForChild("Remotes")
-local effectEv = remotes:WaitForChild(Config.REMOTES.Effect)
 
-local function makeSound(name, id, looped, volume)
-	if type(id) ~= "string" or #id == 0 then
-		return nil
-	end
+local function loop(name, id, volume)
+	if type(id) ~= "string" or #id == 0 then return nil end
 	local s = Instance.new("Sound")
 	s.Name = name
 	s.SoundId = id
-	s.Looped = looped == true
-	s.Volume = volume or 0.5
+	s.Looped = true
+	s.Volume = volume
 	s.Parent = SoundService
+	s:Play()
 	return s
 end
 
-local ambient = makeSound("Ambient", Config.SOUNDS.Ambient, true, 0.35)
-if ambient then
-	ambient:Play()
+-- после появления камера сразу смотрит вперёд по пути (за спиной персонажа)
+local player = game:GetService("Players").LocalPlayer
+local function faceForward(char)
+	local hrp = char:WaitForChild("HumanoidRootPart", 10)
+	if not hrp then return end
+	task.wait(0.35) -- сервер успевает поставить персонажа на точку
+	local cam = workspace.CurrentCamera
+	local look = hrp.CFrame.LookVector
+	local focus = hrp.Position + Vector3.new(0, 2, 0)
+	cam.CFrame = CFrame.lookAt(focus - look * 18 + Vector3.new(0, 7, 0), focus + look * 6)
 end
-local wind = makeSound("Wind", Config.SOUNDS.Wind, true, 0.25)
-if wind then
-	wind:Play()
-end
+player.CharacterAdded:Connect(faceForward)
+if player.Character then task.spawn(faceForward, player.Character) end
 
-local sfxPrinter = makeSound("Printer", Config.SOUNDS.Printer, false, 0.8)
-local sfxFall = makeSound("Fall", Config.SOUNDS.Fall, false, 0.7)
-local sfxWin = makeSound("Win", Config.SOUNDS.Win, false, 0.9)
-
-effectEv.OnClientEvent:Connect(function(kind)
-	if kind == "bridge" then
-		if sfxPrinter then
-			sfxPrinter:Play()
-		end
-	elseif kind == "fall" then
-		if sfxFall then
-			sfxFall:Play()
-		end
-	elseif kind == "win" then
-		if sfxWin then
-			sfxWin:Play()
-		end
-	end
-end)
+loop("Music", Config.SOUNDS.Music, 0.18)
+loop("Ambient", Config.SOUNDS.Ambient, 0.25)

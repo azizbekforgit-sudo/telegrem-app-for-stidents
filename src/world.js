@@ -428,13 +428,16 @@ export function createWorld({ logic, store, root }) {
     const progress = {};
     for (const lv of levels) {
       const rec = w.byLevel?.[lv.id];
-      if (rec?.won || (lv.id === activeId && w.won)) {
-        progress[lv.id] = { won: true, stars: rec?.stars || w.stars || 1 };
+      // пройден только тот уровень, где есть своя победа (w.won относится к прошлому уровню)
+      if (rec?.won) {
+        progress[lv.id] = { won: true, stars: rec.stars || 1 };
       } else if (rec?.stars) {
         progress[lv.id] = { won: false, stars: rec.stars };
       }
     }
 
+    // раскладка только активного уровня: после победы старый мост не выдаётся как фигура нового уровня
+    const activeRec = w.byLevel?.[activeId] || null;
     return {
       levelId: level?.id || '8-1',
       biome: level?.biome || 'camp',
@@ -447,17 +450,17 @@ export function createWorld({ logic, store, root }) {
       },
       kapi,
       progress,
-      state: w.boxes ? {
+      state: activeRec?.boxes ? {
         levelId: activeId,
         biome: level?.biome || 'camp',
-        pushId: w.pushId || 1,
-        boxes: w.boxes,
-        container: w.container || null,
-        verdict: w.verdict || null,
-        cssLines: String(w.code || '').split('\n').slice(0, PULL_CSS_LINES),
-        stars: w.byLevel?.[activeId]?.stars || w.stars || 0,
-        won: Boolean(w.byLevel?.[activeId]?.won || (activeId === w.levelId && w.won)),
-        at: w.at || 0,
+        pushId: activeRec.pushId || w.pushId || 1,
+        boxes: activeRec.boxes,
+        container: activeRec.container || null,
+        verdict: activeRec.verdict || null,
+        cssLines: String(activeRec.code || '').split('\n').slice(0, PULL_CSS_LINES),
+        stars: activeRec.stars || 0,
+        won: Boolean(activeRec.won),
+        at: activeRec.at || 0,
       } : null,
     };
   }
@@ -484,7 +487,7 @@ export function createWorld({ logic, store, root }) {
     if (!level) throw httpError(404, 'Уровень не найден');
 
     const prevLv = w.byLevel?.[level.id] || {};
-    const verdictStars = prevLv.verdict?.stars || w.verdict?.stars || 0;
+    const verdictStars = prevLv.verdict?.stars || 0;
     // победа засчитывается только после «Отправить в мир» с рабочим кодом: звёзды не выше вердикта сервера
     if (verdictStars < 1) throw httpError(400, 'Сначала отправь решение в мир');
     const stars = Math.max(1, Math.min(verdictStars, Number(body?.stars) || verdictStars));
