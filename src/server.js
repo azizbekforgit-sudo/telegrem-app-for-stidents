@@ -411,10 +411,20 @@ api.post('/tasks/later', h((req) => {
 }));
 // «Проверить» в редакторе: шаги регэкспами, а что не засчитано — смотрит Claude (src/review.js)
 api.post('/code/review', h(async (req) => {
-  const { lessonId, key, files, console: consoleText } = req.body || {};
+  const { lessonId, key, files, console: consoleText, hint } = req.body || {};
   const lang = req.user.prefs?.lang || 'ru';
   let task = null, topic = '';
-  if (lessonId === 'house') {
+  if (key === 'world') {
+    // уровень Мира Roblox: один «шаг» из условия уровня; ИИ судит по смыслу
+    const lv = world.levels.find((l) => l.id === String(lessonId));
+    if (lv) {
+      const pick = (o) => (o && (o[lang] || o.ru)) || '';
+      const r = lv.rules || {};
+      const rules = [r.count && `${r.count} elements`, r.cols && `${r.cols} columns`, r.rows && `${r.rows} rows`, r.maxGap != null && `gap at most ${r.maxGap}px`, r.minWidth && `container width at least ${r.minWidth}px`].filter(Boolean).join(', ');
+      task = { title: pick(lv.title), intro: pick(lv.intro), steps: [{ say: `${pick(lv.intro)} (${rules}). Selectors: container ${lv.selectors?.box}, items ${lv.selectors?.plank}.`, show: lv.sampleCss || '', file: lv.open || 'style.css', re: '(?!)' }] };
+      topic = 'CSS Grid';
+    }
+  } else if (lessonId === 'house') {
     const k = Number(String(key || '').replace(/^h/, ''));
     const c = social.HOUSE(req.user.id)[k - 1];
     if (c) { task = social.personalize(c, social.ctxOf(req.user.id)); topic = 'Pet house'; }
@@ -424,7 +434,7 @@ api.post('/code/review', h(async (req) => {
     if (raw) { task = localize(raw, lang); topic = localize(c.topic || '', lang); }
   }
   if (!task) throw httpError(404, 'Нет такого задания');
-  return reviewCode({ uid: req.user.id, lessonId, key, task, files, consoleText: String(consoleText || ''), lang, topic });
+  return reviewCode({ uid: req.user.id, lessonId, key: hint ? `${key}:hint` : key, task, files, consoleText: String(consoleText || ''), lang, topic, hint: Boolean(hint) });
 }));
 api.post('/code/done', h((req) => {
   const { lessonId, task, files } = req.body || {};

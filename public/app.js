@@ -2256,7 +2256,7 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
         <div class="cs-show" data-show hidden></div>
         <div class="cs-ai" data-ai hidden></div>
         ${kind === 'world' ? '' : `<ol class="cs-steps" data-steps>${steps.map((st, i) => `<li data-st="${i}"><i></i><span>${rich(st.say)}</span></li>`).join('')}</ol>`}
-        <div class="cs-act">${exam ? '' : kind === 'world' ? `<button class="btn ghost" data-review>${emo('🔍')} Проверить</button><button class="btn" data-push>${emo('🌍')} Отправить в мир</button>` : `<button class="btn ghost dim" data-hint>${emo('💡')} Подсказка</button><button class="btn ghost" data-review>${emo('🤖')} Проверить ИИ</button>`}${kind === 'world' ? '' : `<button class="btn" data-done ${exam ? '' : 'disabled'}>${ic('check-circle')}${exam ? 'Сохранить ответ' : 'Готово'}</button>`}</div>
+        <div class="cs-act">${exam ? '' : kind === 'world' ? `<button class="btn ghost" data-aihint>${emo('💡')} Подсказка ИИ</button><button class="btn ghost" data-review>${emo('🔍')} Проверить</button><button class="btn" data-push>${emo('🌍')} Отправить в мир</button>` : `<button class="btn ghost dim" data-hint>${emo('💡')} Подсказка</button><button class="btn ghost" data-review>${emo('🤖')} Проверить ИИ</button>`}${kind === 'world' ? '' : `<button class="btn" data-done ${exam ? '' : 'disabled'}>${ic('check-circle')}${exam ? 'Сохранить ответ' : 'Готово'}</button>`}</div>
       </div>
       <div class="cs-ide" data-ide></div>
       ${wide || exam ? '' : `<div class="cs-intro" data-intro><div class="teach-row col">${me('talk', 150)}<div class="speech" data-isay></div></div>
@@ -2399,6 +2399,21 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
             say(`${p.file ? `${p.file}${p.line ? `, ${tr('строка')} ${p.line}` : ''}: ` : ''}${p.problem}`, 'oops');
           } else say(`${tr('Пока не засчитано.')} ${tr('Шаг')} ${k + 1}: ${steps[k]?.say || ''}`, 'think');
         }
+      } catch (e) { fail(e); }
+      finally { reviewing = false; bt.disabled = false; bt.classList.remove('busy'); }
+    };
+    // подсказка ИИ в мире: наводит на мысль, готовый ответ не даёт
+    if ($1('[data-aihint]')) $1('[data-aihint]').onclick = async () => {
+      if (reviewing) return;
+      const bt = $1('[data-aihint]');
+      reviewing = true; bt.disabled = true; bt.classList.add('busy');
+      say('Думаю, как тебе помочь… Секунду!', 'think');
+      try {
+        const r = await api('/code/review', { lessonId, key, files: ide.files(), console: ide.console(), hint: true });
+        showAi(r);
+        const p = (r.steps || []).find((x) => !x.done);
+        if (p) say(p.problem ? `${p.problem}${p.fix ? `\n\n💡 ${p.fix}` : ''}` : tr('Подумай: какое свойство превращает блок в сетку? А как задать колонки и щели между ними?'), 'think');
+        else say('Похоже, всё верно! Нажми «Отправить в мир» 🌍', 'cheer', 'happy');
       } catch (e) { fail(e); }
       finally { reviewing = false; bt.disabled = false; bt.classList.remove('busy'); }
     };

@@ -127,7 +127,7 @@ export async function selfTest() {
 }
 
 // task: уже на языке ученика ({ title, intro, steps: [{ say, show, file, re, not, out }] })
-export async function reviewCode({ uid, lessonId, key, task, files, consoleText = '', lang = 'ru', topic = '' }) {
+export async function reviewCode({ uid, lessonId, key, task, files, consoleText = '', lang = 'ru', topic = '', hint = false }) {
   files = cleanFiles(files);
   const steps = task.steps || [];
   const quick = steps.map((st) => stepOk(st, files, consoleText));
@@ -150,6 +150,8 @@ export async function reviewCode({ uid, lessonId, key, task, files, consoleText 
     'Steps:',
     ...steps.map((st, i) => `${i}. ${st.not ? '(must NOT be in the code) ' : ''}${String(st.say || '').replace(/\*\*/g, '')}${st.file ? ` [file: ${st.file}]` : ''}${st.out ? ' [checked by console output]' : ''}${st.show ? `\n   example: ${String(st.show).replace(/\n/g, '\n            ')}` : ''}`),
     '',
+    hint ? 'HINT MODE: the student asked for a hint, not for the answer. In "problem" give ONE friendly nudge (1-2 short sentences) about what to look at or which CSS property to think about. Leave "code" EMPTY and make "fix" a small question or direction, never the finished solution.' : '',
+    '',
     'Student files:',
     ...Object.entries(files).map(([n, src]) => `===== ${n} =====\n${numbered(src)}`),
     consoleText ? `\nConsole output when the page ran:\n${String(consoleText).slice(0, 2000)}` : '',
@@ -160,6 +162,7 @@ export async function reviewCode({ uid, lessonId, key, task, files, consoleText 
     const parsed = Review.safeParse(parseJson(text));
     if (!parsed.success) throw new Error('ответ ИИ не по форме: ' + parsed.error.issues[0]?.message);
     const out = parsed.data;
+    if (hint) for (const s of out.steps) s.code = '';
     res.ai = true;
     for (const s of out.steps) {
       const t = res.steps[s.index];
