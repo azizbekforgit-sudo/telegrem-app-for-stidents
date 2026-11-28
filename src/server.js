@@ -192,7 +192,7 @@ if (fs.existsSync(extendFile)) for (const r of JSON.parse(fs.readFileSync(extend
 const removeFile = path.join(root, 'content', 'remove.json');
 if (fs.existsSync(removeFile)) for (const r of logic.removeLessons(JSON.parse(fs.readFileSync(removeFile, 'utf8')))) console.log('[remove] ' + JSON.stringify(r));
 
-const tg = BOT_TOKEN && process.env.NO_BOT !== '1' ? createBot({ token: BOT_TOKEN, logic, journal, nudges, store, appUrl: PUBLIC_URL + '/', adminIds: ADMIN_IDS }) : null;
+const tg = BOT_TOKEN && process.env.NO_BOT !== '1' ? createBot({ token: BOT_TOKEN, logic, journal, nudges, store, world, appUrl: PUBLIC_URL + '/', adminIds: ADMIN_IDS }) : null;
 
 const app = express();
 app.disable('x-powered-by');

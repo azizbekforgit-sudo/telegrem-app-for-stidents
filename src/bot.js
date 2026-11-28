@@ -57,7 +57,7 @@ const T = {
   remindTest: { ru: (t) => `\n\n🧩 Тест: <b>${t}</b>\nТы его ещё не сдал — заходи! ⏳`, uz: (t) => `\n\n🧩 Test: <b>${t}</b>\nSen uni hali topshirmading — kir! ⏳`, en: (t) => `\n\n🧩 Test: <b>${t}</b>\nYou haven't taken it yet — come in! ⏳` },
 };
 
-export function createBot({ token, logic, journal, nudges, store, appUrl, adminIds }) {
+export function createBot({ token, logic, journal, nudges, store, world, appUrl, adminIds }) {
   const bot = new Bot(token);
   const S = logic.S;
 
@@ -193,6 +193,24 @@ export function createBot({ token, logic, journal, nudges, store, appUrl, adminI
     const { user } = logic.upsertUser(ctx.from);
     if (logic.isAdmin(user.id) || user.needRole) return ctx.reply('Сначала нажми /start.');
     await sendLogin(logic.issueLogin(user.id, { reset: true }));
+  });
+
+  // Мир Roblox: код для входа в игру и текущее задание
+  bot.command('world', async (ctx) => {
+    if (ctx.chat.type !== 'private' || !world) return;
+    const { user } = logic.upsertUser(ctx.from);
+    if (logic.isAdmin(user.id) || user.needRole || user.role === 'parent') return ctx.reply('Мир Roblox — для учеников. Нажми /start.');
+    const lang = langOf(user.id, ctx.from.language_code);
+    const st = world.status(user.id);
+    const cur = st.levels.find((l) => l.id === st.currentLevelId);
+    const { code } = world.pair(user.id);
+    const L = {
+      ru: ['🌍 <b>Мир Roblox</b>', 'Твой код входа (10 минут):', 'В Roblox открой игру и введи его.', 'Сейчас задание', 'Звёзды'],
+      uz: ['🌍 <b>Roblox dunyosi</b>', 'Kirish kodi (10 daqiqa):', "Roblox'da o'yinni ochib, kodni kiriting.", 'Hozirgi topshiriq', 'Yulduzlar'],
+      en: ['🌍 <b>Roblox World</b>', 'Your login code (10 minutes):', 'Open the game in Roblox and enter it.', 'Current quest', 'Stars'],
+    }[lang] || null;
+    const T = L || ['🌍 <b>Мир Roblox</b>', 'Твой код входа (10 минут):', 'В Roblox открой игру и введи его.', 'Сейчас задание', 'Звёзды'];
+    await ctx.reply(`${T[0]}\n\n${T[1]} <code>${code}</code>\n${T[2]}\n\n${T[3]}: <b>${esc(cur?.title || '')}</b>\n${T[4]}: ${st.stars}/${st.maxStars}`, { parse_mode: 'HTML', reply_markup: privateKb(tt('open', lang)) });
   });
 
   bot.command('help', (ctx) =>

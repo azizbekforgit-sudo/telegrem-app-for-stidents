@@ -483,7 +483,9 @@ export function createWorld({ logic, store, root }) {
 
     const prevLv = w.byLevel?.[level.id] || {};
     const verdictStars = prevLv.verdict?.stars || w.verdict?.stars || 0;
-    const stars = Math.max(1, Math.min(3, Number(body?.stars) || verdictStars || 1));
+    // победа засчитывается только после «Отправить в мир» с рабочим кодом: звёзды не выше вердикта сервера
+    if (verdictStars < 1) throw httpError(400, 'Сначала отправь решение в мир');
+    const stars = Math.max(1, Math.min(verdictStars, Number(body?.stars) || verdictStars));
     const maxXp = level.reward?.maxXp ?? 240;
     const perStar = level.reward?.xpPerStar ?? 80;
     const xp = Math.min(maxXp, stars * perStar);
