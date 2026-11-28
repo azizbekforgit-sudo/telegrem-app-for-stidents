@@ -244,7 +244,8 @@ export function createWorld({ logic, store, root }) {
   const levels = loadWorldLevels(root);
   const byId = Object.fromEntries(levels.map((l) => [l.id, l]));
 
-  const pairCodes = new Map();
+  // коды хранятся в базе (только хеш): после перезапуска сервера они не пропадают
+  const pairs = () => (S.worldPairs ||= {});
   const pushAt = new Map();
   const pullAt = new Map();
 
@@ -284,25 +285,26 @@ export function createWorld({ logic, store, root }) {
   function pair(uid) {
     uid = String(uid);
     if (!S.users[uid]) throw httpError(404, 'Пользователь не найден');
-    for (const [k, v] of pairCodes.entries()) {
-      if (v.userId === uid || v.expiresAt <= Date.now() || v.used) pairCodes.delete(k);
+    const P = pairs();
+    for (const [k, v] of Object.entries(P)) {
+      if (v.userId === uid || v.expiresAt <= Date.now()) delete P[k];
     }
     let code;
-    do { code = String(crypto.randomInt(100000, 1000000)); } while (pairCodes.has(code));
-    pairCodes.set(code, { userId: uid, expiresAt: Date.now() + PAIR_TTL_MS, used: false });
+    do { code = String(crypto.randomInt(100000, 1000000)); } while (P[sha256(code)]);
+    P[sha256(code)] = { userId: uid, expiresAt: Date.now() + PAIR_TTL_MS };
+    store.save();
     return { code, expiresInSec: Math.round(PAIR_TTL_MS / 1000) };
   }
 
   function link({ code, robloxUserId, robloxName }) {
     const cleanCode = String(code || '').trim();
-    const rec = pairCodes.get(cleanCode);
-    if (!rec || rec.used || rec.expiresAt <= Date.now()) {
+    const rec = pairs()[sha256(cleanCode)];
+    if (!rec || rec.expiresAt <= Date.now()) {
       throw httpError(400, 'Код неверный или устарел');
     }
     const rId = String(robloxUserId || '').trim().slice(0, 40);
     if (!rId) throw httpError(400, 'Нужен robloxUserId');
-    rec.used = true;
-    pairCodes.delete(cleanCode);
+    delete pairs()[sha256(cleanCode)];
 
     ensureStore();
     for (const [h, t] of Object.entries(S.worldTokens)) {
