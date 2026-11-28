@@ -660,6 +660,7 @@ const PHRASES = [
   ['Проверить ИИ', 'Check with AI', 'AI bilan tekshirish'], ['Продолжить', 'Continue', 'Davom etish'], ['Всё верно!', 'All correct!', "Hammasi to'g'ri!"],
   ['Вот что нужно поправить', 'Here is what to fix', "Mana nimani to'g'rilash kerak"], ['ИИ сейчас не отвечает', 'The AI is not answering right now', 'AI hozir javob bermayapti'],
   ['Я проверил только по шаблонам. Подожди минуту и нажми «Проверить ИИ» ещё раз.', 'I only checked against templates. Wait a minute and press “Check with AI” again.', "Men faqat shablonlar bo'yicha tekshirdim. Bir daqiqa kut va «AI bilan tekshirish» ni yana bos."],
+  ['Вот как должно быть:', 'Here is how it should look:', "Mana qanday bo'lishi kerak:"],
   ['Все ученики', 'All students', "Barcha o'quvchilar"], ['без группы', 'no group', 'guruhsiz'],
   ['Пока никто не запускал бота. Отправь ученикам ссылку на бота — после /start они появятся здесь.', "Nobody has started the bot yet. Send students the bot link — after /start they'll appear here.", "Hali hech kim botni ishga tushirmagan. O'quvchilarga bot havolasini yubor — /start dan keyin ular shu yerda paydo bo'ladi."],
   ['Ученики', 'Students', "O'quvchilar"], ['Статистика', 'Stats', 'Statistika'], ['Добавить учеников', 'Add students', "O'quvchi qo'shish"],

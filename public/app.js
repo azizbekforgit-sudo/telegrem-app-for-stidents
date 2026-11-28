@@ -2364,7 +2364,7 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
       else if (r.aiError) h = `<div class="ai-head warn">${emo('⚠️')} <b>${tr('ИИ сейчас не отвечает')}</b></div><p>${tr('Я проверил только по шаблонам. Подожди минуту и нажми «Проверить ИИ» ещё раз.')}</p>`;
       else {
         h = `<div class="ai-head bad">${emo('🤖')} <b>${tr('Вот что нужно поправить')}</b></div>${r.summary ? `<p>${esc(r.summary)}</p>` : ''}` + bad.map((x) =>
-          `<button type="button" class="ai-item" data-aif="${esc(x.file || '')}" data-ail="${x.line || 0}"><span class="ai-where">${esc(x.file || '')}${x.line ? ':' + x.line : ''}</span><span class="ai-why">${rich(x.problem || steps[x.i]?.say || '')}</span>${x.fix ? `<span class="ai-fix">${emo('🔧')} ${rich(x.fix)}</span>` : ''}</button>`).join('');
+          `<button type="button" class="ai-item" data-aif="${esc(x.file || '')}" data-ail="${x.line || 0}"><span class="ai-where">${esc(x.file || '')}${x.line ? ':' + x.line : ''}</span><span class="ai-why">${rich(x.problem || steps[x.i]?.say || '')}</span>${x.fix ? `<span class="ai-fix">${emo('🔧')} ${rich(x.fix)}</span>` : ''}${x.code ? `<span class="ai-code-t">${tr('Вот как должно быть:')}</span><pre class="code ai-code">${highlight(x.code)}</pre>` : ''}</button>`).join('');
       }
       box.innerHTML = h;
       box.className = `cs-ai ${r.ok ? 'ok' : r.aiError ? 'warn' : 'bad'}`;
@@ -2381,8 +2381,8 @@ function codeSession({ task, allow = [], topic = '', lessonId, key, kind = 'lear
         const r = await api('/code/review', { lessonId, key, files: ide.files(), console: ide.console() });
         accepted = steps.map((_, i) => Boolean(r.steps?.[i]?.done));
         showAi(r);
-        const probs = (r.steps || []).map((x, i) => (!x.done && x.problem ? { file: x.file || steps[i]?.file || '', line: x.line || 0, msg: x.problem, sev: 2, raw: true } : null)).filter(Boolean)
-          .concat((r.errors || []).map((e) => ({ file: e.file, line: e.line, msg: e.message, sev: 2, raw: true })));
+        const probs = (r.steps || []).map((x, i) => (!x.done && x.problem ? { file: x.file || steps[i]?.file || '', line: x.line || 0, msg: String(x.problem).replace(/[`*]/g, ''), sev: 2, raw: true } : null)).filter(Boolean)
+          .concat((r.errors || []).map((e) => ({ file: e.file, line: e.line, msg: String(e.message || '').replace(/[`*]/g, ''), sev: 2, raw: true })));
         if (r.ok) {
           ide.setProblems([]);
           evaluate();
