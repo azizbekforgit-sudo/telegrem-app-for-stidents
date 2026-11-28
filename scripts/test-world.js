@@ -183,6 +183,12 @@ try {
   const room = await req('/room', { headers: devHeaders });
   assert.equal(room.status, 200);
   assert.equal(room.data.decor.find((d) => d.id === 'bridge')?.owned, true);
+  await sleep(1100);
+  const afterWin = await req('/world/pull', { headers: rbxHeaders });
+  assert.equal(afterWin.data.levelId, '8-2');
+  assert.equal(afterWin.data.progress['8-1'].won, true);
+  assert.ok(!afterWin.data.progress['8-2']?.won, '8-2 не должен считаться пройденным после победы на 8-1');
+  assert.equal(afterWin.data.state, null, 'старый мост не выдаётся как фигура нового уровня');
   console.log('✓ win -> +240 XP (один раз) и «Деревянный мостик» в Доме питомца');
 
   // Проверка, что секреты не попали в логи

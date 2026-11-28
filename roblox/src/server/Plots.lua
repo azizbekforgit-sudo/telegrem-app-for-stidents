@@ -1,4 +1,4 @@
--- Управление участками игроков: ленивая постройка архипелага при входе ученика + сохранение прогресса
+-- Участки учеников: до 8 цепочек островов в одном сервере. Остров строится лениво при первом входе.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Config = require(ReplicatedStorage.Shared.Config)
 
@@ -6,35 +6,54 @@ local Plots = {}
 local list = {}
 local builderFn = nil
 
+local function resetState(plot)
+	plot.token = nil
+	plot.linked = false
+	plot.lang = "ru"
+	plot.name = nil
+	plot.lastPushId = 0
+	plot.lastActivity = os.clock()
+	plot.activeLevelId = "8-1"
+	plot.wonLevels = {}
+	plot.starsByLevel = {}
+	plot.solved = {}
+	plot.coins = 0
+	plot.kapiLines = {}
+	plot.currentSpawn = plot.spawnPos
+	if plot.creation then
+		plot.creation:Destroy()
+		plot.creation = nil
+	end
+	if plot.resetWorld then
+		plot.resetWorld()
+	end
+end
+
 function Plots.Init(buildFn)
 	builderFn = buildFn
 	for i = 1, Config.PLOT_COUNT do
 		local angle = (i - 1) * (2 * math.pi / Config.PLOT_COUNT)
 		local dir = Vector3.new(math.cos(angle), 0, math.sin(angle))
 		local center = dir * Config.PLOT_RADIUS + Vector3.new(0, 24, 0)
-		list[i] = {
+		local plot = {
 			index = i,
 			dir = dir,
+			right = Vector3.new(-dir.Z, 0, dir.X),
 			angle = angle,
 			center = center,
 			owner = nil,
-			token = nil,
 			built = false,
-			lastPushId = 0,
-			lastActivity = os.clock(),
-			activeLevelId = "8-1",
-			wonLevels = {},
-			starsByLevel = {},
-			coins = 0,
-			currentSpawn = nil,
-			spawnPos = center + Vector3.new(-28, 5, 8),
-			checkpointPos = center + Vector3.new(-9, 4, 0),
-			kapiLines = {},
-			bridgeModel = nil,
-			folder = nil,
 			biomes = {},
+			spawnPos = center + Vector3.new(0, 6, 0),
 		}
+		resetState(plot)
+		list[i] = plot
 	end
+end
+
+-- другой код на том же острове (сели за один компьютер) — начинаем с чистого листа
+function Plots.Reset(plot)
+	resetState(plot)
 end
 
 function Plots.All()
@@ -58,22 +77,11 @@ function Plots.Assign(player)
 	for _, plot in ipairs(list) do
 		if not plot.owner then
 			plot.owner = player
-			plot.token = nil
-			plot.lastPushId = 0
-			plot.lastActivity = os.clock()
-			plot.activeLevelId = "8-1"
-			plot.wonLevels = {}
-			plot.starsByLevel = {}
-			plot.coins = 0
 			if not plot.built and builderFn then
 				plot.built = true
 				builderFn(plot)
 			end
-			plot.currentSpawn = plot.spawnPos
-			if plot.bridgeModel then
-				plot.bridgeModel:Destroy()
-				plot.bridgeModel = nil
-			end
+			resetState(plot)
 			return plot
 		end
 	end
@@ -86,17 +94,9 @@ function Plots.Release(player)
 		return
 	end
 	plot.owner = nil
-	plot.token = nil
-	plot.lastPushId = 0
-	plot.wonLevels = {}
-	plot.starsByLevel = {}
-	plot.currentSpawn = plot.spawnPos
-	if plot.bridgeModel then
-		plot.bridgeModel:Destroy()
-		plot.bridgeModel = nil
-	end
-	if plot.kapi and plot.kapi.bbg then
-		plot.kapi.bbg.Enabled = false
+	resetState(plot)
+	if plot.pet and plot.pet.hide then
+		plot.pet.hide()
 	end
 end
 

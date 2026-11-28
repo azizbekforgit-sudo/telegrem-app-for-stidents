@@ -341,75 +341,155 @@ local function buildBody(model, kind)
 	return headPart, offsets
 end
 
+-- Питомец ученика: появляется только после ввода кода (с облачком-«пуфом»), ходит рядом и говорит в облачке
 function Mascot.Create(plot)
 	local model = Instance.new("Model")
 	model.Name = "PetGuide"
-	model.Parent = plot.folder
+	model.Parent = nil -- спрятан до подключения
 
 	local headPart, offsets = buildBody(model, "kapi")
 
-	local bbg = Instance.new("BillboardGui", model)
+	local bbg = Instance.new("BillboardGui")
 	bbg.Name = "Bubble"
-	bbg.Size = UDim2.fromOffset(250, 74)
-	bbg.StudsOffset = Vector3.new(0, 3.4, 0)
-	bbg.AlwaysOnTop = false
-	bbg.MaxDistance = 42
+	bbg.Size = UDim2.fromOffset(290, 96)
+	bbg.StudsOffset = Vector3.new(0, 3.6, 0)
+	bbg.MaxDistance = 60
 	bbg.Enabled = false
 	bbg.Adornee = headPart
+	bbg.Parent = model
 
 	local frame = Instance.new("Frame", bbg)
-	frame.Size = UDim2.fromScale(1, 1)
+	frame.Size = UDim2.new(1, 0, 1, -14)
 	frame.BackgroundColor3 = Color3.fromRGB(255, 252, 240)
 	frame.BorderSizePixel = 0
-	Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 14)
+	frame.ZIndex = 2
+	Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 18)
 	local stroke = Instance.new("UIStroke", frame)
 	stroke.Color = Color3.fromRGB(217, 178, 120)
-	stroke.Thickness = 2
+	stroke.Thickness = 3
+	local tail = Instance.new("Frame", bbg)
+	tail.Size = UDim2.fromOffset(18, 18)
+	tail.AnchorPoint = Vector2.new(0.5, 0.5)
+	tail.Position = UDim2.new(0.5, 0, 1, -16)
+	tail.Rotation = 45
+	tail.BackgroundColor3 = Color3.fromRGB(255, 252, 240)
+	tail.BorderSizePixel = 0
+	tail.ZIndex = 1
+
+	local nameTag = Instance.new("TextLabel", frame)
+	nameTag.Name = "Who"
+	nameTag.Size = UDim2.new(1, -20, 0, 18)
+	nameTag.Position = UDim2.fromOffset(12, 6)
+	nameTag.BackgroundTransparency = 1
+	nameTag.Font = Enum.Font.GothamBlack
+	nameTag.TextSize = 14
+	nameTag.ZIndex = 3
+	nameTag.TextXAlignment = Enum.TextXAlignment.Left
+	nameTag.TextColor3 = MASCOT_META.kapi.outline
+	nameTag.Text = MASCOT_META.kapi.name
 
 	local label = Instance.new("TextLabel", frame)
 	label.Name = "Text"
-	label.Size = UDim2.new(1, -16, 1, -12)
-	label.Position = UDim2.fromOffset(8, 6)
+	label.Size = UDim2.new(1, -24, 1, -30)
+	label.Position = UDim2.fromOffset(12, 24)
 	label.BackgroundTransparency = 1
 	label.TextWrapped = true
 	label.TextScaled = true
+	label.ZIndex = 3
 	label.Font = Enum.Font.GothamBold
 	label.TextColor3 = Color3.fromRGB(35, 30, 24)
+	label.TextXAlignment = Enum.TextXAlignment.Left
+	label.TextYAlignment = Enum.TextYAlignment.Top
 	label.Text = ""
+	local lim = Instance.new("UITextSizeConstraint", label)
+	lim.MaxTextSize = 19
+	lim.MinTextSize = 11
 
-	local basePos = plot.campPos + Vector3.new(4, 2.2, 4)
+	local basePos = plot.center + Vector3.new(0, 4, 0)
 	local currentCF = CFrame.new(basePos)
 	local jumpOffset = 0
 	local spinOffset = 0
+	local scale = 1
+	local visible = false
+	local sayToken = 0
 
 	local function layoutParts(cf)
 		local bob = math.sin(os.clock() * 3.8) * 0.14 + jumpOffset
 		local bodyCF = cf * CFrame.new(0, bob, 0) * CFrame.Angles(0, spinOffset, 0)
 		for _, item in ipairs(offsets) do
 			if item.p and item.p.Parent then
-				item.p.CFrame = bodyCF * item.cf
+				local o = item.cf
+				item.p.CFrame = bodyCF * (scale == 1 and o or (CFrame.new(o.Position * scale) * o.Rotation))
 			end
 		end
 	end
-	layoutParts(currentCF)
+
+	local function setParts(sizeMul)
+		scale = sizeMul
+		for _, item in ipairs(offsets) do
+			if item.p and item.p.Parent then
+				local base = item.p:GetAttribute("BaseSize")
+				if not base then
+					base = item.p.Size
+					item.p:SetAttribute("BaseSize", base)
+				end
+				item.p.Size = base * math.max(sizeMul, 0.05)
+			end
+		end
+	end
 
 	RunService.Heartbeat:Connect(function(dt)
-		if not plot.owner or not plot.owner.Character then
-			layoutParts(currentCF)
+		if not visible then
 			return
 		end
-		local hrp = plot.owner.Character:FindFirstChild("HumanoidRootPart")
-		if not hrp then
-			layoutParts(currentCF)
-			return
+		local hrp = plot.owner and plot.owner.Character and plot.owner.Character:FindFirstChild("HumanoidRootPart")
+		if hrp then
+			local targetPos = hrp.Position + hrp.CFrame.RightVector * 4.2 + hrp.CFrame.LookVector * 1.2
+			-- держимся на земле под питомцем, а не висим над пропастью
+			plot.rayParams.FilterDescendantsInstances = { model, plot.owner.Character }
+			local ray = workspace:Raycast(targetPos + Vector3.new(0, 3, 0), Vector3.new(0, -30, 0), plot.rayParams)
+			local y = ray and (ray.Position.Y + 1.1) or (hrp.Position.Y - 1.6)
+			targetPos = Vector3.new(targetPos.X, y, targetPos.Z)
+			local pos = currentCF.Position:Lerp(targetPos, math.clamp(dt * 4, 0, 1))
+			if (pos - hrp.Position).Magnitude > 60 then
+				pos = targetPos
+			end
+			local look = Vector3.new(hrp.Position.X, pos.Y, hrp.Position.Z)
+			currentCF = (look - pos).Magnitude > 0.2 and CFrame.lookAt(pos, look) or CFrame.new(pos)
 		end
-		local targetPos = hrp.Position + hrp.CFrame.RightVector * 4.4 + hrp.CFrame.LookVector * 1.4
-		targetPos = Vector3.new(targetPos.X, math.max(plot.center.Y - 12, hrp.Position.Y + 0.2), targetPos.Z)
-		local pos = currentCF.Position:Lerp(targetPos, math.clamp(dt * 3.5, 0, 1))
-		local look = Vector3.new(hrp.Position.X, pos.Y, hrp.Position.Z)
-		currentCF = (look - pos).Magnitude > 0.2 and CFrame.lookAt(pos, look) or CFrame.new(pos)
 		layoutParts(currentCF)
 	end)
+
+	local function poof(pos)
+		local p = Instance.new("Part")
+		p.Anchored = true
+		p.CanCollide = false
+		p.CanQuery = false
+		p.Transparency = 1
+		p.Size = Vector3.new(1, 1, 1)
+		p.Position = pos
+		p.Parent = plot.folder
+		local pe = Instance.new("ParticleEmitter", p)
+		pe.Texture = "rbxasset://textures/particles/smoke_main.dds"
+		pe.Color = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(253, 230, 138))
+		pe.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1.5), NumberSequenceKeypoint.new(1, 4) })
+		pe.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 1) })
+		pe.Speed = NumberRange.new(4, 9)
+		pe.SpreadAngle = Vector2.new(180, 180)
+		pe.Lifetime = NumberRange.new(0.5, 0.9)
+		pe.Rate = 0
+		pe:Emit(28)
+		local st = Instance.new("ParticleEmitter", p)
+		st.Texture = "rbxasset://textures/particles/sparkles_main.dds"
+		st.Color = ColorSequence.new(Color3.fromRGB(253, 224, 71))
+		st.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.6), NumberSequenceKeypoint.new(1, 0) })
+		st.Speed = NumberRange.new(8, 14)
+		st.SpreadAngle = Vector2.new(180, 180)
+		st.Lifetime = NumberRange.new(0.6, 1)
+		st.Rate = 0
+		st:Emit(24)
+		game:GetService("Debris"):AddItem(p, 2)
+	end
 
 	plot.kapi = {
 		model = model,
@@ -417,16 +497,64 @@ function Mascot.Create(plot)
 		bbg = bbg,
 		kind = "kapi",
 		setType = function(kind)
-			if not kind or kind == plot.kapi.kind then
+			if not kind or kind == plot.kapi.kind or not MASCOT_META[kind] then
 				return
 			end
 			plot.kapi.kind = kind
+			local keep = scale
 			local newHead, newOffsets = buildBody(model, kind)
 			offsets = newOffsets
 			bbg.Adornee = newHead
-			local meta = MASCOT_META[kind] or MASCOT_META.kapi
+			local meta = MASCOT_META[kind]
 			stroke.Color = meta.outline
+			nameTag.TextColor3 = meta.outline
+			nameTag.Text = meta.name
+			setParts(keep)
 			layoutParts(currentCF)
+		end,
+		name = function()
+			return (MASCOT_META[plot.kapi.kind] or MASCOT_META.kapi).name
+		end,
+		show = function()
+			if visible then return end
+			local hrp = plot.owner and plot.owner.Character and plot.owner.Character:FindFirstChild("HumanoidRootPart")
+			local at = hrp and (hrp.Position + hrp.CFrame.RightVector * 4.2 + hrp.CFrame.LookVector * 1.2 - Vector3.new(0, 1.6, 0)) or basePos
+			currentCF = CFrame.new(at)
+			visible = true
+			setParts(0.05)
+			model.Parent = plot.folder
+			layoutParts(currentCF)
+			poof(at)
+			task.spawn(function()
+				local t = 0
+				while t < 0.5 do
+					t += task.wait()
+					local k = math.clamp(t / 0.5, 0, 1)
+					-- «пружинка»: чуть больше нормы и обратно
+					setParts(math.max(0.05, k + 0.3 * math.sin(k * math.pi)))
+				end
+				setParts(1)
+			end)
+		end,
+		hide = function()
+			visible = false
+			bbg.Enabled = false
+			model.Parent = nil
+		end,
+		say = function(text, seconds)
+			sayToken += 1
+			local my = sayToken
+			if not visible or not text or #text == 0 then
+				bbg.Enabled = false
+				return
+			end
+			label.Text = text
+			bbg.Enabled = true
+			task.delay(seconds or math.clamp(utf8.len(text) / 9, 5, 12), function()
+				if sayToken == my then
+					bbg.Enabled = false
+				end
+			end)
 		end,
 		jump = function()
 			task.spawn(function()
@@ -442,29 +570,23 @@ function Mascot.Create(plot)
 			end)
 		end,
 	}
+	plot.pet = plot.kapi
 end
 
 function Mascot.SetType(plot, kind)
-	if plot.kapi and plot.kapi.setType then
-		plot.kapi.setType(kind)
-	end
+	if plot.kapi then plot.kapi.setType(kind) end
 end
 
-function Mascot.Say(plot, text)
-	if plot.kapi and plot.kapi.label and plot.kapi.bbg then
-		if text and #text > 0 then
-			plot.kapi.label.Text = text
-			plot.kapi.bbg.Enabled = true
-		else
-			plot.kapi.bbg.Enabled = false
-		end
-	end
+function Mascot.Show(plot)
+	if plot.kapi then plot.kapi.show() end
+end
+
+function Mascot.Say(plot, text, seconds)
+	if plot.kapi then plot.kapi.say(text, seconds) end
 end
 
 function Mascot.Jump(plot)
-	if plot.kapi and plot.kapi.jump then
-		plot.kapi.jump()
-	end
+	if plot.kapi then plot.kapi.jump() end
 end
 
 return Mascot
